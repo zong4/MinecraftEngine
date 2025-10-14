@@ -20,7 +20,7 @@ void MCEngine::Material::Bind(const std::shared_ptr<MCEngine::Shader> &shader, c
 
 std::string MCEngine::Material::ToString() const
 {
-    return "Material(Color: " + MCEngine::ToString(m_Color) + ", Ambient: " + std::to_string(m_AmbientStrength) +
+    return "Material(Color: " + MCEngine::Math::ToString(m_Color) + ", Ambient: " + std::to_string(m_AmbientStrength) +
            ", Diffuse: " + std::to_string(m_DiffuseStrength) + ", Specular: " + std::to_string(m_SpecularStrength) +
            ", Shininess: " + std::to_string(m_Shininess) + ")";
 }

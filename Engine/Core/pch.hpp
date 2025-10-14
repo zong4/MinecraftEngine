@@ -1,6 +1,6 @@
 #pragma once
 
-// Standard Library
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <filesystem>
@@ -13,18 +13,9 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
-// Utility
-#include "Utility/ToString.hpp"
-
-// Recorder
-#include "Recorder/Instrumentor/InstrumentationTimer.hpp"
-#include "Recorder/Instrumentor/Instrumentor.hpp"
-#include "Recorder/Logger/Logger.hpp"
-#include "Recorder/Timer/Timer.hpp"
-
 // Third Party
-#include "Utility/Math.hpp"
-#include "Utility/libtinyfiledialogs/tinyfiledialogs.h"
+#include <glm/glm.hpp>

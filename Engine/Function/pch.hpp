@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core.hpp>
+#include <Platform.hpp>
 
 // Third Party
 #include <entt/entt.hpp>

@@ -1,50 +1,62 @@
--- Common
+-- Core
 add_requires("spdlog", "glm")
 
--- Graphics
-add_requires("glfw", "glad", "stb")
-
--- GUI
+-- Platform
+add_requires("glfw", "glad")
 add_requires("imgui v1.92.1-docking", {configs = {glfw_opengl3 = true}})
 
--- ECS
+-- Common
+add_requires("stb")
+
+-- Function
 add_requires("entt", "yaml-cpp")
 
 -- Core Target
 target("Core")
     set_kind("static")
-
-    add_headerfiles("Core/**/*.h")    
+  
     add_headerfiles("Core/**/*.hpp")
-    add_files("Core/**/*.c")
     add_files("Core/**/*.cpp")
     add_includedirs("Core", {public = true})
+    
+    -- Core
+    add_packages("spdlog")
+    add_packages("glm", {public = true})
+
+-- Platform Target
+target("Platform")
+    set_kind("static")
+
+    add_deps("Core")
+
+    add_headerfiles("Platform/**/*.h")
+    add_headerfiles("Platform/**/*.hpp")
+    add_files("Platform/**/*.c")
+    add_files("Platform/**/*.cpp")
+    add_includedirs("Platform", {public = true})
 
     if is_plat("windows") then
         add_syslinks("ole32", "comdlg32")
     end
 
-    -- Common
-    add_packages("spdlog")
-    add_packages("glm", {public = true})
-
-    -- Graphics
-    add_packages("glfw", "glad", "stb");
-
-    -- GUI
+    -- Platform
+    add_packages("glfw", "glad");
     add_packages("imgui", {public = true});
+
+    -- Common
+    add_packages("stb");
 
 -- Function Target
 target("Function")
     set_kind("static")
 
-    add_deps("Core")
+    add_deps("Platform")
 
     add_headerfiles("Function/**/*.hpp")
     add_files("Function/**/*.cpp")
     add_includedirs("Function", {public = true})
 
-    -- ECS
+    -- Function
     add_packages("entt", {public = true})
     add_packages("yaml-cpp")
 
@@ -53,7 +65,6 @@ target("Function")
 target("Engine")
     set_kind("static")
 
-    add_deps("Core")
     add_deps("Function")
 	
     add_files("*.cpp")
