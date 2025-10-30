@@ -4,7 +4,7 @@
 # VSCode
 .vscode/
 
-# Xmake cache
+# Xmake Cache
 .xmake/
 build/
 vsxmake*/

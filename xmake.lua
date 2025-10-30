@@ -1,24 +1,28 @@
 set_project("MinecraftEngine")
 
+-- Basic Settings
 set_version("1.0.0")
 set_languages("c++20")
 
--- Warnings
+-- Setting Warnings as Errors
 add_cflags("-Werror")
 add_cxxflags("-Werror")
 
--- Mode Defines
+-- Build Modes
 add_rules("mode.debug", "mode.release")
 if is_mode("debug") then
+    add_cxxflags("-O0", "-g")
     add_defines("DEBUG")
+else
+    add_cxxflags("-O2")
 end
 
--- Global Defines
+-- Global Definitions
 add_defines('PROJECT_ROOT=R"($(projectdir)/)"')
 
--- VS Code Specific
+-- VS Code Specific Settings
 add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
 
--- Targets
+-- Sub-Projects
 includes("Engine")
 includes("Editor")

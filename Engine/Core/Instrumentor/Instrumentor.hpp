@@ -23,8 +23,8 @@ public:
     void EndSession();
 
 private:
-    std::ofstream m_OutputStream = {};
     int m_ProfileCount = 0;
+    std::ofstream m_OutputStream = {};
 
 private:
     Instrumentor() = default;

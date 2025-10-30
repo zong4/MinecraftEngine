@@ -2,11 +2,9 @@
 add_requires("spdlog", "glm")
 
 -- Platform
+add_requires("stb")
 add_requires("glfw", "glad")
 add_requires("imgui v1.92.1-docking", {configs = {glfw_opengl3 = true}})
-
--- Common
-add_requires("stb")
 
 -- Function
 add_requires("entt", "yaml-cpp")
@@ -19,14 +17,12 @@ target("Core")
     add_files("Core/**/*.cpp")
     add_includedirs("Core", {public = true})
     
-    -- Core
     add_packages("spdlog")
     add_packages("glm", {public = true})
 
 -- Platform Target
 target("Platform")
     set_kind("static")
-
     add_deps("Core")
 
     add_headerfiles("Platform/**/*.h")
@@ -38,33 +34,25 @@ target("Platform")
     if is_plat("windows") then
         add_syslinks("ole32", "comdlg32")
     end
-
-    -- Platform
+    add_packages("stb");
     add_packages("glfw", "glad");
     add_packages("imgui", {public = true});
-
-    -- Common
-    add_packages("stb");
 
 -- Function Target
 target("Function")
     set_kind("static")
-
     add_deps("Platform")
 
     add_headerfiles("Function/**/*.hpp")
     add_files("Function/**/*.cpp")
     add_includedirs("Function", {public = true})
 
-    -- Function
     add_packages("entt", {public = true})
     add_packages("yaml-cpp")
 
 -- Engine Target
---set_runtimes("MTd")
 target("Engine")
     set_kind("static")
-
     add_deps("Function")
 	
     add_files("*.cpp")

@@ -18,8 +18,7 @@ protected:
 
 private:
     void Start() { m_StartTime = std::chrono::high_resolution_clock::now(); }
-
-    float GetElapsedTime();
+    float GetElapsedTime(); // Called once per frame
 };
 
 } // namespace MCEngine

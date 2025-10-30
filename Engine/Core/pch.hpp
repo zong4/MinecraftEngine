@@ -16,6 +16,3 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-
-// Third Party
-#include <glm/glm.hpp>

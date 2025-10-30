@@ -9,7 +9,7 @@ std::shared_ptr<spdlog::logger> MCEngine::Logger::s_EditorLogger = nullptr;
 
 void MCEngine::Logger::Init(const std::string &dirPath)
 {
-    if (s_EngineLogger != nullptr && s_EditorLogger != nullptr)
+    if (s_EngineLogger && s_EditorLogger)
         return;
 
     s_EngineLogger = CreateLogger(dirPath, "Engine");
