@@ -8,7 +8,7 @@ namespace MCEditor
 class CameraController : public MCEngine::ScriptableEntity
 {
 public:
-    CameraController() = default;
+    CameraController(const MCEngine::Entity &entity) : MCEngine::ScriptableEntity(entity) {}
     virtual ~CameraController() override = default;
 
 public:

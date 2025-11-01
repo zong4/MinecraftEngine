@@ -29,8 +29,6 @@ void MCEngine::Scene::Update(float deltaTime)
         if (!nsc.Instance)
         {
             nsc.Instance = nsc.InstantiateScript();
-            nsc.Instance->SetEntity(MCEngine::Entity{entity, &m_Registry});
-            nsc.Instance->OnCreate();
             nsc.Instance->OnStart();
         }
         nsc.Instance->OnUpdate(deltaTime);
@@ -176,7 +174,7 @@ void MCEngine::Scene::DeleteEntity(const Entity &entity)
 {
     ENGINE_PROFILE_FUNCTION();
 
-    if (!entity || !entity.GetRegistry().valid(entity.GetHandle()))
+    if (!entity)
         return;
 
     // Remove from parent's children list and Recursively delete children

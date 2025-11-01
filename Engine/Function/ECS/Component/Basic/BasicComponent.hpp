@@ -18,14 +18,14 @@ struct RelationshipComponent
     Entity Parent;
 
 public:
-    RelationshipComponent(Entity parent = Entity()) : Parent(parent) {}
+    RelationshipComponent(const Entity &parent = Entity()) : Parent(parent) {}
 
     // Getters
     const std::vector<Entity> &GetChildren() const { return m_Children; }
 
     // Setters
-    void AddChild(Entity child) { m_Children.push_back(child); }
-    void RemoveChild(Entity child)
+    void AddChild(const Entity &child) { m_Children.push_back(child); }
+    void RemoveChild(const Entity &child)
     {
         m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
     }
@@ -87,10 +87,10 @@ public:
     // clang-format off
     template <typename T>
     // clang-format on
-    void Bind()
+    void Bind(const Entity &entity)
     {
         InstantiateScript = [&]() {
-            Instance = std::make_shared<T>();
+            Instance = std::make_shared<T>(entity);
             Instance->OnCreate();
             return Instance;
         };

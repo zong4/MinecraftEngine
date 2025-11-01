@@ -5,15 +5,11 @@
 namespace MCEngine
 {
 
-class ScriptableEntity : public Entity
+class ScriptableEntity
 {
 public:
-    ScriptableEntity() = default;
+    ScriptableEntity(const Entity &entity) : m_Entity(entity) {}
     virtual ~ScriptableEntity() = default;
-
-    Entity &GetEntity() { return m_Entity; }
-    const Entity &GetEntity() const { return m_Entity; }
-    void SetEntity(const Entity &entity) { m_Entity = entity; }
 
 public:
     virtual void OnCreate() {}
