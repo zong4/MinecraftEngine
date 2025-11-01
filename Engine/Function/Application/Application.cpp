@@ -7,7 +7,7 @@ void MCEngine::Application::Run()
     ENGINE_PROFILE_FUNCTION();
 
     Timer timer;
-    while (!m_Window->IsRunning())
+    while (m_Window->IsRunning())
     {
         m_Window->Update(timer.GetElapsedSeconds());
         m_Window->Render();

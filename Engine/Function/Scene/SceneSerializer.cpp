@@ -220,14 +220,12 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         out << YAML::Key << "Material";
         out << YAML::BeginMap;
         {
-            out << YAML::Key << "Color" << YAML::Value << (YAML::Node)meshRendererComponent.GetMaterial().GetColor();
-            out << YAML::Key << "AmbientStrength" << YAML::Value
-                << meshRendererComponent.GetMaterial().GetAmbientStrength();
-            out << YAML::Key << "DiffuseStrength" << YAML::Value
-                << meshRendererComponent.GetMaterial().GetDiffuseStrength();
+            out << YAML::Key << "Color" << YAML::Value << (YAML::Node)meshRendererComponent.GetMaterial().Color;
+            out << YAML::Key << "AmbientStrength" << YAML::Value << meshRendererComponent.GetMaterial().AmbientStrength;
+            out << YAML::Key << "DiffuseStrength" << YAML::Value << meshRendererComponent.GetMaterial().DiffuseStrength;
             out << YAML::Key << "SpecularStrength" << YAML::Value
-                << meshRendererComponent.GetMaterial().GetSpecularStrength();
-            out << YAML::Key << "Shininess" << YAML::Value << meshRendererComponent.GetMaterial().GetShininess();
+                << meshRendererComponent.GetMaterial().SpecularStrength;
+            out << YAML::Key << "Shininess" << YAML::Value << meshRendererComponent.GetMaterial().Shininess;
         }
         out << YAML::EndMap;
 

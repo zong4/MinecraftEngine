@@ -193,19 +193,19 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
         DrawComponent<MCEngine::MeshRendererComponent>(
             "Mesh Renderer Component", selectedEntity, [](MCEngine::MeshRendererComponent &meshRenderer) {
                 DrawTable2<MCEngine::MeshRendererComponent>("Color", [&meshRenderer]() {
-                    ImGui::ColorEdit4("##Color", glm::value_ptr(meshRenderer.GetMaterial().GetColor()));
+                    ImGui::ColorEdit4("##Color", glm::value_ptr(meshRenderer.GetMaterial().Color));
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Ambient", [&meshRenderer]() {
-                    ImGui::DragFloat("##Ambient", &meshRenderer.GetMaterial().GetAmbientStrength(), 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Ambient", &meshRenderer.GetMaterial().AmbientStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Diffuse", [&meshRenderer]() {
-                    ImGui::DragFloat("##Diffuse", &meshRenderer.GetMaterial().GetDiffuseStrength(), 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Diffuse", &meshRenderer.GetMaterial().DiffuseStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Specular", [&meshRenderer]() {
-                    ImGui::DragFloat("##Specular", &meshRenderer.GetMaterial().GetSpecularStrength(), 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Specular", &meshRenderer.GetMaterial().SpecularStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Shininess", [&meshRenderer]() {
-                    ImGui::DragFloat("##Shininess", &meshRenderer.GetMaterial().GetShininess(), 1.0f, 1.0f, 256.0f);
+                    ImGui::DragFloat("##Shininess", &meshRenderer.GetMaterial().Shininess, 1.0f, 1.0f, 256.0f);
                 });
             });
 

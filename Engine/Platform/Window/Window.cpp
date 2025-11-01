@@ -17,7 +17,7 @@ bool MCEngine::Window::IsRunning() const
 {
     ENGINE_PROFILE_FUNCTION();
 
-    return glfwWindowShouldClose(static_cast<GLFWwindow *>(m_NativeWindow)) || !m_Running;
+    return !glfwWindowShouldClose(static_cast<GLFWwindow *>(m_NativeWindow)) && m_Running;
 }
 
 void MCEngine::Window::SetVSync(bool enabled)

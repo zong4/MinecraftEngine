@@ -81,9 +81,9 @@ void MCEngine::Scene::PreRender()
             cubesVertices.push_back(
                 {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentityCubeData.Positions[i], 1.0f)),
                  glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_IdentityCubeData.Normals[i]),
-                 g_IdentityCubeData.Positions[i], mesh.GetMaterial().GetColor(),
-                 glm::vec4(mesh.GetMaterial().GetAmbientStrength(), mesh.GetMaterial().GetDiffuseStrength(),
-                           mesh.GetMaterial().GetSpecularStrength(), mesh.GetMaterial().GetShininess())});
+                 g_IdentityCubeData.Positions[i], mesh.GetMaterial().Color,
+                 glm::vec4(mesh.GetMaterial().AmbientStrength, mesh.GetMaterial().DiffuseStrength,
+                           mesh.GetMaterial().SpecularStrength, mesh.GetMaterial().Shininess)});
         }
         cubeIndex++;
     }
