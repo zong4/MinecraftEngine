@@ -32,6 +32,7 @@ public:
     void Render(const Entity &camera) const;
     void RenderColorID() const;
 
+    // Called functions
     void Resize(float width, float height);
 
     // Entity management
@@ -57,7 +58,7 @@ protected:
 
     // Lighting
     std::unique_ptr<MCEngine::FrameBuffer> m_ShadowMap =
-        std::make_unique<MCEngine::FrameBuffer>(MCEngine::FrameBufferType::Depth, 1024, 1024);
+        std::make_unique<MCEngine::FrameBuffer>(MCEngine::FrameBufferType::Depth, 1280, 720);
 
 protected:
     void Render2D() const;

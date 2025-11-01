@@ -1,7 +1,5 @@
 #include "Scene.hpp"
 
-#include <imgui.h>
-
 MCEngine::Scene::~Scene()
 {
     ENGINE_PROFILE_FUNCTION();
@@ -57,6 +55,8 @@ void MCEngine::Scene::PreRender()
     {
         auto &&[transform, sprite] =
             spriteView.get<MCEngine::TransformComponent, MCEngine::SpriteRendererComponent>(entity);
+
+        // Vertices
         for (int i = 0; i < 4; i++)
         {
             glm::mat4 u_Model = transform.GetTransformMatrix();
@@ -65,10 +65,13 @@ void MCEngine::Scene::PreRender()
                  g_IdentitySquareData.TexCoords[i],
                  TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance), sprite.Color});
         }
+
+        // Indices
         for (int i = 0; i < 6; i++)
         {
             squaresIndices.push_back(g_IdentitySquareData.Indices[i] + squareIndex * 4);
         }
+
         squareIndex++;
     }
     m_SquaresCount = squareIndex;
@@ -100,6 +103,7 @@ void MCEngine::Scene::PreRender()
                                                                          m_CubesCount * 36 * sizeof(Vertex3D), 0);
 }
 
+// todo: only render for the first light for now
 void MCEngine::Scene::RenderShadowMap() const
 {
     ENGINE_PROFILE_FUNCTION();
@@ -121,7 +125,6 @@ void MCEngine::Scene::RenderShadowMap() const
 
         m_ShadowMap->Unbind();
 
-        // todo
         break;
     }
     shader->Unbind();
@@ -134,18 +137,18 @@ void MCEngine::Scene::Render(const Entity &camera) const
 
     // Update camera
     {
-        if (!camera || !camera.HasComponent<CameraComponent>() || !camera.HasComponent<TransformComponent>())
+        auto &&transform = camera.GetComponent<TransformComponent>();
+        auto &&cameraComp = camera.GetComponent<CameraComponent>();
+        if (!transform || !cameraComp)
             return;
-        camera.GetComponent<CameraComponent>()->UpdateProjectionMatrix();
+
+        cameraComp->UpdateProjectionMatrix();
         UniformBufferLibrary::GetInstance().UpdateUniformBuffer(
             "UniformBuffer0",
             {
-                {glm::value_ptr(glm::inverse(camera.GetComponent<TransformComponent>()->GetTransformMatrix())),
-                 sizeof(glm::mat4), 0},
-                {glm::value_ptr(camera.GetComponent<CameraComponent>()->GetProjectionMatrix()), sizeof(glm::mat4),
-                 sizeof(glm::mat4)},
-                {glm::value_ptr(camera.GetComponent<TransformComponent>()->Position), sizeof(glm::vec3),
-                 sizeof(glm::mat4) + sizeof(glm::mat4)},
+                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0},
+                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4), sizeof(glm::mat4)},
+                {glm::value_ptr(transform->Position), sizeof(glm::vec3), sizeof(glm::mat4) + sizeof(glm::mat4)},
             });
     }
 
@@ -188,27 +191,21 @@ void MCEngine::Scene::DeleteEntity(const Entity &entity)
         return;
 
     // Remove from parent's children list and Recursively delete children
-    if (entity.HasComponent<RelationshipComponent>())
+    auto &&relationship = entity.GetComponent<RelationshipComponent>();
+    if (relationship)
     {
-        auto &&relationship = entity.GetComponent<RelationshipComponent>();
-        if (relationship->Parent && relationship->Parent.HasComponent<RelationshipComponent>())
-        {
-            auto &&parentRelationship = relationship->Parent.GetComponent<RelationshipComponent>();
-            parentRelationship->RemoveChild(entity);
-        }
+        auto &&relationshipParent = relationship->Parent.GetComponent<RelationshipComponent>();
+        if (relationshipParent)
+            relationshipParent->RemoveChild(entity);
 
-        auto children = relationship->GetChildren();
+        auto &&children = relationship->GetChildren();
         for (auto &&child : children)
-        {
             DeleteEntity(child);
-        }
     }
 
     // Call OnDestroy for NativeScriptComponent
     if (entity.HasComponent<NativeScriptComponent>())
-    {
         entity.GetComponent<NativeScriptComponent>()->DestroyScript();
-    }
 
     m_Registry.destroy(entity.GetHandle());
 }
@@ -278,11 +275,14 @@ void MCEngine::Scene::Render2D() const
         if (texID != -1)
             sprite.TextureInstance->Bind(texID);
     }
+
     VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
     TextureLibrary::GetInstance().ClearTextureSlots();
+
     shader->Unbind();
 }
 
+// todo: only render for the first light for now
 void MCEngine::Scene::Render3D() const
 {
     ENGINE_PROFILE_FUNCTION();
@@ -319,7 +319,6 @@ void MCEngine::Scene::Render3D() const
 
         lightIndex++;
 
-        // todo
         break;
     }
     shader->SetUniformInt("u_NumLights", lightIndex);
@@ -343,6 +342,7 @@ void MCEngine::Scene::Render3D() const
     shader->Unbind();
 }
 
+// todo: default skybox if none exists
 void MCEngine::Scene::RenderSkybox() const
 {
     ENGINE_PROFILE_FUNCTION();
