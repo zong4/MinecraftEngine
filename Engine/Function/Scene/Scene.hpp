@@ -50,20 +50,19 @@ public:
 protected:
     std::string m_Name;
 
+protected:
+    void Render2D() const;
+    void Render3D() const;
+    void RenderSkybox() const;
+
+private:
     // Scene data
     entt::registry m_Registry = {};
     Entity m_MainCamera;
     size_t m_SquaresCount = 0;
     size_t m_CubesCount = 0;
-
-    // Lighting
     std::unique_ptr<MCEngine::FrameBuffer> m_ShadowMap =
         std::make_unique<MCEngine::FrameBuffer>(MCEngine::FrameBufferType::Depth, 1280, 720);
-
-protected:
-    void Render2D() const;
-    void Render3D() const;
-    void RenderSkybox() const;
 };
 
 } // namespace MCEngine

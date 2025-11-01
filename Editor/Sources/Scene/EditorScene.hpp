@@ -9,7 +9,7 @@ class EditorScene : public MCEngine::Scene
 {
 public:
     EditorScene();
-    virtual ~EditorScene() override = default;
+    ~EditorScene() override = default;
 };
 
 } // namespace MCEditor

@@ -23,7 +23,7 @@ class EditorLayer : public MCEngine::ImGuiLayer
 
 public:
     EditorLayer(const std::shared_ptr<MCEngine::Window> &window);
-    virtual ~EditorLayer() override = default;
+    ~EditorLayer() override = default;
 
 public:
     void OnEvent(MCEngine::Event &event) override;

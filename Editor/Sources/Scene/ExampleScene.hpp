@@ -9,7 +9,7 @@ class ExampleScene : public MCEngine::Scene
 {
 public:
     ExampleScene();
-    virtual ~ExampleScene() = default;
+    ~ExampleScene() override = default;
 
 private:
     void WelcomeToMCEngine();

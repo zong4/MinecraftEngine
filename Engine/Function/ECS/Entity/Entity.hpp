@@ -10,7 +10,18 @@ class Entity
 public:
     Entity() = default;
     Entity(entt::entity handle, entt::registry *registry) : m_Handle(handle), m_Registry(registry) {}
-    virtual ~Entity() { m_Registry = nullptr; }
+    ~Entity() { m_Registry = nullptr; }
+    // Entity(const Entity &entity)
+    // {
+    //     m_Handle = entity.m_Handle;
+    //     m_Registry = entity.m_Registry;
+    // }
+    // Entity &operator=(const Entity &entity)
+    // {
+    //     m_Handle = entity.m_Handle;
+    //     m_Registry = entity.m_Registry;
+    //     return *this;
+    // }
 
     // Operators
     operator bool() const { return m_Handle != entt::null && m_Registry && m_Registry->valid(m_Handle); }

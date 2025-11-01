@@ -2,9 +2,9 @@
 
 MCEditor::ExampleScene::ExampleScene() : MCEngine::Scene("ExampleScene")
 {
-    m_MainCamera = AddCamera("MainCamera",
-                             MCEngine::TransformComponent(glm::vec3(0.0f, 5.0f, 8.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
-                             MCEngine::CameraComponent(MCEngine::CameraType::Perspective));
+    SetMainCamera(AddCamera("MainCamera",
+                            MCEngine::TransformComponent(glm::vec3(0.0f, 5.0f, 8.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
+                            MCEngine::CameraComponent(MCEngine::CameraType::Perspective)));
 
     AddLight("DirectionalLight",
              MCEngine::TransformComponent(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(-45.0f, -45.0f, 0.0f)),

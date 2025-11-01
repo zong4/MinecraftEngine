@@ -23,8 +23,8 @@ target("Core")
 -- Platform Target
 target("Platform")
     set_kind("static")
-    add_deps("Core")
 
+    add_deps("Core")
     add_headerfiles("Platform/**/*.h")
     add_headerfiles("Platform/**/*.hpp")
     add_files("Platform/**/*.c")
@@ -41,8 +41,8 @@ target("Platform")
 -- Function Target
 target("Function")
     set_kind("static")
-    add_deps("Platform")
 
+    add_deps("Platform")
     add_headerfiles("Function/**/*.hpp")
     add_files("Function/**/*.cpp")
     add_includedirs("Function", {public = true})
@@ -53,6 +53,6 @@ target("Function")
 -- Engine Target
 target("Engine")
     set_kind("static")
+
     add_deps("Function")
-	
     add_files("*.cpp")

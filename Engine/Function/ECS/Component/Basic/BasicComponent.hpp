@@ -89,12 +89,12 @@ public:
     // clang-format on
     void Bind(const Entity &entity)
     {
-        InstantiateScript = [&]() {
+        InstantiateScript = [entity, this]() {
             Instance = std::make_shared<T>(entity);
             Instance->OnCreate();
             return Instance;
         };
-        DestroyScript = [&]() {
+        DestroyScript = [this]() {
             Instance->OnDestroy();
             Instance.reset();
         };

@@ -9,7 +9,7 @@ class CameraController : public MCEngine::ScriptableEntity
 {
 public:
     CameraController(const MCEngine::Entity &entity) : MCEngine::ScriptableEntity(entity) {}
-    virtual ~CameraController() override = default;
+    ~CameraController() override = default;
 
 public:
     void OnCreate() override;
