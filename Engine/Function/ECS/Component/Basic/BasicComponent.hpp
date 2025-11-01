@@ -34,6 +34,9 @@ private:
     std::vector<Entity> m_Children;
 };
 
+// Use euler to store
+// Use radian to rotate
+// Use quat to calculate
 struct TransformComponent
 {
     glm::vec3 Position;
@@ -58,7 +61,6 @@ public:
     // Setters
     void SetRotationRadians(const glm::vec3 &radians);
     void SetRotationEuler(const glm::vec3 &euler);
-    void SetRotationQuat(const glm::quat &quat);
 
 public:
     void UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationQuat,
@@ -89,9 +91,13 @@ public:
     {
         InstantiateScript = [&]() {
             Instance = std::make_shared<T>();
+            Instance->OnCreate();
             return Instance;
         };
-        DestroyScript = [&]() { Instance->OnDestroy(); };
+        DestroyScript = [&]() {
+            Instance->OnDestroy();
+            Instance.reset();
+        };
     }
 };
 

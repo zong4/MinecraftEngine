@@ -1,7 +1,5 @@
 #pragma once
 
-#include "pch.hpp"
-
 #include "Renderer/Material/Material.hpp"
 
 namespace MCEngine

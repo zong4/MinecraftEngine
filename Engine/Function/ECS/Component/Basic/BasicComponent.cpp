@@ -12,12 +12,6 @@ void MCEngine::TransformComponent::SetRotationEuler(const glm::vec3 &euler)
     m_RotationQuat = glm::quat(m_RotationRadians);
 }
 
-void MCEngine::TransformComponent::SetRotationQuat(const glm::quat &quat)
-{
-    m_RotationRadians = glm::eulerAngles(quat);
-    m_RotationQuat = quat;
-}
-
 void MCEngine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix,
                                                          const glm::quat &parentRotationQuat,
                                                          const RelationshipComponent &relationship)
