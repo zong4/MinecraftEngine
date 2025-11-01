@@ -177,17 +177,17 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
 
         // Common
         auto &&cameraComponent = entity.GetComponent<MCEngine::CameraComponent>();
-        out << YAML::Key << "Type" << YAML::Value << (int)cameraComponent.GetType();
+        out << YAML::Key << "Type" << YAML::Value << (int)cameraComponent.Type;
 
         // Orthographic
         out << YAML::Key << "Width" << YAML::Value << cameraComponent.GetWidth();
         out << YAML::Key << "Height" << YAML::Value << cameraComponent.GetHeight();
-        out << YAML::Key << "Scale" << YAML::Value << cameraComponent.GetScale();
+        out << YAML::Key << "Scale" << YAML::Value << cameraComponent.Scale;
 
         // Perspective
-        out << YAML::Key << "FOV" << YAML::Value << cameraComponent.GetFOV();
-        out << YAML::Key << "NearClip" << YAML::Value << cameraComponent.GetNearClip();
-        out << YAML::Key << "FarClip" << YAML::Value << cameraComponent.GetFarClip();
+        out << YAML::Key << "FOV" << YAML::Value << cameraComponent.FOV;
+        out << YAML::Key << "NearClip" << YAML::Value << cameraComponent.NearClip;
+        out << YAML::Key << "FarClip" << YAML::Value << cameraComponent.FarClip;
 
         out << YAML::EndMap;
     }
@@ -316,7 +316,7 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Sc
             (CameraType)cameraComponentData["Type"].as<int>(), cameraComponentData["Width"].as<float>(),
             cameraComponentData["Height"].as<float>(), cameraComponentData["FOV"].as<float>(),
             cameraComponentData["NearClip"].as<float>(), cameraComponentData["FarClip"].as<float>());
-        cameraComponent.SetScale(cameraComponentData["Scale"].as<float>());
+        cameraComponent.Scale = cameraComponentData["Scale"].as<float>();
 
         // todo
         scene->SetMainCamera(deserializedEntity);
@@ -344,15 +344,11 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Sc
     const auto &lightComponentData = entity["LightComponent"];
     if (lightComponentData)
     {
-        auto &lightComponent =
-            deserializedEntity.AddComponent<LightComponent>((LightType)lightComponentData["Type"].as<int>());
-        lightComponent.Color = lightComponentData["Color"].as<glm::vec3>();
-        lightComponent.Intensity = lightComponentData["Intensity"].as<float>();
-        lightComponent.SetAttenuation(lightComponentData["Constant"].as<float>(),
-                                      lightComponentData["Linear"].as<float>(),
-                                      lightComponentData["Quadratic"].as<float>());
-        lightComponent.SetAngles(lightComponentData["InnerAngle"].as<float>(),
-                                 lightComponentData["OuterAngle"].as<float>());
+        auto &lightComponent = deserializedEntity.AddComponent<LightComponent>(
+            (LightType)lightComponentData["Type"].as<int>(), lightComponentData["Color"].as<glm::vec3>(),
+            lightComponentData["Intensity"].as<float>(), lightComponentData["Constant"].as<float>(),
+            lightComponentData["Linear"].as<float>(), lightComponentData["Quadratic"].as<float>(),
+            lightComponentData["InnerAngle"].as<float>(), lightComponentData["OuterAngle"].as<float>());
     }
 
     const auto &skyboxComponentData = entity["SkyboxComponent"];

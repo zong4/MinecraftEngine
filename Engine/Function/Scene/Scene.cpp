@@ -124,20 +124,24 @@ void MCEngine::Scene::Render(const Entity &camera) const
 {
     ENGINE_PROFILE_FUNCTION();
 
-    if (!camera || !camera.HasComponent<CameraComponent>() || !camera.HasComponent<TransformComponent>())
-        return;
+    // Update camera
+    {
+        if (!camera || !camera.HasComponent<CameraComponent>() || !camera.HasComponent<TransformComponent>())
+            return;
+        camera.GetComponent<CameraComponent>().UpdateProjectionMatrix();
+        UniformBufferLibrary::GetInstance().UpdateUniformBuffer(
+            "UniformBuffer0",
+            {
+                {glm::value_ptr(glm::inverse(camera.GetComponent<TransformComponent>().GetTransformMatrix())),
+                 sizeof(glm::mat4), 0},
+                {glm::value_ptr(camera.GetComponent<CameraComponent>().GetProjectionMatrix()), sizeof(glm::mat4),
+                 sizeof(glm::mat4)},
+                {glm::value_ptr(camera.GetComponent<TransformComponent>().GetPosition()), sizeof(glm::vec3),
+                 sizeof(glm::mat4) + sizeof(glm::mat4)},
+            });
+    }
 
-    UniformBufferLibrary::GetInstance().UpdateUniformBuffer(
-        "UniformBuffer0",
-        {
-            {glm::value_ptr(glm::inverse(camera.GetComponent<TransformComponent>().GetTransformMatrix())),
-             sizeof(glm::mat4), 0},
-            {glm::value_ptr(camera.GetComponent<CameraComponent>().GetProjectionMatrix()), sizeof(glm::mat4),
-             sizeof(glm::mat4)},
-            {glm::value_ptr(camera.GetComponent<TransformComponent>().GetPosition()), sizeof(glm::vec3),
-             sizeof(glm::mat4) + sizeof(glm::mat4)},
-        });
-
+    // Render
     Render2D();
     Render3D();
     RenderSkybox();

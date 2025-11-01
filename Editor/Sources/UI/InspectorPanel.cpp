@@ -111,46 +111,28 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
             "Camera Component", selectedEntity, [](MCEngine::CameraComponent &camera) {
                 DrawTable2<MCEngine::CameraComponent>("Type", [&camera]() {
                     const char *cameraTypes[] = {"Orthographic", "Perspective"};
-                    int currentType = static_cast<int>(camera.GetType());
+                    int currentType = static_cast<int>(camera.Type);
                     if (ImGui::Combo("##Camera Type", &currentType, cameraTypes, IM_ARRAYSIZE(cameraTypes)))
                     {
-                        camera.SetType(static_cast<MCEngine::CameraType>(currentType));
+                        camera.Type = static_cast<MCEngine::CameraType>(currentType);
                     }
                 });
 
-                if (camera.GetType() == MCEngine::CameraType::Orthographic)
+                if (camera.Type == MCEngine::CameraType::Orthographic)
                 {
-                    DrawTable2<MCEngine::CameraComponent>("Scale", [&camera]() {
-                        auto &&scale = camera.GetScale();
-                        if (ImGui::DragFloat("##Scale", &scale, 1.0f, 0.1f, 10.0f))
-                        {
-                            camera.SetScale(scale);
-                        }
-                    });
+                    DrawTable2<MCEngine::CameraComponent>(
+                        "Scale", [&camera]() { ImGui::DragFloat("##Scale", &camera.Scale, 1.0f, 0.1f, 10.0f); });
                 }
 
-                if (camera.GetType() == MCEngine::CameraType::Perspective)
+                if (camera.Type == MCEngine::CameraType::Perspective)
                 {
-                    DrawTable2<MCEngine::CameraComponent>("FOV", [&camera]() {
-                        auto &&fov = camera.GetFOV();
-                        if (ImGui::DragFloat("##FOV", &fov, 1.0f, 1.0f, 120.0f))
-                        {
-                            camera.SetFOV(fov);
-                        }
-                    });
+                    DrawTable2<MCEngine::CameraComponent>(
+                        "FOV", [&camera]() { ImGui::DragFloat("##FOV", &camera.FOV, 1.0f, 1.0f, 120.0f); });
                     DrawTable2<MCEngine::CameraComponent>("Near Clip", [&camera]() {
-                        auto &&nearClip = camera.GetNearClip();
-                        if (ImGui::DragFloat("##Near Clip", &nearClip, 0.1f, 0.01f, 100.0f))
-                        {
-                            camera.SetNearClip(nearClip);
-                        }
+                        ImGui::DragFloat("##Near Clip", &camera.NearClip, 0.1f, 0.01f, 100.0f);
                     });
                     DrawTable2<MCEngine::CameraComponent>("Far Clip", [&camera]() {
-                        auto &&farClip = camera.GetFarClip();
-                        if (ImGui::DragFloat("##Far Clip", &farClip, 1.0f, 10.0f, 1000.0f))
-                        {
-                            camera.SetFarClip(farClip);
-                        }
+                        ImGui::DragFloat("##Far Clip", &camera.FarClip, 1.0f, 10.0f, 1000.0f);
                     });
                 }
             });

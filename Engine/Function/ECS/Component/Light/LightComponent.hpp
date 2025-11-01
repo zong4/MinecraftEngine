@@ -31,10 +31,6 @@ public:
     // Getters
     LightType GetType() const { return m_Type; }
 
-    // Setters
-    void SetAttenuation(float constant, float linear, float quadratic);
-    void SetAngles(float innerAngle, float outerAngle);
-
 private:
     LightType m_Type;
 };
