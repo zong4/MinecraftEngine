@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ECS/Entity/Entity.hpp"
-
 #include "ECS/Component/Basic/BasicComponent.hpp"
 #include "ECS/Component/Camera/CameraComponent.hpp"
 #include "ECS/Component/Light/LightComponent.hpp"
@@ -20,17 +18,11 @@ public:
     // Getters
     const std::string &GetName() const { return m_Name; }
     entt::registry &GetRegistry() { return m_Registry; }
-    Entity GetMainCamera() const { return m_MainCamera; }
+    const Entity &GetMainCamera() const { return m_MainCamera; }
 
     // Setters
     void SetName(const std::string &name) { m_Name = name; }
-    void SetMainCamera(const Entity &camera)
-    {
-        if (m_MainCamera)
-            m_MainCamera.GetComponent<CameraComponent>()->Primary = false;
-        m_MainCamera = camera;
-        m_MainCamera.GetComponent<CameraComponent>()->Primary = true;
-    }
+    void SetMainCamera(const Entity &camera);
 
 public:
     // Main loop

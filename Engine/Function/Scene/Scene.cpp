@@ -9,6 +9,16 @@ MCEngine::Scene::~Scene()
     m_Registry.view<MCEngine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
 }
 
+void MCEngine::Scene::SetMainCamera(const Entity &camera)
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    if (m_MainCamera)
+        m_MainCamera.GetComponent<CameraComponent>()->Primary = false;
+    m_MainCamera = camera;
+    m_MainCamera.GetComponent<CameraComponent>()->Primary = true;
+}
+
 void MCEngine::Scene::Update(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
