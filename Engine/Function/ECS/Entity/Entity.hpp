@@ -10,12 +10,7 @@ class Entity
 public:
     Entity() = default;
     Entity(entt::entity handle, entt::registry *registry) : m_Handle(handle), m_Registry(registry) {}
-    virtual ~Entity()
-    {
-        if (*this)
-            m_Registry->destroy(m_Handle);
-        m_Registry = nullptr;
-    }
+    virtual ~Entity() { m_Registry = nullptr; }
 
     // Operators
     operator bool() const { return m_Handle != entt::null && m_Registry && m_Registry->valid(m_Handle); }
@@ -38,7 +33,6 @@ public:
             return false;
         return m_Registry->all_of<T>(m_Handle);
     }
-
     // clang-format off
     template <typename T>
     // clang-format on
@@ -48,7 +42,6 @@ public:
             LOG_ENGINE_ERROR("Entity does not have component!");
         return m_Registry->get<T>(m_Handle);
     }
-
     // clang-format off
     template <typename T, typename... Args>
     // clang-format on
@@ -58,12 +51,13 @@ public:
             LOG_ENGINE_ERROR("Entity already has component!");
         return m_Registry->emplace<T>(m_Handle, std::forward<Args>(args)...);
     }
-
     // clang-format off
     template <typename T>
     // clang-format on
     void RemoveComponent()
     {
+        if (!HasComponent<T>())
+            LOG_ENGINE_ERROR("Entity does not have component!");
         m_Registry->remove<T>(m_Handle);
     }
 
