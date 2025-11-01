@@ -2,8 +2,6 @@
 
 #include "pch.hpp"
 
-#include <glm/glm.hpp>
-
 namespace MCEngine
 {
 

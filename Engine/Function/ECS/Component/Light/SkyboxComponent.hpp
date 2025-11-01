@@ -5,23 +5,18 @@
 namespace MCEngine
 {
 
-class SkyboxComponent
+struct SkyboxComponent
 {
+    std::string TextureCubeName;
+
 public:
-    SkyboxComponent(const std::string textureCubeName = "3") : m_TextureCubeName(textureCubeName) {}
+    SkyboxComponent(const std::string textureCubeName = "3") : TextureCubeName(textureCubeName) {}
 
     // Getters
-    const std::string &GetTextureCubeName() const { return m_TextureCubeName; }
     std::shared_ptr<TextureCube> GetTextureCube() const
     {
-        return MCEngine::TextureLibrary::GetInstance().GetTextureCube(m_TextureCubeName);
+        return MCEngine::TextureLibrary::GetInstance().GetTextureCube(TextureCubeName);
     }
-
-    // Setters
-    void SetTextureCubeName(const std::string &textureCubeName) { m_TextureCubeName = textureCubeName; }
-
-private:
-    std::string m_TextureCubeName;
 };
 
 } // namespace MCEngine

@@ -54,8 +54,8 @@ void MCEngine::Scene::PreRender()
             glm::mat4 u_Model = transform.GetTransformMatrix();
             squaresVertices.push_back(
                 {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentitySquareData.Positions[i], 1.0f)),
-                 g_IdentitySquareData.TexCoords[i], TextureLibrary::GetInstance().GetTextureSlot(sprite.GetTexture()),
-                 sprite.GetColor()});
+                 g_IdentitySquareData.TexCoords[i],
+                 TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance), sprite.Color});
         }
         for (int i = 0; i < 6; i++)
         {
@@ -81,9 +81,9 @@ void MCEngine::Scene::PreRender()
             cubesVertices.push_back(
                 {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentityCubeData.Positions[i], 1.0f)),
                  glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_IdentityCubeData.Normals[i]),
-                 g_IdentityCubeData.Positions[i], mesh.GetMaterial().Color,
-                 glm::vec4(mesh.GetMaterial().AmbientStrength, mesh.GetMaterial().DiffuseStrength,
-                           mesh.GetMaterial().SpecularStrength, mesh.GetMaterial().Shininess)});
+                 g_IdentityCubeData.Positions[i], mesh.MaterialInstance.Color,
+                 glm::vec4(mesh.MaterialInstance.AmbientStrength, mesh.MaterialInstance.DiffuseStrength,
+                           mesh.MaterialInstance.SpecularStrength, mesh.MaterialInstance.Shininess)});
         }
         cubeIndex++;
     }
@@ -262,9 +262,9 @@ void MCEngine::Scene::Render2D() const
     for (auto &&entity : spriteView)
     {
         auto &&sprite = spriteView.get<MCEngine::SpriteRendererComponent>(entity);
-        int texID = TextureLibrary::GetInstance().GetTextureSlot(sprite.GetTexture());
+        int texID = TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance);
         if (texID != -1)
-            sprite.GetTexture()->Bind(texID);
+            sprite.TextureInstance->Bind(texID);
     }
     VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
     TextureLibrary::GetInstance().ClearTextureSlots();
@@ -288,15 +288,14 @@ void MCEngine::Scene::Render3D() const
         // Light
         shader->SetUniformInt("u_Light[" + std::to_string(lightIndex) + "].Type", static_cast<int>(light.GetType()));
         shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Position", transform.GetPosition());
-        shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Color",
-                               light.GetColor() * light.GetIntensity());
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Constant", light.GetConstant());
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Linear", light.GetLinear());
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Quadratic", light.GetQuadratic());
+        shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Color", light.Color * light.Intensity);
+        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Constant", light.Constant);
+        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Linear", light.Linear);
+        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Quadratic", light.Quadratic);
         shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].CutOff",
-                                glm::cos(glm::radians(light.GetInnerAngle())));
+                                glm::cos(glm::radians(light.InnerAngle)));
         shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].OuterCutOff",
-                                glm::cos(glm::radians(light.GetOuterAngle())));
+                                glm::cos(glm::radians(light.OuterAngle)));
 
         // Shadow
         shader->SetUniformMat4("u_LightView[" + std::to_string(lightIndex) + "]",

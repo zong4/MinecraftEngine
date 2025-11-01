@@ -6,6 +6,13 @@ MCEngine::Material::Material(const glm::vec4 &color, float ambient, float diffus
     LOG_ENGINE_TRACE("Material created with " + ToString());
 }
 
+std::string MCEngine::Material::ToString() const
+{
+    return "Material(Color: " + MCEngine::Math::ToString(Color) + ", Ambient: " + std::to_string(AmbientStrength) +
+           ", Diffuse: " + std::to_string(DiffuseStrength) + ", Specular: " + std::to_string(SpecularStrength) +
+           ", Shininess: " + std::to_string(Shininess) + ")";
+}
+
 void MCEngine::Material::Bind(const std::shared_ptr<MCEngine::Shader> &shader, const std::string &name) const
 {
     ENGINE_PROFILE_FUNCTION();
@@ -15,11 +22,4 @@ void MCEngine::Material::Bind(const std::shared_ptr<MCEngine::Shader> &shader, c
     shader->SetUniformFloat(name + ".DiffuseStrength", DiffuseStrength);
     shader->SetUniformFloat(name + ".SpecularStrength", SpecularStrength);
     shader->SetUniformFloat(name + ".Shininess", Shininess);
-}
-
-std::string MCEngine::Material::ToString() const
-{
-    return "Material(Color: " + MCEngine::Math::ToString(Color) + ", Ambient: " + std::to_string(AmbientStrength) +
-           ", Diffuse: " + std::to_string(DiffuseStrength) + ", Specular: " + std::to_string(SpecularStrength) +
-           ", Shininess: " + std::to_string(Shininess) + ")";
 }

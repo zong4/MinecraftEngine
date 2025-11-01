@@ -199,9 +199,9 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         out << YAML::BeginMap;
 
         auto &spriteRendererComponent = entity.GetComponent<MCEngine::SpriteRendererComponent>();
-        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)spriteRendererComponent.GetColor();
+        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)spriteRendererComponent.Color;
         out << YAML::Key << "Texture" << YAML::Value
-            << MCEngine::TextureLibrary::GetInstance().GetName(spriteRendererComponent.GetTexture());
+            << MCEngine::TextureLibrary::GetInstance().GetName(spriteRendererComponent.TextureInstance);
 
         out << YAML::EndMap;
     }
@@ -220,12 +220,14 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         out << YAML::Key << "Material";
         out << YAML::BeginMap;
         {
-            out << YAML::Key << "Color" << YAML::Value << (YAML::Node)meshRendererComponent.GetMaterial().Color;
-            out << YAML::Key << "AmbientStrength" << YAML::Value << meshRendererComponent.GetMaterial().AmbientStrength;
-            out << YAML::Key << "DiffuseStrength" << YAML::Value << meshRendererComponent.GetMaterial().DiffuseStrength;
+            out << YAML::Key << "Color" << YAML::Value << (YAML::Node)meshRendererComponent.MaterialInstance.Color;
+            out << YAML::Key << "AmbientStrength" << YAML::Value
+                << meshRendererComponent.MaterialInstance.AmbientStrength;
+            out << YAML::Key << "DiffuseStrength" << YAML::Value
+                << meshRendererComponent.MaterialInstance.DiffuseStrength;
             out << YAML::Key << "SpecularStrength" << YAML::Value
-                << meshRendererComponent.GetMaterial().SpecularStrength;
-            out << YAML::Key << "Shininess" << YAML::Value << meshRendererComponent.GetMaterial().Shininess;
+                << meshRendererComponent.MaterialInstance.SpecularStrength;
+            out << YAML::Key << "Shininess" << YAML::Value << meshRendererComponent.MaterialInstance.Shininess;
         }
         out << YAML::EndMap;
 
@@ -241,17 +243,17 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         // Directional
         auto &lightComponent = entity.GetComponent<MCEngine::LightComponent>();
         out << YAML::Key << "Type" << YAML::Value << (int)lightComponent.GetType();
-        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)lightComponent.GetColor();
-        out << YAML::Key << "Intensity" << YAML::Value << lightComponent.GetIntensity();
+        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)lightComponent.Color;
+        out << YAML::Key << "Intensity" << YAML::Value << lightComponent.Intensity;
 
         // Point
-        out << YAML::Key << "Constant" << YAML::Value << lightComponent.GetConstant();
-        out << YAML::Key << "Linear" << YAML::Value << lightComponent.GetLinear();
-        out << YAML::Key << "Quadratic" << YAML::Value << lightComponent.GetQuadratic();
+        out << YAML::Key << "Constant" << YAML::Value << lightComponent.Constant;
+        out << YAML::Key << "Linear" << YAML::Value << lightComponent.Linear;
+        out << YAML::Key << "Quadratic" << YAML::Value << lightComponent.Quadratic;
 
         // Spot
-        out << YAML::Key << "InnerAngle" << YAML::Value << lightComponent.GetInnerAngle();
-        out << YAML::Key << "OuterAngle" << YAML::Value << lightComponent.GetOuterAngle();
+        out << YAML::Key << "InnerAngle" << YAML::Value << lightComponent.InnerAngle;
+        out << YAML::Key << "OuterAngle" << YAML::Value << lightComponent.OuterAngle;
 
         out << YAML::EndMap;
     }
@@ -263,7 +265,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         out << YAML::BeginMap;
 
         auto &skyboxComponent = entity.GetComponent<MCEngine::SkyboxComponent>();
-        out << YAML::Key << "Texture" << YAML::Value << skyboxComponent.GetTextureCubeName();
+        out << YAML::Key << "Texture" << YAML::Value << skyboxComponent.TextureCubeName;
 
         out << YAML::EndMap;
     }
@@ -324,9 +326,9 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Sc
     if (spriteRendererComponentData)
     {
         deserializedEntity.AddComponent<SpriteRendererComponent>(
-            spriteRendererComponentData["Color"].as<glm::vec4>(),
             MCEngine::TextureLibrary::GetInstance().GetTexture2D(
-                spriteRendererComponentData["Texture"].as<std::string>()));
+                spriteRendererComponentData["Texture"].as<std::string>()),
+            spriteRendererComponentData["Color"].as<glm::vec4>());
     }
 
     const auto &meshRendererComponentData = entity["MeshRendererComponent"];
@@ -344,8 +346,8 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Sc
     {
         auto &lightComponent =
             deserializedEntity.AddComponent<LightComponent>((LightType)lightComponentData["Type"].as<int>());
-        lightComponent.SetColor(lightComponentData["Color"].as<glm::vec3>());
-        lightComponent.SetIntensity(lightComponentData["Intensity"].as<float>());
+        lightComponent.Color = lightComponentData["Color"].as<glm::vec3>();
+        lightComponent.Intensity = lightComponentData["Intensity"].as<float>();
         lightComponent.SetAttenuation(lightComponentData["Constant"].as<float>(),
                                       lightComponentData["Linear"].as<float>(),
                                       lightComponentData["Quadratic"].as<float>());

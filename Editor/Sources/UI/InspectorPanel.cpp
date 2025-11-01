@@ -159,7 +159,7 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
         DrawComponent<MCEngine::SpriteRendererComponent>(
             "Sprite Renderer Component", selectedEntity, [](MCEngine::SpriteRendererComponent &sprite) {
                 DrawTable2<MCEngine::SpriteRendererComponent>(
-                    "Color", [&sprite]() { ImGui::ColorEdit4("##Color", glm::value_ptr(sprite.GetColor())); });
+                    "Color", [&sprite]() { ImGui::ColorEdit4("##Color", glm::value_ptr(sprite.Color)); });
             });
 
         // todo: Drag and Drop for Texture2D
@@ -179,8 +179,8 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                         {
                             if (selectedEntity)
                             {
-                                selectedEntity.GetComponent<MCEngine::SpriteRendererComponent>().SetTexture(
-                                    MCEngine::TextureLibrary::GetInstance().GetTexture2D(relativePath));
+                                selectedEntity.GetComponent<MCEngine::SpriteRendererComponent>().TextureInstance =
+                                    MCEngine::TextureLibrary::GetInstance().GetTexture2D(relativePath);
                             }
                         }
                     }
@@ -193,47 +193,45 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
         DrawComponent<MCEngine::MeshRendererComponent>(
             "Mesh Renderer Component", selectedEntity, [](MCEngine::MeshRendererComponent &meshRenderer) {
                 DrawTable2<MCEngine::MeshRendererComponent>("Color", [&meshRenderer]() {
-                    ImGui::ColorEdit4("##Color", glm::value_ptr(meshRenderer.GetMaterial().Color));
+                    ImGui::ColorEdit4("##Color", glm::value_ptr(meshRenderer.MaterialInstance.Color));
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Ambient", [&meshRenderer]() {
-                    ImGui::DragFloat("##Ambient", &meshRenderer.GetMaterial().AmbientStrength, 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Ambient", &meshRenderer.MaterialInstance.AmbientStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Diffuse", [&meshRenderer]() {
-                    ImGui::DragFloat("##Diffuse", &meshRenderer.GetMaterial().DiffuseStrength, 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Diffuse", &meshRenderer.MaterialInstance.DiffuseStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Specular", [&meshRenderer]() {
-                    ImGui::DragFloat("##Specular", &meshRenderer.GetMaterial().SpecularStrength, 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Specular", &meshRenderer.MaterialInstance.SpecularStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Shininess", [&meshRenderer]() {
-                    ImGui::DragFloat("##Shininess", &meshRenderer.GetMaterial().Shininess, 1.0f, 1.0f, 256.0f);
+                    ImGui::DragFloat("##Shininess", &meshRenderer.MaterialInstance.Shininess, 1.0f, 1.0f, 256.0f);
                 });
             });
 
         // LightComponent
         DrawComponent<MCEngine::LightComponent>("Light Component", selectedEntity, [](MCEngine::LightComponent &light) {
             DrawTable2<MCEngine::LightComponent>(
-                "Color", [&light]() { ImGui::ColorEdit3("##Color", glm::value_ptr(light.GetColor())); });
+                "Color", [&light]() { ImGui::ColorEdit3("##Color", glm::value_ptr(light.Color)); });
             DrawTable2<MCEngine::LightComponent>(
-                "Intensity", [&light]() { ImGui::DragFloat("##Intensity", &light.GetIntensity(), 0.1f, 0.0f, 10.0f); });
+                "Intensity", [&light]() { ImGui::DragFloat("##Intensity", &light.Intensity, 0.1f, 0.0f, 10.0f); });
 
             if (light.GetType() == MCEngine::LightType::Point || light.GetType() == MCEngine::LightType::Spot)
             {
-                DrawTable2<MCEngine::LightComponent>("Constant", [&light]() {
-                    ImGui::DragFloat("##Constant", &light.GetConstant(), 0.01f, 0.0f, 1.0f);
-                });
                 DrawTable2<MCEngine::LightComponent>(
-                    "Linear", [&light]() { ImGui::DragFloat("##Linear", &light.GetLinear(), 0.001f, 0.0f, 1.0f); });
+                    "Constant", [&light]() { ImGui::DragFloat("##Constant", &light.Constant, 0.01f, 0.0f, 1.0f); });
+                DrawTable2<MCEngine::LightComponent>(
+                    "Linear", [&light]() { ImGui::DragFloat("##Linear", &light.Linear, 0.001f, 0.0f, 1.0f); });
                 DrawTable2<MCEngine::LightComponent>("Quadratic", [&light]() {
-                    ImGui::DragFloat("##Quadratic", &light.GetQuadratic(), 0.0001f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Quadratic", &light.Quadratic, 0.0001f, 0.0f, 1.0f);
                 });
 
                 if (light.GetType() == MCEngine::LightType::Spot)
                 {
-                    DrawTable2<MCEngine::LightComponent>("CutOff", [&light]() {
-                        ImGui::DragFloat("##CutOff", &light.GetInnerAngle(), 1.0f, 0.0f, 90.0f);
-                    });
+                    DrawTable2<MCEngine::LightComponent>(
+                        "CutOff", [&light]() { ImGui::DragFloat("##CutOff", &light.InnerAngle, 1.0f, 0.0f, 90.0f); });
                     DrawTable2<MCEngine::LightComponent>("Outer CutOff", [&light]() {
-                        ImGui::DragFloat("##Outer CutOff", &light.GetOuterAngle(), 1.0f, 0.0f, 90.0f);
+                        ImGui::DragFloat("##Outer CutOff", &light.OuterAngle, 1.0f, 0.0f, 90.0f);
                     });
                 }
             }
@@ -245,10 +243,10 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                 DrawTable2<MCEngine::SkyboxComponent>("Texture", [&skybox]() {
                     char buffer[256];
                     memset(buffer, 0, sizeof(buffer));
-                    strncpy(buffer, skybox.GetTextureCubeName().c_str(), sizeof(buffer) - 1);
+                    strncpy(buffer, skybox.TextureCubeName.c_str(), sizeof(buffer) - 1);
                     if (ImGui::InputText("##Texture", buffer, sizeof(buffer)))
                     {
-                        skybox.SetTextureCubeName(std::string(buffer));
+                        skybox.TextureCubeName = std::string(buffer);
                     }
                 });
             });
