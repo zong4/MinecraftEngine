@@ -1,5 +1,7 @@
 #include "Application.hpp"
 
+#include "Timer/Timer.hpp"
+
 void MCEngine::Application::Run()
 {
     ENGINE_PROFILE_FUNCTION();

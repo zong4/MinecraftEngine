@@ -12,8 +12,8 @@ MCEngine::TransformComponent::TransformComponent(const glm::vec3 &position, cons
     : m_Position(position), m_Rotation(rotation), m_Scale(scale)
 {
     m_RotationQuat = glm::quat(glm::radians(rotation));
-    LOG_ENGINE_TRACE("Transform Component created with Position: " + ToString(m_Position) +
-                     ", Rotation: " + ToString(m_Rotation) + ", Scale: " + ToString(m_Scale));
+    LOG_ENGINE_TRACE("Transform Component created with Position: " + Math::ToString(m_Position) +
+                     ", Rotation: " + Math::ToString(m_Rotation) + ", Scale: " + Math::ToString(m_Scale));
 }
 
 void MCEngine::TransformComponent::SetRotationQuat(const glm::quat &quat)

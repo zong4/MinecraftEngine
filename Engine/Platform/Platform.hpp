@@ -18,5 +18,7 @@
 #include "Renderer/Buffer/FrameBuffer/FrameBuffer.hpp"
 #include "Renderer/Buffer/UniformBuffer/UniformBufferLibrary.hpp"
 #include "Renderer/RendererCommand.hpp"
-#include "Utility/libtinyfiledialogs/tinyfiledialogs.h"
 #include "Window/Window.hpp"
+
+// Third-party libraries
+#include "Utility/libtinyfiledialogs/tinyfiledialogs.h"
