@@ -99,7 +99,8 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                 DrawVec3Control(
                     "Position", transform.Position, [&](const glm::vec3 &value) { transform.Position = value; }, 0.0f);
                 DrawVec3Control(
-                    "Rotation", transform.Rotation, [&](const glm::vec3 &value) { transform.Rotation = value; }, 0.0f);
+                    "Rotation", transform.GetRotationEuler(),
+                    [&](const glm::vec3 &value) { transform.SetRotationEuler(value); }, 0.0f);
                 DrawVec3Control(
                     "Scale", transform.Scale, [&](const glm::vec3 &value) { transform.Scale = value; }, 1.0f);
             });

@@ -163,7 +163,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
 
         auto &&transformComponent = entity.GetComponent<MCEngine::TransformComponent>();
         out << YAML::Key << "Position" << YAML::Value << (YAML::Node)transformComponent.Position;
-        out << YAML::Key << "Rotation" << YAML::Value << (YAML::Node)transformComponent.Rotation;
+        out << YAML::Key << "Rotation" << YAML::Value << (YAML::Node)transformComponent.GetRotationEuler();
         out << YAML::Key << "Scale" << YAML::Value << (YAML::Node)transformComponent.Scale;
 
         out << YAML::EndMap;

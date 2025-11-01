@@ -122,17 +122,17 @@ void MCEditor::SceneViewport::RenderGizmos()
                 glm::mat4 localTransform = glm::inverse(parentTransform) * transform;
 
                 glm::vec3 position, rotation, scale;
-                MCEngine::Math::DecomposeTransform(localTransform, position, rotation, scale); // todo: rotation bug
+                MCEngine::Math::DecomposeTransform(localTransform, position, rotation, scale);
                 transformComponent.Position = position;
-                transformComponent.Rotation = glm::degrees(rotation);
+                transformComponent.SetRotationRadians(rotation);
                 transformComponent.Scale = scale;
             }
             else
             {
                 glm::vec3 position, rotation, scale;
-                MCEngine::Math::DecomposeTransform(transform, position, rotation, scale); // todo: rotation bug
+                MCEngine::Math::DecomposeTransform(transform, position, rotation, scale);
                 transformComponent.Position = position;
-                transformComponent.Rotation = glm::degrees(rotation);
+                transformComponent.SetRotationRadians(rotation);
                 transformComponent.Scale = scale;
             }
         }

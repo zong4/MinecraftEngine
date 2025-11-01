@@ -37,32 +37,35 @@ private:
 struct TransformComponent
 {
     glm::vec3 Position;
-    glm::vec3 Rotation;
     glm::vec3 Scale;
 
 public:
     TransformComponent(const glm::vec3 &position = glm::vec3(0.0f), const glm::vec3 &rotation = glm::vec3(0.0f),
                        const glm::vec3 &scale = glm::vec3(1.0f))
-        : Position(position), Rotation(rotation), Scale(scale)
+        : Position(position), Scale(scale)
     {
-        m_RotationQuat = glm::quat(glm::radians(rotation));
+        SetRotationEuler(rotation);
     }
 
     // Getters
+    const glm::vec3 &GetRotationRadians() const { return m_RotationRadians; }
+    glm::vec3 GetRotationEuler() const { return glm::degrees(m_RotationRadians); }
     const glm::mat4 &GetTransformMatrix() const { return m_TransformMatrix; }
     glm::vec3 GetForward() const { return glm::normalize(m_GlobalRotationQuat * glm::vec3(0, 0, -1)); }
     glm::vec3 GetRight() const { return glm::normalize(m_GlobalRotationQuat * glm::vec3(1, 0, 0)); }
     glm::vec3 GetUp() const { return glm::normalize(m_GlobalRotationQuat * glm::vec3(0, 1, 0)); }
 
     // Setters
-    void SetRotationQuat(const glm::quat &quat);
+    void SetRotationRadians(const glm::vec3 &radians);
     void SetRotationEuler(const glm::vec3 &euler);
+    void SetRotationQuat(const glm::quat &quat);
 
 public:
-    void UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationMatrix,
+    void UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationQuat,
                                const RelationshipComponent &relationship);
 
 private:
+    glm::vec3 m_RotationRadians;
     glm::quat m_RotationQuat;
     glm::quat m_GlobalRotationQuat;
     glm::mat4 m_TransformMatrix = glm::mat4(1.0f);

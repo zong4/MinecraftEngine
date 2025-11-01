@@ -27,7 +27,7 @@ void MCEditor::CameraController::OnUpdate(float deltaTime)
     }
     else if (MCEngine::MouseLibrary::GetInstance().IsButtonDown(ENGINE_MOUSE_BUTTON_RIGHT))
     {
-        transform.SetRotationEuler(transform.Rotation -
+        transform.SetRotationEuler(transform.GetRotationEuler() -
                                    glm::vec3(mouseDelta.y, mouseDelta.x, 0.0f) * m_RotateSpeed * deltaTime);
     }
 
