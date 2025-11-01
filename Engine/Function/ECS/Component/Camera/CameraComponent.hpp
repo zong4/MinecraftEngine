@@ -13,6 +13,7 @@ enum class CameraType
 
 struct CameraComponent
 {
+    bool Primary = false;
     CameraType Type;
     float Scale = 1.0f;
     float FOV, NearClip, FarClip;

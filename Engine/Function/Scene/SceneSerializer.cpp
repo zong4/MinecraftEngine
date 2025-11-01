@@ -182,6 +182,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
 
         // Common
         auto &&cameraComponent = entity.GetComponent<MCEngine::CameraComponent>();
+        out << YAML::Key << "Primary" << YAML::Value << cameraComponent->Primary;
         out << YAML::Key << "Type" << YAML::Value << (int)cameraComponent->Type;
 
         // Orthographic
@@ -318,8 +319,8 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
             cameraComponentData["NearClip"].as<float>(), cameraComponentData["FarClip"].as<float>());
         deserializedEntity.GetComponent<CameraComponent>()->Scale = cameraComponentData["Scale"].as<float>();
 
-        // todo
-        scene->SetMainCamera(deserializedEntity);
+        if (cameraComponentData["Primary"].as<bool>())
+            scene->SetMainCamera(deserializedEntity);
     }
 
     // SpriteRendererComponent

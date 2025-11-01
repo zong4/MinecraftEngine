@@ -24,7 +24,13 @@ public:
 
     // Setters
     void SetName(const std::string &name) { m_Name = name; }
-    void SetMainCamera(const Entity &camera) { m_MainCamera = camera; }
+    void SetMainCamera(const Entity &camera)
+    {
+        if (m_MainCamera)
+            m_MainCamera.GetComponent<CameraComponent>()->Primary = false;
+        m_MainCamera = camera;
+        m_MainCamera.GetComponent<CameraComponent>()->Primary = true;
+    }
 
 public:
     // Main loop
