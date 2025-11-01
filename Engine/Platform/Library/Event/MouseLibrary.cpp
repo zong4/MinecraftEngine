@@ -56,4 +56,5 @@ void MCEngine::MouseLibrary::PostUpdate()
     ENGINE_PROFILE_FUNCTION();
 
     m_DeltaPosition = {0.0f, 0.0f};
+    m_ScrollOffset = {0.0f, 0.0f};
 }

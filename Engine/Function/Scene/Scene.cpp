@@ -260,6 +260,7 @@ MCEngine::Entity MCEngine::Scene::AddSkybox(const std::string &name, const Skybo
     return entity;
 }
 
+// todo: check
 void MCEngine::Scene::Render2D() const
 {
     ENGINE_PROFILE_FUNCTION();
