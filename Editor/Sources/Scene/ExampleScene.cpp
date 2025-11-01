@@ -107,7 +107,7 @@ void MCEditor::ExampleScene::WelcomeToMCEngine()
                 MCEngine::Entity cube =
                     Add3DObject("Cube" + std::to_string(x) + std::to_string(y) + std::to_string(z),
                                 MCEngine::TransformComponent(glm::vec3(x - center, y - center, z - center)));
-                cube.GetComponent<MCEngine::RelationshipComponent>().SetParent(cubes);
+                cube.GetComponent<MCEngine::RelationshipComponent>().Parent = cubes;
                 cubes.GetComponent<MCEngine::RelationshipComponent>().AddChild(cube);
             }
         }

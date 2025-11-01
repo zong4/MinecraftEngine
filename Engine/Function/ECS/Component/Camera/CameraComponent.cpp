@@ -4,7 +4,6 @@ void MCEngine::CameraComponent::Resize(float width, float height)
 {
     m_Width = width;
     m_Height = height;
-    UpdateProjectionMatrix();
 }
 
 void MCEngine::CameraComponent::UpdateProjectionMatrix()

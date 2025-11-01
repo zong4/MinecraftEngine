@@ -12,7 +12,7 @@ void MCEditor::HierarchyPanel::OnImGuiRender()
     auto &&registry = SceneManager::GetInstance().GetActiveScene()->GetRegistry();
     for (auto &&entity : registry.view<MCEngine::RelationshipComponent>())
     {
-        if (!registry.get<MCEngine::RelationshipComponent>(entity).GetParent())
+        if (!registry.get<MCEngine::RelationshipComponent>(entity).Parent)
             DrawEntityNode({entity, &registry});
     }
 
@@ -107,7 +107,7 @@ void MCEditor::HierarchyPanel::DrawEntityNode(MCEngine::Entity entity)
     else
         node_flags |= ImGuiTreeNodeFlags_OpenOnArrow;
 
-    bool opened = ImGui::TreeNodeEx(entity.GetComponent<MCEngine::TagComponent>().GetTag().c_str(), node_flags);
+    bool opened = ImGui::TreeNodeEx(entity.GetComponent<MCEngine::TagComponent>().Tag.c_str(), node_flags);
     if (ImGui::IsItemClicked())
         SceneManager::GetInstance().SetSelectedEntity(entity);
 

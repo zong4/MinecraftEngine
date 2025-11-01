@@ -115,25 +115,25 @@ void MCEditor::SceneViewport::RenderGizmos()
         if (ImGuizmo::IsUsing())
         {
             auto &&relationship = selectedEntity.GetComponent<MCEngine::RelationshipComponent>();
-            if (relationship.GetParent())
+            if (relationship.Parent)
             {
                 glm::mat4 parentTransform =
-                    relationship.GetParent().GetComponent<MCEngine::TransformComponent>().GetTransformMatrix();
+                    relationship.Parent.GetComponent<MCEngine::TransformComponent>().GetTransformMatrix();
                 glm::mat4 localTransform = glm::inverse(parentTransform) * transform;
 
                 glm::vec3 position, rotation, scale;
                 MCEngine::Math::DecomposeTransform(localTransform, position, rotation, scale); // todo: rotation bug
-                transformComponent.SetPosition(position);
-                transformComponent.SetRotationEuler(glm::degrees(rotation));
-                transformComponent.SetScale(scale);
+                transformComponent.Position = position;
+                transformComponent.Rotation = glm::degrees(rotation);
+                transformComponent.Scale = scale;
             }
             else
             {
                 glm::vec3 position, rotation, scale;
                 MCEngine::Math::DecomposeTransform(transform, position, rotation, scale); // todo: rotation bug
-                transformComponent.SetPosition(position);
-                transformComponent.SetRotationEuler(glm::degrees(rotation));
-                transformComponent.SetScale(scale);
+                transformComponent.Position = position;
+                transformComponent.Rotation = glm::degrees(rotation);
+                transformComponent.Scale = scale;
             }
         }
     }

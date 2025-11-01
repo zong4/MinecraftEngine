@@ -18,7 +18,7 @@ void MCEngine::Scene::Update(float deltaTime)
     for (auto &&entity : view)
     {
         auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
-        if (!relationship.GetParent())
+        if (!relationship.Parent)
         {
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), relationship);
         }
@@ -136,7 +136,7 @@ void MCEngine::Scene::Render(const Entity &camera) const
                  sizeof(glm::mat4), 0},
                 {glm::value_ptr(camera.GetComponent<CameraComponent>().GetProjectionMatrix()), sizeof(glm::mat4),
                  sizeof(glm::mat4)},
-                {glm::value_ptr(camera.GetComponent<TransformComponent>().GetPosition()), sizeof(glm::vec3),
+                {glm::value_ptr(camera.GetComponent<TransformComponent>().Position), sizeof(glm::vec3),
                  sizeof(glm::mat4) + sizeof(glm::mat4)},
             });
     }
@@ -183,9 +183,9 @@ void MCEngine::Scene::DeleteEntity(const Entity &entity)
     if (entity.HasComponent<RelationshipComponent>())
     {
         auto &&relationship = entity.GetComponent<RelationshipComponent>();
-        if (relationship.GetParent() && relationship.GetParent().HasComponent<RelationshipComponent>())
+        if (relationship.Parent && relationship.Parent.HasComponent<RelationshipComponent>())
         {
-            auto &&parentRelationship = relationship.GetParent().GetComponent<RelationshipComponent>();
+            auto &&parentRelationship = relationship.Parent.GetComponent<RelationshipComponent>();
             parentRelationship.RemoveChild(entity);
         }
 
@@ -291,7 +291,7 @@ void MCEngine::Scene::Render3D() const
 
         // Light
         shader->SetUniformInt("u_Light[" + std::to_string(lightIndex) + "].Type", static_cast<int>(light.GetType()));
-        shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Position", transform.GetPosition());
+        shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Position", transform.Position);
         shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Color", light.Color * light.Intensity);
         shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Constant", light.Constant);
         shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Linear", light.Linear);

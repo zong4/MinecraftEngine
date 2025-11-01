@@ -101,7 +101,7 @@ void MCEngine::SceneSerializer::Serialize(const std::shared_ptr<Scene> &scene, c
     {
         if (entityID == entt::null)
             LOG_ENGINE_ERROR("Entity is null, but in registry");
-        if (!registry.get<MCEngine::RelationshipComponent>(entityID).GetParent())
+        if (!registry.get<MCEngine::RelationshipComponent>(entityID).Parent)
             SerializeEntity(out, {entityID, &registry});
     }
     out << YAML::EndSeq;
@@ -150,7 +150,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         out << YAML::BeginMap;
 
         auto &&tagComponent = entity.GetComponent<MCEngine::TagComponent>();
-        out << YAML::Key << "Tag" << YAML::Value << tagComponent.GetTag();
+        out << YAML::Key << "Tag" << YAML::Value << tagComponent.Tag;
 
         out << YAML::EndMap;
     }
@@ -162,9 +162,9 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         out << YAML::BeginMap;
 
         auto &&transformComponent = entity.GetComponent<MCEngine::TransformComponent>();
-        out << YAML::Key << "Position" << YAML::Value << (YAML::Node)transformComponent.GetPosition();
-        out << YAML::Key << "Rotation" << YAML::Value << (YAML::Node)transformComponent.GetRotation();
-        out << YAML::Key << "Scale" << YAML::Value << (YAML::Node)transformComponent.GetScale();
+        out << YAML::Key << "Position" << YAML::Value << (YAML::Node)transformComponent.Position;
+        out << YAML::Key << "Rotation" << YAML::Value << (YAML::Node)transformComponent.Rotation;
+        out << YAML::Key << "Scale" << YAML::Value << (YAML::Node)transformComponent.Scale;
 
         out << YAML::EndMap;
     }
@@ -366,7 +366,7 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Sc
             if (childEntity)
             {
                 deserializedEntity.GetComponent<RelationshipComponent>().AddChild(childEntity);
-                childEntity.GetComponent<RelationshipComponent>().SetParent(deserializedEntity);
+                childEntity.GetComponent<RelationshipComponent>().Parent = deserializedEntity;
             }
         }
     }

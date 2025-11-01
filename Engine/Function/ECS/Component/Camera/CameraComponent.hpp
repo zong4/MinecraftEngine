@@ -22,7 +22,6 @@ public:
                     float fov = 45.0f, float nearClip = 0.1f, float farClip = 100.0f)
         : Type(type), m_Width(width), m_Height(height), FOV(fov), NearClip(nearClip), FarClip(farClip)
     {
-        UpdateProjectionMatrix();
     }
 
     // Getters
@@ -32,7 +31,7 @@ public:
 
 public:
     void Resize(float width, float height);
-    void UpdateProjectionMatrix();
+    void UpdateProjectionMatrix(); // Call every frame before using the projection matrix
 
 private:
     float m_Width, m_Height;

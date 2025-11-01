@@ -84,10 +84,10 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                 DrawTable2<MCEngine::TagComponent>("Tag", [&tag]() {
                     char buffer[256];
                     memset(buffer, 0, sizeof(buffer));
-                    strncpy(buffer, tag.GetTag().c_str(), sizeof(buffer) - 1);
+                    strncpy(buffer, tag.Tag.c_str(), sizeof(buffer) - 1);
                     if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
                     {
-                        tag.SetTag(std::string(buffer));
+                        tag.Tag = std::string(buffer);
                     }
                 });
             },
@@ -97,13 +97,11 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
         DrawComponent<MCEngine::TransformComponent>(
             "Transform Component", selectedEntity, [](MCEngine::TransformComponent &transform) {
                 DrawVec3Control(
-                    "Position", transform.GetPosition(), [&](const glm::vec3 &value) { transform.SetPosition(value); },
-                    0.0f);
+                    "Position", transform.Position, [&](const glm::vec3 &value) { transform.Position = value; }, 0.0f);
                 DrawVec3Control(
-                    "Rotation", transform.GetRotation(),
-                    [&](const glm::vec3 &value) { transform.SetRotationEuler(value); }, 0.0f);
+                    "Rotation", transform.Rotation, [&](const glm::vec3 &value) { transform.Rotation = value; }, 0.0f);
                 DrawVec3Control(
-                    "Scale", transform.GetScale(), [&](const glm::vec3 &value) { transform.SetScale(value); }, 1.0f);
+                    "Scale", transform.Scale, [&](const glm::vec3 &value) { transform.Scale = value; }, 1.0f);
             });
 
         // CameraComponent
