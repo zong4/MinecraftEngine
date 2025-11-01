@@ -25,7 +25,7 @@ void MCEngine::RendererCommand::GetError(const std::string &functionName)
     GLint error = glGetError();
     if (error != GL_NO_ERROR)
     {
-        LOG_ENGINE_ERROR("OpenGL Error: " + std::to_string(error) + " in " + functionName);
+        LOG_ENGINE_ASSERT("OpenGL Error: " + std::to_string(error) + " in " + functionName);
     }
 }
 

@@ -81,7 +81,7 @@ std::shared_ptr<MCEngine::VertexArray> MCEngine::VAOLibrary::GetVAO(const std::s
 
     if (!Exists(name))
     {
-        LOG_ENGINE_ERROR("VAO not found: " + name);
+        LOG_ENGINE_ASSERT("VAO not found: " + name);
         return nullptr;
     }
     return m_VAOs[name];

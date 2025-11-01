@@ -82,7 +82,7 @@ void MCEngine::Window::Init()
     m_NativeWindow = glfwCreateWindow(m_Property.Width, m_Property.Height, m_Property.Title.c_str(), nullptr, nullptr);
     if (!m_NativeWindow)
     {
-        LOG_ENGINE_ERROR("Failed to create GLFW window");
+        LOG_ENGINE_ASSERT("Failed to create GLFW window");
         glfwTerminate();
     }
     LOG_ENGINE_INFO("GLFW window created: " + m_Property.Title);

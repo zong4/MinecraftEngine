@@ -21,7 +21,7 @@ void MCEditor::SceneViewport::Render()
     if (m_ViewportDirty)
     {
         // Resize EditorScene is also OK
-        m_Camera.GetComponent<MCEngine::CameraComponent>().Resize(m_ViewportSize.x, m_ViewportSize.y);
+        m_Camera.GetComponent<MCEngine::CameraComponent>()->Resize(m_ViewportSize.x, m_ViewportSize.y);
 
         m_FBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
         m_MultisampleFBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
@@ -81,10 +81,10 @@ void MCEditor::SceneViewport::RenderGizmos()
 
         // MVP
         auto &&transformComponent = selectedEntity.GetComponent<MCEngine::TransformComponent>();
-        glm::mat4 transform = transformComponent.GetTransformMatrix();
+        glm::mat4 transform = transformComponent->GetTransformMatrix();
         const glm::mat4 &view =
-            glm::inverse(m_Camera.GetComponent<MCEngine::TransformComponent>().GetTransformMatrix());
-        const glm::mat4 &projection = m_Camera.GetComponent<MCEngine::CameraComponent>().GetProjectionMatrix();
+            glm::inverse(m_Camera.GetComponent<MCEngine::TransformComponent>()->GetTransformMatrix());
+        const glm::mat4 &projection = m_Camera.GetComponent<MCEngine::CameraComponent>()->GetProjectionMatrix();
 
         ImGuizmo::OPERATION gizmoOperation;
         switch (m_GizmoType)
@@ -115,25 +115,25 @@ void MCEditor::SceneViewport::RenderGizmos()
         if (ImGuizmo::IsUsing())
         {
             auto &&relationship = selectedEntity.GetComponent<MCEngine::RelationshipComponent>();
-            if (relationship.Parent)
+            if (relationship->Parent)
             {
                 glm::mat4 parentTransform =
-                    relationship.Parent.GetComponent<MCEngine::TransformComponent>().GetTransformMatrix();
+                    relationship->Parent.GetComponent<MCEngine::TransformComponent>()->GetTransformMatrix();
                 glm::mat4 localTransform = glm::inverse(parentTransform) * transform;
 
                 glm::vec3 position, rotation, scale;
                 MCEngine::Math::DecomposeTransform(localTransform, position, rotation, scale);
-                transformComponent.Position = position;
-                transformComponent.SetRotationRadians(rotation);
-                transformComponent.Scale = scale;
+                transformComponent->Position = position;
+                transformComponent->SetRotationRadians(rotation);
+                transformComponent->Scale = scale;
             }
             else
             {
                 glm::vec3 position, rotation, scale;
                 MCEngine::Math::DecomposeTransform(transform, position, rotation, scale);
-                transformComponent.Position = position;
-                transformComponent.SetRotationRadians(rotation);
-                transformComponent.Scale = scale;
+                transformComponent->Position = position;
+                transformComponent->SetRotationRadians(rotation);
+                transformComponent->Scale = scale;
             }
         }
     }

@@ -8,5 +8,6 @@ MCEditor::EditorScene::EditorScene() : MCEngine::Scene()
 
     m_MainCamera = AddCamera("MainCamera", MCEngine::TransformComponent(),
                              MCEngine::CameraComponent(MCEngine::CameraType::Perspective));
-    m_MainCamera.AddComponent<MCEngine::NativeScriptComponent>().Bind<CameraController>(m_MainCamera);
+    m_MainCamera.AddComponent<MCEngine::NativeScriptComponent>();
+    m_MainCamera.GetComponent<MCEngine::NativeScriptComponent>()->Bind<CameraController>(m_MainCamera);
 }

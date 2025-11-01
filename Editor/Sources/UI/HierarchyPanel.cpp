@@ -101,13 +101,13 @@ void MCEditor::HierarchyPanel::DrawEntityNode(MCEngine::Entity entity)
     ImGui::PushID((int)(uint32_t)entity);
 
     ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_SpanAvailWidth;
-    auto &&children = entity.GetComponent<MCEngine::RelationshipComponent>().GetChildren();
+    auto &&children = entity.GetComponent<MCEngine::RelationshipComponent>()->GetChildren();
     if (children.empty())
         node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_Bullet;
     else
         node_flags |= ImGuiTreeNodeFlags_OpenOnArrow;
 
-    bool opened = ImGui::TreeNodeEx(entity.GetComponent<MCEngine::TagComponent>().Tag.c_str(), node_flags);
+    bool opened = ImGui::TreeNodeEx(entity.GetComponent<MCEngine::TagComponent>()->Tag.c_str(), node_flags);
     if (ImGui::IsItemClicked())
         SceneManager::GetInstance().SetSelectedEntity(entity);
 

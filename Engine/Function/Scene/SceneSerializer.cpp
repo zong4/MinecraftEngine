@@ -93,35 +93,43 @@ void MCEngine::SceneSerializer::Serialize(const std::shared_ptr<Scene> &scene, c
 
     YAML::Emitter out;
     out << YAML::BeginMap;
-    out << YAML::Key << "Scene" << YAML::Value << scene->GetName();
 
-    out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-    auto &&registry = scene->GetRegistry();
-    for (entt::entity entityID : registry.view<entt::entity>())
+    out << YAML::Key << "Scene" << YAML::Value << scene->GetName();
     {
-        if (entityID == entt::null)
-            LOG_ENGINE_ERROR("Entity is null, but in registry");
-        if (!registry.get<MCEngine::RelationshipComponent>(entityID).Parent)
-            SerializeEntity(out, {entityID, &registry});
+        out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
+        auto &&registry = scene->GetRegistry();
+        for (entt::entity entity : registry.view<entt::entity>())
+        {
+            if (entity == entt::null)
+            {
+                LOG_ENGINE_ERROR("Entity is null, but in registry");
+                continue;
+            }
+
+            if (!registry.get<MCEngine::RelationshipComponent>(entity).Parent)
+                SerializeEntity(out, {entity, &registry});
+        }
+        out << YAML::EndSeq;
     }
-    out << YAML::EndSeq;
 
     out << YAML::EndMap;
     std::ofstream fout(filepath);
     fout << out.c_str();
 }
 
-bool MCEngine::SceneSerializer::Deserialize(std::shared_ptr<Scene> scene, const std::string &filepath)
+bool MCEngine::SceneSerializer::Deserialize(const std::shared_ptr<Scene> &scene, const std::string &filepath)
 {
     ENGINE_PROFILE_FUNCTION();
 
     YAML::Node data = YAML::LoadFile(filepath);
     if (!data["Scene"])
+    {
         LOG_ENGINE_ERROR("Failed to load scene: " + filepath);
+        return false;
+    }
 
     std::string sceneName = data["Scene"].as<std::string>();
     scene->SetName(sceneName);
-    LOG_ENGINE_TRACE("Deserializing scene: " + sceneName);
 
     auto &&entitiesData = data["Entities"];
     if (entitiesData)
@@ -134,85 +142,81 @@ bool MCEngine::SceneSerializer::Deserialize(std::shared_ptr<Scene> scene, const 
     return true;
 }
 
-void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::Entity entity)
+void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngine::Entity &entity)
 {
     ENGINE_PROFILE_FUNCTION();
 
     out << YAML::BeginMap;
 
     // Entity ID
-    out << YAML::Key << "Entity" << YAML::Value << static_cast<uint32_t>(entity.GetHandle());
+    out << YAML::Key << "Entity" << YAML::Value << (uint32_t)entity.GetHandle();
 
     // TagComponent
-    if (entity.HasComponent<MCEngine::TagComponent>())
+    auto &&tagComponent = entity.GetComponent<MCEngine::TagComponent>();
+    if (tagComponent)
     {
         out << YAML::Key << "TagComponent";
         out << YAML::BeginMap;
-
-        auto &&tagComponent = entity.GetComponent<MCEngine::TagComponent>();
-        out << YAML::Key << "Tag" << YAML::Value << tagComponent.Tag;
-
+        out << YAML::Key << "Tag" << YAML::Value << tagComponent->Tag;
         out << YAML::EndMap;
     }
 
     // TransformComponent
-    if (entity.HasComponent<MCEngine::TransformComponent>())
+    auto &&transformComponent = entity.GetComponent<MCEngine::TransformComponent>();
+    if (transformComponent)
     {
         out << YAML::Key << "TransformComponent";
         out << YAML::BeginMap;
-
-        auto &&transformComponent = entity.GetComponent<MCEngine::TransformComponent>();
-        out << YAML::Key << "Position" << YAML::Value << (YAML::Node)transformComponent.Position;
-        out << YAML::Key << "Rotation" << YAML::Value << (YAML::Node)transformComponent.GetRotationEuler();
-        out << YAML::Key << "Scale" << YAML::Value << (YAML::Node)transformComponent.Scale;
-
+        out << YAML::Key << "Position" << YAML::Value << (YAML::Node)transformComponent->Position;
+        out << YAML::Key << "Rotation" << YAML::Value << (YAML::Node)transformComponent->GetRotationEuler();
+        out << YAML::Key << "Scale" << YAML::Value << (YAML::Node)transformComponent->Scale;
         out << YAML::EndMap;
     }
 
     // CameraComponent
-    if (entity.HasComponent<MCEngine::CameraComponent>())
+    auto &&cameraComponent = entity.GetComponent<MCEngine::CameraComponent>();
+    if (cameraComponent)
     {
         out << YAML::Key << "CameraComponent";
         out << YAML::BeginMap;
 
         // Common
         auto &&cameraComponent = entity.GetComponent<MCEngine::CameraComponent>();
-        out << YAML::Key << "Type" << YAML::Value << (int)cameraComponent.Type;
+        out << YAML::Key << "Type" << YAML::Value << (int)cameraComponent->Type;
 
         // Orthographic
-        out << YAML::Key << "Width" << YAML::Value << cameraComponent.GetWidth();
-        out << YAML::Key << "Height" << YAML::Value << cameraComponent.GetHeight();
-        out << YAML::Key << "Scale" << YAML::Value << cameraComponent.Scale;
+        out << YAML::Key << "Width" << YAML::Value << cameraComponent->GetWidth();
+        out << YAML::Key << "Height" << YAML::Value << cameraComponent->GetHeight();
+        out << YAML::Key << "Scale" << YAML::Value << cameraComponent->Scale;
 
         // Perspective
-        out << YAML::Key << "FOV" << YAML::Value << cameraComponent.FOV;
-        out << YAML::Key << "NearClip" << YAML::Value << cameraComponent.NearClip;
-        out << YAML::Key << "FarClip" << YAML::Value << cameraComponent.FarClip;
+        out << YAML::Key << "FOV" << YAML::Value << cameraComponent->FOV;
+        out << YAML::Key << "NearClip" << YAML::Value << cameraComponent->NearClip;
+        out << YAML::Key << "FarClip" << YAML::Value << cameraComponent->FarClip;
 
         out << YAML::EndMap;
     }
 
     // SpriteRendererComponent
-    if (entity.HasComponent<MCEngine::SpriteRendererComponent>())
+    auto &&spriteRendererComponent = entity.GetComponent<MCEngine::SpriteRendererComponent>();
+    if (spriteRendererComponent)
     {
         out << YAML::Key << "SpriteRendererComponent";
         out << YAML::BeginMap;
 
-        auto &spriteRendererComponent = entity.GetComponent<MCEngine::SpriteRendererComponent>();
-        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)spriteRendererComponent.Color;
         out << YAML::Key << "Texture" << YAML::Value
-            << MCEngine::TextureLibrary::GetInstance().GetName(spriteRendererComponent.TextureInstance);
+            << MCEngine::TextureLibrary::GetInstance().GetName(spriteRendererComponent->TextureInstance);
+        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)spriteRendererComponent->Color;
 
         out << YAML::EndMap;
     }
 
     // MeshRendererComponent
-    if (entity.HasComponent<MCEngine::MeshRendererComponent>())
+    auto &&meshRendererComponent = entity.GetComponent<MCEngine::MeshRendererComponent>();
+    if (meshRendererComponent)
     {
         out << YAML::Key << "MeshRendererComponent";
         out << YAML::BeginMap;
-
-        auto &meshRendererComponent = entity.GetComponent<MCEngine::MeshRendererComponent>();
 
         // out << YAML::Key << "Shader" << YAML::Value
         //     << MCEngine::ShaderLibrary::GetInstance().GetName(meshRendererComponent.GetShader());
@@ -220,14 +224,14 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
         out << YAML::Key << "Material";
         out << YAML::BeginMap;
         {
-            out << YAML::Key << "Color" << YAML::Value << (YAML::Node)meshRendererComponent.MaterialInstance.Color;
+            out << YAML::Key << "Color" << YAML::Value << (YAML::Node)meshRendererComponent->MaterialInstance.Color;
             out << YAML::Key << "AmbientStrength" << YAML::Value
-                << meshRendererComponent.MaterialInstance.AmbientStrength;
+                << meshRendererComponent->MaterialInstance.AmbientStrength;
             out << YAML::Key << "DiffuseStrength" << YAML::Value
-                << meshRendererComponent.MaterialInstance.DiffuseStrength;
+                << meshRendererComponent->MaterialInstance.DiffuseStrength;
             out << YAML::Key << "SpecularStrength" << YAML::Value
-                << meshRendererComponent.MaterialInstance.SpecularStrength;
-            out << YAML::Key << "Shininess" << YAML::Value << meshRendererComponent.MaterialInstance.Shininess;
+                << meshRendererComponent->MaterialInstance.SpecularStrength;
+            out << YAML::Key << "Shininess" << YAML::Value << meshRendererComponent->MaterialInstance.Shininess;
         }
         out << YAML::EndMap;
 
@@ -235,60 +239,57 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, MCEngine::En
     }
 
     // LightComponent
-    if (entity.HasComponent<MCEngine::LightComponent>())
+    auto &&lightComponent = entity.GetComponent<MCEngine::LightComponent>();
+    if (lightComponent)
     {
         out << YAML::Key << "LightComponent";
         out << YAML::BeginMap;
 
         // Directional
-        auto &lightComponent = entity.GetComponent<MCEngine::LightComponent>();
-        out << YAML::Key << "Type" << YAML::Value << (int)lightComponent.GetType();
-        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)lightComponent.Color;
-        out << YAML::Key << "Intensity" << YAML::Value << lightComponent.Intensity;
+        out << YAML::Key << "Type" << YAML::Value << (int)lightComponent->GetType();
+        out << YAML::Key << "Color" << YAML::Value << (YAML::Node)lightComponent->Color;
+        out << YAML::Key << "Intensity" << YAML::Value << lightComponent->Intensity;
 
         // Point
-        out << YAML::Key << "Constant" << YAML::Value << lightComponent.Constant;
-        out << YAML::Key << "Linear" << YAML::Value << lightComponent.Linear;
-        out << YAML::Key << "Quadratic" << YAML::Value << lightComponent.Quadratic;
+        out << YAML::Key << "Constant" << YAML::Value << lightComponent->Constant;
+        out << YAML::Key << "Linear" << YAML::Value << lightComponent->Linear;
+        out << YAML::Key << "Quadratic" << YAML::Value << lightComponent->Quadratic;
 
         // Spot
-        out << YAML::Key << "InnerAngle" << YAML::Value << lightComponent.InnerAngle;
-        out << YAML::Key << "OuterAngle" << YAML::Value << lightComponent.OuterAngle;
+        out << YAML::Key << "InnerAngle" << YAML::Value << lightComponent->InnerAngle;
+        out << YAML::Key << "OuterAngle" << YAML::Value << lightComponent->OuterAngle;
 
         out << YAML::EndMap;
     }
 
     // SkyboxComponent
-    if (entity.HasComponent<MCEngine::SkyboxComponent>())
+    auto &&skyboxComponent = entity.GetComponent<MCEngine::SkyboxComponent>();
+    if (skyboxComponent)
     {
         out << YAML::Key << "SkyboxComponent";
         out << YAML::BeginMap;
-
-        auto &skyboxComponent = entity.GetComponent<MCEngine::SkyboxComponent>();
-        out << YAML::Key << "Texture" << YAML::Value << skyboxComponent.TextureCubeName;
-
+        out << YAML::Key << "Texture" << YAML::Value << skyboxComponent->TextureCubeName;
         out << YAML::EndMap;
     }
 
     // RelationshipComponent
-    if (entity.HasComponent<MCEngine::RelationshipComponent>())
+    auto &&relationshipComponent = entity.GetComponent<MCEngine::RelationshipComponent>();
+    if (relationshipComponent)
     {
         out << YAML::Key << "RelationshipComponent";
         out << YAML::BeginMap;
-
         out << YAML::Key << "Children" << YAML::Value << YAML::BeginSeq;
-        auto &relationshipComponent = entity.GetComponent<MCEngine::RelationshipComponent>();
-        for (auto child : relationshipComponent.GetChildren())
+        for (auto child : relationshipComponent->GetChildren())
             SerializeEntity(out, child);
         out << YAML::EndSeq;
-
         out << YAML::EndMap;
     }
 
     out << YAML::EndMap;
 }
 
-MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Scene> scene, YAML::Node &entity)
+MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_ptr<Scene> &scene,
+                                                              const YAML::Node &entity)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -296,32 +297,32 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Sc
     uint32_t uuid = entity["Entity"].as<uint32_t>();
 
     // TagComponent
-    std::string name;
     const auto &tagComponentData = entity["TagComponent"];
+    std::string name = tagComponentData["Tag"].as<std::string>();
+
+    // TransformComponent
     const auto &transformComponentData = entity["TransformComponent"];
-    if (tagComponentData)
-    {
-        name = tagComponentData["Tag"].as<std::string>();
-    }
     Entity deserializedEntity =
         scene->AddEmptyEntity(name, TransformComponent(transformComponentData["Position"].as<glm::vec3>(),
                                                        transformComponentData["Rotation"].as<glm::vec3>(),
                                                        transformComponentData["Scale"].as<glm::vec3>()));
     LOG_ENGINE_TRACE("Deserialized entity with ID = " + std::to_string(uuid) + ", name = " + name);
 
+    // CameraComponent
     const auto &cameraComponentData = entity["CameraComponent"];
     if (cameraComponentData)
     {
-        auto &&cameraComponent = deserializedEntity.AddComponent<CameraComponent>(
+        deserializedEntity.AddComponent<CameraComponent>(
             (CameraType)cameraComponentData["Type"].as<int>(), cameraComponentData["Width"].as<float>(),
             cameraComponentData["Height"].as<float>(), cameraComponentData["FOV"].as<float>(),
             cameraComponentData["NearClip"].as<float>(), cameraComponentData["FarClip"].as<float>());
-        cameraComponent.Scale = cameraComponentData["Scale"].as<float>();
+        deserializedEntity.GetComponent<CameraComponent>()->Scale = cameraComponentData["Scale"].as<float>();
 
         // todo
         scene->SetMainCamera(deserializedEntity);
     }
 
+    // SpriteRendererComponent
     const auto &spriteRendererComponentData = entity["SpriteRendererComponent"];
     if (spriteRendererComponentData)
     {
@@ -331,42 +332,46 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(std::shared_ptr<Sc
             spriteRendererComponentData["Color"].as<glm::vec4>());
     }
 
+    // MeshRendererComponent
     const auto &meshRendererComponentData = entity["MeshRendererComponent"];
     if (meshRendererComponentData)
     {
         const auto &materialData = meshRendererComponentData["Material"];
-        auto &&meshRendererComponent = deserializedEntity.AddComponent<MeshRendererComponent>(
+        deserializedEntity.AddComponent<MeshRendererComponent>(
             Material(materialData["Color"].as<glm::vec4>(), materialData["AmbientStrength"].as<float>(),
                      materialData["DiffuseStrength"].as<float>(), materialData["SpecularStrength"].as<float>(),
                      materialData["Shininess"].as<float>()));
     }
 
+    // LightComponent
     const auto &lightComponentData = entity["LightComponent"];
     if (lightComponentData)
     {
-        auto &lightComponent = deserializedEntity.AddComponent<LightComponent>(
+        deserializedEntity.AddComponent<LightComponent>(
             (LightType)lightComponentData["Type"].as<int>(), lightComponentData["Color"].as<glm::vec3>(),
             lightComponentData["Intensity"].as<float>(), lightComponentData["Constant"].as<float>(),
             lightComponentData["Linear"].as<float>(), lightComponentData["Quadratic"].as<float>(),
             lightComponentData["InnerAngle"].as<float>(), lightComponentData["OuterAngle"].as<float>());
     }
 
+    // SkyboxComponent
     const auto &skyboxComponentData = entity["SkyboxComponent"];
     if (skyboxComponentData)
     {
         deserializedEntity.AddComponent<SkyboxComponent>(skyboxComponentData["Texture"].as<std::string>());
     }
 
+    // RelationshipComponent
     const auto &relationshipComponentData = entity["RelationshipComponent"];
     if (relationshipComponentData)
     {
-        for (auto child : relationshipComponentData["Children"])
+        for (const auto &childData : relationshipComponentData["Children"])
         {
-            Entity childEntity = DeserializeEntity(scene, child);
+            Entity childEntity = DeserializeEntity(scene, childData);
             if (childEntity)
             {
-                deserializedEntity.GetComponent<RelationshipComponent>().AddChild(childEntity);
-                childEntity.GetComponent<RelationshipComponent>().Parent = deserializedEntity;
+                childEntity.GetComponent<RelationshipComponent>()->Parent = deserializedEntity;
+                deserializedEntity.GetComponent<RelationshipComponent>()->AddChild(childEntity);
             }
         }
     }

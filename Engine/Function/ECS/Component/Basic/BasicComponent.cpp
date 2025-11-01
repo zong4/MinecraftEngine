@@ -14,7 +14,7 @@ void MCEngine::TransformComponent::SetRotationEuler(const glm::vec3 &euler)
 
 void MCEngine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix,
                                                          const glm::quat &parentRotationQuat,
-                                                         const RelationshipComponent &relationship)
+                                                         RelationshipComponent *relationship)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -25,9 +25,9 @@ void MCEngine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parent
     m_GlobalRotationQuat = parentRotationQuat * m_RotationQuat;
     glm::mat4 localTransformMatrix = translationMatrix * rotationMatrix * scaleMatrix;
     m_TransformMatrix = parentTransformMatrix * localTransformMatrix;
-    for (auto &&child : relationship.GetChildren())
+    for (auto &&child : relationship->GetChildren())
     {
-        child.GetComponent<TransformComponent>().UpdateTransformMatrix(m_TransformMatrix, m_GlobalRotationQuat,
-                                                                       child.GetComponent<RelationshipComponent>());
+        child.GetComponent<TransformComponent>()->UpdateTransformMatrix(m_TransformMatrix, m_GlobalRotationQuat,
+                                                                        child.GetComponent<RelationshipComponent>());
     }
 }

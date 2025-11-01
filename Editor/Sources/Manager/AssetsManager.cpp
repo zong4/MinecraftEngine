@@ -29,7 +29,7 @@ MCEditor::AssetsManager::AssetsManager()
     std::filesystem::path path(ConfigManager::GetInstance().GetAssetsPath());
     if (!std::filesystem::exists(path))
     {
-        LOG_ENGINE_ERROR("Font directory does not exist: " + path.string());
+        LOG_ENGINE_ASSERT("Font directory does not exist: " + path.string());
         return;
     }
 

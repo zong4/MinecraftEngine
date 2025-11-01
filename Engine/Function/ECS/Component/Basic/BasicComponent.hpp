@@ -64,7 +64,7 @@ public:
 
 public:
     void UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationQuat,
-                               const RelationshipComponent &relationship);
+                               RelationshipComponent *relationship);
 
 private:
     glm::vec3 m_RotationRadians;

@@ -27,7 +27,7 @@ public:
     // clang-format off
     template <typename T>
     // clang-format on
-    T &GetComponent()
+    T *GetComponent()
     {
         return m_Entity.GetComponent<T>();
     }
@@ -36,7 +36,7 @@ public:
     // clang-format on
     void AddComponent(Args &&...args)
     {
-        return m_Entity.AddComponent<T>(std::forward<Args>(args)...);
+        m_Entity.AddComponent<T>(std::forward<Args>(args)...);
     }
     // clang-format off
     template <typename T>

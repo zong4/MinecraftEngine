@@ -20,7 +20,7 @@ void MCEngine::Scene::Update(float deltaTime)
         auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
         if (!relationship.Parent)
         {
-            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), relationship);
+            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
         }
     }
 
@@ -126,15 +126,15 @@ void MCEngine::Scene::Render(const Entity &camera) const
     {
         if (!camera || !camera.HasComponent<CameraComponent>() || !camera.HasComponent<TransformComponent>())
             return;
-        camera.GetComponent<CameraComponent>().UpdateProjectionMatrix();
+        camera.GetComponent<CameraComponent>()->UpdateProjectionMatrix();
         UniformBufferLibrary::GetInstance().UpdateUniformBuffer(
             "UniformBuffer0",
             {
-                {glm::value_ptr(glm::inverse(camera.GetComponent<TransformComponent>().GetTransformMatrix())),
+                {glm::value_ptr(glm::inverse(camera.GetComponent<TransformComponent>()->GetTransformMatrix())),
                  sizeof(glm::mat4), 0},
-                {glm::value_ptr(camera.GetComponent<CameraComponent>().GetProjectionMatrix()), sizeof(glm::mat4),
+                {glm::value_ptr(camera.GetComponent<CameraComponent>()->GetProjectionMatrix()), sizeof(glm::mat4),
                  sizeof(glm::mat4)},
-                {glm::value_ptr(camera.GetComponent<TransformComponent>().Position), sizeof(glm::vec3),
+                {glm::value_ptr(camera.GetComponent<TransformComponent>()->Position), sizeof(glm::vec3),
                  sizeof(glm::mat4) + sizeof(glm::mat4)},
             });
     }
@@ -181,13 +181,13 @@ void MCEngine::Scene::DeleteEntity(const Entity &entity)
     if (entity.HasComponent<RelationshipComponent>())
     {
         auto &&relationship = entity.GetComponent<RelationshipComponent>();
-        if (relationship.Parent && relationship.Parent.HasComponent<RelationshipComponent>())
+        if (relationship->Parent && relationship->Parent.HasComponent<RelationshipComponent>())
         {
-            auto &&parentRelationship = relationship.Parent.GetComponent<RelationshipComponent>();
-            parentRelationship.RemoveChild(entity);
+            auto &&parentRelationship = relationship->Parent.GetComponent<RelationshipComponent>();
+            parentRelationship->RemoveChild(entity);
         }
 
-        auto children = relationship.GetChildren();
+        auto children = relationship->GetChildren();
         for (auto &&child : children)
         {
             DeleteEntity(child);
@@ -197,7 +197,7 @@ void MCEngine::Scene::DeleteEntity(const Entity &entity)
     // Call OnDestroy for NativeScriptComponent
     if (entity.HasComponent<NativeScriptComponent>())
     {
-        entity.GetComponent<NativeScriptComponent>().DestroyScript();
+        entity.GetComponent<NativeScriptComponent>()->DestroyScript();
     }
 
     m_Registry.destroy(entity.GetHandle());

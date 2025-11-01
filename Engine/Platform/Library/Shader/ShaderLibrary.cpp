@@ -23,7 +23,7 @@ std::shared_ptr<MCEngine::Shader> MCEngine::ShaderLibrary::GetShader(const std::
 
     if (!Exists(name))
     {
-        LOG_ENGINE_ERROR("Shader not found: " + name);
+        LOG_ENGINE_ASSERT("Shader not found: " + name);
         return nullptr;
     }
     return m_Shaders[name];
@@ -35,7 +35,7 @@ void MCEngine::ShaderLibrary::AddShader(const std::string &name, const std::shar
 
     if (Exists(name))
     {
-        LOG_ENGINE_ERROR("Shader already exists: " + name);
+        LOG_ENGINE_ASSERT("Shader already exists: " + name);
         return;
     }
     m_Shaders[name] = shader;
@@ -51,7 +51,7 @@ std::shared_ptr<MCEngine::Shader> MCEngine::ShaderLibrary::LoadShader(const std:
 
     if (Exists(name))
     {
-        LOG_ENGINE_ERROR("Shader already exists: " + name);
+        LOG_ENGINE_ASSERT("Shader already exists: " + name);
         return m_Shaders[name];
     }
 
@@ -67,7 +67,7 @@ MCEngine::ShaderLibrary::ShaderLibrary()
     std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Shaders/");
     if (!std::filesystem::exists(path))
     {
-        LOG_ENGINE_ERROR("Shader directory does not exist: " + path.string());
+        LOG_ENGINE_ASSERT("Shader directory does not exist: " + path.string());
         return;
     }
 

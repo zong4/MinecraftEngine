@@ -80,14 +80,14 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
         // TagComponent
         DrawComponent<MCEngine::TagComponent>(
             "Tag Component", selectedEntity,
-            [](MCEngine::TagComponent &tag) {
+            [](MCEngine::TagComponent *tag) {
                 DrawTable2<MCEngine::TagComponent>("Tag", [&tag]() {
                     char buffer[256];
                     memset(buffer, 0, sizeof(buffer));
-                    strncpy(buffer, tag.Tag.c_str(), sizeof(buffer) - 1);
+                    strncpy(buffer, tag->Tag.c_str(), sizeof(buffer) - 1);
                     if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
                     {
-                        tag.Tag = std::string(buffer);
+                        tag->Tag = std::string(buffer);
                     }
                 });
             },
@@ -95,52 +95,53 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
 
         // TransformComponent
         DrawComponent<MCEngine::TransformComponent>(
-            "Transform Component", selectedEntity, [](MCEngine::TransformComponent &transform) {
+            "Transform Component", selectedEntity, [](MCEngine::TransformComponent *transform) {
                 DrawVec3Control(
-                    "Position", transform.Position, [&](const glm::vec3 &value) { transform.Position = value; }, 0.0f);
+                    "Position", transform->Position, [&](const glm::vec3 &value) { transform->Position = value; },
+                    0.0f);
                 DrawVec3Control(
-                    "Rotation", transform.GetRotationEuler(),
-                    [&](const glm::vec3 &value) { transform.SetRotationEuler(value); }, 0.0f);
+                    "Rotation", transform->GetRotationEuler(),
+                    [&](const glm::vec3 &value) { transform->SetRotationEuler(value); }, 0.0f);
                 DrawVec3Control(
-                    "Scale", transform.Scale, [&](const glm::vec3 &value) { transform.Scale = value; }, 1.0f);
+                    "Scale", transform->Scale, [&](const glm::vec3 &value) { transform->Scale = value; }, 1.0f);
             });
 
         // CameraComponent
         DrawComponent<MCEngine::CameraComponent>(
-            "Camera Component", selectedEntity, [](MCEngine::CameraComponent &camera) {
+            "Camera Component", selectedEntity, [](MCEngine::CameraComponent *camera) {
                 DrawTable2<MCEngine::CameraComponent>("Type", [&camera]() {
                     const char *cameraTypes[] = {"Orthographic", "Perspective"};
-                    int currentType = static_cast<int>(camera.Type);
+                    int currentType = static_cast<int>(camera->Type);
                     if (ImGui::Combo("##Camera Type", &currentType, cameraTypes, IM_ARRAYSIZE(cameraTypes)))
                     {
-                        camera.Type = static_cast<MCEngine::CameraType>(currentType);
+                        camera->Type = static_cast<MCEngine::CameraType>(currentType);
                     }
                 });
 
-                if (camera.Type == MCEngine::CameraType::Orthographic)
+                if (camera->Type == MCEngine::CameraType::Orthographic)
                 {
                     DrawTable2<MCEngine::CameraComponent>(
-                        "Scale", [&camera]() { ImGui::DragFloat("##Scale", &camera.Scale, 1.0f, 0.1f, 10.0f); });
+                        "Scale", [&camera]() { ImGui::DragFloat("##Scale", &camera->Scale, 1.0f, 0.1f, 10.0f); });
                 }
 
-                if (camera.Type == MCEngine::CameraType::Perspective)
+                if (camera->Type == MCEngine::CameraType::Perspective)
                 {
                     DrawTable2<MCEngine::CameraComponent>(
-                        "FOV", [&camera]() { ImGui::DragFloat("##FOV", &camera.FOV, 1.0f, 1.0f, 120.0f); });
+                        "FOV", [&camera]() { ImGui::DragFloat("##FOV", &camera->FOV, 1.0f, 1.0f, 120.0f); });
                     DrawTable2<MCEngine::CameraComponent>("Near Clip", [&camera]() {
-                        ImGui::DragFloat("##Near Clip", &camera.NearClip, 0.1f, 0.01f, 100.0f);
+                        ImGui::DragFloat("##Near Clip", &camera->NearClip, 0.1f, 0.01f, 100.0f);
                     });
                     DrawTable2<MCEngine::CameraComponent>("Far Clip", [&camera]() {
-                        ImGui::DragFloat("##Far Clip", &camera.FarClip, 1.0f, 10.0f, 1000.0f);
+                        ImGui::DragFloat("##Far Clip", &camera->FarClip, 1.0f, 10.0f, 1000.0f);
                     });
                 }
             });
 
         // SpriteRendererComponent
         DrawComponent<MCEngine::SpriteRendererComponent>(
-            "Sprite Renderer Component", selectedEntity, [](MCEngine::SpriteRendererComponent &sprite) {
+            "Sprite Renderer Component", selectedEntity, [](MCEngine::SpriteRendererComponent *sprite) {
                 DrawTable2<MCEngine::SpriteRendererComponent>(
-                    "Color", [&sprite]() { ImGui::ColorEdit4("##Color", glm::value_ptr(sprite.Color)); });
+                    "Color", [&sprite]() { ImGui::ColorEdit4("##Color", glm::value_ptr(sprite->Color)); });
             });
 
         // todo: Drag and Drop for Texture2D
@@ -160,7 +161,7 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                         {
                             if (selectedEntity)
                             {
-                                selectedEntity.GetComponent<MCEngine::SpriteRendererComponent>().TextureInstance =
+                                selectedEntity.GetComponent<MCEngine::SpriteRendererComponent>()->TextureInstance =
                                     MCEngine::TextureLibrary::GetInstance().GetTexture2D(relativePath);
                             }
                         }
@@ -172,47 +173,47 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
 
         // MeshRendererComponent
         DrawComponent<MCEngine::MeshRendererComponent>(
-            "Mesh Renderer Component", selectedEntity, [](MCEngine::MeshRendererComponent &meshRenderer) {
+            "Mesh Renderer Component", selectedEntity, [](MCEngine::MeshRendererComponent *meshRenderer) {
                 DrawTable2<MCEngine::MeshRendererComponent>("Color", [&meshRenderer]() {
-                    ImGui::ColorEdit4("##Color", glm::value_ptr(meshRenderer.MaterialInstance.Color));
+                    ImGui::ColorEdit4("##Color", glm::value_ptr(meshRenderer->MaterialInstance.Color));
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Ambient", [&meshRenderer]() {
-                    ImGui::DragFloat("##Ambient", &meshRenderer.MaterialInstance.AmbientStrength, 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Ambient", &meshRenderer->MaterialInstance.AmbientStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Diffuse", [&meshRenderer]() {
-                    ImGui::DragFloat("##Diffuse", &meshRenderer.MaterialInstance.DiffuseStrength, 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Diffuse", &meshRenderer->MaterialInstance.DiffuseStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Specular", [&meshRenderer]() {
-                    ImGui::DragFloat("##Specular", &meshRenderer.MaterialInstance.SpecularStrength, 0.1f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Specular", &meshRenderer->MaterialInstance.SpecularStrength, 0.1f, 0.0f, 1.0f);
                 });
                 DrawTable2<MCEngine::MeshRendererComponent>("Shininess", [&meshRenderer]() {
-                    ImGui::DragFloat("##Shininess", &meshRenderer.MaterialInstance.Shininess, 1.0f, 1.0f, 256.0f);
+                    ImGui::DragFloat("##Shininess", &meshRenderer->MaterialInstance.Shininess, 1.0f, 1.0f, 256.0f);
                 });
             });
 
         // LightComponent
-        DrawComponent<MCEngine::LightComponent>("Light Component", selectedEntity, [](MCEngine::LightComponent &light) {
+        DrawComponent<MCEngine::LightComponent>("Light Component", selectedEntity, [](MCEngine::LightComponent *light) {
             DrawTable2<MCEngine::LightComponent>(
-                "Color", [&light]() { ImGui::ColorEdit3("##Color", glm::value_ptr(light.Color)); });
+                "Color", [&light]() { ImGui::ColorEdit3("##Color", glm::value_ptr(light->Color)); });
             DrawTable2<MCEngine::LightComponent>(
-                "Intensity", [&light]() { ImGui::DragFloat("##Intensity", &light.Intensity, 0.1f, 0.0f, 10.0f); });
+                "Intensity", [&light]() { ImGui::DragFloat("##Intensity", &light->Intensity, 0.1f, 0.0f, 10.0f); });
 
-            if (light.GetType() == MCEngine::LightType::Point || light.GetType() == MCEngine::LightType::Spot)
+            if (light->GetType() == MCEngine::LightType::Point || light->GetType() == MCEngine::LightType::Spot)
             {
                 DrawTable2<MCEngine::LightComponent>(
-                    "Constant", [&light]() { ImGui::DragFloat("##Constant", &light.Constant, 0.01f, 0.0f, 1.0f); });
+                    "Constant", [&light]() { ImGui::DragFloat("##Constant", &light->Constant, 0.01f, 0.0f, 1.0f); });
                 DrawTable2<MCEngine::LightComponent>(
-                    "Linear", [&light]() { ImGui::DragFloat("##Linear", &light.Linear, 0.001f, 0.0f, 1.0f); });
+                    "Linear", [&light]() { ImGui::DragFloat("##Linear", &light->Linear, 0.001f, 0.0f, 1.0f); });
                 DrawTable2<MCEngine::LightComponent>("Quadratic", [&light]() {
-                    ImGui::DragFloat("##Quadratic", &light.Quadratic, 0.0001f, 0.0f, 1.0f);
+                    ImGui::DragFloat("##Quadratic", &light->Quadratic, 0.0001f, 0.0f, 1.0f);
                 });
 
-                if (light.GetType() == MCEngine::LightType::Spot)
+                if (light->GetType() == MCEngine::LightType::Spot)
                 {
                     DrawTable2<MCEngine::LightComponent>(
-                        "CutOff", [&light]() { ImGui::DragFloat("##CutOff", &light.InnerAngle, 1.0f, 0.0f, 90.0f); });
+                        "CutOff", [&light]() { ImGui::DragFloat("##CutOff", &light->InnerAngle, 1.0f, 0.0f, 90.0f); });
                     DrawTable2<MCEngine::LightComponent>("Outer CutOff", [&light]() {
-                        ImGui::DragFloat("##Outer CutOff", &light.OuterAngle, 1.0f, 0.0f, 90.0f);
+                        ImGui::DragFloat("##Outer CutOff", &light->OuterAngle, 1.0f, 0.0f, 90.0f);
                     });
                 }
             }
@@ -220,14 +221,14 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
 
         // SkyboxComponent
         DrawComponent<MCEngine::SkyboxComponent>(
-            "Skybox Component", selectedEntity, [](MCEngine::SkyboxComponent &skybox) {
+            "Skybox Component", selectedEntity, [](MCEngine::SkyboxComponent *skybox) {
                 DrawTable2<MCEngine::SkyboxComponent>("Texture", [&skybox]() {
                     char buffer[256];
                     memset(buffer, 0, sizeof(buffer));
-                    strncpy(buffer, skybox.TextureCubeName.c_str(), sizeof(buffer) - 1);
+                    strncpy(buffer, skybox->TextureCubeName.c_str(), sizeof(buffer) - 1);
                     if (ImGui::InputText("##Texture", buffer, sizeof(buffer)))
                     {
-                        skybox.TextureCubeName = std::string(buffer);
+                        skybox->TextureCubeName = std::string(buffer);
                     }
                 });
             });

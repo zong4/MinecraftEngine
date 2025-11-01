@@ -14,7 +14,7 @@ ImFont *MCEngine::FontLibrary::GetFont(const std::string &name)
 
     if (!Exists(name))
     {
-        LOG_ENGINE_ERROR("Font not found: " + name);
+        LOG_ENGINE_ASSERT("Font not found: " + name);
         return nullptr;
     }
     return m_Fonts[name];
@@ -33,7 +33,7 @@ void MCEngine::FontLibrary::AddFont(const std::string &name, const std::string &
     ImFont *font = ImGui::GetIO().Fonts->AddFontFromFileTTF(path.c_str(), size);
     if (!font)
     {
-        LOG_ENGINE_ERROR("Failed to load font from path: " + path);
+        LOG_ENGINE_ASSERT("Failed to load font from path: " + path);
         return;
     }
 
@@ -48,7 +48,7 @@ void MCEngine::FontLibrary::Init(float fontSize, float thinScale)
     std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Fonts/");
     if (!std::filesystem::exists(path))
     {
-        LOG_ENGINE_ERROR("Font directory does not exist: " + path.string());
+        LOG_ENGINE_ASSERT("Font directory does not exist: " + path.string());
         return;
     }
 

@@ -111,7 +111,7 @@ void MCEngine::Shader::CompileShader(unsigned int shaderID, const std::string &s
     if (!success)
     {
         glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-        LOG_ENGINE_ERROR("ERROR::SHADER::COMPILATION_FAILED\n" + std::string(infoLog));
+        LOG_ENGINE_ASSERT("ERROR::SHADER::COMPILATION_FAILED\n" + std::string(infoLog));
     }
 }
 
@@ -127,6 +127,6 @@ void MCEngine::Shader::LinkProgram(unsigned int programID)
     if (!success)
     {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        LOG_ENGINE_ERROR("ERROR::SHADER::PROGRAM::LINKING_FAILED\n" + std::string(infoLog));
+        LOG_ENGINE_ASSERT("ERROR::SHADER::PROGRAM::LINKING_FAILED\n" + std::string(infoLog));
     }
 }

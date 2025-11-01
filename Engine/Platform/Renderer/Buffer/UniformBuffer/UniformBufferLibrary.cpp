@@ -12,7 +12,7 @@ std::shared_ptr<MCEngine::UniformBuffer> MCEngine::UniformBufferLibrary::GetUnif
 
     if (!Exists(name))
     {
-        LOG_ENGINE_ERROR("UniformBuffer not found: " + name);
+        LOG_ENGINE_ASSERT("UniformBuffer not found: " + name);
         return nullptr;
     }
     return m_UniformBufferMap[name];

@@ -22,18 +22,19 @@ void MCEngine::Logger::Init(const std::string &dirPath)
 void MCEngine::Logger::LogEngineTrace(const std::string &message) { s_EngineLogger->trace(message); }
 void MCEngine::Logger::LogEngineInfo(const std::string &message) { s_EngineLogger->info(message); }
 void MCEngine::Logger::LogEngineWarn(const std::string &message) { s_EngineLogger->warn("Warning: " + message); }
-void MCEngine::Logger::LogEngineError(const std::string &message)
+void MCEngine::Logger::LogEngineError(const std::string &message, bool assertFail)
 {
-    s_EngineLogger->error(message);
-    assert(false);
+    s_EngineLogger->error("Error: " + message);
+    if (assertFail)
+        assert(false);
 }
 
 void MCEngine::Logger::LogEditorTrace(const std::string &message) { s_EditorLogger->trace(message); }
 void MCEngine::Logger::LogEditorInfo(const std::string &message) { s_EditorLogger->info(message); }
 void MCEngine::Logger::LogEditorWarn(const std::string &message) { s_EditorLogger->warn("Warning: " + message); }
-void MCEngine::Logger::LogEditorError(const std::string &message)
+void MCEngine::Logger::LogEditorError(const std::string &message, bool assertFail)
 {
-    s_EditorLogger->error(message);
+    s_EditorLogger->error("Error: " + message);
     assert(false);
 }
 

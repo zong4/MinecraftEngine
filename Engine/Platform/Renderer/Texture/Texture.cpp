@@ -38,14 +38,14 @@ unsigned char *MCEngine::Texture::LoadImage(const std::string &path, int &width,
     }
     else
     {
-        LOG_ENGINE_ERROR("Unsupported number of channels: " + std::to_string(channels) + " in texture: " + path);
+        LOG_ENGINE_ASSERT("Unsupported number of channels: " + std::to_string(channels) + " in texture: " + path);
         stbi_image_free(data);
         return nullptr;
     }
 
     if (!data)
     {
-        LOG_ENGINE_ERROR("Failed to load texture: " + path);
+        LOG_ENGINE_ASSERT("Failed to load texture: " + path);
         return nullptr;
     }
     return data;

@@ -49,7 +49,7 @@ std::shared_ptr<MCEngine::Texture2D> MCEngine::TextureLibrary::GetTexture2D(cons
 
     if (!Exists(name))
     {
-        LOG_ENGINE_ERROR("Texture not found: " + name);
+        LOG_ENGINE_ASSERT("Texture not found: " + name);
         return nullptr;
     }
     return std::dynamic_pointer_cast<Texture2D>(m_Textures[name]);
@@ -61,7 +61,7 @@ std::shared_ptr<MCEngine::TextureCube> MCEngine::TextureLibrary::GetTextureCube(
 
     if (!Exists(name))
     {
-        LOG_ENGINE_ERROR("Texture not found: " + name);
+        LOG_ENGINE_ASSERT("Texture not found: " + name);
         return nullptr;
     }
     return std::dynamic_pointer_cast<TextureCube>(m_Textures[name]);
@@ -73,7 +73,7 @@ void MCEngine::TextureLibrary::AddTexture(const std::string &name, const std::sh
 
     if (Exists(name))
     {
-        LOG_ENGINE_ERROR("Texture already exists: " + name);
+        LOG_ENGINE_ASSERT("Texture already exists: " + name);
         return;
     }
     m_Textures[name] = texture;
@@ -92,7 +92,7 @@ MCEngine::TextureLibrary::TextureLibrary()
     std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Images/");
     if (!std::filesystem::exists(path))
     {
-        LOG_ENGINE_ERROR("Texture directory does not exist: " + path.string());
+        LOG_ENGINE_ASSERT("Texture directory does not exist: " + path.string());
         return;
     }
 

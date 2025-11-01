@@ -36,20 +36,23 @@ public:
     // clang-format off
     template <typename T>
     // clang-format on
-    T &GetComponent() const
+    T *GetComponent() const
     {
         if (!HasComponent<T>())
-            LOG_ENGINE_ERROR("Entity does not have component!");
-        return m_Registry->get<T>(m_Handle);
+            return nullptr;
+        return &m_Registry->get<T>(m_Handle);
     }
     // clang-format off
     template <typename T, typename... Args>
     // clang-format on
-    T &AddComponent(Args &&...args)
+    void AddComponent(Args &&...args)
     {
         if (HasComponent<T>())
-            LOG_ENGINE_ERROR("Entity already has component!");
-        return m_Registry->emplace<T>(m_Handle, std::forward<Args>(args)...);
+        {
+            LOG_ENGINE_WARN("Entity already has component!");
+            return;
+        }
+        m_Registry->emplace<T>(m_Handle, std::forward<Args>(args)...);
     }
     // clang-format off
     template <typename T>
@@ -57,7 +60,10 @@ public:
     void RemoveComponent()
     {
         if (!HasComponent<T>())
-            LOG_ENGINE_ERROR("Entity does not have component!");
+        {
+            LOG_ENGINE_WARN("Entity does not have component!");
+            return;
+        }
         m_Registry->remove<T>(m_Handle);
     }
 

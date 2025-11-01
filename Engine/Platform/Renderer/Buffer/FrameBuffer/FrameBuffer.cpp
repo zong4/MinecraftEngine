@@ -21,7 +21,7 @@ MCEngine::FrameBuffer::FrameBuffer(FrameBufferType type, int width, int height, 
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        LOG_ENGINE_ERROR("FrameBuffer is incomplete!");
+        LOG_ENGINE_ASSERT("FrameBuffer is incomplete!");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     LOG_ENGINE_INFO("FrameBuffer created with ID: " + std::to_string(m_RendererID) +
@@ -121,7 +121,7 @@ void MCEngine::FrameBuffer::BindBasicTexture(int width, int height)
     }
     else
     {
-        LOG_ENGINE_ERROR("Invalid FrameBufferType for basic texture.");
+        LOG_ENGINE_ASSERT("Invalid FrameBufferType for basic texture.");
     }
 }
 
@@ -131,7 +131,7 @@ void MCEngine::FrameBuffer::BindMultiSampleTexture(int width, int height, int sa
 
     if (samples <= 0)
     {
-        LOG_ENGINE_ERROR("Samples must be greater than 0 for multisample texture.");
+        LOG_ENGINE_ASSERT("Samples must be greater than 0 for multisample texture.");
         return;
     }
 
