@@ -71,8 +71,10 @@ private:
     glm::mat4 m_TransformMatrix = glm::mat4(1.0f);
 };
 
-class NativeScriptComponent
+struct NativeScriptComponent
 {
+    std::shared_ptr<ScriptableEntity> Instance;
+
 public:
     NativeScriptComponent() = default;
 
@@ -91,9 +93,6 @@ public:
         };
         DestroyScript = [&]() { Instance->OnDestroy(); };
     }
-
-public:
-    std::shared_ptr<ScriptableEntity> Instance;
 };
 
 } // namespace MCEngine
