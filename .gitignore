@@ -3,21 +3,19 @@
 
 # VSCode
 .vscode/
+*.code-workspace
 
-# Xmake Cache
+# Xmake
 .xmake/
 build/
 vsxmake*/
 
-# MacOS Cache
+# MacOS
 .DS_Store
 
 # Logs
 Logs/
 logs/
 
-# VSCode workspace files
-*.code-workspace
-
-# ImGui config files
+# ImGui
 imgui.ini
