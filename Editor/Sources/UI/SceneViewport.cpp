@@ -31,14 +31,12 @@ void MCEditor::SceneViewport::Render()
 
     // Render scene
     m_MultisampleFBO->Bind();
-    MCEngine::RendererCommand::Clear();
     SceneManager::GetInstance().GetActiveScene()->Render(m_Camera);
     m_MultisampleFBO->Blit(m_FBO->GetRendererID());
     m_MultisampleFBO->Unbind();
 
     // Render entity ID to FBO
     m_EntityPickingFBO->Bind();
-    MCEngine::RendererCommand::Clear();
     SceneManager::GetInstance().GetActiveScene()->RenderColorID();
     m_EntityPickingFBO->Unbind();
 }

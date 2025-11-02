@@ -21,7 +21,6 @@ void MCEditor::Viewport::Render()
 
     // Render scene
     m_MultisampleFBO->Bind();
-    MCEngine::RendererCommand::Clear();
     scene->Render(scene->GetMainCamera());
     m_MultisampleFBO->Blit(m_FBO->GetRendererID());
     m_MultisampleFBO->Unbind();

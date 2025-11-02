@@ -182,8 +182,9 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
 
         // Common
         auto &&cameraComponent = entity.GetComponent<MCEngine::CameraComponent>();
-        out << YAML::Key << "Primary" << YAML::Value << cameraComponent->Primary;
         out << YAML::Key << "Type" << YAML::Value << (int)cameraComponent->Type;
+        out << YAML::Key << "Primary" << YAML::Value << cameraComponent->Primary;
+        out << YAML::Key << "BackgroundColor" << YAML::Value << (YAML::Node)cameraComponent->BackgroundColor;
 
         // Orthographic
         out << YAML::Key << "Width" << YAML::Value << cameraComponent->GetWidth();
@@ -314,9 +315,10 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
     if (cameraComponentData)
     {
         deserializedEntity.AddComponent<CameraComponent>(
-            (CameraType)cameraComponentData["Type"].as<int>(), cameraComponentData["Width"].as<float>(),
-            cameraComponentData["Height"].as<float>(), cameraComponentData["FOV"].as<float>(),
-            cameraComponentData["NearClip"].as<float>(), cameraComponentData["FarClip"].as<float>());
+            (CameraType)cameraComponentData["Type"].as<int>(), cameraComponentData["BackgroundColor"].as<glm::vec4>(),
+            cameraComponentData["Width"].as<float>(), cameraComponentData["Height"].as<float>(),
+            cameraComponentData["FOV"].as<float>(), cameraComponentData["NearClip"].as<float>(),
+            cameraComponentData["FarClip"].as<float>());
         deserializedEntity.GetComponent<CameraComponent>()->Scale = cameraComponentData["Scale"].as<float>();
 
         if (cameraComponentData["Primary"].as<bool>())

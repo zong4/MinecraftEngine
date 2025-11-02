@@ -55,7 +55,7 @@ void MCEngine::Window::Render()
     ENGINE_PROFILE_FUNCTION();
 
     // Pre-render
-    MCEngine::RendererCommand::SetClearColor(m_Property.ClearColor);
+    MCEngine::RendererCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
     MCEngine::RendererCommand::Clear();
 
     // Render

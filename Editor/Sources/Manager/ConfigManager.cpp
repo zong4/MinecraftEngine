@@ -4,7 +4,7 @@
 
 // Set default window properties
 MCEngine::WindowProperty MCEditor::ConfigManager::s_WindowProperty =
-    MCEngine::WindowProperty("Minecraft Engine", 1280, 720, true, glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+    MCEngine::WindowProperty("Minecraft Engine", 1280, 720, true);
 
 // Set default paths
 std::filesystem::path MCEditor::ConfigManager::s_ConfigsPath = "Editor/Configs/";

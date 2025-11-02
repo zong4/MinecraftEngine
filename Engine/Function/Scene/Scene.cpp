@@ -135,6 +135,10 @@ void MCEngine::Scene::Render(const Entity &camera) const
 {
     ENGINE_PROFILE_FUNCTION();
 
+    // Clear buffers
+    MCEngine::RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
+    MCEngine::RendererCommand::Clear();
+
     // Update camera
     {
         auto &&transform = camera.GetComponent<TransformComponent>();
@@ -162,13 +166,19 @@ void MCEngine::Scene::RenderColorID() const
 {
     ENGINE_PROFILE_FUNCTION();
 
-    auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
-    shader->Bind();
+    // Clear buffers
+    MCEngine::RendererCommand::Clear();
 
-    VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
-    VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+    // Render
+    {
+        auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
+        shader->Bind();
 
-    shader->Unbind();
+        VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
+        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+
+        shader->Unbind();
+    }
 }
 
 void MCEngine::Scene::Resize(float width, float height)
