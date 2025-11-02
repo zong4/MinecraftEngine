@@ -9,6 +9,7 @@ void MCEditor::Viewport::Render()
 
     auto &&scene = SceneManager::GetInstance().GetActiveScene();
 
+    // Resize if needed
     if (m_ViewportDirty)
     {
         scene->Resize(m_ViewportSize.x, m_ViewportSize.y);
@@ -18,6 +19,7 @@ void MCEditor::Viewport::Render()
         m_ViewportDirty = false;
     }
 
+    // Render scene
     m_MultisampleFBO->Bind();
     MCEngine::RendererCommand::Clear();
     scene->Render(scene->GetMainCamera());
@@ -29,6 +31,7 @@ void MCEditor::Viewport::OnImGuiRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
+    // Get the available viewport size
     ImVec2 viewportSize = ImGui::GetContentRegionAvail();
     if (viewportSize.x > 0 && viewportSize.y > 0)
     {

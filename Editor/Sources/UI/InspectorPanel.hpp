@@ -14,8 +14,8 @@ public:
     void OnImGuiRender() const;
 
 protected:
-    static void DrawVec3Control(const std::string &label, const glm::vec3 &values,
-                                std::function<void(const glm::vec3 &)> callback, float resetValue);
+    static bool InputTextString(const char *label, std::string *str);
+    static void DrawVec3Control(const std::string &label, glm::vec3 &values, float resetValue);
     static void DrawAddComponentButton(MCEngine::Entity selectedEntity);
 };
 } // namespace MCEditor

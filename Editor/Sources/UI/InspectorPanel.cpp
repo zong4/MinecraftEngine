@@ -37,10 +37,11 @@ static void DrawComponent(const std::string &name, MCEngine::Entity entity, UIFu
 {
     ENGINE_PROFILE_FUNCTION();
 
-    if (entity && entity.HasComponent<T>())
+    if (entity.HasComponent<T>())
     {
         std::string header = name + "##" + std::to_string(static_cast<uint32_t>(entity));
 
+        // Removeable component with close button
         if (removeable)
         {
             bool open = true;
@@ -52,9 +53,7 @@ static void DrawComponent(const std::string &name, MCEngine::Entity entity, UIFu
             }
 
             if (!open)
-            {
                 entity.RemoveComponent<T>();
-            }
         }
         else
         {
@@ -81,49 +80,50 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
         DrawComponent<MCEngine::TagComponent>(
             "Tag Component", selectedEntity,
             [](MCEngine::TagComponent *tag) {
-                DrawTable2<MCEngine::TagComponent>("Tag", [&tag]() {
-                    char buffer[256];
-                    memset(buffer, 0, sizeof(buffer));
-                    strncpy(buffer, tag->Tag.c_str(), sizeof(buffer) - 1);
-                    if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-                    {
-                        tag->Tag = std::string(buffer);
-                    }
-                });
+                DrawTable2<MCEngine::TagComponent>("Tag", [&tag]() { InputTextString("##Tag", &tag->Tag); });
             },
             false);
 
         // TransformComponent
-        DrawComponent<MCEngine::TransformComponent>(
-            "Transform Component", selectedEntity, [](MCEngine::TransformComponent *transform) {
-                DrawVec3Control(
-                    "Position", transform->Position, [&](const glm::vec3 &value) { transform->Position = value; },
-                    0.0f);
-                DrawVec3Control(
-                    "Rotation", transform->GetRotationEuler(),
-                    [&](const glm::vec3 &value) { transform->SetRotationEuler(value); }, 0.0f);
-                DrawVec3Control(
-                    "Scale", transform->Scale, [&](const glm::vec3 &value) { transform->Scale = value; }, 1.0f);
-            });
+        DrawComponent<MCEngine::TransformComponent>("Transform Component", selectedEntity,
+                                                    [](MCEngine::TransformComponent *transform) {
+                                                        DrawVec3Control("Position", transform->Position, 0.0f);
+                                                        glm::vec3 rotation = transform->GetRotationEuler();
+                                                        DrawVec3Control("Rotation", rotation, 0.0f);
+                                                        transform->SetRotationEuler(rotation);
+                                                        DrawVec3Control("Scale", transform->Scale, 1.0f);
+                                                    });
 
         // CameraComponent
         DrawComponent<MCEngine::CameraComponent>(
-            "Camera Component", selectedEntity, [](MCEngine::CameraComponent *camera) {
-                DrawTable2<MCEngine::CameraComponent>("Type", [&camera]() {
-                    const char *cameraTypes[] = {"Orthographic", "Perspective"};
-                    int currentType = static_cast<int>(camera->Type);
-                    if (ImGui::Combo("##Camera Type", &currentType, cameraTypes, IM_ARRAYSIZE(cameraTypes)))
-                    {
-                        camera->Type = static_cast<MCEngine::CameraType>(currentType);
-                    }
-                });
+            "Camera Component", selectedEntity, [&selectedEntity](MCEngine::CameraComponent *camera) {
+                // Common
+                {
+                    DrawTable2<MCEngine::CameraComponent>("Primary", [&camera, &selectedEntity]() {
+                        bool primary = camera->Primary;
+                        if (ImGui::Checkbox("##Primary", &primary))
+                        {
+                            SceneManager::GetInstance().GetActiveScene()->SetMainCamera(selectedEntity);
+                        }
+                    });
+                    DrawTable2<MCEngine::CameraComponent>("Type", [&camera]() {
+                        const char *cameraTypes[] = {"Orthographic", "Perspective"};
+                        int currentType = static_cast<int>(camera->Type);
+                        if (ImGui::Combo("##Camera Type", &currentType, cameraTypes, IM_ARRAYSIZE(cameraTypes)))
+                        {
+                            camera->Type = static_cast<MCEngine::CameraType>(currentType);
+                        }
+                    });
+                }
 
+                // Orthographic
                 if (camera->Type == MCEngine::CameraType::Orthographic)
                 {
                     DrawTable2<MCEngine::CameraComponent>(
                         "Scale", [&camera]() { ImGui::DragFloat("##Scale", &camera->Scale, 1.0f, 0.1f, 10.0f); });
                 }
 
+                // Perspective
                 if (camera->Type == MCEngine::CameraType::Perspective)
                 {
                     DrawTable2<MCEngine::CameraComponent>(
@@ -143,33 +143,6 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                 DrawTable2<MCEngine::SpriteRendererComponent>(
                     "Color", [&sprite]() { ImGui::ColorEdit4("##Color", glm::value_ptr(sprite->Color)); });
             });
-
-        // todo: Drag and Drop for Texture2D
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-            {
-                if (payload->Data)
-                {
-                    const char *path = static_cast<const char *>(payload->Data);
-                    std::filesystem::path filepath(path);
-                    std::string relativePath =
-                        std::filesystem::relative(filepath, ConfigManager::GetInstance().GetAssetsPath()).string();
-                    if (std::filesystem::is_regular_file(filepath))
-                    {
-                        if (ConfigManager::IsTexture(filepath))
-                        {
-                            if (selectedEntity)
-                            {
-                                selectedEntity.GetComponent<MCEngine::SpriteRendererComponent>()->TextureInstance =
-                                    MCEngine::TextureLibrary::GetInstance().GetTexture2D(relativePath);
-                            }
-                        }
-                    }
-                }
-            }
-            ImGui::EndDragDropTarget();
-        }
 
         // MeshRendererComponent
         DrawComponent<MCEngine::MeshRendererComponent>(
@@ -220,32 +193,69 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
         });
 
         // SkyboxComponent
-        DrawComponent<MCEngine::SkyboxComponent>(
-            "Skybox Component", selectedEntity, [](MCEngine::SkyboxComponent *skybox) {
-                DrawTable2<MCEngine::SkyboxComponent>("Texture", [&skybox]() {
-                    char buffer[256];
-                    memset(buffer, 0, sizeof(buffer));
-                    strncpy(buffer, skybox->TextureCubeName.c_str(), sizeof(buffer) - 1);
-                    if (ImGui::InputText("##Texture", buffer, sizeof(buffer)))
-                    {
-                        skybox->TextureCubeName = std::string(buffer);
-                    }
-                });
-            });
+        DrawComponent<MCEngine::SkyboxComponent>("Skybox Component", selectedEntity,
+                                                 [](MCEngine::SkyboxComponent *skybox) {
+                                                     DrawTable2<MCEngine::SkyboxComponent>("Texture", [&skybox]() {
+                                                         InputTextString("##Texture", &skybox->TextureCubeName);
+                                                     });
+                                                 });
 
+        // todo: Drag and Drop for Texture2D
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+            {
+                if (payload->Data)
+                {
+                    const char *path = static_cast<const char *>(payload->Data);
+                    std::filesystem::path filepath(path);
+                    std::string relativePath =
+                        std::filesystem::relative(filepath, ConfigManager::GetInstance().GetAssetsPath()).string();
+                    if (std::filesystem::is_regular_file(filepath))
+                    {
+                        if (ConfigManager::IsTexture(filepath))
+                        {
+                            if (selectedEntity)
+                            {
+                                selectedEntity.GetComponent<MCEngine::SpriteRendererComponent>()->TextureInstance =
+                                    MCEngine::TextureLibrary::GetInstance().GetTexture2D(relativePath);
+                            }
+                        }
+                    }
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        // Add Component Button
         DrawAddComponentButton(selectedEntity);
     }
 
     ImGui::End();
 }
 
-void MCEditor::InspectorPanel::DrawVec3Control(const std::string &label, const glm::vec3 &constValues,
-                                               std::function<void(const glm::vec3 &)> callback, float resetValue)
+bool MCEditor::InspectorPanel::InputTextString(const char *label, std::string *str)
+{
+    IM_ASSERT(str);
+    char buf[256];
+    strncpy(buf, str->c_str(), sizeof(buf) - 1);
+    buf[sizeof(buf) - 1] = '\0';
+
+    if (ImGui::InputText(label, buf, sizeof(buf)))
+    {
+        *str = buf;
+        return true;
+    }
+    return false;
+}
+
+void MCEditor::InspectorPanel::DrawVec3Control(const std::string &label, glm::vec3 &values, float resetValue)
 {
     ENGINE_PROFILE_FUNCTION();
 
     ImGui::PushID(label.c_str());
 
+    // Begin Table
     ImGui::BeginTable("Vec3Table", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_NoPadOuterX);
     ImGui::TableSetupColumn(label.c_str(), ImGuiTableColumnFlags_None, 0.16f);
     ImGui::TableSetupColumn("X", ImGuiTableColumnFlags_None, 0.28f);
@@ -257,10 +267,9 @@ void MCEditor::InspectorPanel::DrawVec3Control(const std::string &label, const g
     ImGui::TableSetColumnIndex(0);
     ImGui::TextUnformatted(label.c_str());
 
+    // Calculate button size
     float lineHeight = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0f;
     ImVec2 buttonSize = {lineHeight + 3.0f, lineHeight};
-
-    glm::vec3 values = constValues;
 
     // X
     ImGui::TableSetColumnIndex(1);
@@ -298,11 +307,8 @@ void MCEditor::InspectorPanel::DrawVec3Control(const std::string &label, const g
     ImGui::SetNextItemWidth(-FLT_MIN);
     ImGui::DragFloat("##Z", &values.z, 0.1f);
 
-    if (values != constValues)
-        callback(values);
-
+    // End Table
     ImGui::EndTable();
-
     ImGui::PopID();
 }
 
@@ -342,6 +348,8 @@ void MCEditor::InspectorPanel::DrawAddComponentButton(MCEngine::Entity entity)
 
         DisplayAddComponentEntry<MCEngine::CameraComponent>("Camera Component");
 
+        ImGui::Separator();
+
         if (!entity.HasComponent<MCEngine::LightComponent>())
         {
             if (ImGui::MenuItem("Directional Light Component"))
@@ -350,7 +358,6 @@ void MCEditor::InspectorPanel::DrawAddComponentButton(MCEngine::Entity entity)
                 ImGui::CloseCurrentPopup();
             }
         }
-
         if (!entity.HasComponent<MCEngine::LightComponent>())
         {
             if (ImGui::MenuItem("Point Light Component"))
@@ -359,7 +366,6 @@ void MCEditor::InspectorPanel::DrawAddComponentButton(MCEngine::Entity entity)
                 ImGui::CloseCurrentPopup();
             }
         }
-
         if (!entity.HasComponent<MCEngine::LightComponent>())
         {
             if (ImGui::MenuItem("Spot Light Component"))
@@ -368,6 +374,8 @@ void MCEditor::InspectorPanel::DrawAddComponentButton(MCEngine::Entity entity)
                 ImGui::CloseCurrentPopup();
             }
         }
+
+        ImGui::Separator();
 
         DisplayAddComponentEntry<MCEngine::SkyboxComponent>("Skybox Component");
 

@@ -18,6 +18,7 @@ void MCEditor::FileBrowserPanel::OnImGuiRender()
 
     ImGui::Begin("File Browser");
 
+    // Back button
     if (!std::filesystem::equivalent(m_CurrentDirectory, ConfigManager::GetInstance().GetAssetsPath()))
     {
         if (ImGui::Button("<-"))
@@ -103,6 +104,7 @@ void MCEditor::FileBrowserPanel::OnImGuiRender()
         ImGui::TextUnformatted(filenameString.c_str());
         ImGui::PopFont();
 
+        // Next column
         ImGui::PopID();
         ImGui::NextColumn();
     }

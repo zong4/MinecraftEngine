@@ -9,6 +9,7 @@ void MCEditor::HierarchyPanel::OnImGuiRender()
 
     ImGui::Begin("Hierarchy");
 
+    // Draw all entities
     auto &&registry = SceneManager::GetInstance().GetActiveScene()->GetRegistry();
     for (auto &&entity : registry.view<MCEngine::RelationshipComponent>())
     {
@@ -16,6 +17,7 @@ void MCEditor::HierarchyPanel::OnImGuiRender()
             DrawEntityNode({entity, &registry});
     }
 
+    // Context menu
     if (ImGui::BeginPopupContextWindow("HierarchyContextMenu",
                                        ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
     {
@@ -35,6 +37,7 @@ void MCEditor::HierarchyPanel::DrawEntityNode(const MCEngine::Entity &entity)
 
     ImGui::PushID((int)(uint32_t)entity);
 
+    // Node flags
     ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_SpanAvailWidth;
     auto &&children = entity.GetComponent<MCEngine::RelationshipComponent>()->GetChildren();
     if (children.empty())
@@ -42,10 +45,12 @@ void MCEditor::HierarchyPanel::DrawEntityNode(const MCEngine::Entity &entity)
     else
         node_flags |= ImGuiTreeNodeFlags_OpenOnArrow;
 
+    // Selected
     bool opened = ImGui::TreeNodeEx(entity.GetComponent<MCEngine::TagComponent>()->Tag.c_str(), node_flags);
     if (ImGui::IsItemClicked())
         SceneManager::GetInstance().SetSelectedEntity(entity);
 
+    // Context menu
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::MenuItem("Delete Entity"))
@@ -59,6 +64,7 @@ void MCEditor::HierarchyPanel::DrawEntityNode(const MCEngine::Entity &entity)
         ImGui::EndPopup();
     }
 
+    // Draw children
     if (opened)
     {
         for (auto &&child : children)

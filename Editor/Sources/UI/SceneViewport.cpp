@@ -17,11 +17,11 @@ void MCEditor::SceneViewport::Render()
 {
     ENGINE_PROFILE_FUNCTION();
 
+    // Resize if needed
     if (m_ViewportDirty)
     {
-        // Resize EditorScene is also OK
-        m_Camera.GetComponent<MCEngine::CameraComponent>()->Resize(m_ViewportSize.x, m_ViewportSize.y);
-
+        m_Camera.GetComponent<MCEngine::CameraComponent>()->Resize(m_ViewportSize.x,
+                                                                   m_ViewportSize.y); // Resize EditorScene is also OK
         m_FBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
         m_MultisampleFBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
         m_EntityPickingFBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
@@ -29,12 +29,14 @@ void MCEditor::SceneViewport::Render()
         m_ViewportDirty = false;
     }
 
+    // Render scene
     m_MultisampleFBO->Bind();
     MCEngine::RendererCommand::Clear();
     SceneManager::GetInstance().GetActiveScene()->Render(m_Camera);
     m_MultisampleFBO->Blit(m_FBO->GetRendererID());
     m_MultisampleFBO->Unbind();
 
+    // Render entity ID to FBO
     m_EntityPickingFBO->Bind();
     MCEngine::RendererCommand::Clear();
     SceneManager::GetInstance().GetActiveScene()->RenderColorID();
@@ -45,6 +47,7 @@ void MCEditor::SceneViewport::OnImGuiRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
+    // Get the available viewport size and update focus/hovered state
     m_Focused = ImGui::IsWindowFocused();
     m_Hovered = ImGui::IsWindowHovered();
     ImVec2 viewportSize = ImGui::GetContentRegionAvail();
@@ -85,6 +88,7 @@ void MCEditor::SceneViewport::RenderGizmos()
             glm::inverse(m_Camera.GetComponent<MCEngine::TransformComponent>()->GetTransformMatrix());
         const glm::mat4 &projection = m_Camera.GetComponent<MCEngine::CameraComponent>()->GetProjectionMatrix();
 
+        // Gizmo operation
         ImGuizmo::OPERATION gizmoOperation;
         switch (m_GizmoType)
         {
@@ -111,6 +115,7 @@ void MCEditor::SceneViewport::RenderGizmos()
         ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), gizmoOperation, ImGuizmo::LOCAL,
                              glm::value_ptr(transform), nullptr, snap ? snapValues : nullptr);
 
+        // Update transform component if gizmo is used
         if (ImGuizmo::IsUsing())
         {
             glm::mat4 localTransform = transform;

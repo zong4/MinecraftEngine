@@ -20,7 +20,9 @@ void MCEditor::CameraController::OnUpdate(float deltaTime)
     if (ImGuizmo::IsUsing())
         return;
 
-    glm::vec2 mouseDelta = MCEngine::MouseLibrary::GetInstance().GetDeltaPosition();
+    // Get mouse input
+    glm::vec2 mouseDelta = MouseLibrary::GetInstance().GetDeltaPosition();
+    glm::vec2 scrollOffset = MouseLibrary::GetInstance().GetScrollOffset();
 
     // Move
     if (MouseLibrary::GetInstance().IsButtonDown(ENGINE_MOUSE_BUTTON_LEFT))
@@ -34,7 +36,6 @@ void MCEditor::CameraController::OnUpdate(float deltaTime)
                                       glm::vec3(mouseDelta.y, mouseDelta.x, 0.0f) * m_RotateSpeed * deltaTime);
 
     // Zoom
-    auto &&scrollOffset = MouseLibrary::GetInstance().GetScrollOffset();
     if (scrollOffset.y != 0.0)
         m_Transform->Position +=
             m_Transform->GetForward(TransformSpace::Global) * scrollOffset.y * m_ZoomSpeed * deltaTime;

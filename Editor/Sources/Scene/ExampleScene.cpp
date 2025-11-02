@@ -91,10 +91,13 @@ void MCEditor::ExampleScene::WelcomeToMCEngine()
         {2, 6, 7}, {3, 6, 7}, {4, 6, 7}, {5, 6, 7}, {6, 6, 7}, {7, 6, 7}, {8, 6, 7}, // E
     };
 
+    // Parent cube
     int size = 9;
     float center = size / 2.0f;
     MCEngine::Entity cubes = AddEmptyEntity(
         "Cubes", MCEngine::TransformComponent(glm::vec3(0.0f), glm::vec3(0, 50.0f, 0.0f), glm::vec3(1.0f)));
+
+    // Create cubes
     for (int x = 0; x < size; x++)
     {
         for (int y = 0; y < size; y++)
