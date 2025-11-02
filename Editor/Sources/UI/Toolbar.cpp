@@ -1,5 +1,4 @@
 #include "Toolbar.hpp"
-
 #include "Manager/ConfigManager.hpp"
 #include <imgui.h>
 
@@ -20,15 +19,15 @@ void MCEditor::Toolbar::OnImGuiRender()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
     ImGui::Begin("##toolbar", nullptr,
-                 ImGuiWindowFlags_NoTitleBar |            //  无标题栏
-                     ImGuiWindowFlags_NoCollapse |        //  禁止折叠按钮
-                     ImGuiWindowFlags_NoResize |          //  不允许缩放
-                     ImGuiWindowFlags_NoMove |            //  不可移动
-                     ImGuiWindowFlags_NoScrollbar |       //  无滚动条
-                     ImGuiWindowFlags_NoScrollWithMouse | //  禁止鼠标滚动
-                     //  ImGuiWindowFlags_NoSavedSettings |   //  不保存位置或状态
-                     ImGuiWindowFlags_NoBackground | //  可选：去掉背景（半透明UI时有用）
-                     ImGuiWindowFlags_NoDecoration   //  不绘制边框/标题等装饰
+                 ImGuiWindowFlags_NoTitleBar |            
+                     ImGuiWindowFlags_NoCollapse |        
+                     ImGuiWindowFlags_NoResize |          
+                     ImGuiWindowFlags_NoMove |            
+                     ImGuiWindowFlags_NoScrollbar |       
+                     ImGuiWindowFlags_NoScrollWithMouse | 
+                     //  ImGuiWindowFlags_NoSavedSettings |   
+                     ImGuiWindowFlags_NoBackground | 
+                     ImGuiWindowFlags_NoDecoration   
     );
 
     // Color
