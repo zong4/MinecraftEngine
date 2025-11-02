@@ -15,22 +15,42 @@ public:
 
 struct RelationshipComponent
 {
-    Entity Parent;
-
 public:
     RelationshipComponent(const Entity &parent = Entity()) : Parent(parent) {}
 
     // Getters
+    const Entity &GetParent() const { return Parent; }
     const std::vector<Entity> &GetChildren() const { return m_Children; }
 
     // Setters
+    void SetParent(const Entity &parent) { Parent = parent; }
     void AddChild(const Entity &child) { m_Children.push_back(child); }
     void RemoveChild(const Entity &child)
     {
         m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
     }
+    void ClearChildren() { m_Children.clear(); }
+
+public:
+    static void SetParentChild(const Entity &parent, const Entity &child)
+    {
+        if (auto &&childRelationship = child.GetComponent<RelationshipComponent>())
+        {
+            // Remove from old parent
+            if (auto &&oldParentRelationship = childRelationship->GetParent().GetComponent<RelationshipComponent>())
+                oldParentRelationship->RemoveChild(child);
+
+            // Set new parent
+            childRelationship->SetParent(parent);
+
+            // Add to new parent's children list
+            if (auto &&parentRelationship = parent.GetComponent<RelationshipComponent>())
+                parentRelationship->AddChild(child);
+        }
+    }
 
 private:
+    Entity Parent;
     std::vector<Entity> m_Children;
 };
 

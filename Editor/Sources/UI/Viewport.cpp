@@ -12,7 +12,6 @@ void MCEditor::Viewport::Render()
     if (m_ViewportDirty)
     {
         scene->Resize(m_ViewportSize.x, m_ViewportSize.y);
-
         m_FBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
         m_MultisampleFBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
 

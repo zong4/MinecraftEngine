@@ -21,19 +21,23 @@ void MCEditor::FileBrowserPanel::OnImGuiRender()
     if (!std::filesystem::equivalent(m_CurrentDirectory, ConfigManager::GetInstance().GetAssetsPath()))
     {
         if (ImGui::Button("<-"))
-        {
             m_CurrentDirectory = m_CurrentDirectory.parent_path();
-        }
+    }
+    else
+    {
+        ImGui::Button("/");
     }
 
+    // At least one column
     static float thumbnailSize = 60.0f;
     float cellSize = thumbnailSize;
     float panelWidth = ImGui::GetContentRegionAvail().x;
     int columnCount = (int)(panelWidth / cellSize);
     if (columnCount < 1)
         columnCount = 1;
-
     ImGui::Columns(columnCount, 0, false);
+
+    // Entries
     for (auto &&directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
     {
         const auto &path = directoryEntry.path();
@@ -66,15 +70,11 @@ void MCEditor::FileBrowserPanel::OnImGuiRender()
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             {
                 if (directoryEntry.is_directory())
-                {
                     m_CurrentDirectory /= path.filename();
-                }
                 else
                 {
                     if (ConfigManager::IsScene(path))
-                    {
                         SceneManager::GetInstance().OpenScene(path.string());
-                    }
                 }
             }
             else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
@@ -93,8 +93,13 @@ void MCEditor::FileBrowserPanel::OnImGuiRender()
                 filenameString.pop_back();
             filenameString += "...";
         }
-        float offsetX = (availWidth - ImGui::CalcTextSize(filenameString.c_str()).x) * 0.5f;
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
+
+        // Centered text
+        ImVec2 textSize = ImGui::CalcTextSize(filenameString.c_str());
+        float textOffsetX = (thumbnailSize - textSize.x) * 0.5f;
+        if (textOffsetX < 0.0f)
+            textOffsetX = 0.0f;
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + textOffsetX);
         ImGui::TextUnformatted(filenameString.c_str());
         ImGui::PopFont();
 

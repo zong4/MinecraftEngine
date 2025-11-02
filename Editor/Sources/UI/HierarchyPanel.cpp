@@ -12,86 +12,21 @@ void MCEditor::HierarchyPanel::OnImGuiRender()
     auto &&registry = SceneManager::GetInstance().GetActiveScene()->GetRegistry();
     for (auto &&entity : registry.view<MCEngine::RelationshipComponent>())
     {
-        if (!registry.get<MCEngine::RelationshipComponent>(entity).Parent)
+        if (!registry.get<MCEngine::RelationshipComponent>(entity).GetParent())
             DrawEntityNode({entity, &registry});
     }
 
     if (ImGui::BeginPopupContextWindow("HierarchyContextMenu",
                                        ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
     {
-        if (ImGui::MenuItem("Create Empty Entity"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->AddEmptyEntity("EmptyEntity");
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::MenuItem("Create Square"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->Add2DObject(
-                "Square", MCEngine::TransformComponent(), MCEngine::SpriteRendererComponent());
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::MenuItem("Create Cube"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->Add3DObject(
-                "Cube", MCEngine::TransformComponent(), MCEngine::MeshRendererComponent());
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::MenuItem("Create Orthographic Camera"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->AddCamera(
-                "OrthographicCamera", MCEngine::TransformComponent(),
-                MCEngine::CameraComponent(MCEngine::CameraType::Orthographic));
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
-        if (ImGui::MenuItem("Create Perspective Camera"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->AddCamera(
-                "PerspectiveCamera", MCEngine::TransformComponent(),
-                MCEngine::CameraComponent(MCEngine::CameraType::Perspective));
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::MenuItem("Create Directional Light"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->AddLight(
-                "DirectionalLight", MCEngine::TransformComponent(),
-                MCEngine::LightComponent(MCEngine::LightType::Directional));
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
-        if (ImGui::MenuItem("Create Point Light"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->AddLight(
-                "PointLight", MCEngine::TransformComponent(), MCEngine::LightComponent(MCEngine::LightType::Point));
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
-        if (ImGui::MenuItem("Create Spot Light"))
-        {
-            auto newEntity = SceneManager::GetInstance().GetActiveScene()->AddLight(
-                "SpotLight", MCEngine::TransformComponent(), MCEngine::LightComponent(MCEngine::LightType::Spot));
-            SceneManager::GetInstance().SetSelectedEntity(newEntity);
-        }
-
+        DrawContextMenu();
         ImGui::EndPopup();
     }
 
     ImGui::End();
 }
 
-void MCEditor::HierarchyPanel::DrawEntityNode(MCEngine::Entity entity)
+void MCEditor::HierarchyPanel::DrawEntityNode(const MCEngine::Entity &entity)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -113,16 +48,13 @@ void MCEditor::HierarchyPanel::DrawEntityNode(MCEngine::Entity entity)
 
     if (ImGui::BeginPopupContextItem())
     {
-        // if (ImGui::MenuItem("Rename Entity"))
-        // {
-        //     ImGui::OpenPopup("RenameEntity");
-        // }
-
         if (ImGui::MenuItem("Delete Entity"))
         {
             SceneManager::GetInstance().GetActiveScene()->DeleteEntity(entity);
             SceneManager::GetInstance().SetSelectedEntity(MCEngine::Entity());
         }
+        ImGui::Separator();
+        DrawContextMenu();
 
         ImGui::EndPopup();
     }
@@ -135,4 +67,88 @@ void MCEditor::HierarchyPanel::DrawEntityNode(MCEngine::Entity entity)
     }
 
     ImGui::PopID();
+}
+
+void MCEditor::HierarchyPanel::DrawContextMenu(const MCEngine::Entity &parent)
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    if (ImGui::MenuItem("Create Empty Entity"))
+    {
+        DrawContextItem(parent,
+                        []() { return SceneManager::GetInstance().GetActiveScene()->AddEmptyEntity("EmptyEntity"); });
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Create Square"))
+    {
+        DrawContextItem(parent, []() {
+            return SceneManager::GetInstance().GetActiveScene()->Add2DObject("Square", MCEngine::TransformComponent(),
+                                                                             MCEngine::SpriteRendererComponent());
+        });
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Create Cube"))
+    {
+        DrawContextItem(parent, []() {
+            return SceneManager::GetInstance().GetActiveScene()->Add3DObject("Cube", MCEngine::TransformComponent(),
+                                                                             MCEngine::MeshRendererComponent());
+        });
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Create Orthographic Camera"))
+    {
+        DrawContextItem(parent, []() {
+            return SceneManager::GetInstance().GetActiveScene()->AddCamera(
+                "OrthographicCamera", MCEngine::TransformComponent(),
+                MCEngine::CameraComponent(MCEngine::CameraType::Orthographic));
+        });
+    }
+
+    if (ImGui::MenuItem("Create Perspective Camera"))
+    {
+        DrawContextItem(parent, []() {
+            return SceneManager::GetInstance().GetActiveScene()->AddCamera(
+                "PerspectiveCamera", MCEngine::TransformComponent(),
+                MCEngine::CameraComponent(MCEngine::CameraType::Perspective));
+        });
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Create Directional Light"))
+    {
+        DrawContextItem(parent, []() {
+            return SceneManager::GetInstance().GetActiveScene()->AddLight(
+                "DirectionalLight", MCEngine::TransformComponent(),
+                MCEngine::LightComponent(MCEngine::LightType::Directional));
+        });
+    }
+    if (ImGui::MenuItem("Create Point Light"))
+    {
+        DrawContextItem(parent, []() {
+            return SceneManager::GetInstance().GetActiveScene()->AddLight(
+                "PointLight", MCEngine::TransformComponent(), MCEngine::LightComponent(MCEngine::LightType::Point));
+        });
+    }
+    if (ImGui::MenuItem("Create Spot Light"))
+    {
+        DrawContextItem(parent, []() {
+            return SceneManager::GetInstance().GetActiveScene()->AddLight(
+                "SpotLight", MCEngine::TransformComponent(), MCEngine::LightComponent(MCEngine::LightType::Spot));
+        });
+    }
+}
+
+void MCEditor::HierarchyPanel::DrawContextItem(const MCEngine::Entity &parent,
+                                               std::function<MCEngine::Entity()> createFunction)
+{
+    auto newEntity = createFunction();
+    SceneManager::GetInstance().SetSelectedEntity(newEntity);
+    MCEngine::RelationshipComponent::SetParentChild(parent, newEntity);
 }

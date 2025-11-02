@@ -12,10 +12,11 @@ public:
     FileBrowserPanel();
     ~FileBrowserPanel() = default;
 
+    // Setters
+    void SetCurrentDirectory(const std::filesystem::path &path) { m_CurrentDirectory = path; }
+
 public:
     void OnImGuiRender();
-
-    void SetCurrentDirectory(const std::filesystem::path &path) { m_CurrentDirectory = path; }
 
 private:
     std::filesystem::path m_CurrentDirectory;

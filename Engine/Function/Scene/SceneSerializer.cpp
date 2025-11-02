@@ -106,7 +106,7 @@ void MCEngine::SceneSerializer::Serialize(const std::shared_ptr<Scene> &scene, c
                 continue;
             }
 
-            if (!registry.get<MCEngine::RelationshipComponent>(entity).Parent)
+            if (!registry.get<MCEngine::RelationshipComponent>(entity).GetParent())
                 SerializeEntity(out, {entity, &registry});
         }
         out << YAML::EndSeq;
@@ -370,10 +370,7 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
         {
             Entity childEntity = DeserializeEntity(scene, childData);
             if (childEntity)
-            {
-                childEntity.GetComponent<RelationshipComponent>()->Parent = deserializedEntity;
-                deserializedEntity.GetComponent<RelationshipComponent>()->AddChild(childEntity);
-            }
+                RelationshipComponent::SetParentChild(deserializedEntity, childEntity);
         }
     }
 

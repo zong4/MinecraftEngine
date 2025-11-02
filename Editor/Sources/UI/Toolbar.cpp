@@ -17,7 +17,7 @@ void MCEditor::Toolbar::OnImGuiRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2)); // todo: it is hack!
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
     ImGui::Begin("##toolbar", nullptr,
                  ImGuiWindowFlags_NoTitleBar |            // ❌ 无标题栏

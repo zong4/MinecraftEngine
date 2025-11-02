@@ -15,7 +15,9 @@ public:
     void OnImGuiRender();
 
 private:
-    void DrawEntityNode(MCEngine::Entity entity);
+    void DrawEntityNode(const MCEngine::Entity &entity);
+    void DrawContextMenu(const MCEngine::Entity &parent = MCEngine::Entity());
+    static void DrawContextItem(const MCEngine::Entity &parent, std::function<MCEngine::Entity()> createFunction);
 };
 
 } // namespace MCEditor

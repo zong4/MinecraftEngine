@@ -4,7 +4,6 @@
 #include <imgui.h>
 // After import imgui
 #include "ImGuizmo/ImGuizmo.h"
-#include <iostream>
 
 MCEditor::SceneViewport::SceneViewport() { m_Camera = SceneManager::GetInstance().GetEditorScene()->GetMainCamera(); }
 
@@ -114,27 +113,20 @@ void MCEditor::SceneViewport::RenderGizmos()
 
         if (ImGuizmo::IsUsing())
         {
-            auto &&relationship = selectedEntity.GetComponent<MCEngine::RelationshipComponent>();
-            if (relationship->Parent)
+            glm::mat4 localTransform = transform;
+            auto &&relationshipParent = selectedEntity.GetComponent<MCEngine::RelationshipComponent>()->GetParent();
+            if (relationshipParent)
             {
                 glm::mat4 parentTransform =
-                    relationship->Parent.GetComponent<MCEngine::TransformComponent>()->GetTransformMatrix();
-                glm::mat4 localTransform = glm::inverse(parentTransform) * transform;
+                    relationshipParent.GetComponent<MCEngine::TransformComponent>()->GetTransformMatrix();
+                localTransform = glm::inverse(parentTransform) * transform;
+            }
 
-                glm::vec3 position, rotation, scale;
-                MCEngine::Math::DecomposeTransform(localTransform, position, rotation, scale);
-                transformComponent->Position = position;
-                transformComponent->SetRotationRadians(rotation);
-                transformComponent->Scale = scale;
-            }
-            else
-            {
-                glm::vec3 position, rotation, scale;
-                MCEngine::Math::DecomposeTransform(transform, position, rotation, scale);
-                transformComponent->Position = position;
-                transformComponent->SetRotationRadians(rotation);
-                transformComponent->Scale = scale;
-            }
+            glm::vec3 position, rotation, scale;
+            MCEngine::Math::DecomposeTransform(localTransform, position, rotation, scale);
+            transformComponent->Position = position;
+            transformComponent->SetRotationRadians(rotation);
+            transformComponent->Scale = scale;
         }
     }
 }
@@ -145,13 +137,12 @@ void MCEditor::SceneViewport::PickEntity()
 
     if (m_Hovered && !ImGuizmo::IsUsing() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        // ImVec2 mouseInViewport = ImGui::GetMousePos() - ImGui::GetWindowPos() - ImGui::GetWindowContentRegionMin();
+        ImVec2 mouseInViewport = {
+            ImGui::GetMousePos().x - ImGui::GetWindowPos().x - ImGui::GetWindowContentRegionMin().x,
+            ImGui::GetMousePos().y - ImGui::GetWindowPos().y - ImGui::GetWindowContentRegionMin().y};
+        int pixelX = static_cast<int>(mouseInViewport.x);
+        int pixelY = static_cast<int>(m_ViewportSize.y - mouseInViewport.y); // Invert Y axis
         SceneManager::GetInstance().SetSelectedEntity(
-            (entt::entity)(m_EntityPickingFBO->PickPixel(
-                               (int)(ImGui::GetMousePos().x - ImGui::GetWindowPos().x -
-                                     ImGui::GetWindowContentRegionMin().x),
-                               (int)(m_ViewportSize.y - (ImGui::GetMousePos().y - ImGui::GetWindowPos().y -
-                                                         ImGui::GetWindowContentRegionMin().y))) -
-                           1));
+            (entt::entity)(m_EntityPickingFBO->PickPixel(pixelX, pixelY) - 1));
     }
 }

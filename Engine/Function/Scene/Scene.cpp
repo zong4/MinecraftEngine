@@ -26,7 +26,7 @@ void MCEngine::Scene::Update(float deltaTime)
     for (auto &&entity : view)
     {
         auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
-        if (!relationship.Parent)
+        if (!relationship.GetParent())
         {
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
         }
@@ -194,18 +194,16 @@ void MCEngine::Scene::DeleteEntity(const Entity &entity)
     auto &&relationship = entity.GetComponent<RelationshipComponent>();
     if (relationship)
     {
-        auto &&relationshipParent = relationship->Parent.GetComponent<RelationshipComponent>();
-        if (relationshipParent)
-            relationshipParent->RemoveChild(entity);
-
-        auto &&children = relationship->GetChildren();
-        for (auto &&child : children)
+        auto childrenCopy = relationship->GetChildren();
+        for (auto &&child : childrenCopy)
             DeleteEntity(child);
+        RelationshipComponent::SetParentChild(Entity(), entity);
     }
 
     // Call OnDestroy for NativeScriptComponent
-    if (entity.HasComponent<NativeScriptComponent>())
-        entity.GetComponent<NativeScriptComponent>()->DestroyScript();
+    auto &&nativeScript = entity.GetComponent<NativeScriptComponent>();
+    if (nativeScript)
+        nativeScript->DestroyScript();
 
     m_Registry.destroy(entity.GetHandle());
 }
