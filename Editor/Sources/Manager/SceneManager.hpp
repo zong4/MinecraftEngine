@@ -17,12 +17,12 @@ public:
 
     // Setters
     void SetSelectedEntity(entt::entity entity);
-    void SetSelectedEntity(const MCEngine::Entity &entity) { m_SelectedEntity = entity; }
+    void SetSelectedEntity(MCEngine::Entity entity) { m_SelectedEntity = entity; }
     void SetActiveScene(const std::shared_ptr<MCEngine::Scene> &scene);
 
 public:
     void NewExampleScene();
-    void OpenScene(std::string filepath);
+    void OpenScene(const std::string &filepath);
     void OpenSceneDialog();
     void SaveSceneAsDialog() const;
 
@@ -36,7 +36,8 @@ private:
     SceneManager();
     ~SceneManager() = default;
 
-    void NewEmptyScene();
+    void NewEmptyScene() { SetActiveScene(std::make_shared<MCEngine::Scene>()); }
+    void NewWelcomeScene();
 };
 
 } // namespace MCEditor

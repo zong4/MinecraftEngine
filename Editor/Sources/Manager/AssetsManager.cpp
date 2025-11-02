@@ -14,7 +14,6 @@ void MCEditor::AssetsManager::AddAsset(const std::filesystem::path &filepath)
 
     std::string relativePath =
         std::filesystem::relative(filepath, ConfigManager::GetInstance().GetAssetsPath()).string();
-
     if (ConfigManager::IsTexture(filepath))
     {
         MCEngine::TextureLibrary::GetInstance().AddTexture(relativePath,
@@ -33,6 +32,7 @@ MCEditor::AssetsManager::AssetsManager()
         return;
     }
 
+    // Recursively add all assets in the assets directory
     for (const auto &entry : std::filesystem::recursive_directory_iterator(path))
     {
         if (entry.is_regular_file())
