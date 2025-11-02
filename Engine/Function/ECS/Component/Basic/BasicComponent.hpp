@@ -16,23 +16,23 @@ public:
 struct RelationshipComponent
 {
 public:
-    RelationshipComponent(const Entity &parent = Entity()) : Parent(parent) {}
+    RelationshipComponent(Entity parent = Entity()) : Parent(parent) {}
 
     // Getters
-    const Entity &GetParent() const { return Parent; }
+    Entity GetParent() const { return Parent; }
     const std::vector<Entity> &GetChildren() const { return m_Children; }
 
     // Setters
-    void SetParent(const Entity &parent) { Parent = parent; }
-    void AddChild(const Entity &child) { m_Children.push_back(child); }
-    void RemoveChild(const Entity &child)
+    void SetParent(Entity parent) { Parent = parent; }
+    void AddChild(Entity child) { m_Children.push_back(child); }
+    void RemoveChild(Entity child)
     {
         m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
     }
     void ClearChildren() { m_Children.clear(); }
 
 public:
-    static void SetParentChild(const Entity &parent, const Entity &child)
+    static void SetParentChild(Entity parent, Entity child)
     {
         if (auto &&childRelationship = child.GetComponent<RelationshipComponent>())
         {
@@ -52,6 +52,12 @@ public:
 private:
     Entity Parent;
     std::vector<Entity> m_Children;
+};
+
+enum class TransformSpace
+{
+    Local,
+    Global
 };
 
 // Use euler to store
@@ -74,9 +80,9 @@ public:
     const glm::vec3 &GetRotationRadians() const { return m_RotationRadians; }
     glm::vec3 GetRotationEuler() const { return glm::degrees(m_RotationRadians); }
     const glm::mat4 &GetTransformMatrix() const { return m_TransformMatrix; }
-    glm::vec3 GetForward() const { return glm::normalize(m_GlobalRotationQuat * glm::vec3(0, 0, -1)); }
-    glm::vec3 GetRight() const { return glm::normalize(m_GlobalRotationQuat * glm::vec3(1, 0, 0)); }
-    glm::vec3 GetUp() const { return glm::normalize(m_GlobalRotationQuat * glm::vec3(0, 1, 0)); }
+    glm::vec3 GetForward(TransformSpace space) const;
+    glm::vec3 GetRight(TransformSpace space) const;
+    glm::vec3 GetUp(TransformSpace space) const;
 
     // Setters
     void SetRotationRadians(const glm::vec3 &radians);
