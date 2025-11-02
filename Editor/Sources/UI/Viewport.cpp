@@ -7,12 +7,10 @@ void MCEditor::Viewport::Render()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    auto &&scene = SceneManager::GetInstance().GetActiveScene();
-
     // Resize if needed
     if (m_ViewportDirty)
     {
-        scene->Resize(m_ViewportSize.x, m_ViewportSize.y);
+        SceneManager::GetInstance().GetActiveScene()->Resize(m_ViewportSize.x, m_ViewportSize.y);
         m_FBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
         m_MultisampleFBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
 
@@ -21,7 +19,7 @@ void MCEditor::Viewport::Render()
 
     // Render scene
     m_MultisampleFBO->Bind();
-    scene->Render(scene->GetMainCamera());
+    SceneManager::GetInstance().GetActiveScene()->Render(SceneManager::GetInstance().GetActiveScene()->GetMainCamera());
     m_MultisampleFBO->Blit(m_FBO->GetRendererID());
     m_MultisampleFBO->Unbind();
 }
