@@ -31,14 +31,12 @@ void MCEditor::SceneViewport::Render()
 
     // Render scene
     m_MultisampleFBO->Bind();
-    MCEngine::RendererCommand::Clear();
     SceneManager::GetInstance().GetActiveScene()->Render(m_Camera);
     m_MultisampleFBO->Blit(m_FBO->GetRendererID());
     m_MultisampleFBO->Unbind();
 
     // Render entity ID to FBO
     m_EntityPickingFBO->Bind();
-    MCEngine::RendererCommand::Clear();
     SceneManager::GetInstance().GetActiveScene()->RenderColorID();
     m_EntityPickingFBO->Unbind();
 }
@@ -47,19 +45,11 @@ void MCEditor::SceneViewport::OnImGuiRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    // Get the available viewport size and update focus/hovered state
+    MCEditor::Viewport::OnImGuiRender();
+
+    // Update focused/hovered state
     m_Focused = ImGui::IsWindowFocused();
     m_Hovered = ImGui::IsWindowHovered();
-    ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-    if (viewportSize.x > 0 && viewportSize.y > 0)
-    {
-        if (viewportSize.x != m_ViewportSize.x || viewportSize.y != m_ViewportSize.y)
-        {
-            m_ViewportDirty = true;
-            m_ViewportSize = {viewportSize.x, viewportSize.y};
-        }
-    }
-    ImGui::Image((ImTextureID)(intptr_t)m_FBO->GetTexture()->GetRendererID(), viewportSize, ImVec2(0, 1), ImVec2(1, 0));
 
     RenderGizmos();
     PickEntity(); // After RenderGizmos to avoid conflict with ImGuizmo

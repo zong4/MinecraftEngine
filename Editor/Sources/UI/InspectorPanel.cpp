@@ -99,13 +99,6 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
             "Camera Component", selectedEntity, [&selectedEntity](MCEngine::CameraComponent *camera) {
                 // Common
                 {
-                    DrawTable2<MCEngine::CameraComponent>("Primary", [&camera, &selectedEntity]() {
-                        bool primary = camera->Primary;
-                        if (ImGui::Checkbox("##Primary", &primary))
-                        {
-                            SceneManager::GetInstance().GetActiveScene()->SetMainCamera(selectedEntity);
-                        }
-                    });
                     DrawTable2<MCEngine::CameraComponent>("Type", [&camera]() {
                         const char *cameraTypes[] = {"Orthographic", "Perspective"};
                         int currentType = static_cast<int>(camera->Type);
@@ -113,6 +106,16 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                         {
                             camera->Type = static_cast<MCEngine::CameraType>(currentType);
                         }
+                    });
+                    DrawTable2<MCEngine::CameraComponent>("Primary", [&camera, &selectedEntity]() {
+                        bool primary = camera->Primary;
+                        if (ImGui::Checkbox("##Primary", &primary))
+                        {
+                            SceneManager::GetInstance().GetActiveScene()->SetMainCamera(selectedEntity);
+                        }
+                    });
+                    DrawTable2<MCEngine::CameraComponent>("Background Color", [&camera]() {
+                        ImGui::ColorEdit4("##Background Color", glm::value_ptr(camera->BackgroundColor));
                     });
                 }
 

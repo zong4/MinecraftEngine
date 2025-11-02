@@ -9,13 +9,13 @@ class Viewport
 {
 public:
     Viewport() = default;
-    ~Viewport() = default;
+    virtual ~Viewport() = default;
 
 public:
-    void Render();
-    void OnImGuiRender();
+    virtual void Render();
+    virtual void OnImGuiRender();
 
-private:
+protected:
     bool m_ViewportDirty = false;
     glm::vec2 m_ViewportSize;
     std::unique_ptr<MCEngine::FrameBuffer> m_FBO =

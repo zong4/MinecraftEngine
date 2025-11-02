@@ -3,6 +3,7 @@
 #include "Manager/ConfigManager.hpp"
 #include "Scene/EditorScene.hpp"
 #include "Scene/ExampleScene.hpp"
+#include "Scene/WelcomeScene.hpp"
 
 MCEditor::SceneManager &MCEditor::SceneManager::GetInstance()
 {
@@ -12,28 +13,19 @@ MCEditor::SceneManager &MCEditor::SceneManager::GetInstance()
 
 void MCEditor::SceneManager::SetSelectedEntity(entt::entity entity)
 {
-    ENGINE_PROFILE_FUNCTION();
-
     m_SelectedEntity = MCEngine::Entity(entity, &m_ActiveScene->GetRegistry());
 }
 
 void MCEditor::SceneManager::SetActiveScene(const std::shared_ptr<MCEngine::Scene> &scene)
 {
-    ENGINE_PROFILE_FUNCTION();
-
     m_ActiveScene = scene;
     // if (m_ActiveScene)
     //     m_SelectedEntity = MCEngine::Entity((entt::entity)0, &m_ActiveScene->GetRegistry());
 }
 
-void MCEditor::SceneManager::NewExampleScene()
-{
-    ENGINE_PROFILE_FUNCTION();
+void MCEditor::SceneManager::NewExampleScene() { SetActiveScene(std::make_shared<MCEditor::ExampleScene>()); }
 
-    SetActiveScene(std::make_shared<MCEditor::ExampleScene>());
-}
-
-void MCEditor::SceneManager::OpenScene(std::string filepath)
+void MCEditor::SceneManager::OpenScene(const std::string &filepath)
 {
     NewEmptyScene();
     MCEngine::SceneSerializer::Deserialize(m_ActiveScene, filepath);
@@ -66,24 +58,16 @@ void MCEditor::SceneManager::SaveSceneAsDialog() const
         std::string file = filepath;
         if (std::filesystem::path(file).extension() != ".mcscene")
             file += ".mcscene";
-
         MCEngine::SceneSerializer::Serialize(m_ActiveScene, file);
     }
 }
 
 MCEditor::SceneManager::SceneManager()
 {
-    ENGINE_PROFILE_FUNCTION();
-
     m_EditorScene = std::make_shared<MCEditor::EditorScene>();
 
-    NewExampleScene();
+    NewWelcomeScene();
     m_Scenes.push_back(m_ActiveScene);
 }
 
-void MCEditor::SceneManager::NewEmptyScene()
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    SetActiveScene(std::make_shared<MCEngine::Scene>());
-}
+void MCEditor::SceneManager::NewWelcomeScene() { SetActiveScene(std::make_shared<MCEditor::WelcomeScene>()); }
