@@ -111,6 +111,7 @@ void MCEditor::EditorLayer::OnUpdate(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
 
+    // Handle editor actions
     switch (m_Action)
     {
     case EditorAction::NewScene:
@@ -127,6 +128,7 @@ void MCEditor::EditorLayer::OnUpdate(float deltaTime)
     }
     m_Action = EditorAction::None;
 
+    // Update scenes
     if (m_SceneViewport.IsFocused())
     {
         SceneManager::GetInstance().GetEditorScene()->Update(deltaTime);

@@ -50,11 +50,6 @@ protected:
 private:
     void RenderDockSpace();
     void RenderMenubar();
-
-    // Toolbar
-    void RenderToolbar();
-    void OnScenePlay();
-    void OnSceneStop();
 };
 
 } // namespace MCEditor
