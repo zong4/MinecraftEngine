@@ -28,18 +28,20 @@ void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
         });
 
         // MouseEvent
-        dispatcher.Dispatch<MCEngine::MouseButtonEvent>([this](MCEngine::MouseButtonEvent &event) {
-            MCEngine::MouseLibrary::GetInstance().SetButtonAction(event.GetCode(), event.GetAction());
-            return false;
-        });
-        dispatcher.Dispatch<MCEngine::MouseMoveEvent>([this](MCEngine::MouseMoveEvent &event) {
-            MCEngine::MouseLibrary::GetInstance().SetPosition(event.GetX(), event.GetY());
-            return false;
-        });
-        dispatcher.Dispatch<MCEngine::MouseScrollEvent>([this](MCEngine::MouseScrollEvent &event) {
-            MCEngine::MouseLibrary::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
-            return false;
-        });
+        {
+            dispatcher.Dispatch<MCEngine::MouseButtonEvent>([this](MCEngine::MouseButtonEvent &event) {
+                MCEngine::MouseLibrary::GetInstance().SetButtonAction(event.GetCode(), event.GetAction());
+                return false;
+            });
+            dispatcher.Dispatch<MCEngine::MouseMoveEvent>([this](MCEngine::MouseMoveEvent &event) {
+                MCEngine::MouseLibrary::GetInstance().SetPosition(event.GetX(), event.GetY());
+                return false;
+            });
+            dispatcher.Dispatch<MCEngine::MouseScrollEvent>([this](MCEngine::MouseScrollEvent &event) {
+                MCEngine::MouseLibrary::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
+                return false;
+            });
+        }
     }
 
     // Handle key events for editor actions
@@ -53,9 +55,9 @@ void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
 
 bool MCEditor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event)
 {
-    // Key Pressed for imguizmo type change
     if (event.GetAction() == 1)
     {
+        // Key Pressed for gizmo types
         switch (event.GetCode())
         {
         case ENGINE_KEY_Q:
@@ -73,30 +75,21 @@ bool MCEditor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event)
         default:
             break;
         }
-    }
 
-    // Key Pressed for editor actions
-    if (event.GetAction() == 1)
-    {
-        bool control = MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_CONTROL) ||
-                       MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_CONTROL) ||
-                       MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_SUPER) ||
-                       MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_SUPER);
-        bool shift = MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_SHIFT) ||
-                     MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_SHIFT);
-
+        // Key Pressed for editor actions
         switch (event.GetCode())
         {
         case ENGINE_KEY_N:
-            if (control)
+            if (MCEngine::KeyLibrary::GetInstance().IsControlDown())
                 m_Action = EditorAction::NewScene;
             return true;
         case ENGINE_KEY_O:
-            if (control)
+            if (MCEngine::KeyLibrary::GetInstance().IsControlDown())
                 m_Action = EditorAction::OpenScene;
             return true;
         case ENGINE_KEY_S:
-            if (control && shift)
+            if (MCEngine::KeyLibrary::GetInstance().IsControlDown() &&
+                MCEngine::KeyLibrary::GetInstance().IsShiftDown())
                 m_Action = EditorAction::SaveSceneAs;
             return true;
         default:
@@ -112,43 +105,47 @@ void MCEditor::EditorLayer::OnUpdate(float deltaTime)
     ENGINE_PROFILE_FUNCTION();
 
     // Handle editor actions
-    switch (m_Action)
     {
-    case EditorAction::NewScene:
-        SceneManager::GetInstance().NewExampleScene();
-        break;
-    case EditorAction::OpenScene:
-        SceneManager::GetInstance().OpenSceneDialog();
-        break;
-    case EditorAction::SaveSceneAs:
-        SceneManager::GetInstance().SaveSceneAsDialog();
-        break;
-    default:
-        break;
+        switch (m_Action)
+        {
+        case EditorAction::NewScene:
+            SceneManager::GetInstance().NewExampleScene();
+            break;
+        case EditorAction::OpenScene:
+            SceneManager::GetInstance().OpenSceneDialog();
+            break;
+        case EditorAction::SaveSceneAs:
+            SceneManager::GetInstance().SaveSceneAsDialog();
+            break;
+        default:
+            break;
+        }
+        m_Action = EditorAction::None;
     }
-    m_Action = EditorAction::None;
 
     // Update scenes
-    if (m_SceneViewport.IsFocused())
     {
-        SceneManager::GetInstance().GetEditorScene()->Update(deltaTime);
+        if (m_SceneViewport.IsFocused())
+            SceneManager::GetInstance().GetEditorScene()->Update(deltaTime);
+        SceneManager::GetInstance().GetActiveScene()->Update(deltaTime);
     }
-    SceneManager::GetInstance().GetActiveScene()->Update(deltaTime);
 }
 
 void MCEditor::EditorLayer::OnRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    auto &&sceneManager = SceneManager::GetInstance();
-
-    // Once per frame
-    sceneManager.GetActiveScene()->PreRender();
-    sceneManager.GetActiveScene()->RenderShadowMap();
+    // Pre-render
+    {
+        SceneManager::GetInstance().GetActiveScene()->PreRender();
+        SceneManager::GetInstance().GetActiveScene()->RenderShadowMap();
+    }
 
     // Render viewports
-    m_GameViewport.Render();
-    m_SceneViewport.Render();
+    {
+        m_GameViewport.Render();
+        m_SceneViewport.Render();
+    }
 }
 
 void MCEditor::EditorLayer::RenderImGui()
@@ -164,35 +161,12 @@ void MCEditor::EditorLayer::RenderImGui()
 
     ImGui::Begin("Game");
     m_GameViewport.OnImGuiRender();
+    m_GameViewport.ReceiveDrop(m_FileBrowserPanel);
     ImGui::End();
 
     ImGui::Begin("Scene");
     m_SceneViewport.OnImGuiRender();
-
-    // Receive drag and drop
-    if (ImGui::BeginDragDropTarget())
-    {
-        if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-        {
-            if (payload->Data)
-            {
-                const char *path = static_cast<const char *>(payload->Data);
-                std::filesystem::path filepath(path);
-                if (std::filesystem::is_directory(filepath))
-                {
-                    m_FileBrowserPanel.SetCurrentDirectory(filepath);
-                }
-                else
-                {
-                    if (ConfigManager::IsScene(filepath))
-                    {
-                        SceneManager::GetInstance().OpenScene(path);
-                    }
-                }
-            }
-        }
-        ImGui::EndDragDropTarget();
-    }
+    m_SceneViewport.ReceiveDrop(m_FileBrowserPanel);
     ImGui::End();
 
     // Logic
@@ -275,9 +249,8 @@ void MCEditor::EditorLayer::RenderMenubar()
                 SceneManager::GetInstance().SaveSceneAsDialog();
 
             if (ImGui::MenuItem("Exit"))
-            {
                 m_Window->SetRunning(false);
-            }
+
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();

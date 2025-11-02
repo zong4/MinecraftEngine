@@ -111,6 +111,7 @@ MCEngine::TextureLibrary::TextureLibrary()
                 return "";
             };
 
+            // Try loading as a cubemap directory
             auto &&right = findFile(entry.path(), "right");
             if (right != "")
             {
@@ -119,7 +120,6 @@ MCEngine::TextureLibrary::TextureLibrary()
                 auto &&bottom = findFile(entry.path(), "bottom");
                 auto &&front = findFile(entry.path(), "front");
                 auto &&back = findFile(entry.path(), "back");
-
                 AddTexture(entry.path().stem().string(), std::make_shared<TextureCube>(std::array<std::string, 6>{
                                                              right, left, top, bottom, front, back}));
             }

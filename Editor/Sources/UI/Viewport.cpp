@@ -1,5 +1,6 @@
 #include "Viewport.hpp"
 
+#include "Manager/ConfigManager.hpp"
 #include "Manager/SceneManager.hpp"
 #include <imgui.h>
 
@@ -18,25 +19,55 @@ void MCEditor::Viewport::Render()
     }
 
     // Render scene
-    m_MultisampleFBO->Bind();
-    SceneManager::GetInstance().GetActiveScene()->Render(SceneManager::GetInstance().GetActiveScene()->GetMainCamera());
-    m_MultisampleFBO->Blit(m_FBO->GetRendererID());
-    m_MultisampleFBO->Unbind();
+    {
+        m_MultisampleFBO->Bind();
+        SceneManager::GetInstance().GetActiveScene()->Render(
+            SceneManager::GetInstance().GetActiveScene()->GetMainCamera());
+        m_MultisampleFBO->Blit(m_FBO->GetRendererID());
+        m_MultisampleFBO->Unbind();
+    }
 }
 
 void MCEditor::Viewport::OnImGuiRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    // Get the available viewport size
     ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-    if (viewportSize.x > 0 && viewportSize.y > 0)
     {
-        if (viewportSize.x != m_ViewportSize.x || viewportSize.y != m_ViewportSize.y)
+        // Check if size changed
+        if (viewportSize.x > 0 && viewportSize.y > 0)
         {
-            m_ViewportDirty = true;
-            m_ViewportSize = {viewportSize.x, viewportSize.y};
+            if (viewportSize.x != m_ViewportSize.x || viewportSize.y != m_ViewportSize.y)
+            {
+                m_ViewportDirty = true;
+                m_ViewportSize = {viewportSize.x, viewportSize.y};
+            }
         }
     }
     ImGui::Image((ImTextureID)(intptr_t)m_FBO->GetTexture()->GetRendererID(), viewportSize, ImVec2(0, 1), ImVec2(1, 0));
+}
+
+void MCEditor::Viewport::ReceiveDrop(FileBrowserPanel &fileBrowserPanel)
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+        {
+            if (payload->Data)
+            {
+                const char *path = static_cast<const char *>(payload->Data);
+                std::filesystem::path filepath(path);
+                if (std::filesystem::is_directory(filepath))
+                    fileBrowserPanel.SetCurrentDirectory(filepath);
+                else
+                {
+                    if (ConfigManager::IsScene(filepath))
+                        SceneManager::GetInstance().OpenScene(path);
+                }
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
 }

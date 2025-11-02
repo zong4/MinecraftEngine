@@ -92,11 +92,13 @@ MCEngine::ShaderLibrary::ShaderLibrary()
         {
             std::string shaderName = entry.path().stem().string();
 
+            // Load fragment shader
             std::filesystem::path fragmentPath = entry.path();
             std::ifstream fragmentFile(fragmentPath);
             std::string fragmentSource =
                 std::string((std::istreambuf_iterator<char>(fragmentFile)), std::istreambuf_iterator<char>());
 
+            // Load vertex shader
             std::string vertexSource = commonVertexSource;
             std::filesystem::path vertexPath = entry.path();
             vertexPath.replace_extension(".vs");
@@ -117,6 +119,7 @@ MCEngine::ShaderLibrary::ShaderLibrary()
                 continue;
             }
 
+            // Load geometry shader if exists
             std::filesystem::path geometryPath = entry.path();
             geometryPath.replace_extension(".gs");
             if (std::filesystem::exists(geometryPath))

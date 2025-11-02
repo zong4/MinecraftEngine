@@ -14,6 +14,8 @@ public:
     bool IsKeyDown(int keyCode) const;
     bool IsKeyPressed(int keyCode) const;
     bool IsKeyReleased(int keyCode) const;
+    bool IsControlDown() const;
+    bool IsShiftDown() const;
 
     // Setters
     void SetKeyAction(int keyCode, int action) { m_KeyStates[keyCode] = action; }
