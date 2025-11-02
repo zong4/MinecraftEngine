@@ -1,12 +1,12 @@
-#include "KeyCodeLibrary.hpp"
+#include "KeyLibrary.hpp"
 
-MCEngine::KeyCodeLibrary &MCEngine::KeyCodeLibrary::GetInstance()
+MCEngine::KeyLibrary &MCEngine::KeyLibrary::GetInstance()
 {
-    static KeyCodeLibrary instance;
+    static KeyLibrary instance;
     return instance;
 }
 
-bool MCEngine::KeyCodeLibrary::IsKeyDown(int keyCode) const
+bool MCEngine::KeyLibrary::IsKeyDown(int keyCode) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -18,7 +18,7 @@ bool MCEngine::KeyCodeLibrary::IsKeyDown(int keyCode) const
     return false;
 }
 
-bool MCEngine::KeyCodeLibrary::IsKeyPressed(int keyCode) const
+bool MCEngine::KeyLibrary::IsKeyPressed(int keyCode) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -30,7 +30,7 @@ bool MCEngine::KeyCodeLibrary::IsKeyPressed(int keyCode) const
     return false;
 }
 
-bool MCEngine::KeyCodeLibrary::IsKeyReleased(int keyCode) const
+bool MCEngine::KeyLibrary::IsKeyReleased(int keyCode) const
 {
     ENGINE_PROFILE_FUNCTION();
 

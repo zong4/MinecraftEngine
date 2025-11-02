@@ -5,10 +5,10 @@
 namespace MCEngine
 {
 
-class KeyCodeLibrary
+class KeyLibrary
 {
 public:
-    static KeyCodeLibrary &GetInstance();
+    static KeyLibrary &GetInstance();
 
     // Getters
     bool IsKeyDown(int keyCode) const;
@@ -22,8 +22,8 @@ private:
     std::unordered_map<int, int> m_KeyStates;
 
 private:
-    KeyCodeLibrary() = default;
-    ~KeyCodeLibrary() = default;
+    KeyLibrary() = default;
+    ~KeyLibrary() = default;
 };
 
 } // namespace MCEngine

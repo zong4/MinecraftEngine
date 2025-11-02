@@ -18,7 +18,7 @@ public:
     const glm::vec2 &GetScrollOffset() const { return m_ScrollOffset; }
 
     // Setters
-    void SetButtonState(int button, int action) { m_ButtonStates[button] = action; }
+    void SetButtonAction(int button, int action) { m_ButtonStates[button] = action; }
     void SetPosition(double x, double y);
     void SetScrollOffset(double xOffset, double yOffset) { m_ScrollOffset = {xOffset, yOffset}; }
 

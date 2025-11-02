@@ -23,13 +23,13 @@ void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
 
         // KeyEvent
         dispatcher.Dispatch<MCEngine::KeyEvent>([this](MCEngine::KeyEvent &event) {
-            MCEngine::KeyCodeLibrary::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
+            MCEngine::KeyLibrary::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
             return false;
         });
 
         // MouseEvent
         dispatcher.Dispatch<MCEngine::MouseButtonEvent>([this](MCEngine::MouseButtonEvent &event) {
-            MCEngine::MouseLibrary::GetInstance().SetButtonState(event.GetCode(), event.GetAction());
+            MCEngine::MouseLibrary::GetInstance().SetButtonAction(event.GetCode(), event.GetAction());
             return false;
         });
         dispatcher.Dispatch<MCEngine::MouseMoveEvent>([this](MCEngine::MouseMoveEvent &event) {
@@ -78,12 +78,12 @@ bool MCEditor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event)
     // Key Pressed for editor actions
     if (event.GetAction() == 1)
     {
-        bool control = MCEngine::KeyCodeLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_CONTROL) ||
-                       MCEngine::KeyCodeLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_CONTROL) ||
-                       MCEngine::KeyCodeLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_SUPER) ||
-                       MCEngine::KeyCodeLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_SUPER);
-        bool shift = MCEngine::KeyCodeLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_SHIFT) ||
-                     MCEngine::KeyCodeLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_SHIFT);
+        bool control = MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_CONTROL) ||
+                       MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_CONTROL) ||
+                       MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_SUPER) ||
+                       MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_SUPER);
+        bool shift = MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_LEFT_SHIFT) ||
+                     MCEngine::KeyLibrary::GetInstance().IsKeyDown(ENGINE_KEY_RIGHT_SHIFT);
 
         switch (event.GetCode())
         {
