@@ -59,8 +59,7 @@ void MCEditor::HierarchyPanel::DrawEntityNode(const MCEngine::Entity &entity)
             SceneManager::GetInstance().SetSelectedEntity(MCEngine::Entity());
         }
         ImGui::Separator();
-        DrawContextMenu();
-
+        DrawContextMenu(entity);
         ImGui::EndPopup();
     }
 
