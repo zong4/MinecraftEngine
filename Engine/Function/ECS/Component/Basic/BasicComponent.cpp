@@ -53,7 +53,8 @@ void MCEngine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parent
     m_GlobalRotationQuat = parentRotationQuat * m_RotationQuat;
     for (auto &&child : relationship->GetChildren())
     {
-        child.GetComponent<TransformComponent>()->UpdateTransformMatrix(m_TransformMatrix, m_GlobalRotationQuat,
-                                                                        child.GetComponent<RelationshipComponent>());
+        if (auto &&relationshipChild = child.GetComponent<RelationshipComponent>())
+            child.GetComponent<TransformComponent>()->UpdateTransformMatrix(m_TransformMatrix, m_GlobalRotationQuat,
+                                                                            relationshipChild);
     }
 }

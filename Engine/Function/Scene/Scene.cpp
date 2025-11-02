@@ -2,15 +2,11 @@
 
 MCEngine::Scene::~Scene()
 {
-    ENGINE_PROFILE_FUNCTION();
-
     m_Registry.view<MCEngine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
 }
 
 void MCEngine::Scene::SetMainCamera(const Entity &camera)
 {
-    ENGINE_PROFILE_FUNCTION();
-
     if (m_MainCamera)
         m_MainCamera.GetComponent<CameraComponent>()->Primary = false;
     m_MainCamera = camera;
@@ -20,6 +16,16 @@ void MCEngine::Scene::SetMainCamera(const Entity &camera)
 void MCEngine::Scene::Update(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
+
+    // Handle deleted entities
+    for (auto &&entity : m_DeletedEntities)
+    {
+        // Call OnDestroy for NativeScriptComponent
+        if (auto &&nativeScript = entity.GetComponent<NativeScriptComponent>())
+            nativeScript->DestroyScript();
+        m_Registry.destroy(entity.GetHandle());
+    }
+    m_DeletedEntities.clear();
 
     // Update all transform matrices
     auto &&view = m_Registry.view<TransformComponent, RelationshipComponent>();
@@ -47,60 +53,67 @@ void MCEngine::Scene::PreRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    int squareIndex = 0;
-    std::vector<Vertex2D> squaresVertices;
-    std::vector<unsigned int> squaresIndices;
-    auto &&spriteView = m_Registry.view<MCEngine::TransformComponent, MCEngine::SpriteRendererComponent>();
-    for (auto &&entity : spriteView)
+    // Squares
     {
-        auto &&[transform, sprite] =
-            spriteView.get<MCEngine::TransformComponent, MCEngine::SpriteRendererComponent>(entity);
-
-        // Vertices
-        for (int i = 0; i < 4; i++)
+        int squareIndex = 0;
+        std::vector<Vertex2D> squaresVertices;
+        std::vector<unsigned int> squaresIndices;
+        auto &&spriteView = m_Registry.view<MCEngine::TransformComponent, MCEngine::SpriteRendererComponent>();
+        for (auto &&entity : spriteView)
         {
-            glm::mat4 u_Model = transform.GetTransformMatrix();
-            squaresVertices.push_back(
-                {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentitySquareData.Positions[i], 1.0f)),
-                 g_IdentitySquareData.TexCoords[i],
-                 TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance), sprite.Color});
-        }
+            auto &&[transform, sprite] =
+                spriteView.get<MCEngine::TransformComponent, MCEngine::SpriteRendererComponent>(entity);
 
-        // Indices
-        for (int i = 0; i < 6; i++)
-        {
-            squaresIndices.push_back(g_IdentitySquareData.Indices[i] + squareIndex * 4);
-        }
+            // Vertices
+            for (int i = 0; i < 4; i++)
+            {
+                glm::mat4 u_Model = transform.GetTransformMatrix();
+                squaresVertices.push_back(
+                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentitySquareData.Positions[i], 1.0f)),
+                     g_IdentitySquareData.TexCoords[i],
+                     TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance), sprite.Color});
+            }
 
-        squareIndex++;
+            // Indices
+            for (int i = 0; i < 6; i++)
+            {
+                squaresIndices.push_back(g_IdentitySquareData.Indices[i] + squareIndex * 4);
+            }
+
+            squareIndex++;
+        }
+        m_SquaresCount = squareIndex;
+        VAOLibrary::GetInstance().GetVAO("Squares")->GetVertexBuffer().SetData(
+            squaresVertices.data(), m_SquaresCount * 4 * sizeof(Vertex2D), 0);
+        VAOLibrary::GetInstance().GetVAO("Squares")->GetIndexBuffer().SetData(
+            squaresIndices.data(), m_SquaresCount * 6 * sizeof(unsigned int), 0);
     }
-    m_SquaresCount = squareIndex;
-    VAOLibrary::GetInstance().GetVAO("Squares")->GetVertexBuffer().SetData(squaresVertices.data(),
-                                                                           m_SquaresCount * 4 * sizeof(Vertex2D), 0);
-    VAOLibrary::GetInstance().GetVAO("Squares")->GetIndexBuffer().SetData(squaresIndices.data(),
-                                                                          m_SquaresCount * 6 * sizeof(unsigned int), 0);
 
-    int cubeIndex = 0;
-    std::vector<Vertex3D> cubesVertices;
-    auto &&meshView = m_Registry.view<MCEngine::TransformComponent, MCEngine::MeshRendererComponent>();
-    for (auto &&entity : meshView)
+    // Cubes
     {
-        auto &&[transform, mesh] = meshView.get<MCEngine::TransformComponent, MCEngine::MeshRendererComponent>(entity);
-        for (int i = 0; i < 36; ++i)
+        int cubeIndex = 0;
+        std::vector<Vertex3D> cubesVertices;
+        auto &&meshView = m_Registry.view<MCEngine::TransformComponent, MCEngine::MeshRendererComponent>();
+        for (auto &&entity : meshView)
         {
-            glm::mat4 u_Model = transform.GetTransformMatrix();
-            cubesVertices.push_back(
-                {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentityCubeData.Positions[i], 1.0f)),
-                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_IdentityCubeData.Normals[i]),
-                 g_IdentityCubeData.Positions[i], mesh.MaterialInstance.Color,
-                 glm::vec4(mesh.MaterialInstance.AmbientStrength, mesh.MaterialInstance.DiffuseStrength,
-                           mesh.MaterialInstance.SpecularStrength, mesh.MaterialInstance.Shininess)});
+            auto &&[transform, mesh] =
+                meshView.get<MCEngine::TransformComponent, MCEngine::MeshRendererComponent>(entity);
+            for (int i = 0; i < 36; ++i)
+            {
+                glm::mat4 u_Model = transform.GetTransformMatrix();
+                cubesVertices.push_back(
+                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentityCubeData.Positions[i], 1.0f)),
+                     glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_IdentityCubeData.Normals[i]),
+                     g_IdentityCubeData.Positions[i], mesh.MaterialInstance.Color,
+                     glm::vec4(mesh.MaterialInstance.AmbientStrength, mesh.MaterialInstance.DiffuseStrength,
+                               mesh.MaterialInstance.SpecularStrength, mesh.MaterialInstance.Shininess)});
+            }
+            cubeIndex++;
         }
-        cubeIndex++;
+        m_CubesCount = cubeIndex;
+        VAOLibrary::GetInstance().GetVAO("Cubes")->GetVertexBuffer().SetData(cubesVertices.data(),
+                                                                             m_CubesCount * 36 * sizeof(Vertex3D), 0);
     }
-    m_CubesCount = cubeIndex;
-    VAOLibrary::GetInstance().GetVAO("Cubes")->GetVertexBuffer().SetData(cubesVertices.data(),
-                                                                         m_CubesCount * 36 * sizeof(Vertex3D), 0);
 }
 
 // todo: only render for the first light for now
@@ -121,7 +134,8 @@ void MCEngine::Scene::RenderShadowMap() const
         shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
         shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f));
 
-        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+        if (m_CubesCount > 0)
+            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
 
         m_ShadowMap->Unbind();
 
@@ -136,8 +150,10 @@ void MCEngine::Scene::Render(const Entity &camera) const
     ENGINE_PROFILE_FUNCTION();
 
     // Clear buffers
-    MCEngine::RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
-    MCEngine::RendererCommand::Clear();
+    {
+        MCEngine::RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
+        MCEngine::RendererCommand::Clear();
+    }
 
     // Update camera
     {
@@ -157,9 +173,11 @@ void MCEngine::Scene::Render(const Entity &camera) const
     }
 
     // Render
-    Render2D();
-    Render3D();
-    RenderSkybox();
+    {
+        Render2D();
+        Render3D();
+        RenderSkybox();
+    }
 }
 
 void MCEngine::Scene::RenderColorID() const
@@ -174,8 +192,10 @@ void MCEngine::Scene::RenderColorID() const
         auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
         shader->Bind();
 
-        VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
-        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+        if (m_SquaresCount > 0)
+            VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
+        if (m_CubesCount > 0)
+            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
 
         shader->Unbind();
     }
@@ -195,27 +215,11 @@ void MCEngine::Scene::Resize(float width, float height)
 
 void MCEngine::Scene::DeleteEntity(const Entity &entity)
 {
-    ENGINE_PROFILE_FUNCTION();
-
     if (!entity)
         return;
 
-    // Remove from parent's children list and Recursively delete children
-    auto &&relationship = entity.GetComponent<RelationshipComponent>();
-    if (relationship)
-    {
-        auto childrenCopy = relationship->GetChildren();
-        for (auto &&child : childrenCopy)
-            DeleteEntity(child);
-        RelationshipComponent::SetParentChild(Entity(), entity);
-    }
-
-    // Call OnDestroy for NativeScriptComponent
-    auto &&nativeScript = entity.GetComponent<NativeScriptComponent>();
-    if (nativeScript)
-        nativeScript->DestroyScript();
-
-    m_Registry.destroy(entity.GetHandle());
+    DeleteEntityReal(entity);
+    RelationshipComponent::SetParentChild(Entity(), entity);
 }
 
 MCEngine::Entity MCEngine::Scene::AddEmptyEntity(const std::string &name, const TransformComponent &transform)
@@ -268,6 +272,24 @@ MCEngine::Entity MCEngine::Scene::AddSkybox(const std::string &name, const Skybo
     return entity;
 }
 
+void MCEngine::Scene::DeleteEntityReal(const Entity &entity)
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    if (!entity)
+        return;
+
+    // Recursively delete children
+    if (auto &&relationship = entity.GetComponent<RelationshipComponent>())
+    {
+        for (auto &&child : relationship->GetChildren())
+            DeleteEntityReal(child);
+    }
+
+    // Mark entity for deletion at the end of the frame
+    m_DeletedEntities.push_back(entity);
+}
+
 // todo: check
 void MCEngine::Scene::Render2D() const
 {
@@ -276,6 +298,7 @@ void MCEngine::Scene::Render2D() const
     auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("Texture");
     shader->Bind();
 
+    // Bind textures
     auto &&spriteView = m_Registry.view<MCEngine::SpriteRendererComponent>();
     for (auto &&entity : spriteView)
     {
@@ -285,7 +308,9 @@ void MCEngine::Scene::Render2D() const
             sprite.TextureInstance->Bind(texID);
     }
 
-    VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
+    // Render squares
+    if (m_SquaresCount > 0)
+        VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
     TextureLibrary::GetInstance().ClearTextureSlots();
 
     shader->Unbind();
@@ -346,7 +371,8 @@ void MCEngine::Scene::Render3D() const
 
     TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
     shader->SetUniformInt("u_Texture", lightIndex + 1);
-    VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+    if (m_CubesCount > 0)
+        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
     TextureLibrary::GetInstance().ClearTextureSlots();
     shader->Unbind();
 }

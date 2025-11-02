@@ -51,6 +51,7 @@ protected:
     std::string m_Name;
 
 protected:
+    void DeleteEntityReal(const Entity &entity);
     void Render2D() const;
     void Render3D() const;
     void RenderSkybox() const;
@@ -63,6 +64,7 @@ private:
     size_t m_CubesCount = 0;
     std::unique_ptr<MCEngine::FrameBuffer> m_ShadowMap =
         std::make_unique<MCEngine::FrameBuffer>(MCEngine::FrameBufferType::Depth, 1280, 720);
+    std::vector<Entity> m_DeletedEntities = {};
 };
 
 } // namespace MCEngine
