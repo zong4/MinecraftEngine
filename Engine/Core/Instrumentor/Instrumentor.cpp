@@ -26,9 +26,11 @@ void MCEngine::Instrumentor::WriteProfile(const ProfileResult &result)
     if (m_ProfileCount++ > 0)
         m_OutputStream << ",";
 
+    // Sanitize name by replacing double quotes with single quotes
     std::string name = result.Name;
     std::replace(name.begin(), name.end(), '"', '\'');
 
+    // Write profile entry in JSON format
     m_OutputStream << "{";
     m_OutputStream << "\"cat\":\"function\",";
     m_OutputStream << "\"dur\":" << (result.End - result.Start) << ',';
@@ -39,6 +41,7 @@ void MCEngine::Instrumentor::WriteProfile(const ProfileResult &result)
     m_OutputStream << "\"ts\":" << result.Start;
     m_OutputStream << "}";
 
+    // Flush the output stream
     m_OutputStream.flush();
 }
 
