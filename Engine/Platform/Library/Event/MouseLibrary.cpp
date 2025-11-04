@@ -8,8 +8,6 @@ MCEngine::MouseLibrary &MCEngine::MouseLibrary::GetInstance()
 
 bool MCEngine::MouseLibrary::IsButtonDown(int button) const
 {
-    ENGINE_PROFILE_FUNCTION();
-
     auto &&it = m_ButtonStates.find(button);
     if (it != m_ButtonStates.end())
     {
@@ -20,8 +18,6 @@ bool MCEngine::MouseLibrary::IsButtonDown(int button) const
 
 bool MCEngine::MouseLibrary::IsButtonPressed(int button) const
 {
-    ENGINE_PROFILE_FUNCTION();
-
     auto &&it = m_ButtonStates.find(button);
     if (it != m_ButtonStates.end())
     {
@@ -32,8 +28,6 @@ bool MCEngine::MouseLibrary::IsButtonPressed(int button) const
 
 bool MCEngine::MouseLibrary::IsButtonReleased(int button) const
 {
-    ENGINE_PROFILE_FUNCTION();
-
     auto &&it = m_ButtonStates.find(button);
     if (it != m_ButtonStates.end())
     {
@@ -44,17 +38,13 @@ bool MCEngine::MouseLibrary::IsButtonReleased(int button) const
 
 void MCEngine::MouseLibrary::SetPosition(double x, double y)
 {
-    ENGINE_PROFILE_FUNCTION();
-
     m_LastPosition = m_Position;
     m_Position = {x, y};
     m_DeltaPosition = m_Position - m_LastPosition;
 }
 
-void MCEngine::MouseLibrary::PostUpdate()
+void MCEngine::MouseLibrary::Clear()
 {
-    ENGINE_PROFILE_FUNCTION();
-
     m_DeltaPosition = {0.0f, 0.0f};
     m_ScrollOffset = {0.0f, 0.0f};
 }

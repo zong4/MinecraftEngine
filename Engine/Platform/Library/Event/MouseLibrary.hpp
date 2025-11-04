@@ -23,7 +23,7 @@ public:
     void SetScrollOffset(double xOffset, double yOffset) { m_ScrollOffset = {xOffset, yOffset}; }
 
 public:
-    void PostUpdate();
+    void Clear();
 
 private:
     std::unordered_map<int, int> m_ButtonStates;

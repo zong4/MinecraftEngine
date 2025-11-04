@@ -23,8 +23,8 @@ public:
 class Window
 {
 public:
-    Window(const WindowProperty &property);
-    ~Window();
+    Window(const WindowProperty &property) : m_Property(property) { Init(); }
+    ~Window() { Shutdown(); }
 
     // Getters
     bool IsRunning() const;
@@ -41,9 +41,9 @@ public:
 
 public:
     // Main loop
-    void OnEvent(Event &e);
+    void OnEvent(Event &e) { m_LayerStack.OnEvent(e); }
     void Update(float deltaTime);
-    void Render();
+    void Render() { m_LayerStack.Render(); }
 
 private:
     bool m_Running = true;

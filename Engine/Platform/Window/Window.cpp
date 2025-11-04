@@ -9,14 +9,8 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-MCEngine::Window::Window(const WindowProperty &property) : m_Property(property) { Init(); }
-
-MCEngine::Window::~Window() { Shutdown(); }
-
 bool MCEngine::Window::IsRunning() const
 {
-    ENGINE_PROFILE_FUNCTION();
-
     return !glfwWindowShouldClose(static_cast<GLFWwindow *>(m_NativeWindow)) && m_Running;
 }
 
@@ -29,37 +23,19 @@ void MCEngine::Window::SetVSync(bool enabled)
     LOG_ENGINE_INFO("VSync " + std::string(enabled ? "enabled" : "disabled"));
 }
 
-void MCEngine::Window::OnEvent(Event &event)
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    m_LayerStack.OnEvent(event);
-}
-
 void MCEngine::Window::Update(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
+
+    // Pre-update
+    MCEngine::MouseLibrary::GetInstance().Clear();
+    glfwPollEvents();
 
     // Update
     m_LayerStack.Update(deltaTime);
 
     // Post-update
     glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));
-
-    MCEngine::MouseLibrary::GetInstance().PostUpdate();
-    glfwPollEvents();
-}
-
-void MCEngine::Window::Render()
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    // Pre-render
-    MCEngine::RendererCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
-    MCEngine::RendererCommand::Clear();
-
-    // Render
-    m_LayerStack.Render();
 }
 
 void MCEngine::Window::Init()
