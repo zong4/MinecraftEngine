@@ -1,6 +1,6 @@
 #include "Window.hpp"
 
-#include "Library/Event/MouseLibrary.hpp"
+#include "Event/MouseLibrary.hpp"
 #include "Renderer/RendererCommand.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
