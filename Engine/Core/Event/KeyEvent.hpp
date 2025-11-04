@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Event/Event.hpp"
+#include "Event.hpp"
 
 namespace MCEngine
 {
 
-class KeyEvent : public Event
+class KeyEvent : public MCEngine::Event
 {
 public:
     KeyEvent(int code, int action) : m_Code(code), m_Action(action) {}
