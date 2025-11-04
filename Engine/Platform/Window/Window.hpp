@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Layer/LayerStack.hpp"
 #include "Renderer/RendererAPIProperty.hpp"
 
 namespace MCEngine
