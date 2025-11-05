@@ -88,9 +88,9 @@ The goal is to understand — and control — **every piece** of a voxel-based e
 ---
 
 ## 📬 Contact
-**Author:** [Zong]
-**GitHub:** [github.com/zong4](https://github.com/zong4)
-**Portfolio:** [zong4.github.io](https://zong4.github.io)
-**Email:** [zzoonng@163.com](mailto:zzoonng@163.com)
+**Author:** [Zong]   
+**GitHub:** [github.com/zong4](https://github.com/zong4) 
+**Portfolio:** [zong4.github.io](https://zong4.github.io)   
+**Email:** [zzoonng@163.com](mailto:zzoonng@163.com)  
 
 > _“Play is the highest form of research.” – Albert Einstein_
