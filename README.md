@@ -19,7 +19,7 @@ By narrowing the engine’s scope, development can target **core voxel mechanics
 ## 🛠️ Current Features
 
 <p align="center">
-  <img src="./Assets/Editor.png" alt="Editor" width="400">
+  <img src="./Assets/Editor.png" alt="Editor" width="800">
 </p>
 
 - [x] **OpenGL-based rendering** of squares and cubes using the **Blinn–Phong lighting model** — optimized to draw entire scenes in a **single draw call**.  
