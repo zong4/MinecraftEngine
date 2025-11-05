@@ -54,11 +54,11 @@ cd MinecraftEngine
 xmake run -y
 ```
 
-   💡 xmake will automatically download and compile all required dependencies on first run.
+> 💡 xmake will automatically download and compile all required dependencies on first run.
 
 ## 💡 Design Philosophy
 
-   “Focus on what matters for voxel games.”
+> “Focus on what matters for voxel games.”
 
 This engine deliberately avoids unnecessary systems (animation controllers, complex asset pipelines, etc.) to prioritize:
 
@@ -88,9 +88,9 @@ The goal is to understand — and control — **every piece** of a voxel-based e
 ---
 
 ## 📬 Contact
-**Author:** [Zong]  
+**Author:** [Zong]
 **GitHub:** [github.com/zong4](https://github.com/zong4)
-**Portfolio:** [zong4.github.io](https://zong4.github.io)  
+**Portfolio:** [zong4.github.io](https://zong4.github.io)
 **Email:** [zzoonng@163.com](mailto:zzoonng@163.com)
 
 > _“Play is the highest form of research.” – Albert Einstein_
