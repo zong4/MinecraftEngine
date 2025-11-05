@@ -1,45 +1,96 @@
-# Minecraft Engine
+# 🧱 Minecraft Engine
 
-A game engine created for games like Minecraft and Terraria.
+> A custom **game engine** built from scratch for voxel-style games like *Minecraft* and *Terraria* — optimized for procedural world generation, chunk rendering, and simulation performance.
 
-<!-- ![Logo](./Assets/Logo1.png) -->
 <p align="center">
   <img src="./Assets/Logo.png" alt="Logo" width="200">
 </p>
 
-## Why is it
+---
 
-Like I said, this engine is made for Minecraft-like games, so it doesn’t have some of the fancy features you’d find in Unity or Unreal Engine. But that also means I can focus more on performance and make it run perfectly for Minecraft-style gameplay.
+## 🚀 Overview
 
-## What I do
+This engine is designed specifically for **Minecraft-like voxel games**, focusing on performance, chunk management, and real-time procedural generation — without the overhead of general-purpose engines like Unity or Unreal.
+
+By narrowing the engine’s scope, development can target **core voxel mechanics** (terrain, lighting, rendering, and physics) with maximum efficiency.
+
+---
+
+## 🛠️ Current Features
 
 ![Editor](./Assets/Editor.png)
 
-- [x] Implemented rendering of squares and cubes in OpenGL using the Blinn–Phong lighting model with a single draw call.
-- [x] Added basic UI support via [Dear ImGui](https://github.com/ocornut/imgui).
+- [x] **OpenGL-based rendering** of squares and cubes using the **Blinn–Phong lighting model** — optimized to draw entire scenes in a **single draw call**.  
+- [x] Integrated **[Dear ImGui](https://github.com/ocornut/imgui)** for lightweight, real-time UI controls and debugging interfaces.  
+- [x] Basic window management, input handling, and rendering loop via C++/OpenGL backend.  
+- [x] Configurable camera controls and shader-based material system.  
 
-## How to use
+---
 
-1. Clone the repository.
-   ```bash
-   git clone https://github.com/zong4/MinecraftEngine.git
-   ```
-2. Install [XMake](https://xmake.io/guide/quick-start.html) if you haven’t already.
-3. Build and run the project, xmake will automatically download and build the dependencies for you.
-   ```bashfind . -name "*.cpp" -o -name "*.h" | xargs wc -l
-   cd MinecraftEngine
-   xmake run -y
-   ```
+## 🧩 Planned Features
 
-## What we plan
+- [ ] **Additional Primitive Support** — spheres, cylinders, cones, and more.  
+- [ ] **Procedural Generation Algorithms** — Perlin Noise, Simplex Noise, and hybrid terrain methods.  
+- [ ] **World Generation Techniques** — Chunked LOD, Greedy Meshing, seamless world streaming.  
+- [ ] **Basic Physics System** — rigid bodies, collisions, and forces.  
+- [ ] **Physics-Driven Animation** — ragdoll, procedural motion, and dynamic interaction.  
 
-- [ ] Add support for additional basic shapes such as spheres, cylinders, and cones, etc.
-- [ ] Implement common procedural generation algorithms, including Perlin Noise and Simplex Noise, etc.
-- [ ] Implement world generation techniques such as Chunked LOD and Greedy Meshing, etc.
-- [ ] Implement basic physics systems (rigid bodies, collisions, forces, etc.)
-- [ ] Implement physics-driven animation (ragdoll, procedural motion, and dynamic interaction)
+---
 
-## References:
+## ⚙️ Build & Run
 
-- [OpenGL](https://learnopengl.com)
-- [Game Engine Architecture](https://github.com/TheCherno/Hazel)
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/zong4/MinecraftEngine.git
+```
+
+### 2️⃣ Install dependencies
+
+Make sure [**XMake**](https://xmake.io) is installed on your system.
+
+### 3️⃣ Build and run
+```bash
+cd MinecraftEngine
+xmake run -y
+```
+
+   💡 xmake will automatically download and compile all required dependencies on first run.
+
+## 💡 Design Philosophy
+
+   “Focus on what matters for voxel games.”
+
+This engine deliberately avoids unnecessary systems (animation controllers, complex asset pipelines, etc.) to prioritize:
+
+* **Efficiency** — small codebase, optimized memory layout
+* **Clarity** — clean architecture for rapid iteration
+* **Flexibility** — modular design for future expansion
+
+The goal is to understand — and control — **every piece** of a voxel-based engine from the ground up.
+
+## 📚 References & Inspirations
+* 📘 [OpenGL Tutorials – LearnOpenGL.com](https://learnopengl.com/)
+* 🧠 [Game Engine Architecture (by Jason Gregory)](https://www.gameenginearchitecture.com/)
+* 🧱 [Hazel Engine (by TheCherno)](https://github.com/TheCherno/Hazel)
+
+## 🧠 Tech Stack
+
+| Category              | Technology                               |
+| --------------------- | ---------------------------------------- |
+| **Language**          | C++17                                    |
+| **Build System**      | [XMake](https://xmake.io)                |
+| **Rendering**         | OpenGL                                   |
+| **UI Layer**          | Dear ImGui                               |
+| **Lighting**          | Blinn–Phong model                        |
+| **Physics (planned)** | Custom lightweight solver                |
+| **Platform**          | Windows & MacOS                          |
+
+---
+
+## 📬 Contact
+**Author:** [Zong]  
+**GitHub:** [github.com/zong4](https://github.com/zong4)
+**Portfolio:** [zong4.github.io](https://zong4.github.io)  
+**Email:** [zzoonng@163.com](mailto:zzoonng@163.com)
+
+> _“Play is the highest form of research.” – Albert Einstein_
