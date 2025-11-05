@@ -18,7 +18,9 @@ By narrowing the engine’s scope, development can target **core voxel mechanics
 
 ## 🛠️ Current Features
 
-![Editor](./Assets/Editor.png)
+<p align="center">
+  <img src="./Assets/Editor.png" alt="Editor" width="400">
+</p>
 
 - [x] **OpenGL-based rendering** of squares and cubes using the **Blinn–Phong lighting model** — optimized to draw entire scenes in a **single draw call**.  
 - [x] Integrated **[Dear ImGui](https://github.com/ocornut/imgui)** for lightweight, real-time UI controls and debugging interfaces.  
