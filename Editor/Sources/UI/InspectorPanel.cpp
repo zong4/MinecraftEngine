@@ -124,6 +124,12 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                 {
                     DrawTable2<MCEngine::CameraComponent>(
                         "Scale", [&camera]() { ImGui::DragFloat("##Scale", &camera->Scale, 1.0f, 0.1f, 10.0f); });
+                    DrawTable2<MCEngine::CameraComponent>("Near Clip", [&camera]() {
+                        ImGui::DragFloat("##Near Clip", &camera->NearClip, 0.1f, 0.01f, 100.0f);
+                    });
+                    DrawTable2<MCEngine::CameraComponent>("Far Clip", [&camera]() {
+                        ImGui::DragFloat("##Far Clip", &camera->FarClip, 1.0f, 10.0f, 1000.0f);
+                    });    
                 }
 
                 // Perspective
