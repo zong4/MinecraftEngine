@@ -11,8 +11,9 @@ struct SpriteRendererComponent
     glm::vec4 Color;
 
 public:
-    SpriteRendererComponent(const std::shared_ptr<Texture2D> &texture = Texture2D::WhiteTexture(),
-                            const glm::vec4 &color = glm::vec4(1.0f))
+    SpriteRendererComponent(
+        const std::shared_ptr<Texture2D> &texture = TextureLibrary::GetInstance().GetTexture2D("DefaultTexture"),
+        const glm::vec4 &color = glm::vec4(1.0f))
         : TextureInstance(texture), Color(color)
     {
     }

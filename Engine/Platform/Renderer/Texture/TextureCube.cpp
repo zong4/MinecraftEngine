@@ -2,6 +2,19 @@
 
 #include <glad/glad.h>
 
+MCEngine::TextureCube::TextureCube(const glm::vec4 &color)
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    glGenTextures(1, &m_RendererID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
+    for (unsigned int i = 0; i < 6; i++)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+    }
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
 MCEngine::TextureCube::TextureCube(const std::array<std::string, 6> &faces) : Texture()
 {
     // std::array<std::string, 6> faces = {directory + "/right.jpg",  directory + "/left.jpg",  directory + "/top.jpg",
@@ -37,11 +50,14 @@ MCEngine::TextureCube::TextureCube(const std::array<std::string, 6> &faces) : Te
     LOG_ENGINE_TRACE("TextureCube created with RendererID: " + std::to_string((uint32_t)m_RendererID));
 }
 
-MCEngine::TextureCube::~TextureCube()
+MCEngine::TextureCube::~TextureCube() { glDeleteTextures(1, &m_RendererID); }
+
+std::shared_ptr<MCEngine::TextureCube> MCEngine::TextureCube::WhiteTexture()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    glDeleteTextures(1, &m_RendererID);
+    static std::shared_ptr<TextureCube> whiteTexture = std::make_shared<TextureCube>(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    return whiteTexture;
 }
 
 void MCEngine::TextureCube::Bind(unsigned int slot) const

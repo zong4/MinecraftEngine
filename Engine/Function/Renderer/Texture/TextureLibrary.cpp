@@ -84,6 +84,9 @@ MCEngine::TextureLibrary::TextureLibrary()
 {
     ENGINE_PROFILE_FUNCTION();
 
+    AddTexture("DefaultTexture", Texture2D::WhiteTexture());
+    AddTexture("DefaultCubeMap", TextureCube::WhiteTexture());
+
     std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Images/");
     if (!std::filesystem::exists(path))
     {
