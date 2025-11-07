@@ -1,4 +1,6 @@
-#include "UniformBuffer.hpp"
+#pragma once
+
+#include "pch.hpp"
 
 namespace MCEngine
 {

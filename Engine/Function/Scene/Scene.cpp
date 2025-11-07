@@ -1,5 +1,8 @@
 #include "Scene.hpp"
 
+#include "Renderer/Buffer/UniformBufferLibrary.hpp"
+#include "Renderer/Shader/ShaderLibrary.hpp"
+
 MCEngine::Scene::~Scene()
 {
     m_Registry.view<MCEngine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
