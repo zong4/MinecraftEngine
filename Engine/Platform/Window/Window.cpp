@@ -1,6 +1,6 @@
 #include "Window.hpp"
 
-#include "Event/MouseLibrary.hpp"
+#include "Event/Input.hpp"
 #include "Renderer/RendererCommand.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -24,7 +24,7 @@ void MCEngine::Window::Update(float deltaTime)
     ENGINE_PROFILE_FUNCTION();
 
     // Pre-update
-    MCEngine::MouseLibrary::GetInstance().Clear();
+    Input::GetInstance().Clear();
     glfwPollEvents();
 
     // Update

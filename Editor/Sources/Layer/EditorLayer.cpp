@@ -23,22 +23,22 @@ void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
 
         // KeyEvent
         dispatcher.Dispatch<MCEngine::KeyEvent>([this](MCEngine::KeyEvent &event) {
-            MCEngine::KeyLibrary::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
+            MCEngine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
             return false;
         });
 
         // MouseEvent
         {
             dispatcher.Dispatch<MCEngine::MouseButtonEvent>([this](MCEngine::MouseButtonEvent &event) {
-                MCEngine::MouseLibrary::GetInstance().SetButtonAction(event.GetCode(), event.GetAction());
+                MCEngine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
                 return false;
             });
             dispatcher.Dispatch<MCEngine::MouseMoveEvent>([this](MCEngine::MouseMoveEvent &event) {
-                MCEngine::MouseLibrary::GetInstance().SetPosition(event.GetX(), event.GetY());
+                MCEngine::Input::GetInstance().SetPosition(event.GetX(), event.GetY());
                 return false;
             });
             dispatcher.Dispatch<MCEngine::MouseScrollEvent>([this](MCEngine::MouseScrollEvent &event) {
-                MCEngine::MouseLibrary::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
+                MCEngine::Input::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
                 return false;
             });
         }
@@ -80,16 +80,15 @@ bool MCEditor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event)
         switch (event.GetCode())
         {
         case ENGINE_KEY_N:
-            if (MCEngine::KeyLibrary::GetInstance().IsControlDown())
+            if (MCEngine::Input::GetInstance().IsControlDown())
                 m_Action = EditorAction::NewScene;
             return true;
         case ENGINE_KEY_O:
-            if (MCEngine::KeyLibrary::GetInstance().IsControlDown())
+            if (MCEngine::Input::GetInstance().IsControlDown())
                 m_Action = EditorAction::OpenScene;
             return true;
         case ENGINE_KEY_S:
-            if (MCEngine::KeyLibrary::GetInstance().IsControlDown() &&
-                MCEngine::KeyLibrary::GetInstance().IsShiftDown())
+            if (MCEngine::Input::GetInstance().IsControlDown() && MCEngine::Input::GetInstance().IsShiftDown())
                 m_Action = EditorAction::SaveSceneAs;
             return true;
         default:

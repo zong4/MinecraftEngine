@@ -21,17 +21,17 @@ void MCEditor::CameraController::OnUpdate(float deltaTime)
         return;
 
     // Get mouse input
-    glm::vec2 mouseDelta = MouseLibrary::GetInstance().GetDeltaPosition();
-    glm::vec2 scrollOffset = MouseLibrary::GetInstance().GetScrollOffset();
+    glm::vec2 mouseDelta = Input::GetInstance().GetDeltaPosition();
+    glm::vec2 scrollOffset = Input::GetInstance().GetScrollOffset();
 
     // Move
-    if (MouseLibrary::GetInstance().IsButtonDown(ENGINE_MOUSE_BUTTON_LEFT))
+    if (Input::GetInstance().IsKeyDown(ENGINE_MOUSE_BUTTON_LEFT))
         m_Transform->Position += (-m_Transform->GetRight(TransformSpace::Global) * mouseDelta.x +
                                   m_Transform->GetUp(TransformSpace::Global) * mouseDelta.y) *
                                  m_MoveSpeed * deltaTime;
 
     // Rotate
-    if (MouseLibrary::GetInstance().IsButtonDown(ENGINE_MOUSE_BUTTON_RIGHT))
+    if (Input::GetInstance().IsKeyDown(ENGINE_MOUSE_BUTTON_RIGHT))
         m_Transform->SetRotationEuler(m_Transform->GetRotationEuler() -
                                       glm::vec3(mouseDelta.y, mouseDelta.x, 0.0f) * m_RotateSpeed * deltaTime);
 

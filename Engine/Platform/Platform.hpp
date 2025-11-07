@@ -2,10 +2,9 @@
 
 #include "pch.hpp"
 
+#include "Event/Input.hpp"
 #include "Event/KeyCode.hpp"
-#include "Event/KeyLibrary.hpp"
 #include "Event/MouseButtonCode.hpp"
-#include "Event/MouseLibrary.hpp"
 #include "ImGui/Font/FontLibrary.hpp"
 #include "ImGui/ImGuiLayer.hpp"
 #include "Renderer/Buffer/FrameBuffer/FrameBuffer.hpp"
