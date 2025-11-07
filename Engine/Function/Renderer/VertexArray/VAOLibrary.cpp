@@ -1,7 +1,5 @@
 #include "VAOLibrary.hpp"
 
-#include <glad/glad.h>
-
 namespace MCEngine
 {
 
@@ -108,11 +106,11 @@ MCEngine::VAOLibrary::VAOLibrary()
     auto &&squaresVAO = std::make_shared<VertexArray>(
         VertexBuffer(MaxSquaresNumber * sizeof(Vertex2D) * 4),
         std::vector<VertexAttribute>{
-            {0, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(Vertex2D), (const void *)(0 * sizeof(float))},
-            {1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (const void *)(1 * sizeof(float))},
-            {2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (const void *)(4 * sizeof(float))},
-            {3, 1, GL_INT, GL_FALSE, sizeof(Vertex2D), (const void *)(6 * sizeof(float))},
-            {4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (const void *)(7 * sizeof(float))}},
+            {0, 1, VertexAttributeType::UnsignedInt, 0, sizeof(Vertex2D), (const void *)(0 * sizeof(float))},
+            {1, 3, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(1 * sizeof(float))},
+            {2, 2, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(4 * sizeof(float))},
+            {3, 1, VertexAttributeType::Int, 0, sizeof(Vertex2D), (const void *)(6 * sizeof(float))},
+            {4, 4, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(7 * sizeof(float))}},
         IndexBuffer(MaxSquaresNumber * sizeof(unsigned int) * 6));
     AddVAO("Squares", squaresVAO);
 
@@ -120,17 +118,17 @@ MCEngine::VAOLibrary::VAOLibrary()
     auto &&cubesVAO = std::make_shared<VertexArray>(
         VertexBuffer(MaxCubesNumber * sizeof(Vertex3D) * 36),
         std::vector<VertexAttribute>{
-            {0, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(Vertex3D), (const void *)(0 * sizeof(float))},
-            {1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (const void *)(1 * sizeof(float))},
-            {2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (const void *)(4 * sizeof(float))},
-            {3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (const void *)(7 * sizeof(float))},
-            {4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (const void *)(10 * sizeof(float))},
-            {5, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex3D), (const void *)(14 * sizeof(float))}});
+            {0, 1, VertexAttributeType::UnsignedInt, 0, sizeof(Vertex3D), (const void *)(0 * sizeof(float))},
+            {1, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(1 * sizeof(float))},
+            {2, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(4 * sizeof(float))},
+            {3, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(7 * sizeof(float))},
+            {4, 4, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(10 * sizeof(float))},
+            {5, 4, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(14 * sizeof(float))}});
     AddVAO("Cubes", cubesVAO);
 
     auto &&vertexArray = std::make_shared<VertexArray>(
         MCEngine::VertexBuffer(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
-        std::vector<VertexAttribute>{{0, 3, GL_FLOAT, GL_FALSE, 0, (const void *)0}});
+        std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVAO("Skybox", vertexArray);
 
     LOG_ENGINE_INFO("VAO Library initialized");

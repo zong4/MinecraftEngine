@@ -9,16 +9,23 @@ namespace MCEngine
 
 enum class RendererType
 {
-    Points = 0,
-    Lines = 1,
-    Triangles = 4
+    Points,
+    Lines,
+    Triangles
+};
+
+enum class VertexAttributeType
+{
+    Float,
+    Int,
+    UnsignedInt,
 };
 
 struct VertexAttribute
 {
     unsigned int location;
     unsigned int count;
-    unsigned int type;
+    VertexAttributeType type;
     bool normalized;
     size_t stride;
     const void *offset;

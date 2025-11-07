@@ -13,7 +13,7 @@
 #include "Renderer/RendererCommand.hpp"
 #include "Renderer/Shader/Shader.hpp"
 #include "Renderer/Texture/TextureLibrary.hpp"
-#include "Renderer/VertexArray/VAOLibrary.hpp"
+#include "Renderer/VertexArray/VertexArray.hpp"
 #include "Window/Window.hpp"
 
 // Third-party libraries

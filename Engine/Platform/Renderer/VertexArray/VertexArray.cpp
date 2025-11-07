@@ -2,6 +2,38 @@
 
 #include <glad/glad.h>
 
+GLenum ConvertRendererType(MCEngine::RendererType type)
+{
+    switch (type)
+    {
+    case MCEngine::RendererType::Points:
+        return GL_POINTS;
+    case MCEngine::RendererType::Lines:
+        return GL_LINES;
+    case MCEngine::RendererType::Triangles:
+        return GL_TRIANGLES;
+    default:
+        LOG_ENGINE_ASSERT("Unknown RendererType");
+        return GL_TRIANGLES;
+    }
+}
+
+GLenum ConvertVertexAttributeType(MCEngine::VertexAttributeType type)
+{
+    switch (type)
+    {
+    case MCEngine::VertexAttributeType::Float:
+        return GL_FLOAT;
+    case MCEngine::VertexAttributeType::Int:
+        return GL_INT;
+    case MCEngine::VertexAttributeType::UnsignedInt:
+        return GL_UNSIGNED_INT;
+    default:
+        LOG_ENGINE_ASSERT("Unknown VertexAttributeType");
+        return GL_FLOAT;
+    }
+}
+
 MCEngine::VertexArray::VertexArray(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes,
                                    IndexBuffer &&indexBuffer, int instanceCount)
     : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
@@ -86,16 +118,16 @@ void MCEngine::VertexArray::Render(RendererType renderType, size_t positionCount
     if (m_IndexBuffer.GetRendererID() == 0)
     {
         size_t vertexCount = positionCount == 0 ? m_VertexBuffer.GetCount() / m_AttributeCount : positionCount;
-        m_InstanceCount == 1 ? glDrawArrays(static_cast<GLenum>(renderType), 0, vertexCount)
-                             : glDrawArraysInstanced(static_cast<GLenum>(renderType), 0, vertexCount, m_InstanceCount);
+        m_InstanceCount == 1 ? glDrawArrays(ConvertRendererType(renderType), 0, vertexCount)
+                             : glDrawArraysInstanced(ConvertRendererType(renderType), 0, vertexCount, m_InstanceCount);
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
     }
     else
     {
         m_IndexBuffer.Bind();
         size_t vertexCount = positionCount == 0 ? m_IndexBuffer.GetCount() : positionCount;
-        m_InstanceCount == 1 ? glDrawElements(static_cast<GLenum>(renderType), vertexCount, GL_UNSIGNED_INT, 0)
-                             : glDrawElementsInstanced(static_cast<GLenum>(renderType), vertexCount, GL_UNSIGNED_INT, 0,
+        m_InstanceCount == 1 ? glDrawElements(ConvertRendererType(renderType), vertexCount, GL_UNSIGNED_INT, 0)
+                             : glDrawElementsInstanced(ConvertRendererType(renderType), vertexCount, GL_UNSIGNED_INT, 0,
                                                        m_InstanceCount);
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
         m_IndexBuffer.Unbind();
@@ -127,12 +159,13 @@ void MCEngine::VertexArray::SetVertexAttributes(const std::vector<VertexAttribut
     m_AttributeCount = static_cast<int>(attributes.size());
     for (const auto &attribute : attributes)
     {
-        if (attribute.type == GL_INT || attribute.type == GL_UNSIGNED_INT)
-            glVertexAttribIPointer(attribute.location, attribute.count, attribute.type, attribute.stride,
-                                   attribute.offset);
+        if (ConvertVertexAttributeType(attribute.type) == GL_INT ||
+            ConvertVertexAttributeType(attribute.type) == GL_UNSIGNED_INT)
+            glVertexAttribIPointer(attribute.location, attribute.count, ConvertVertexAttributeType(attribute.type),
+                                   attribute.stride, attribute.offset);
         else
-            glVertexAttribPointer(attribute.location, attribute.count, attribute.type, attribute.normalized,
-                                  static_cast<GLsizei>(attribute.stride), attribute.offset);
+            glVertexAttribPointer(attribute.location, attribute.count, ConvertVertexAttributeType(attribute.type),
+                                  attribute.normalized, static_cast<GLsizei>(attribute.stride), attribute.offset);
         glEnableVertexAttribArray(attribute.location);
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
     }

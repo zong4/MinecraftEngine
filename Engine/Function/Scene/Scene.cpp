@@ -2,6 +2,7 @@
 
 #include "Renderer/Buffer/UniformBufferLibrary.hpp"
 #include "Renderer/Shader/ShaderLibrary.hpp"
+#include "Renderer/VertexArray/VAOLibrary.hpp"
 
 MCEngine::Scene::~Scene()
 {
