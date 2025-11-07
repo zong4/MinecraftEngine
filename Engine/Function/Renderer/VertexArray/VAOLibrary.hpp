@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/VertexArray/VertexArray.hpp"
+#include "pch.hpp"
 
 namespace MCEngine
 {

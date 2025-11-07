@@ -79,6 +79,15 @@ MCEngine::Texture2D::~Texture2D()
     glDeleteTextures(1, &m_RendererID);
 }
 
+std::shared_ptr<MCEngine::Texture2D> MCEngine::Texture2D::WhiteTexture()
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    static std::shared_ptr<Texture2D> whiteTexture = std::make_shared<Texture2D>(
+        1, 1, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, new unsigned char[4]{255, 255, 255, 255});
+    return whiteTexture;
+}
+
 void MCEngine::Texture2D::Bind(unsigned int slot) const
 {
     ENGINE_PROFILE_FUNCTION();

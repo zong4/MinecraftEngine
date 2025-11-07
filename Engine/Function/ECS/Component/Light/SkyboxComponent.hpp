@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch.hpp"
+#include "Renderer/Texture/TextureLibrary.hpp"
 
 namespace MCEngine
 {

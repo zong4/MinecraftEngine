@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Renderer/Texture/Texture2D.hpp"
-#include "Renderer/Texture/TextureCube.hpp"
+#include "pch.hpp"
 
 namespace MCEngine
 {

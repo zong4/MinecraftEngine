@@ -15,6 +15,8 @@ public:
     Texture2D(const std::string &path);
     virtual ~Texture2D() override;
 
+    static std::shared_ptr<Texture2D> WhiteTexture();
+
     // Getters
     int GetWidth() const { return m_Width; }
     int GetHeight() const { return m_Height; }
@@ -22,7 +24,6 @@ public:
 public:
     virtual void Bind(unsigned int slot) const override;
     virtual void Unbind() const override;
-
     void Resize(int width, int height);
 
 private:
