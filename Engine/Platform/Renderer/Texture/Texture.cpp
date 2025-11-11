@@ -69,14 +69,14 @@ void *MCEngine::Texture::LoadImage(const std::string &path, int &w, int &h, int 
     const std::string ext = LowerExt(path);
     isHDR = (ext == ".hdr") || stbi_is_hdr(path.c_str());
 
-    void *pixels = nullptr;
+    void *data = nullptr;
 
     if (isHDR)
     {
         float *f = stbi_loadf(path.c_str(), &w, &h, &ch, 0);
         if (!f)
             throw std::runtime_error("Failed to load HDR: " + path);
-        pixels = (void *)f;
+        data = (void *)f;
         type = GL_FLOAT;
     }
     else
@@ -84,7 +84,7 @@ void *MCEngine::Texture::LoadImage(const std::string &path, int &w, int &h, int 
         unsigned char *u = stbi_load(path.c_str(), &w, &h, &ch, 0);
         if (!u)
             throw std::runtime_error("Failed to load LDR: " + path);
-        pixels = (void *)u;
+        data = (void *)u;
         type = GL_UNSIGNED_BYTE;
     }
 
@@ -104,7 +104,7 @@ void *MCEngine::Texture::LoadImage(const std::string &path, int &w, int &h, int 
         break;
     default: {
         LOG_ENGINE_ASSERT("Unsupported number of channels: " + std::to_string(ch) + " in texture: " + path);
-        stbi_image_free(pixels);
+        stbi_image_free(data);
         return nullptr;
     }
     }
@@ -132,7 +132,7 @@ void *MCEngine::Texture::LoadImage(const std::string &path, int &w, int &h, int 
             internalFormat = GL_SRGB8_ALPHA8;
     }
 
-    return pixels;
+    return data;
 }
 
 void MCEngine::Texture::FreeImage(void *data)

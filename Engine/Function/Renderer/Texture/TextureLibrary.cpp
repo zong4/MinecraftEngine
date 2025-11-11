@@ -124,7 +124,10 @@ MCEngine::TextureLibrary::TextureLibrary()
         }
         else if (entry.is_regular_file())
         {
-            if (entry.path().extension() == ".png" || entry.path().extension() == ".jpg")
+            // Support LDR textures (.png, .jpg) and HDR textures (.hdr)
+            if (entry.path().extension() == ".png" || 
+                entry.path().extension() == ".jpg" || 
+                entry.path().extension() == ".hdr")
             {
                 AddTexture(entry.path().stem().string(), std::make_shared<Texture2D>(entry.path().string()));
             }
