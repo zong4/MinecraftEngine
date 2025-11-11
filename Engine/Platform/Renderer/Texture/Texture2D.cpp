@@ -54,19 +54,49 @@ MCEngine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_U
     glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
     // Load image
+    bool isHDR = false;
     {
-        unsigned char *data = LoadImage(path, m_Width, m_Height, m_InternalFormat, m_Format, true);
+        int channels = 0;
+        unsigned int type = 0; 
+        void *data =
+            LoadImage(path, m_Width, m_Height, channels, m_InternalFormat, m_Format, type, isHDR, /*flip*/ true);
+
+        m_Type = type; 
+
+        // Set pixel alignment: HDR textures (float) need 4-byte alignment, LDR can use 1-byte
+        glPixelStorei(GL_UNPACK_ALIGNMENT, isHDR ? 4 : 1); 
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_Format, m_Type, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        // Generate mipmap only for LDR textures
+        // HDR textures (especially environment maps) typically don't need mipmaps
+        // and some OpenGL implementations may not support mipmap generation for float textures
+        if (!isHDR)
+        {
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
+        
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
         FreeImage(data);
     }
 
-    // Set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture parameters based on HDR/LDR
+    if (isHDR)
+    {
+        // HDR textures: use linear filtering without mipmap
+        // For environment maps, use CLAMP_TO_EDGE to avoid seams
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+    else
+    {
+        // LDR textures: use mipmap filtering
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 
     glBindTexture(GL_TEXTURE_2D, 0);

@@ -22,9 +22,12 @@ protected:
     unsigned int m_RendererID = 0;
 
 protected:
-    unsigned char *LoadImage(const std::string &path, int &width, int &height, unsigned int &internalFormat,
-                             unsigned int &format, bool flipVertically);
-    void FreeImage(unsigned char *data);
+    // unsigned char *LoadImage(const std::string &path, int &width, int &height, unsigned int &internalFormat,
+    //                          unsigned int &format, bool flipVertically);
+    void *LoadImage(const std::string &path, int &width, int &height, int &channels, unsigned int &internalFormat,
+                       unsigned int &format, unsigned int &type, bool &isHDR, bool flipVertically);
+
+    void FreeImage(void* data);
 };
 
 } // namespace MCEngine
