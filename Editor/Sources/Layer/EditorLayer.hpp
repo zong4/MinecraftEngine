@@ -1,11 +1,6 @@
 #pragma once
 
-#include "UI/FileBrowserPanel.hpp"
-#include "UI/HierarchyPanel.hpp"
-#include "UI/InspectorPanel.hpp"
-#include "UI/SceneViewport.hpp"
-#include "UI/Toolbar.hpp"
-#include "UI/Viewport.hpp"
+#include <Function.hpp>
 
 namespace MCEditor
 {
@@ -16,6 +11,14 @@ enum class EditorAction
     NewScene,
     OpenScene,
     SaveSceneAs
+};
+
+enum class ImGuizmoType
+{
+    None = -1,
+    Translate = 1,
+    Rotate = 2,
+    Scale = 3
 };
 
 class EditorLayer : public MCEngine::ImGuiLayer
@@ -30,26 +33,18 @@ public:
     void OnUpdate(float deltaTime) override;
     void OnRender() override;
 
-    bool OnKeyEvent(MCEngine::KeyEvent &event);
-
 private:
-    // Logic
     EditorAction m_Action = EditorAction::None;
-
-    // Panels
-    Toolbar m_Toolbar;
-    HierarchyPanel m_HierarchyPanel;
-    InspectorPanel m_InspectorPanel;
-    FileBrowserPanel m_FileBrowserPanel;
-    Viewport m_GameViewport;
-    SceneViewport m_SceneViewport;
+    ImGuizmoType m_GizmoType = ImGuizmoType::Translate;
+    std::unique_ptr<MCEngine::FrameBuffer> m_EntityPickingFBO =
+        std::make_unique<MCEngine::FrameBuffer>(MCEngine::FrameBufferType::Integer, 1280, 720);
 
 protected:
     void RenderImGui() override;
 
 private:
-    void RenderDockSpace();
-    void RenderMenubar();
+    void RenderGizmos();
+    void PickEntity();
 };
 
 } // namespace MCEditor

@@ -14,34 +14,7 @@ MCEngine::ImGuiLayer::ImGuiLayer(const std::shared_ptr<Window> &window, const st
 {
 }
 
-void MCEngine::ImGuiLayer::OnEvent(Event &event)
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    if (m_BlockEvents)
-    {
-        EventDispatcher dispatcher(event);
-
-        // Keyboard
-        dispatcher.Dispatch<KeyEvent>([](KeyEvent &event) {
-            ImGuiIO &io = ImGui::GetIO();
-            io.AddKeyEvent(static_cast<ImGuiKey>(event.GetCode()), event.GetAction() == 1 || event.GetAction() == 2);
-            return io.WantCaptureKeyboard;
-        });
-
-        // Mouse
-        dispatcher.Dispatch<MouseMoveEvent>([](MouseMoveEvent &event) {
-            ImGuiIO &io = ImGui::GetIO();
-            io.AddMousePosEvent((float)event.GetX(), (float)event.GetY());
-            return io.WantCaptureMouse;
-        });
-        dispatcher.Dispatch<MouseButtonEvent>([](MouseButtonEvent &event) {
-            ImGuiIO &io = ImGui::GetIO();
-            io.AddMouseButtonEvent(event.GetCode(), event.GetAction() == 1 || event.GetAction() == 2);
-            return io.WantCaptureMouse;
-        });
-    }
-}
+void MCEngine::ImGuiLayer::OnEvent(Event &event) { ENGINE_PROFILE_FUNCTION(); }
 
 void MCEngine::ImGuiLayer::OnImGuiRender()
 {
@@ -69,15 +42,6 @@ void MCEngine::ImGuiLayer::EndRenderImGui() const
     // Rendering
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    // Update and Render additional Platform Windows
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        GLFWwindow *backup_current_context = glfwGetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        glfwMakeContextCurrent(backup_current_context);
-    }
 }
 
 void MCEngine::ImGuiLayer::OnAttach()
@@ -92,8 +56,6 @@ void MCEngine::ImGuiLayer::OnAttach()
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;     // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Enable Multi-Viewport / Platform Windows
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
@@ -119,15 +81,6 @@ void MCEngine::ImGuiLayer::OnAttach()
     ImGui::StyleColorsDark();
     // ImGui::StyleColorsClassic();
     SetDarkThemeColors();
-
-    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular
-    // ones.
-    ImGuiStyle &style = ImGui::GetStyle();
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        style.WindowRounding = 0.0f;
-        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-    }
 
     // Read ini file
     ImGui::GetIO().IniFilename = m_ImGuiFilePath.c_str();

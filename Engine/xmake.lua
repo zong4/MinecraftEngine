@@ -4,7 +4,7 @@ add_requires("spdlog", "glm")
 -- Platform
 add_requires("stb")
 add_requires("glfw", "glad")
-add_requires("imgui v1.92.1-docking", {configs = {glfw_opengl3 = true}})
+add_requires("imgui", {configs = {glfw_opengl3 = true}})
 
 -- Function
 add_requires("entt", "yaml-cpp")
