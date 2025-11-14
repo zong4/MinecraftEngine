@@ -25,7 +25,7 @@ MCEditor::ExampleScene::ExampleScene() : MCEngine::Scene()
     redMaterial->SetFloat("SpecularStrength", 0.5f);
     redMaterial->SetFloat("Shininess", 32.0f);
 
-    // Add 3D object with new MaterialComponent
-    auto cube = Add3DObject("Cube", MCEngine::TransformComponent(glm::vec3(-2.0f, 0.5f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
-    cube.AddComponent<MCEngine::MaterialComponent>(redMaterial);
+    // Add 3D object with new MaterialComponent and MeshRendererComponent
+    auto cube = Add3DObject("Cube", MCEngine::TransformComponent(glm::vec3(-2.0f, 0.5f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)),
+                            MCEngine::MaterialComponent(redMaterial));
 }

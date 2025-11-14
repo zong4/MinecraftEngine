@@ -255,6 +255,38 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                 }
             });
 
+        // MeshRendererComponent
+        DrawComponent<MCEngine::MeshRendererComponent>("Mesh Renderer Component", selectedEntity,
+                                                      [](MCEngine::MeshRendererComponent *meshRenderer) {
+                                                          // Display BoundingBox
+                                                          DrawTable2<MCEngine::MeshRendererComponent>(
+                                                              "BBox Min", [&meshRenderer]() {
+                                                                  glm::vec3 min = meshRenderer->BBox.GetMin();
+                                                                  ImGui::DragFloat3("##BBoxMin", glm::value_ptr(min),
+                                                                                    0.1f);
+                                                                  // Note: BoundingBox doesn't have setters, so this is read-only for now
+                                                              });
+                                                          DrawTable2<MCEngine::MeshRendererComponent>(
+                                                              "BBox Max", [&meshRenderer]() {
+                                                                  glm::vec3 max = meshRenderer->BBox.GetMax();
+                                                                  ImGui::DragFloat3("##BBoxMax", glm::value_ptr(max),
+                                                                                    0.1f);
+                                                                  // Note: BoundingBox doesn't have setters, so this is read-only for now
+                                                              });
+                                                          DrawTable2<MCEngine::MeshRendererComponent>(
+                                                              "World BBox Min", [&meshRenderer]() {
+                                                                  glm::vec3 worldMin = meshRenderer->WorldBBox.GetMin();
+                                                                  ImGui::Text("%.2f, %.2f, %.2f", worldMin.x, worldMin.y,
+                                                                              worldMin.z);
+                                                              });
+                                                          DrawTable2<MCEngine::MeshRendererComponent>(
+                                                              "World BBox Max", [&meshRenderer]() {
+                                                                  glm::vec3 worldMax = meshRenderer->WorldBBox.GetMax();
+                                                                  ImGui::Text("%.2f, %.2f, %.2f", worldMax.x, worldMax.y,
+                                                                              worldMax.z);
+                                                              });
+                                                      });
+
         // LightComponent
         DrawComponent<MCEngine::LightComponent>("Light Component", selectedEntity, [](MCEngine::LightComponent *light) {
             DrawTable2<MCEngine::LightComponent>(
@@ -434,6 +466,7 @@ void MCEditor::InspectorPanel::DrawAddComponentButton(MCEngine::Entity entity)
     {
         DisplayAddComponentEntry<MCEngine::SpriteRendererComponent>("Sprite Renderer Component");
         DisplayAddComponentEntry<MCEngine::MaterialComponent>("Material Component");
+        DisplayAddComponentEntry<MCEngine::MeshRendererComponent>("Mesh Renderer Component");
 
         ImGui::Separator();
 

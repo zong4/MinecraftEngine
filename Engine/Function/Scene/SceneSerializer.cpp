@@ -284,6 +284,22 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
         out << YAML::EndMap;
     }
 
+    // MeshRendererComponent
+    auto &&meshRendererComponent = entity.GetComponent<MCEngine::MeshRendererComponent>();
+    if (meshRendererComponent)
+    {
+        out << YAML::Key << "MeshRendererComponent";
+        out << YAML::BeginMap;
+
+        // Serialize BoundingBox
+        out << YAML::Key << "BBox" << YAML::BeginMap;
+        out << YAML::Key << "Min" << YAML::Value << (YAML::Node)meshRendererComponent->BBox.GetMin();
+        out << YAML::Key << "Max" << YAML::Value << (YAML::Node)meshRendererComponent->BBox.GetMax();
+        out << YAML::EndMap;
+
+        out << YAML::EndMap;
+    }
+
     // LightComponent
     auto &&lightComponent = entity.GetComponent<MCEngine::LightComponent>();
     if (lightComponent)
@@ -417,6 +433,22 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
             // For now, create a default material
             LOG_ENGINE_WARN("Inline material deserialization not fully implemented");
         }
+    }
+
+    // MeshRendererComponent
+    const auto &meshRendererComponentData = entity["MeshRendererComponent"];
+    if (meshRendererComponentData)
+    {
+        MCEngine::MeshRendererComponent meshRenderer;
+        const auto &bboxData = meshRendererComponentData["BBox"];
+        if (bboxData)
+        {
+            glm::vec3 min = bboxData["Min"].as<glm::vec3>();
+            glm::vec3 max = bboxData["Max"].as<glm::vec3>();
+            meshRenderer.BBox = MCEngine::BoundingBox(min, max);
+            meshRenderer.WorldBBox = meshRenderer.BBox;
+        }
+        deserializedEntity.AddComponent<MCEngine::MeshRendererComponent>(std::move(meshRenderer));
     }
 
     // LightComponent

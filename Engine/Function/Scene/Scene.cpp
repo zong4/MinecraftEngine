@@ -273,10 +273,12 @@ MCEngine::Entity MCEngine::Scene::Add2DObject(const std::string &name, const Tra
 }
 
 MCEngine::Entity MCEngine::Scene::Add3DObject(const std::string &name, const TransformComponent &transform,
-                                              const MaterialComponent &materialComponent)
+                                              const MaterialComponent &materialComponent,
+                                              const MeshRendererComponent &meshRendererComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<MaterialComponent>(materialComponent);
+    entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
     return entity;
 }
 

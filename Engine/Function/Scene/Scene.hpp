@@ -42,7 +42,8 @@ public:
     Entity Add2DObject(const std::string &name, const TransformComponent &transform,
                        const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent());
     Entity Add3DObject(const std::string &name, const TransformComponent &transform,
-                       const MaterialComponent &materialComponent = MaterialComponent());
+                       const MaterialComponent &materialComponent = MaterialComponent(),
+                       const MeshRendererComponent &meshRendererComponent = MeshRendererComponent());
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);

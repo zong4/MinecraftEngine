@@ -8,7 +8,6 @@
 namespace MCEngine
 {
 
-// New MaterialComponent - uses the new Material system (Unity style)
 struct MaterialComponent
 {
     std::shared_ptr<Material> MaterialInstance;
