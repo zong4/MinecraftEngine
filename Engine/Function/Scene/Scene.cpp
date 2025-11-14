@@ -182,8 +182,8 @@ void MCEngine::Scene::Render(const Entity &camera) const
 
     // Clear buffers
     {
-        MCEngine::RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
-        MCEngine::RendererCommand::Clear();
+        RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
+        RendererCommand::Clear();
     }
 
     // Update camera
@@ -203,12 +203,12 @@ void MCEngine::Scene::Render(const Entity &camera) const
             });
     }
 
-    // Render
-    {
-        Render2D();
-        Render3D();
-        RenderSkybox();
-    }
+    // // Render
+    // {
+    //     Render2D();
+    //     Render3D();
+    //     RenderSkybox();
+    // }
 }
 
 void MCEngine::Scene::RenderColorID() const

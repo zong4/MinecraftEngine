@@ -23,6 +23,11 @@ void MCEditor::Viewport::Render()
         m_MultisampleFBO->Bind();
         SceneManager::GetInstance().GetActiveScene()->Render(
             SceneManager::GetInstance().GetActiveScene()->GetMainCamera());
+
+        // test: bvh
+        MCEngine::BVH bvh(SceneManager::GetInstance().GetActiveScene());
+        bvh.Render(3);
+
         m_MultisampleFBO->Blit(m_FBO->GetRendererID());
         m_MultisampleFBO->Unbind();
     }

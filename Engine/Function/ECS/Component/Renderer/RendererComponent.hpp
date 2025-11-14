@@ -1,7 +1,7 @@
 #pragma once
 
-#include "pch.hpp"
-
+#include "Collision/BoundingBox.hpp"
+#include "Renderer/Material/Material.hpp"
 
 namespace MCEngine
 {
@@ -20,4 +20,20 @@ public:
     }
 };
 
-}
+struct MeshRendererComponent
+{
+    BoundingBox BBox;
+    BoundingBox WorldBBox;
+    Material MaterialInstance;
+
+public:
+    MeshRendererComponent(const Material &material = Material(glm::vec4(1.0f), 0.3f, 1.0f, 0.5f, 32.0f))
+        : MaterialInstance(material)
+    {
+        // todo: Default AABB for cube mesh
+        BBox = BoundingBox(glm::vec3(-0.5f), glm::vec3(0.5f));
+        WorldBBox = BBox;
+    }
+};
+
+} // namespace MCEngine
