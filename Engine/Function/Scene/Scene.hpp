@@ -5,6 +5,7 @@
 #include "ECS/Component/Light/LightComponent.hpp"
 #include "ECS/Component/Light/SkyboxComponent.hpp"
 #include "ECS/Component/Renderer/RendererComponent.hpp"
+#include "ECS/Component/Renderer/MaterialComponent.hpp"
 
 namespace MCEngine
 {
@@ -41,7 +42,7 @@ public:
     Entity Add2DObject(const std::string &name, const TransformComponent &transform,
                        const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent());
     Entity Add3DObject(const std::string &name, const TransformComponent &transform,
-                       const MeshRendererComponent &meshRenderer = MeshRendererComponent());
+                       const MaterialComponent &materialComponent = MaterialComponent());
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);

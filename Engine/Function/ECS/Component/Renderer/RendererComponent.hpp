@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Renderer/Material/Material.hpp"
+#include "pch.hpp"
+
 
 namespace MCEngine
 {
@@ -19,15 +20,4 @@ public:
     }
 };
 
-struct MeshRendererComponent
-{
-    Material MaterialInstance;
-
-public:
-    MeshRendererComponent(const Material &material = Material(glm::vec4(1.0f), 0.3f, 1.0f, 0.5f, 32.0f))
-        : MaterialInstance(material)
-    {
-    }
-};
-
-} // namespace MCEngine
+}

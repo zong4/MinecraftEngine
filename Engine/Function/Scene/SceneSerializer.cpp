@@ -1,4 +1,5 @@
 #include "SceneSerializer.hpp"
+#include "Renderer/Shader/ShaderLibrary.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -213,29 +214,72 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
         out << YAML::EndMap;
     }
 
-    // MeshRendererComponent
-    auto &&meshRendererComponent = entity.GetComponent<MCEngine::MeshRendererComponent>();
-    if (meshRendererComponent)
+    // MaterialComponent
+    auto &&materialComponent = entity.GetComponent<MCEngine::MaterialComponent>();
+    if (materialComponent)
     {
-        out << YAML::Key << "MeshRendererComponent";
+        out << YAML::Key << "MaterialComponent";
         out << YAML::BeginMap;
 
-        // out << YAML::Key << "Shader" << YAML::Value
-        //     << MCEngine::ShaderLibrary::GetInstance().GetName(meshRendererComponent.GetShader());
-
-        out << YAML::Key << "Material";
-        out << YAML::BeginMap;
+        // Serialize material name (reference to MaterialLibrary)
+        std::string materialName = MCEngine::MaterialLibrary::GetInstance().GetName(materialComponent->GetMaterial());
+        if (!materialName.empty())
         {
-            out << YAML::Key << "Color" << YAML::Value << (YAML::Node)meshRendererComponent->MaterialInstance.Color;
-            out << YAML::Key << "AmbientStrength" << YAML::Value
-                << meshRendererComponent->MaterialInstance.AmbientStrength;
-            out << YAML::Key << "DiffuseStrength" << YAML::Value
-                << meshRendererComponent->MaterialInstance.DiffuseStrength;
-            out << YAML::Key << "SpecularStrength" << YAML::Value
-                << meshRendererComponent->MaterialInstance.SpecularStrength;
-            out << YAML::Key << "Shininess" << YAML::Value << meshRendererComponent->MaterialInstance.Shininess;
+            out << YAML::Key << "Material" << YAML::Value << materialName;
         }
-        out << YAML::EndMap;
+        else
+        {
+            // If material is not in library, serialize inline
+            out << YAML::Key << "Material" << YAML::Value << "Inline";
+            out << YAML::Key << "Shader" << YAML::Value
+                << MCEngine::ShaderLibrary::GetInstance().GetName(materialComponent->GetMaterial()->GetShader());
+            
+            // Serialize all properties
+            out << YAML::Key << "Properties" << YAML::BeginMap;
+            const auto &properties = materialComponent->GetMaterial()->GetProperties();
+            for (const auto &[name, prop] : properties)
+            {
+                // Note: Full property serialization would require more complex YAML conversion
+                // For now, we'll serialize basic types
+                switch (prop.GetType())
+                {
+                case MCEngine::MaterialPropertyType::Float:
+                    out << YAML::Key << name << YAML::Value << prop.GetFloat();
+                    break;
+                case MCEngine::MaterialPropertyType::Vec3:
+                    out << YAML::Key << name << YAML::Value << (YAML::Node)prop.GetVec3();
+                    break;
+                case MCEngine::MaterialPropertyType::Vec4:
+                    out << YAML::Key << name << YAML::Value << (YAML::Node)prop.GetVec4();
+                    break;
+                // Add more types as needed
+                default:
+                    break;
+                }
+            }
+            out << YAML::EndMap;
+        }
+
+        // Serialize property overrides
+        if (!materialComponent->PropertyOverrides.empty())
+        {
+            out << YAML::Key << "PropertyOverrides" << YAML::BeginMap;
+            for (const auto &[name, prop] : materialComponent->PropertyOverrides)
+            {
+                switch (prop.GetType())
+                {
+                case MCEngine::MaterialPropertyType::Float:
+                    out << YAML::Key << name << YAML::Value << prop.GetFloat();
+                    break;
+                case MCEngine::MaterialPropertyType::Vec3:
+                    out << YAML::Key << name << YAML::Value << (YAML::Node)prop.GetVec3();
+                    break;
+                default:
+                    break;
+                }
+            }
+            out << YAML::EndMap;
+        }
 
         out << YAML::EndMap;
     }
@@ -335,15 +379,44 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
             spriteRendererComponentData["Color"].as<glm::vec4>());
     }
 
-    // MeshRendererComponent
-    const auto &meshRendererComponentData = entity["MeshRendererComponent"];
-    if (meshRendererComponentData)
+    // MaterialComponent
+    const auto &materialComponentData = entity["MaterialComponent"];
+    if (materialComponentData)
     {
-        const auto &materialData = meshRendererComponentData["Material"];
-        deserializedEntity.AddComponent<MeshRendererComponent>(
-            Material(materialData["Color"].as<glm::vec4>(), materialData["AmbientStrength"].as<float>(),
-                     materialData["DiffuseStrength"].as<float>(), materialData["SpecularStrength"].as<float>(),
-                     materialData["Shininess"].as<float>()));
+        std::string materialName = materialComponentData["Material"].as<std::string>("");
+        
+        if (!materialName.empty() && materialName != "Inline")
+        {
+            // Load from MaterialLibrary
+            auto material = MCEngine::MaterialLibrary::GetInstance().Get(materialName);
+            if (material)
+            {
+                deserializedEntity.AddComponent<MCEngine::MaterialComponent>(material);
+                
+                // Load property overrides if any
+                const auto &overridesData = materialComponentData["PropertyOverrides"];
+                if (overridesData)
+                {
+                    auto materialComp = deserializedEntity.GetComponent<MCEngine::MaterialComponent>();
+                    for (auto it = overridesData.begin(); it != overridesData.end(); ++it)
+                    {
+                        std::string propName = it->first.as<std::string>();
+                        // Simple float override support - extend as needed
+                        if (it->second.IsScalar())
+                        {
+                            materialComp->SetOverrideFloat(propName, it->second.as<float>());
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Inline material - create from properties
+            // This is more complex and would require full property deserialization
+            // For now, create a default material
+            LOG_ENGINE_WARN("Inline material deserialization not fully implemented");
+        }
     }
 
     // LightComponent

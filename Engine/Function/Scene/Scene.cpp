@@ -3,6 +3,8 @@
 #include "Renderer/Buffer/UniformBufferLibrary.hpp"
 #include "Renderer/Shader/ShaderLibrary.hpp"
 #include "Renderer/VertexArray/VAOLibrary.hpp"
+#include "Renderer/Material/MaterialLibrary.hpp"
+#include "ECS/Component/Renderer/RendererComponent.hpp"
 
 MCEngine::Scene::~Scene()
 {
@@ -97,20 +99,45 @@ void MCEngine::Scene::PreRender()
     {
         int cubeIndex = 0;
         std::vector<Vertex3D> cubesVertices;
-        auto &&meshView = m_Registry.view<MCEngine::TransformComponent, MCEngine::MeshRendererComponent>();
+        auto &&meshView = m_Registry.view<MCEngine::TransformComponent, MCEngine::MaterialComponent>();
         for (auto &&entity : meshView)
         {
-            auto &&[transform, mesh] =
-                meshView.get<MCEngine::TransformComponent, MCEngine::MeshRendererComponent>(entity);
+            auto &&[transform, materialComp] =
+                meshView.get<MCEngine::TransformComponent, MCEngine::MaterialComponent>(entity);
+            
+            // Get material data from MaterialComponent
+            glm::vec4 color = glm::vec4(1.0f); // Default color
+            glm::vec4 materialData = glm::vec4(0.3f, 1.0f, 0.5f, 32.0f); // Default Blinn-Phong values
+            
+            if (materialComp.GetMaterial())
+            {
+                auto mat = materialComp.GetMaterial();
+                if (mat->HasProperty("Color"))
+                {
+                    auto colorProp = mat->GetProperty("Color");
+                    if (colorProp.GetType() == MaterialPropertyType::Vec4)
+                        color = colorProp.GetVec4();
+                    else if (colorProp.GetType() == MaterialPropertyType::Vec3)
+                        color = glm::vec4(colorProp.GetVec3(), 1.0f);
+                }
+                // Get Blinn-Phong material properties if available
+                if (mat->HasProperty("AmbientStrength"))
+                    materialData.x = mat->GetProperty("AmbientStrength").GetFloat();
+                if (mat->HasProperty("DiffuseStrength"))
+                    materialData.y = mat->GetProperty("DiffuseStrength").GetFloat();
+                if (mat->HasProperty("SpecularStrength"))
+                    materialData.z = mat->GetProperty("SpecularStrength").GetFloat();
+                if (mat->HasProperty("Shininess"))
+                    materialData.w = mat->GetProperty("Shininess").GetFloat();
+            }
+            
             for (int i = 0; i < 36; ++i)
             {
                 glm::mat4 u_Model = transform.GetTransformMatrix();
                 cubesVertices.push_back(
                     {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentityCubeData.Positions[i], 1.0f)),
                      glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_IdentityCubeData.Normals[i]),
-                     g_IdentityCubeData.Positions[i], mesh.MaterialInstance.Color,
-                     glm::vec4(mesh.MaterialInstance.AmbientStrength, mesh.MaterialInstance.DiffuseStrength,
-                               mesh.MaterialInstance.SpecularStrength, mesh.MaterialInstance.Shininess)});
+                     g_IdentityCubeData.Positions[i], color, materialData});
             }
             cubeIndex++;
         }
@@ -246,10 +273,10 @@ MCEngine::Entity MCEngine::Scene::Add2DObject(const std::string &name, const Tra
 }
 
 MCEngine::Entity MCEngine::Scene::Add3DObject(const std::string &name, const TransformComponent &transform,
-                                              const MeshRendererComponent &meshRenderer)
+                                              const MaterialComponent &materialComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
-    entity.AddComponent<MeshRendererComponent>(meshRenderer);
+    entity.AddComponent<MaterialComponent>(materialComponent);
     return entity;
 }
 
@@ -372,12 +399,12 @@ void MCEngine::Scene::Render3D() const
         shader->SetUniformInt("u_Skybox", lightIndex);
         skybox.GetTextureCube()->Bind(lightIndex);
     }
-
-    TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
-    shader->SetUniformInt("u_Texture", lightIndex + 1);
-    if (m_CubesCount > 0)
-        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
-    TextureLibrary::GetInstance().ClearTextureSlots();
+        
+        TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
+        shader->SetUniformInt("u_Texture", lightIndex + 1);
+        if (m_CubesCount > 0)
+            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+        TextureLibrary::GetInstance().ClearTextureSlots();
     shader->Unbind();
 }
 

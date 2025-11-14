@@ -2,6 +2,8 @@
 
 #include "Manager/ConfigManager.hpp"
 #include "Manager/SceneManager.hpp"
+#include "Renderer/Material/MaterialLibrary.hpp"
+#include "Renderer/Shader/ShaderLibrary.hpp"
 #include <imgui.h>
 #include <imgui_internal.h>
 
@@ -153,24 +155,104 @@ void MCEditor::InspectorPanel::OnImGuiRender() const
                     "Color", [&sprite]() { ImGui::ColorEdit4("##Color", glm::value_ptr(sprite->Color)); });
             });
 
-        // MeshRendererComponent
-        DrawComponent<MCEngine::MeshRendererComponent>(
-            "Mesh Renderer Component", selectedEntity, [](MCEngine::MeshRendererComponent *meshRenderer) {
-                DrawTable2<MCEngine::MeshRendererComponent>("Color", [&meshRenderer]() {
-                    ImGui::ColorEdit4("##Color", glm::value_ptr(meshRenderer->MaterialInstance.Color));
-                });
-                DrawTable2<MCEngine::MeshRendererComponent>("Ambient", [&meshRenderer]() {
-                    ImGui::DragFloat("##Ambient", &meshRenderer->MaterialInstance.AmbientStrength, 0.1f, 0.0f, 1.0f);
-                });
-                DrawTable2<MCEngine::MeshRendererComponent>("Diffuse", [&meshRenderer]() {
-                    ImGui::DragFloat("##Diffuse", &meshRenderer->MaterialInstance.DiffuseStrength, 0.1f, 0.0f, 1.0f);
-                });
-                DrawTable2<MCEngine::MeshRendererComponent>("Specular", [&meshRenderer]() {
-                    ImGui::DragFloat("##Specular", &meshRenderer->MaterialInstance.SpecularStrength, 0.1f, 0.0f, 1.0f);
-                });
-                DrawTable2<MCEngine::MeshRendererComponent>("Shininess", [&meshRenderer]() {
-                    ImGui::DragFloat("##Shininess", &meshRenderer->MaterialInstance.Shininess, 1.0f, 1.0f, 256.0f);
-                });
+        // MaterialComponent (new system)
+        DrawComponent<MCEngine::MaterialComponent>(
+            "Material Component", selectedEntity, [](MCEngine::MaterialComponent *materialComp) {
+                auto material = materialComp->GetMaterial();
+                if (!material)
+                {
+                    ImGui::Text("No material assigned");
+                    return;
+                }
+
+                // Display material name
+                std::string materialName = MCEngine::MaterialLibrary::GetInstance().GetName(material);
+                if (!materialName.empty())
+                {
+                    DrawTable2<MCEngine::MaterialComponent>("Material", [&materialName]() {
+                        ImGui::Text("%s", materialName.c_str());
+                    });
+                }
+
+                // Display shader name
+                auto shader = material->GetShader();
+                if (shader)
+                {
+                    std::string shaderName = MCEngine::ShaderLibrary::GetInstance().GetName(shader);
+                    DrawTable2<MCEngine::MaterialComponent>("Shader", [&shaderName]() {
+                        ImGui::Text("%s", shaderName.c_str());
+                    });
+                }
+
+                // Display common material properties
+                const auto &properties = material->GetProperties();
+                
+                // Color property
+                if (material->HasProperty("Color"))
+                {
+                    auto colorProp = material->GetProperty("Color");
+                    if (colorProp.GetType() == MCEngine::MaterialPropertyType::Vec4)
+                    {
+                        glm::vec4 color = colorProp.GetVec4();
+                        DrawTable2<MCEngine::MaterialComponent>("Color", [&material, &color]() {
+                            if (ImGui::ColorEdit4("##Color", glm::value_ptr(color)))
+                            {
+                                material->SetVec4("Color", color);
+                            }
+                        });
+                    }
+                }
+
+                // Float properties (AmbientStrength, DiffuseStrength, etc.)
+                std::vector<std::string> floatProps = {"AmbientStrength", "DiffuseStrength", "SpecularStrength", 
+                                                        "Shininess", "Metallic", "Roughness", "AO"};
+                for (const auto &propName : floatProps)
+                {
+                    if (material->HasProperty(propName))
+                    {
+                        float value = material->GetProperty(propName).GetFloat();
+                        DrawTable2<MCEngine::MaterialComponent>(propName, [&material, &propName, &value]() {
+                            float minVal = (propName == "Shininess") ? 1.0f : 0.0f;
+                            float maxVal = (propName == "Shininess") ? 256.0f : 1.0f;
+                            if (ImGui::DragFloat(("##" + propName).c_str(), &value, 0.01f, minVal, maxVal))
+                            {
+                                material->SetFloat(propName, value);
+                            }
+                        });
+                    }
+                }
+
+                // Vec3 properties (Albedo, etc.)
+                if (material->HasProperty("Albedo"))
+                {
+                    glm::vec3 albedo = material->GetProperty("Albedo").GetVec3();
+                    DrawTable2<MCEngine::MaterialComponent>("Albedo", [&material, &albedo]() {
+                        if (ImGui::ColorEdit3("##Albedo", glm::value_ptr(albedo)))
+                        {
+                            material->SetVec3("Albedo", albedo);
+                        }
+                    });
+                }
+
+                // Property Overrides section
+                if (!materialComp->PropertyOverrides.empty())
+                {
+                    ImGui::Separator();
+                    ImGui::Text("Property Overrides");
+                    for (const auto &[name, prop] : materialComp->PropertyOverrides)
+                    {
+                        if (prop.GetType() == MCEngine::MaterialPropertyType::Float)
+                        {
+                            float value = prop.GetFloat();
+                            DrawTable2<MCEngine::MaterialComponent>(name + " (Override)", [&materialComp, &name, &value]() {
+                                if (ImGui::DragFloat(("##" + name).c_str(), &value, 0.01f))
+                                {
+                                    materialComp->SetOverrideFloat(name, value);
+                                }
+                            });
+                        }
+                    }
+                }
             });
 
         // LightComponent
@@ -351,7 +433,7 @@ void MCEditor::InspectorPanel::DrawAddComponentButton(MCEngine::Entity entity)
     if (ImGui::BeginPopup("AddComponent"))
     {
         DisplayAddComponentEntry<MCEngine::SpriteRendererComponent>("Sprite Renderer Component");
-        DisplayAddComponentEntry<MCEngine::MeshRendererComponent>("Mesh Renderer Component");
+        DisplayAddComponentEntry<MCEngine::MaterialComponent>("Material Component");
 
         ImGui::Separator();
 
