@@ -131,6 +131,11 @@ MCEngine::VAOLibrary::VAOLibrary()
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVAO("Skybox", vertexArray);
 
+    auto &&CubeVAO = std::make_shared<VertexArray>(
+        MCEngine::VertexBuffer(g_IdentityCubeData.Positions, sizeof(g_IdentityCubeData.Positions)),
+        std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
+    AddVAO("Cube", CubeVAO);
+
     LOG_ENGINE_INFO("VAO Library initialized");
 }
 
