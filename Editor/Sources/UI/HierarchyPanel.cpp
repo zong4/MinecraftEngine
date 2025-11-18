@@ -100,7 +100,7 @@ void MCEditor::HierarchyPanel::DrawContextMenu(const MCEngine::Entity &parent)
     {
         DrawContextItem(parent, []() {
             return SceneManager::GetInstance().GetActiveScene()->Add3DObject("Cube", MCEngine::TransformComponent(),
-                                                                             MCEngine::MaterialComponent());
+                                                                             MCEngine::MaterialComponent(),MCEngine::MeshRendererComponent());
         });
     }
 
