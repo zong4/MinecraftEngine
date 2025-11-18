@@ -1,7 +1,5 @@
 #include "ConfigManager.hpp"
 
-#include <nlohmann/json.hpp>
-
 // Set default window properties
 MCEngine::WindowProperty MCEditor::ConfigManager::s_WindowProperty =
     MCEngine::WindowProperty("Minecraft Engine", 1280, 720, true);
