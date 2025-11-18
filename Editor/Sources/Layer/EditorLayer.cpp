@@ -153,7 +153,6 @@ void MCEditor::EditorLayer::RenderImGui()
 
     RenderDockSpace();
 
-    m_Toolbar.OnImGuiRender();
     m_FileBrowserPanel.OnImGuiRender();
     m_HierarchyPanel.OnImGuiRender();
     m_InspectorPanel.OnImGuiRender();

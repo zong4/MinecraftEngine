@@ -4,7 +4,6 @@
 #include "UI/HierarchyPanel.hpp"
 #include "UI/InspectorPanel.hpp"
 #include "UI/SceneViewport.hpp"
-#include "UI/Toolbar.hpp"
 #include "UI/Viewport.hpp"
 
 namespace MCEditor
@@ -37,7 +36,6 @@ private:
     EditorAction m_Action = EditorAction::None;
 
     // Panels
-    Toolbar m_Toolbar;
     HierarchyPanel m_HierarchyPanel;
     InspectorPanel m_InspectorPanel;
     FileBrowserPanel m_FileBrowserPanel;
