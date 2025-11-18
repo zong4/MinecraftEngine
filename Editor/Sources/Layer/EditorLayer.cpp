@@ -153,18 +153,12 @@ void MCEditor::EditorLayer::RenderImGui()
 
     RenderDockSpace();
 
-    m_FileBrowserPanel.OnImGuiRender();
-    m_HierarchyPanel.OnImGuiRender();
-    m_InspectorPanel.OnImGuiRender();
-
     ImGui::Begin("Game");
     m_GameViewport.OnImGuiRender();
-    m_GameViewport.ReceiveDrop(m_FileBrowserPanel);
     ImGui::End();
 
     ImGui::Begin("Scene");
     m_SceneViewport.OnImGuiRender();
-    m_SceneViewport.ReceiveDrop(m_FileBrowserPanel);
     ImGui::End();
 
     // Logic

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "UI/FileBrowserPanel.hpp"
-#include "UI/HierarchyPanel.hpp"
-#include "UI/InspectorPanel.hpp"
 #include "UI/SceneViewport.hpp"
 #include "UI/Viewport.hpp"
 
@@ -36,9 +33,6 @@ private:
     EditorAction m_Action = EditorAction::None;
 
     // Panels
-    HierarchyPanel m_HierarchyPanel;
-    InspectorPanel m_InspectorPanel;
-    FileBrowserPanel m_FileBrowserPanel;
     Viewport m_GameViewport;
     SceneViewport m_SceneViewport;
 

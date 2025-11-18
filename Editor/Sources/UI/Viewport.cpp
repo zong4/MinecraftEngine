@@ -51,28 +51,3 @@ void MCEditor::Viewport::OnImGuiRender()
     }
     ImGui::Image((ImTextureID)(intptr_t)m_FBO->GetTexture()->GetRendererID(), viewportSize, ImVec2(0, 1), ImVec2(1, 0));
 }
-
-void MCEditor::Viewport::ReceiveDrop(FileBrowserPanel &fileBrowserPanel)
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    if (ImGui::BeginDragDropTarget())
-    {
-        if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-        {
-            if (payload->Data)
-            {
-                const char *path = static_cast<const char *>(payload->Data);
-                std::filesystem::path filepath(path);
-                if (std::filesystem::is_directory(filepath))
-                    fileBrowserPanel.SetCurrentDirectory(filepath);
-                else
-                {
-                    if (ConfigManager::IsScene(filepath))
-                        SceneManager::GetInstance().OpenScene(path);
-                }
-            }
-        }
-        ImGui::EndDragDropTarget();
-    }
-}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FileBrowserPanel.hpp"
+#include <Function.hpp>
 
 namespace MCEditor
 {
@@ -14,7 +14,6 @@ public:
 public:
     virtual void Render();
     virtual void OnImGuiRender();
-    void ReceiveDrop(FileBrowserPanel &fileBrowserPanel);
 
 protected:
     bool m_ViewportDirty = false;
