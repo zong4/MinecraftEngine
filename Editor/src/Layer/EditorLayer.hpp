@@ -1,7 +1,6 @@
 #pragma once
 
 #include "UI/SceneViewport.hpp"
-#include "UI/Viewport.hpp"
 
 namespace MCEditor
 {
@@ -33,7 +32,6 @@ private:
     EditorAction m_Action = EditorAction::None;
 
     // Panels
-    Viewport m_GameViewport;
     SceneViewport m_SceneViewport;
     std::shared_ptr<MCEngine::Scene> m_EditorScene;
     std::shared_ptr<MCEngine::Scene> m_ActiveScene;

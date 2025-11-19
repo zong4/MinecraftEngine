@@ -127,7 +127,6 @@ void MCEditor::EditorLayer::OnRender()
 
     // Render viewports
     {
-        m_GameViewport.Render(m_ActiveScene);
         m_SceneViewport.Render(m_ActiveScene);
     }
 }
@@ -137,10 +136,6 @@ void MCEditor::EditorLayer::RenderImGui()
     ENGINE_PROFILE_FUNCTION();
 
     RenderDockSpace();
-
-    ImGui::Begin("Game");
-    m_GameViewport.OnImGuiRender();
-    ImGui::End();
 
     ImGui::Begin("Scene");
     m_SceneViewport.OnImGuiRender();

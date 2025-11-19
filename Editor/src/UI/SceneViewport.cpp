@@ -31,6 +31,11 @@ void MCEditor::SceneViewport::Render(std::shared_ptr<MCEngine::Scene> scene)
     // Render scene
     m_MultisampleFBO->Bind();
     scene->Render(m_Camera);
+
+    // test: bvh
+    MCEngine::BVH bvh(scene);
+    bvh.Render(3);
+
     m_MultisampleFBO->Blit(m_FBO->GetRendererID());
     m_MultisampleFBO->Unbind();
 

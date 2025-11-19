@@ -1,10 +1,10 @@
 #include "Scene.hpp"
 
+#include "ECS/Component/Renderer/RendererComponent.hpp"
 #include "Renderer/Buffer/UniformBufferLibrary.hpp"
+#include "Renderer/Material/MaterialLibrary.hpp"
 #include "Renderer/Shader/ShaderLibrary.hpp"
 #include "Renderer/VertexArray/VAOLibrary.hpp"
-#include "Renderer/Material/MaterialLibrary.hpp"
-#include "ECS/Component/Renderer/RendererComponent.hpp"
 
 MCEngine::Scene::~Scene()
 {
@@ -104,11 +104,11 @@ void MCEngine::Scene::PreRender()
         {
             auto &&[transform, materialComp] =
                 meshView.get<MCEngine::TransformComponent, MCEngine::MaterialComponent>(entity);
-            
+
             // Get material data from MaterialComponent
-            glm::vec4 color = glm::vec4(1.0f); // Default color
+            glm::vec4 color = glm::vec4(1.0f);                           // Default color
             glm::vec4 materialData = glm::vec4(0.3f, 1.0f, 0.5f, 32.0f); // Default Blinn-Phong values
-            
+
             if (materialComp.GetMaterial())
             {
                 auto mat = materialComp.GetMaterial();
@@ -130,7 +130,7 @@ void MCEngine::Scene::PreRender()
                 if (mat->HasProperty("Shininess"))
                     materialData.w = mat->GetProperty("Shininess").GetFloat();
             }
-            
+
             for (int i = 0; i < 36; ++i)
             {
                 glm::mat4 u_Model = transform.GetTransformMatrix();
@@ -401,12 +401,12 @@ void MCEngine::Scene::Render3D() const
         shader->SetUniformInt("u_Skybox", lightIndex);
         skybox.GetTextureCube()->Bind(lightIndex);
     }
-        
-        TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
-        shader->SetUniformInt("u_Texture", lightIndex + 1);
-        if (m_CubesCount > 0)
-            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
-        TextureLibrary::GetInstance().ClearTextureSlots();
+
+    TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
+    shader->SetUniformInt("u_Texture", lightIndex + 1);
+    if (m_CubesCount > 0)
+        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+    TextureLibrary::GetInstance().ClearTextureSlots();
     shader->Unbind();
 }
 
