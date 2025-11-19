@@ -38,9 +38,6 @@ private:
 
 protected:
     void RenderImGui() override;
-
-private:
-    void RenderDockSpace();
 };
 
 } // namespace MCEditor

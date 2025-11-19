@@ -1,8 +1,6 @@
 #include "CameraController.hpp"
 
 #include <imgui.h>
-// After import imgui
-#include "ImGuizmo/ImGuizmo.h"
 
 using namespace MCEngine;
 
@@ -16,9 +14,6 @@ void MCEditor::CameraController::OnCreate()
 void MCEditor::CameraController::OnUpdate(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
-
-    if (ImGuizmo::IsUsing())
-        return;
 
     // Get mouse input
     glm::vec2 mouseDelta = Input::GetInstance().GetDeltaPosition();

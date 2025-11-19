@@ -24,7 +24,6 @@ public:
     bool IsHovered() const { return m_Hovered; }
 
     // Setters
-    void SetGizmoType(ImGuizmoType type);
     void SetCamera(const MCEngine::Entity &camera) { m_Camera = camera; }
 
 public:

@@ -1,16 +1,8 @@
 #include "SceneViewport.hpp"
 
 #include <imgui.h>
-// After import imgui
-#include "ImGuizmo/ImGuizmo.h"
 
 MCEditor::SceneViewport::SceneViewport() {}
-
-void MCEditor::SceneViewport::SetGizmoType(ImGuizmoType type)
-{
-    if (!ImGuizmo::IsUsing())
-        m_GizmoType = type;
-}
 
 void MCEditor::SceneViewport::Render(std::shared_ptr<MCEngine::Scene> scene)
 {
