@@ -67,3 +67,8 @@ void MCEngine::RendererCommand::DisableFaceCulling() { glDisable(GL_CULL_FACE); 
 void MCEngine::RendererCommand::EnableMultisampling() { glEnable(GL_MULTISAMPLE); }
 
 void MCEngine::RendererCommand::DisableMultisampling() { glDisable(GL_MULTISAMPLE); }
+
+void MCEngine::RendererCommand::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+{
+    glViewport(x, y, width, height);
+}
