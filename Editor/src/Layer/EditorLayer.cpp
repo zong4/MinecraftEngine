@@ -79,10 +79,9 @@ void MCEditor::EditorLayer::OnRender()
 
     // Render viewports
     {
-        uint32_t viewportWidth = m_Window->GetProperty().Width;
-        uint32_t viewportHeight = m_Window->GetProperty().Height;
+        uint32_t viewportWidth = m_Window->GetProperty().FbWidth;
+        uint32_t viewportHeight = m_Window->GetProperty().FbHeight;
         MCEngine::RendererCommand::SetViewport(0, 0, viewportWidth, viewportHeight);
-        LOG_ENGINE_INFO("Viewport Size: " + std::to_string(viewportWidth) + "x" + std::to_string(viewportHeight));
         m_EditorScene->Resize((float)viewportWidth, (float)viewportHeight);
         m_ActiveScene->Resize((float)viewportWidth, (float)viewportHeight);
         m_ActiveScene->Render(m_EditorScene->GetMainCamera());

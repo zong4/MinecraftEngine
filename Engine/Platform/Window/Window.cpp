@@ -59,6 +59,8 @@ void MCEngine::Window::Init()
     }
     LOG_ENGINE_INFO("GLFW window created: " + m_Property.Title);
 
+    glfwGetFramebufferSize((GLFWwindow *)m_NativeWindow, &m_Property.FbWidth, &m_Property.FbHeight);
+
     // Make context current
     glfwMakeContextCurrent(static_cast<GLFWwindow *>(m_NativeWindow));
     SetCallbacks();
@@ -94,14 +96,15 @@ void MCEngine::Window::SetCallbacks()
 
     glfwSetFramebufferSizeCallback(static_cast<GLFWwindow *>(m_NativeWindow),
                                    [](GLFWwindow *nativeWindow, int width, int height) {
+                                       Window *window = static_cast<Window *>(glfwGetWindowUserPointer(nativeWindow));
+
                                        // Framebuffer size
                                        glViewport(0, 0, width, height);
+                                       window->GetProperty().FbWidth = width;
+                                       window->GetProperty().FbHeight = height;
 
                                        // Window size
                                        glfwGetWindowSize(nativeWindow, &width, &height);
-
-                                       // OnEvent
-                                       Window *window = static_cast<Window *>(glfwGetWindowUserPointer(nativeWindow));
                                        window->GetProperty().Width = width;
                                        window->GetProperty().Height = height;
 
