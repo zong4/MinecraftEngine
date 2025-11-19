@@ -1,17 +1,16 @@
 #include "Viewport.hpp"
 
 #include "Manager/ConfigManager.hpp"
-#include "Manager/SceneManager.hpp"
 #include <imgui.h>
 
-void MCEditor::Viewport::Render()
+void MCEditor::Viewport::Render(std::shared_ptr<MCEngine::Scene> scene)
 {
     ENGINE_PROFILE_FUNCTION();
 
     // Resize if needed
     if (m_ViewportDirty)
     {
-        SceneManager::GetInstance().GetActiveScene()->Resize(m_ViewportSize.x, m_ViewportSize.y);
+        scene->Resize(m_ViewportSize.x, m_ViewportSize.y);
         m_FBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
         m_MultisampleFBO->Resize((int)m_ViewportSize.x, (int)m_ViewportSize.y);
 
@@ -21,11 +20,10 @@ void MCEditor::Viewport::Render()
     // Render scene
     {
         m_MultisampleFBO->Bind();
-        SceneManager::GetInstance().GetActiveScene()->Render(
-            SceneManager::GetInstance().GetActiveScene()->GetMainCamera());
+        scene->Render(scene->GetMainCamera());
 
         // test: bvh
-        MCEngine::BVH bvh(SceneManager::GetInstance().GetActiveScene());
+        MCEngine::BVH bvh(scene);
         bvh.Render(3);
 
         m_MultisampleFBO->Blit(m_FBO->GetRendererID());

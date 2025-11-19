@@ -2,12 +2,9 @@
 
 #include "Layer/EditorLayer.hpp"
 #include "Manager/ConfigManager.hpp"
-#include "Manager/SceneManager.hpp"
 
 MCEditor::Editor::Editor(const MCEngine::WindowProperty &props) : Application(props)
 {
-    SceneManager::GetInstance(); // Initialize scene manager
-
     AddLayer(std::make_shared<EditorLayer>(m_Window));
 }
 

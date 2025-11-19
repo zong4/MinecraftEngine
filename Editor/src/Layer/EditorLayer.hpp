@@ -35,13 +35,14 @@ private:
     // Panels
     Viewport m_GameViewport;
     SceneViewport m_SceneViewport;
+    std::shared_ptr<MCEngine::Scene> m_EditorScene;
+    std::shared_ptr<MCEngine::Scene> m_ActiveScene;
 
 protected:
     void RenderImGui() override;
 
 private:
     void RenderDockSpace();
-    void RenderMenubar();
 };
 
 } // namespace MCEditor

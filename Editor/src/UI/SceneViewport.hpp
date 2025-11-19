@@ -25,9 +25,10 @@ public:
 
     // Setters
     void SetGizmoType(ImGuizmoType type);
+    void SetCamera(const MCEngine::Entity &camera) { m_Camera = camera; }
 
 public:
-    void Render() override;
+    void Render(std::shared_ptr<MCEngine::Scene> scene) override;
     void OnImGuiRender() override;
 
 private:
@@ -37,10 +38,6 @@ private:
     ImGuizmoType m_GizmoType = ImGuizmoType::Translate;
     std::unique_ptr<MCEngine::FrameBuffer> m_EntityPickingFBO =
         std::make_unique<MCEngine::FrameBuffer>(MCEngine::FrameBufferType::Integer, 1280, 720);
-
-private:
-    void RenderGizmos();
-    void PickEntity();
 };
 
 } // namespace MCEditor

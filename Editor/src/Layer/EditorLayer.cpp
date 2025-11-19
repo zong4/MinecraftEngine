@@ -1,12 +1,16 @@
 #include "EditorLayer.hpp"
 
 #include "Manager/ConfigManager.hpp"
-#include "Manager/SceneManager.hpp"
+#include "Scene/EditorScene.hpp"
+#include "Scene/ExampleScene.hpp"
 #include <imgui.h>
 
 MCEditor::EditorLayer::EditorLayer(const std::shared_ptr<MCEngine::Window> &window)
     : ImGuiLayer(window, (ConfigManager::GetInstance().GetConfigsPath() / "imgui.ini").string(), "EditorLayer")
 {
+    m_EditorScene = std::make_shared<MCEditor::EditorScene>();
+    m_ActiveScene = std::make_shared<MCEditor::ExampleScene>();
+    m_SceneViewport.SetCamera(m_EditorScene->GetMainCamera());
 }
 
 void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
@@ -103,30 +107,11 @@ void MCEditor::EditorLayer::OnUpdate(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
 
-    // Handle editor actions
-    {
-        switch (m_Action)
-        {
-        case EditorAction::NewScene:
-            SceneManager::GetInstance().NewExampleScene();
-            break;
-        case EditorAction::OpenScene:
-            SceneManager::GetInstance().OpenSceneDialog();
-            break;
-        case EditorAction::SaveSceneAs:
-            SceneManager::GetInstance().SaveSceneAsDialog();
-            break;
-        default:
-            break;
-        }
-        m_Action = EditorAction::None;
-    }
-
     // Update scenes
     {
         if (m_SceneViewport.IsFocused())
-            SceneManager::GetInstance().GetEditorScene()->Update(deltaTime);
-        SceneManager::GetInstance().GetActiveScene()->Update(deltaTime);
+            m_EditorScene->Update(deltaTime);
+        m_ActiveScene->Update(deltaTime);
     }
 }
 
@@ -136,14 +121,14 @@ void MCEditor::EditorLayer::OnRender()
 
     // Pre-render
     {
-        SceneManager::GetInstance().GetActiveScene()->PreRender();
-        SceneManager::GetInstance().GetActiveScene()->RenderShadowMap();
+        m_ActiveScene->PreRender();
+        m_ActiveScene->RenderShadowMap();
     }
 
     // Render viewports
     {
-        m_GameViewport.Render();
-        m_SceneViewport.Render();
+        m_GameViewport.Render(m_ActiveScene);
+        m_SceneViewport.Render(m_ActiveScene);
     }
 }
 
@@ -220,31 +205,5 @@ void MCEditor::EditorLayer::RenderDockSpace()
     }
     style.WindowMinSize.x = minWinSizeX;
 
-    RenderMenubar();
-
     ImGui::End();
-}
-
-void MCEditor::EditorLayer::RenderMenubar()
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("File"))
-        {
-            if (ImGui::MenuItem("New", "Ctrl+N"))
-                SceneManager::GetInstance().NewExampleScene();
-            if (ImGui::MenuItem("Open...", "Ctrl+O"))
-                SceneManager::GetInstance().OpenSceneDialog();
-            if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
-                SceneManager::GetInstance().SaveSceneAsDialog();
-
-            if (ImGui::MenuItem("Exit"))
-                m_Window->SetRunning(false);
-
-            ImGui::EndMenu();
-        }
-        ImGui::EndMenuBar();
-    }
 }
