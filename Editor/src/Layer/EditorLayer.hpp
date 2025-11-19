@@ -5,14 +5,6 @@
 namespace MCEditor
 {
 
-enum class EditorAction
-{
-    None = 0,
-    NewScene,
-    OpenScene,
-    SaveSceneAs
-};
-
 class EditorLayer : public MCEngine::ImGuiLayer
 {
 
@@ -28,9 +20,6 @@ public:
     bool OnKeyEvent(MCEngine::KeyEvent &event);
 
 private:
-    // Logic
-    EditorAction m_Action = EditorAction::None;
-
     // Panels
     SceneViewport m_SceneViewport;
     std::shared_ptr<MCEngine::Scene> m_EditorScene;

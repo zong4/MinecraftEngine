@@ -1,6 +1,5 @@
 #include "Viewport.hpp"
 
-#include "Manager/ConfigManager.hpp"
 #include <imgui.h>
 
 void MCEditor::Viewport::Render(std::shared_ptr<MCEngine::Scene> scene)

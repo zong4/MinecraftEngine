@@ -1,7 +1,6 @@
 #include "Editor.hpp"
 
 #include "Layer/EditorLayer.hpp"
-#include "Manager/ConfigManager.hpp"
 
 MCEditor::Editor::Editor(const MCEngine::WindowProperty &props) : Application(props)
 {
@@ -10,5 +9,5 @@ MCEditor::Editor::Editor(const MCEngine::WindowProperty &props) : Application(pr
 
 std::unique_ptr<MCEngine::Application> MCEngine::CreateApplication()
 {
-    return std::make_unique<MCEditor::Editor>(MCEditor::ConfigManager::GetInstance().GetWindowProperty());
+    return std::make_unique<MCEditor::Editor>(MCEngine::WindowProperty("Minecraft Engine", 1280, 720, true));
 }

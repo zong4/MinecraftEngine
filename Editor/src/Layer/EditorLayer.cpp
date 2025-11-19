@@ -1,12 +1,10 @@
 #include "EditorLayer.hpp"
 
-#include "Manager/ConfigManager.hpp"
 #include "Scene/EditorScene.hpp"
 #include "Scene/ExampleScene.hpp"
 #include <imgui.h>
 
-MCEditor::EditorLayer::EditorLayer(const std::shared_ptr<MCEngine::Window> &window)
-    : ImGuiLayer(window, (ConfigManager::GetInstance().GetConfigsPath() / "imgui.ini").string(), "EditorLayer")
+MCEditor::EditorLayer::EditorLayer(const std::shared_ptr<MCEngine::Window> &window) : ImGuiLayer(window, "EditorLayer")
 {
     m_EditorScene = std::make_shared<MCEditor::EditorScene>();
     m_ActiveScene = std::make_shared<MCEditor::ExampleScene>();
@@ -57,32 +55,7 @@ void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
     }
 }
 
-bool MCEditor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event)
-{
-    if (event.GetAction() == 1)
-    {
-        // Key Pressed for editor actions
-        switch (event.GetCode())
-        {
-        case ENGINE_KEY_N:
-            if (MCEngine::Input::GetInstance().IsControlDown())
-                m_Action = EditorAction::NewScene;
-            return true;
-        case ENGINE_KEY_O:
-            if (MCEngine::Input::GetInstance().IsControlDown())
-                m_Action = EditorAction::OpenScene;
-            return true;
-        case ENGINE_KEY_S:
-            if (MCEngine::Input::GetInstance().IsControlDown() && MCEngine::Input::GetInstance().IsShiftDown())
-                m_Action = EditorAction::SaveSceneAs;
-            return true;
-        default:
-            break;
-        }
-    }
-
-    return false;
-}
+bool MCEditor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event) { return false; }
 
 void MCEditor::EditorLayer::OnUpdate(float deltaTime)
 {
@@ -119,7 +92,4 @@ void MCEditor::EditorLayer::RenderImGui()
     ImGui::Begin("Scene");
     m_SceneViewport.OnImGuiRender();
     ImGui::End();
-
-    // Logic
-    SetBlockEvents(!m_SceneViewport.IsFocused() && !m_SceneViewport.IsHovered());
 }
