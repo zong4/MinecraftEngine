@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UI/SceneViewport.hpp"
+#include <Function.hpp>
 
 namespace MCEditor
 {
@@ -20,8 +20,6 @@ public:
     bool OnKeyEvent(MCEngine::KeyEvent &event);
 
 private:
-    // Panels
-    SceneViewport m_SceneViewport;
     std::shared_ptr<MCEngine::Scene> m_EditorScene;
     std::shared_ptr<MCEngine::Scene> m_ActiveScene;
 

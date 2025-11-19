@@ -8,7 +8,6 @@ MCEditor::EditorLayer::EditorLayer(const std::shared_ptr<MCEngine::Window> &wind
 {
     m_EditorScene = std::make_shared<MCEditor::EditorScene>();
     m_ActiveScene = std::make_shared<MCEditor::ExampleScene>();
-    m_SceneViewport.SetCamera(m_EditorScene->GetMainCamera());
 }
 
 void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
@@ -63,8 +62,7 @@ void MCEditor::EditorLayer::OnUpdate(float deltaTime)
 
     // Update scenes
     {
-        if (m_SceneViewport.IsFocused())
-            m_EditorScene->Update(deltaTime);
+        m_EditorScene->Update(deltaTime);
         m_ActiveScene->Update(deltaTime);
     }
 }
@@ -81,15 +79,18 @@ void MCEditor::EditorLayer::OnRender()
 
     // Render viewports
     {
-        m_SceneViewport.Render(m_ActiveScene);
+        uint32_t viewportWidth = m_Window->GetProperty().Width;
+        uint32_t viewportHeight = m_Window->GetProperty().Height;
+        MCEngine::RendererCommand::SetViewport(0, 0, viewportWidth, viewportHeight);
+        LOG_ENGINE_INFO("Viewport Size: " + std::to_string(viewportWidth) + "x" + std::to_string(viewportHeight));
+        m_EditorScene->Resize((float)viewportWidth, (float)viewportHeight);
+        m_ActiveScene->Resize((float)viewportWidth, (float)viewportHeight);
+        m_ActiveScene->Render(m_EditorScene->GetMainCamera());
+
+        // test: bvh
+        MCEngine::BVH bvh(m_ActiveScene);
+        bvh.Render(3);
     }
 }
 
-void MCEditor::EditorLayer::RenderImGui()
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    ImGui::Begin("Scene");
-    m_SceneViewport.OnImGuiRender();
-    ImGui::End();
-}
+void MCEditor::EditorLayer::RenderImGui() { ENGINE_PROFILE_FUNCTION() }
