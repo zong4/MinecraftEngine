@@ -1,7 +1,5 @@
 #include "Material.hpp"
 
-#include <glad/glad.h>
-
 Engine::Material::Material(std::shared_ptr<Shader> shader) : m_Shader(shader)
 {
     PROFILE_FUNCTION();

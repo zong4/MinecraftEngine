@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Event.hpp"
-
 #include <functional>
 
 namespace Engine

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Physics/BoundingBox.hpp"
+#include "../../Renderer/Texture/TextureLibrary.hpp"
 
 namespace Engine
 {

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../ECS/Components/Basic/BasicComponent.hpp"
-#include "../ECS/Components/Camera/CameraComponent.hpp"
-#include "../ECS/Components/Light/LightComponent.hpp"
-#include "../ECS/Components/Light/SkyboxComponent.hpp"
-#include "../ECS/Components/Renderer/MaterialComponent.hpp"
-#include "../ECS/Components/Renderer/RendererComponent.hpp"
+#include "../ECS/Components/BasicComponent.hpp"
+#include "../ECS/Components/CameraComponent.hpp"
+#include "../ECS/Components/LightComponent.hpp"
+#include "../ECS/Components/MaterialComponent.hpp"
+#include "../ECS/Components/RendererComponent.hpp"
+#include "../ECS/Components/SkyboxComponent.hpp"
 
 namespace Engine
 {
@@ -26,7 +26,6 @@ public:
     void SetMainCamera(const Entity &camera);
 
 public:
-    // Main loop
     void Update(float deltaTime);
     void PreRender();
     void RenderShadowMap() const;
@@ -52,12 +51,6 @@ public:
 protected:
     std::string m_Name;
 
-protected:
-    void DeleteEntityReal(const Entity &entity);
-    void Render2D() const;
-    void Render3D() const;
-    void RenderSkybox() const;
-
 private:
     // Scene data
     entt::registry m_Registry = {};
@@ -67,6 +60,12 @@ private:
     std::unique_ptr<Engine::FrameBuffer> m_ShadowMap =
         std::make_unique<Engine::FrameBuffer>(Engine::FrameBufferType::Depth, 1280, 720);
     std::vector<Entity> m_DeletedEntities = {};
+
+private:
+    void DeleteEntityReal(const Entity &entity);
+    void Render2D() const;
+    void Render3D() const;
+    void RenderSkybox() const;
 };
 
 } // namespace Engine
