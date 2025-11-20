@@ -28,8 +28,6 @@ public:
     void AddChild(Entity child) { m_Children.push_back(child); }
     void RemoveChild(Entity child);
     void ClearChildren() { m_Children.clear(); }
-
-public:
     static void SetParentChild(Entity parent, Entity child);
 
 private:

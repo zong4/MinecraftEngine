@@ -24,6 +24,7 @@ public:
     {
         return m_Entity.HasComponent<T>();
     }
+
     // clang-format off
     template <typename T>
     // clang-format on
@@ -31,6 +32,7 @@ public:
     {
         return m_Entity.GetComponent<T>();
     }
+
     // clang-format off
     template <typename T, typename... Args>
     // clang-format on
@@ -38,6 +40,7 @@ public:
     {
         m_Entity.AddComponent<T>(std::forward<Args>(args)...);
     }
+
     // clang-format off
     template <typename T>
     // clang-format on

@@ -16,9 +16,9 @@ struct CameraComponent
 {
     bool Primary = false;
     CameraType Type;
-    glm::vec4 BackgroundColor;
     float Scale = 1.0f;
     float FOV, NearClip, FarClip;
+    glm::vec4 BackgroundColor;
 
 public:
     CameraComponent(CameraType type = CameraType::Perspective, float width = 1280.0f, float height = 720.0f,

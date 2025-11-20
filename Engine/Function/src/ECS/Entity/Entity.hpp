@@ -34,6 +34,7 @@ public:
             return false;
         return m_Registry->all_of<T>(m_Handle);
     }
+
     // clang-format off
     template <typename T>
     // clang-format on
@@ -43,6 +44,7 @@ public:
             return nullptr;
         return &m_Registry->get<T>(m_Handle);
     }
+
     // clang-format off
     template <typename T, typename... Args>
     // clang-format on
@@ -55,6 +57,7 @@ public:
         }
         m_Registry->emplace<T>(m_Handle, std::forward<Args>(args)...);
     }
+
     // clang-format off
     template <typename T>
     // clang-format on
