@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Window/Window.hpp"
+#include <Core.hpp>
 
 namespace Engine
 {
@@ -8,32 +8,27 @@ namespace Engine
 class ImGuiLayer : public Layer
 {
 public:
-    ImGuiLayer(std::shared_ptr<Window> window);
+    ImGuiLayer(void *nativeWindow);
     virtual ~ImGuiLayer() override = default;
 
     // Setters
     void SetBlockEvents(bool block) { m_BlockEvents = block; }
 
 public:
-    // Main loop
+    void OnAttach() override;
     void OnEvent(Event &event) override;
     void OnUpdate(float deltaTime) override {}
     void OnRender() override {}
+    void BeginRenderImGui() const;
     virtual void OnImGuiRender() override {}
-
-    // Called by LayerStack
-    void OnAttach() override;
+    void EndRenderImGui() const;
     void OnDetach() override;
 
 protected:
     bool m_BlockEvents = true;
-    std::shared_ptr<Window> m_Window;
-    std::string m_ImGuiFilePath;
+    void *m_NativeWindow;
 
-public:
-    void BeginRenderImGui() const;
-    void EndRenderImGui() const;
-
+private:
     void SetDarkThemeColors();
 };
 

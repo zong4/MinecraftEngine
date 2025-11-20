@@ -1,20 +1,19 @@
 ﻿#include "ImGuiLayer.hpp"
 
-#include "Font/FontLibrary.hpp"
-#include "Window/WindowUtility.hpp"
+#include "../Renderer/RendererProperty.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-Engine::ImGuiLayer::ImGuiLayer(std::shared_ptr<Window> window) : Layer("ImGuiLayer"), m_Window(window) {}
+Engine::ImGuiLayer::ImGuiLayer(void *nativeWindow) : Layer("ImGuiLayer"), m_NativeWindow(nativeWindow) {}
 
 void Engine::ImGuiLayer::OnEvent(Event &event)
 {
     PROFILE_FUNCTION();
 
-    if (m_BlockEvents && m_Window)
+    if (m_BlockEvents && m_NativeWindow)
     {
         EventDispatcher dispatcher(event);
 
@@ -39,6 +38,33 @@ void Engine::ImGuiLayer::OnEvent(Event &event)
     }
 }
 
+void Engine::ImGuiLayer::OnAttach()
+{
+    PROFILE_FUNCTION();
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
+                                                          // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
+                                                          // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    // ImGui::StyleColorsClassic();
+    SetDarkThemeColors();
+
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow *>(m_NativeWindow), true);
+    std::string glsl_version = "#version " + std::to_string(Engine::RendererProperty::GetInstance().GetMajorVersion()) +
+                               std::to_string(Engine::RendererProperty::GetInstance().GetMinorVersion()) + "0";
+    ImGui_ImplOpenGL3_Init(glsl_version.c_str());
+}
+
 void Engine::ImGuiLayer::BeginRenderImGui() const
 {
     PROFILE_FUNCTION();
@@ -52,64 +78,18 @@ void Engine::ImGuiLayer::EndRenderImGui() const
 {
     PROFILE_FUNCTION();
 
+    int width, height;
+    glfwGetWindowSize(static_cast<GLFWwindow *>(m_NativeWindow), &width, &height);
     ImGuiIO &io = ImGui::GetIO();
-    io.DisplaySize = ImVec2((float)m_Window->GetProperty().Width, (float)m_Window->GetProperty().Height);
-
-    // Rendering
+    io.DisplaySize = ImVec2((float)width, (float)height);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void Engine::ImGuiLayer::OnAttach()
-{
-    PROFILE_FUNCTION();
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
-    ImGuiIO &io = ImGui::GetIO();
-    (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-
-    // Set font size based on DPI scale and screen resolution
-    std::pair<int, int> screenResolution = WindowUtility::GetScreenResolution();
-    LOG_ENGINE_INFO("Screen Resolution: " + std::to_string(screenResolution.first) + "x" +
-                    std::to_string(screenResolution.second));
-    float dpiScale = WindowUtility::GetDPIScale();
-    LOG_ENGINE_INFO("DPI Scale: " + std::to_string(dpiScale));
-    float fontSize = 10.0f * dpiScale * WindowUtility::GetScreenResolutionScale();
-
-    // Set default font
-    FontLibrary::GetInstance().Init(fontSize, 0.8f);
-    ImFont *customFont = FontLibrary::GetInstance().GetFont("Cute");
-    if (!customFont)
-    {
-        LOG_EDITOR_INFO("Failed to load custom font! Using default font instead.");
-        customFont = io.FontDefault;
-    }
-    io.FontDefault = customFont;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    // ImGui::StyleColorsClassic();
-    SetDarkThemeColors();
-
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow *>(m_Window->GetNativeWindow()), true);
-    std::string glsl_version = "#version " + std::to_string(m_Window->GetRendererAPIProperty().GetMajorVersion()) +
-                               std::to_string(m_Window->GetRendererAPIProperty().GetMinorVersion()) + "0";
-    ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 }
 
 void Engine::ImGuiLayer::OnDetach()
 {
     PROFILE_FUNCTION();
 
-    // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
