@@ -5,6 +5,12 @@
 namespace Editor
 {
 
+enum class SandboxMode
+{
+    Edit = 0,
+    Simulate = 1
+};
+
 class SandboxLayer : public Engine::Layer
 {
 
@@ -19,6 +25,7 @@ public:
     void OnImGuiRender() override;
 
 private:
+    SandboxMode m_Mode = SandboxMode::Edit;
     std::shared_ptr<Engine::Window> m_Window;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;

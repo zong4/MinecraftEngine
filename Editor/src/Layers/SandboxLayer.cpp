@@ -27,8 +27,10 @@ void Editor::SandboxLayer::OnUpdate(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    m_EditorScene->Update(deltaTime);
-    // m_ActiveScene->Update(deltaTime);
+    if (m_Mode == SandboxMode::Simulate)
+        m_ActiveScene->Update(deltaTime);
+    else
+        m_EditorScene->Update(deltaTime);
 }
 
 void Editor::SandboxLayer::OnRender()
@@ -65,4 +67,18 @@ void Editor::SandboxLayer::OnImGuiRender()
     ImGui::End();
 }
 
-bool Editor::SandboxLayer::OnKeyEvent(Engine::KeyEvent &event) { return false; }
+bool Editor::SandboxLayer::OnKeyEvent(Engine::KeyEvent &event)
+{
+    if (Engine::Input::GetInstance().IsKeyPressed(KEY_SPACE))
+    {
+        m_Mode = SandboxMode::Simulate;
+        return true;
+    }
+    else if (Engine::Input::GetInstance().IsKeyPressed(KEY_ESCAPE))
+    {
+        m_Mode = SandboxMode::Edit;
+        return true;
+    }
+
+    return false;
+}
