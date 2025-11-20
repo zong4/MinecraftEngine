@@ -17,10 +17,7 @@ public:
 public:
     void OnAttach() override;
     void OnEvent(Event &event) override;
-    void OnUpdate(float deltaTime) override {}
-    void OnRender() override {}
     void BeginRenderImGui() const;
-    virtual void OnImGuiRender() override {}
     void EndRenderImGui() const;
     void OnDetach() override;
 
