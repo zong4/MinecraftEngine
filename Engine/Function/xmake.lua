@@ -1,4 +1,4 @@
-add_requires("entt", "yaml-cpp")
+add_requires("entt")
 
 target("Function")
     set_kind("static")
@@ -9,4 +9,3 @@ target("Function")
     add_includedirs("include", {public = true})
 
     add_packages("entt", {public = true})
-    add_packages("yaml-cpp")

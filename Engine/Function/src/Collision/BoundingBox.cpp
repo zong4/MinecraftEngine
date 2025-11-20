@@ -31,8 +31,9 @@ Engine::BoundingBox Engine::BoundingBox::Transform(const glm::mat4 &matrix) cons
     return BoundingBox(newMin, newMax);
 }
 
-void Engine::BoundingBox::Merge(const BoundingBox &other)
+Engine::BoundingBox Engine::BoundingBox::Merge(const BoundingBox &other) const
 {
-    m_Min = glm::min(m_Min, other.m_Min);
-    m_Max = glm::max(m_Max, other.m_Max);
+    glm::vec3 newMin = glm::min(m_Min, other.m_Min);
+    glm::vec3 newMax = glm::max(m_Max, other.m_Max);
+    return BoundingBox(newMin, newMax);
 }

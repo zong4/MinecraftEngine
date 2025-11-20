@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch.hpp"
+#include <Platform.hpp>
 
 namespace Engine
 {
@@ -23,7 +23,7 @@ public:
 
 public:
     BoundingBox Transform(const glm::mat4 &matrix) const;
-    void Merge(const BoundingBox &other);
+    BoundingBox Merge(const BoundingBox &other) const;
 
 private:
     glm::vec3 m_Min;

@@ -1,7 +1,7 @@
 #include "BVH.hpp"
 
-#include "Renderer/Shader/ShaderLibrary.hpp"
-#include "Renderer/VertexArray/VAOLibrary.hpp"
+#include "../Renderer/Shader/ShaderLibrary.hpp"
+#include "../Renderer/VertexArray/VAOLibrary.hpp"
 
 Engine::BVH::BVH(std::shared_ptr<Scene> scene)
 {
@@ -38,8 +38,8 @@ void Engine::BVH::Render(int maxDepth) const
             return;
 
         // Calculate model matrix
-        glm::vec3 scale = node->Box.GetMax() - node->Box.GetMin();
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), node->Box.GetCenter());
+        glm::vec3 scale = node->BBox.GetMax() - node->BBox.GetMin();
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), node->BBox.GetCenter());
         model = glm::scale(model, scale);
         shader->SetUniformMat4("uModel", model);
 
@@ -67,8 +67,8 @@ Engine::BVHNode *Engine::BVH::Build(std::vector<Entity> entities, int leafSize)
     // Calculate bounding box for current node
     BoundingBox box = entities[0].GetComponent<MeshRendererComponent>()->WorldBBox;
     for (size_t i = 1; i < entities.size(); i++)
-        box.Merge(entities[i].GetComponent<MeshRendererComponent>()->WorldBBox);
-    node->Box = box;
+        box = box.Merge(entities[i].GetComponent<MeshRendererComponent>()->WorldBBox);
+    node->BBox = box;
 
     // Stop if <= leaf size
     if (entities.size() <= leafSize)

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../src/Scene/Scene.hpp"
+#include "../Scene/Scene.hpp"
 
 namespace Engine
 {
 
 struct BVHNode
 {
-    BoundingBox Box;
+    BoundingBox BBox;
     std::vector<Entity> Entities;
 
     // Child nodes
