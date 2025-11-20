@@ -1,11 +1,11 @@
 #pragma once
 
-#include "BasicBuffer.hpp"
+#include "Buffer.hpp"
 
 namespace Engine
 {
 
-class VertexBuffer : public BasicBuffer
+class VertexBuffer : public Buffer
 {
 public:
     VertexBuffer(size_t size);

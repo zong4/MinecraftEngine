@@ -1,17 +1,17 @@
 #pragma once
 
-#include "../../RendererCommand.hpp"
+#include "../RendererCommand.hpp"
 
 namespace Engine
 {
 
-class BasicBuffer
+class Buffer
 {
 public:
-    BasicBuffer(int count = 0) : m_Count(count) {}
-    virtual ~BasicBuffer() = default;
-    BasicBuffer(const BasicBuffer &) = delete;
-    BasicBuffer &operator=(const BasicBuffer &) = delete;
+    Buffer(int count = 0) : m_Count(count) {}
+    virtual ~Buffer() = default;
+    Buffer(const Buffer &) = delete;
+    Buffer &operator=(const Buffer &) = delete;
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }

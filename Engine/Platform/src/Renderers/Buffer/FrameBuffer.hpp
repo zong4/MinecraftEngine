@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Texture/Texture2D.hpp"
+#include "../Texture/Texture2D.hpp"
 #include "RenderBuffer.hpp"
 
 namespace Engine

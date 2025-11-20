@@ -1,8 +1,8 @@
 #include "Window.hpp"
 
 #include "../ImGui/ImGuiLayer.hpp"
-#include "../Renderer/RendererCommand.hpp"
-#include "../Renderer/RendererProperty.hpp"
+#include "../Renderers/RendererCommand.hpp"
+#include "../Renderers/RendererProperty.hpp"
 #include "OpenGLWindow.hpp"
 #include <GLFW/glfw3.h>
 

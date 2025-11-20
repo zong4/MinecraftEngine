@@ -1,7 +1,7 @@
 #include "OpenGLWindow.hpp"
 
-#include "../Renderer/RendererCommand.hpp"
-#include "../Renderer/RendererProperty.hpp"
+#include "../Renderers/RendererCommand.hpp"
+#include "../Renderers/RendererProperty.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 

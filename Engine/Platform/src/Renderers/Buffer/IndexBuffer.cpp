@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-Engine::IndexBuffer::IndexBuffer(size_t size) : BasicBuffer(static_cast<int>(size / sizeof(uint32_t)))
+Engine::IndexBuffer::IndexBuffer(size_t size) : Buffer(static_cast<int>(size / sizeof(uint32_t)))
 {
     glGenBuffers(1, &m_RendererID);
     Bind();
@@ -11,12 +11,12 @@ Engine::IndexBuffer::IndexBuffer(size_t size) : BasicBuffer(static_cast<int>(siz
     Unbind();
 }
 
-Engine::IndexBuffer::IndexBuffer(const void *data, size_t size) : BasicBuffer(static_cast<int>(size / sizeof(uint32_t)))
+Engine::IndexBuffer::IndexBuffer(const void *data, size_t size) : Buffer(static_cast<int>(size / sizeof(uint32_t)))
 {
     CreateBuffer(data, size);
 }
 
-Engine::IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices) : BasicBuffer(static_cast<int>(indices.size()))
+Engine::IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices) : Buffer(static_cast<int>(indices.size()))
 {
     CreateBuffer(indices.data(), indices.size() * sizeof(uint32_t));
 }
