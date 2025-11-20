@@ -13,10 +13,10 @@ std::shared_ptr<Engine::Window> Engine::Window::Create(const WindowProperty &pro
     case Engine::RendererAPI::OpenGL:
         return std::make_shared<OpenGLWindow>(property);
     case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ERROR("VulkanWindow is not implemented yet");
+        LOG_ENGINE_ASSERT("VulkanWindow is not implemented yet");
         return nullptr;
     default:
-        LOG_ENGINE_ERROR("Unknown RendererAPI");
+        LOG_ENGINE_ASSERT("Unknown RendererAPI");
         return nullptr;
     }
 }
