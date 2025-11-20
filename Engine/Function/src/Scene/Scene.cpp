@@ -1,10 +1,9 @@
 #include "Scene.hpp"
 
-#include "ECS/Component/Renderer/RendererComponent.hpp"
-#include "Renderer/Buffer/UniformBufferLibrary.hpp"
-#include "Renderer/Material/MaterialLibrary.hpp"
-#include "Renderer/Shader/ShaderLibrary.hpp"
-#include "Renderer/VertexArray/VAOLibrary.hpp"
+#include "../Renderer/Buffer/UniformBufferLibrary.hpp"
+#include "../Renderer/Material/MaterialLibrary.hpp"
+#include "../Renderer/Shader/ShaderLibrary.hpp"
+#include "../Renderer/VertexArray/VAOLibrary.hpp"
 
 Engine::Scene::~Scene()
 {

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../ECS/Component/Basic/BasicComponent.hpp"
-#include "../ECS/Component/Camera/CameraComponent.hpp"
-#include "../ECS/Component/Light/LightComponent.hpp"
-#include "../ECS/Component/Light/SkyboxComponent.hpp"
-#include "../ECS/Component/Renderer/MaterialComponent.hpp"
-#include "../ECS/Component/Renderer/RendererComponent.hpp"
+#include "../ECS/Components/Basic/BasicComponent.hpp"
+#include "../ECS/Components/Camera/CameraComponent.hpp"
+#include "../ECS/Components/Light/LightComponent.hpp"
+#include "../ECS/Components/Light/SkyboxComponent.hpp"
+#include "../ECS/Components/Renderer/MaterialComponent.hpp"
+#include "../ECS/Components/Renderer/RendererComponent.hpp"
 
 namespace Engine
 {

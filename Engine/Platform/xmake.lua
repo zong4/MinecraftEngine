@@ -15,6 +15,6 @@ target("Platform")
         add_syslinks("ole32", "comdlg32")
     end
     add_packages("stb");
-    add_packages("glfw", {public = true});
-    add_packages("glad", {public = true});
+    add_packages("glfw");
+    add_packages("glad", {public = true}); -- todo: fix
     add_packages("imgui", {public = true});
