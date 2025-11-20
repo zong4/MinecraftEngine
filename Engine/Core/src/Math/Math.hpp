@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Math
@@ -15,4 +15,4 @@ public:
                                    glm::vec3 &scale);
 };
 
-} // namespace MCEngine
+} // namespace Engine

@@ -2,13 +2,13 @@
 
 #include "Layers/SandboxLayer.hpp"
 
-Editor::Sandbox::Sandbox(const MCEngine::WindowProperty &props) : Application(props)
+Editor::Sandbox::Sandbox(const Engine::WindowProperty &props) : Application(props)
 {
     AddLayer(std::make_shared<SandboxLayer>(m_Window));
-    // AddLayer(std::make_shared<MCEngine::ImGuiLayer>(m_Window));
+    // AddLayer(std::make_shared<Engine::ImGuiLayer>(m_Window));
 }
 
-std::unique_ptr<MCEngine::Application> MCEngine::CreateApplication()
+std::unique_ptr<Engine::Application> Engine::CreateApplication()
 {
-    return std::make_unique<Editor::Sandbox>(MCEngine::WindowProperty("Minecraft Engine", 1280, 720, true));
+    return std::make_unique<Editor::Sandbox>(Engine::WindowProperty("Minecraft Engine", 1280, 720, true));
 }

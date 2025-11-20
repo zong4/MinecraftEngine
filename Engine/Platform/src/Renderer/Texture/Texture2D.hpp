@@ -2,7 +2,7 @@
 
 #include "Texture.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Texture2D : public Texture
@@ -36,4 +36,4 @@ private:
                        void *data);
 };
 
-} // namespace MCEngine
+} // namespace Engine

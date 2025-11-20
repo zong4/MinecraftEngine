@@ -2,7 +2,7 @@
 
 #include "Event/Event.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Layer
@@ -25,4 +25,4 @@ private:
     std::string m_Name;
 };
 
-} // namespace MCEngine
+} // namespace Engine

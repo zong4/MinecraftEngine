@@ -2,7 +2,7 @@
 
 #include "Renderer/RendererCommand.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Texture
@@ -25,9 +25,9 @@ protected:
     // unsigned char *LoadImage(const std::string &path, int &width, int &height, unsigned int &internalFormat,
     //                          unsigned int &format, bool flipVertically);
     void *LoadImage(const std::string &path, int &width, int &height, int &channels, unsigned int &internalFormat,
-                       unsigned int &format, unsigned int &type, bool &isHDR, bool flipVertically);
+                    unsigned int &format, unsigned int &type, bool &isHDR, bool flipVertically);
 
-    void FreeImage(void* data);
+    void FreeImage(void *data);
 };
 
-} // namespace MCEngine
+} // namespace Engine

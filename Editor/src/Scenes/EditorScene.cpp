@@ -2,13 +2,13 @@
 
 #include "Scripts/CameraController.hpp"
 
-Editor::EditorScene::EditorScene() : MCEngine::Scene()
+Editor::EditorScene::EditorScene() : Engine::Scene()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    MCEngine::Entity camera = AddCamera("MainCamera", MCEngine::TransformComponent(),
-                                        MCEngine::CameraComponent(MCEngine::CameraType::Perspective));
-    camera.AddComponent<MCEngine::NativeScriptComponent>();
-    camera.GetComponent<MCEngine::NativeScriptComponent>()->Bind<CameraController>(camera);
+    Engine::Entity camera =
+        AddCamera("MainCamera", Engine::TransformComponent(), Engine::CameraComponent(Engine::CameraType::Perspective));
+    camera.AddComponent<Engine::NativeScriptComponent>();
+    camera.GetComponent<Engine::NativeScriptComponent>()->Bind<CameraController>(camera);
     SetMainCamera(camera);
 }

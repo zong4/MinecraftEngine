@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class TextureLibrary
@@ -28,4 +28,4 @@ private:
     bool Exists(const std::string &name) const;
 };
 
-} // namespace MCEngine
+} // namespace Engine

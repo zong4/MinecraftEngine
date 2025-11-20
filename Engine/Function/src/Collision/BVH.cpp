@@ -3,7 +3,7 @@
 #include "Renderer/Shader/ShaderLibrary.hpp"
 #include "Renderer/VertexArray/VAOLibrary.hpp"
 
-MCEngine::BVH::BVH(std::shared_ptr<Scene> scene)
+Engine::BVH::BVH(std::shared_ptr<Scene> scene)
 {
     std::vector<Entity> entities;
     auto &&registry = scene->GetRegistry();
@@ -22,13 +22,13 @@ MCEngine::BVH::BVH(std::shared_ptr<Scene> scene)
     m_Root = Build(entities, 3);
 }
 
-MCEngine::BVH::~BVH()
+Engine::BVH::~BVH()
 {
     Destroy(m_Root);
     m_Root = nullptr;
 }
 
-void MCEngine::BVH::Render(int maxDepth) const
+void Engine::BVH::Render(int maxDepth) const
 {
     auto &&shader = ShaderLibrary::GetInstance().GetShader("SimpleColor");
     shader->Bind();
@@ -57,7 +57,7 @@ void MCEngine::BVH::Render(int maxDepth) const
     shader->Unbind();
 }
 
-MCEngine::BVHNode *MCEngine::BVH::Build(std::vector<Entity> entities, int leafSize)
+Engine::BVHNode *Engine::BVH::Build(std::vector<Entity> entities, int leafSize)
 {
     if (entities.empty())
         return nullptr;
@@ -93,7 +93,7 @@ MCEngine::BVHNode *MCEngine::BVH::Build(std::vector<Entity> entities, int leafSi
     return node;
 }
 
-void MCEngine::BVH::Destroy(BVHNode *node)
+void Engine::BVH::Destroy(BVHNode *node)
 {
     if (!node)
         return;

@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct ProfileResult
@@ -34,4 +34,4 @@ private:
     void WriteFooter();
 };
 
-} // namespace MCEngine
+} // namespace Engine

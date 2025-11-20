@@ -1,10 +1,10 @@
 #include "CameraController.hpp"
 
-using namespace MCEngine;
+using namespace Engine;
 
 void Editor::CameraController::OnCreate()
 {
-    m_Transform = GetComponent<MCEngine::TransformComponent>();
+    m_Transform = GetComponent<Engine::TransformComponent>();
     m_Transform->Position = glm::vec3(0.0f, 10.0f, 20.0f);
     m_Transform->SetRotationEuler(glm::vec3(-30.0f, 0.0f, 0.0f));
 }

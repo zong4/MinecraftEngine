@@ -1,6 +1,6 @@
 #include "BoundingBox.hpp"
 
-int MCEngine::BoundingBox::GetLongestAxis() const
+int Engine::BoundingBox::GetLongestAxis() const
 {
     glm::vec3 extents = m_Max - m_Min;
     if (extents.x >= extents.y && extents.x >= extents.z)
@@ -11,7 +11,7 @@ int MCEngine::BoundingBox::GetLongestAxis() const
         return 2; // Axis::Z
 }
 
-MCEngine::BoundingBox MCEngine::BoundingBox::Transform(const glm::mat4 &matrix) const
+Engine::BoundingBox Engine::BoundingBox::Transform(const glm::mat4 &matrix) const
 {
     glm::vec3 corners[8] = {
         glm::vec3(m_Min.x, m_Min.y, m_Min.z), glm::vec3(m_Max.x, m_Min.y, m_Min.z),
@@ -31,7 +31,7 @@ MCEngine::BoundingBox MCEngine::BoundingBox::Transform(const glm::mat4 &matrix) 
     return BoundingBox(newMin, newMax);
 }
 
-void MCEngine::BoundingBox::Merge(const BoundingBox &other)
+void Engine::BoundingBox::Merge(const BoundingBox &other)
 {
     m_Min = glm::min(m_Min, other.m_Min);
     m_Max = glm::max(m_Max, other.m_Max);

@@ -2,7 +2,7 @@
 
 #include "Renderer/RendererCommand.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class RenderBuffer
@@ -32,4 +32,4 @@ private:
     void Unbind() const;
 };
 
-} // namespace MCEngine
+} // namespace Engine

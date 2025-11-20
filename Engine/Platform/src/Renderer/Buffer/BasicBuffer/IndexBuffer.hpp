@@ -2,7 +2,7 @@
 
 #include "BasicBuffer.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class IndexBuffer : public BasicBuffer
@@ -27,4 +27,4 @@ protected:
     void CreateBuffer(const void *data, size_t size) override;
 };
 
-} // namespace MCEngine
+} // namespace Engine

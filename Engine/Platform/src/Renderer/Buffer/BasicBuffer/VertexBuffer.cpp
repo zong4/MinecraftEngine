@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-MCEngine::VertexBuffer::VertexBuffer(size_t size) : BasicBuffer(static_cast<int>(size / sizeof(float)))
+Engine::VertexBuffer::VertexBuffer(size_t size) : BasicBuffer(static_cast<int>(size / sizeof(float)))
 {
     glGenBuffers(1, &m_RendererID);
     Bind();
@@ -14,26 +14,24 @@ MCEngine::VertexBuffer::VertexBuffer(size_t size) : BasicBuffer(static_cast<int>
                      " and count: " + std::to_string(m_Count));
 }
 
-MCEngine::VertexBuffer::VertexBuffer(const void *data, size_t size)
-    : BasicBuffer(static_cast<int>(size / sizeof(float)))
+Engine::VertexBuffer::VertexBuffer(const void *data, size_t size) : BasicBuffer(static_cast<int>(size / sizeof(float)))
 {
     CreateBuffer(data, size);
 }
 
-MCEngine::VertexBuffer::VertexBuffer(const std::vector<float> &vertices)
-    : BasicBuffer(static_cast<int>(vertices.size()))
+Engine::VertexBuffer::VertexBuffer(const std::vector<float> &vertices) : BasicBuffer(static_cast<int>(vertices.size()))
 {
     CreateBuffer(vertices.data(), vertices.size() * sizeof(float));
 }
 
-MCEngine::VertexBuffer::~VertexBuffer()
+Engine::VertexBuffer::~VertexBuffer()
 {
     ENGINE_PROFILE_FUNCTION();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
-MCEngine::VertexBuffer::VertexBuffer(VertexBuffer &&other)
+Engine::VertexBuffer::VertexBuffer(VertexBuffer &&other)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -47,7 +45,7 @@ MCEngine::VertexBuffer::VertexBuffer(VertexBuffer &&other)
     other.m_RendererID = 0;
 }
 
-MCEngine::VertexBuffer &MCEngine::VertexBuffer::operator=(VertexBuffer &&other)
+Engine::VertexBuffer &Engine::VertexBuffer::operator=(VertexBuffer &&other)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -68,21 +66,21 @@ MCEngine::VertexBuffer &MCEngine::VertexBuffer::operator=(VertexBuffer &&other)
     return *this;
 }
 
-void MCEngine::VertexBuffer::Bind() const
+void Engine::VertexBuffer::Bind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 }
 
-void MCEngine::VertexBuffer::Unbind() const
+void Engine::VertexBuffer::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void MCEngine::VertexBuffer::SetData(const void *data, size_t size, size_t offset)
+void Engine::VertexBuffer::SetData(const void *data, size_t size, size_t offset)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -92,7 +90,7 @@ void MCEngine::VertexBuffer::SetData(const void *data, size_t size, size_t offse
     Unbind();
 }
 
-void MCEngine::VertexBuffer::CreateBuffer(const void *data, size_t size)
+void Engine::VertexBuffer::CreateBuffer(const void *data, size_t size)
 {
     ENGINE_PROFILE_FUNCTION();
 

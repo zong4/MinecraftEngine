@@ -2,7 +2,7 @@
 
 #include "Timer/Timer.hpp"
 
-void MCEngine::Application::Run()
+void Engine::Application::Run()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -17,14 +17,14 @@ void MCEngine::Application::Run()
     }
 }
 
-void MCEngine::Application::Init(const WindowProperty &props)
+void Engine::Application::Init(const WindowProperty &props)
 {
     m_Window = std::make_shared<Window>(props);
     m_ImGuiLayer = std::make_shared<ImGuiLayer>(m_Window);
     m_ImGuiLayer->OnAttach();
 }
 
-void MCEngine::Application::Shutdown()
+void Engine::Application::Shutdown()
 {
     m_ImGuiLayer->OnDetach();
     m_Window.reset();

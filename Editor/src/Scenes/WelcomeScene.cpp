@@ -1,16 +1,16 @@
 #include "WelcomeScene.hpp"
 
-Editor::WelcomeScene::WelcomeScene() : MCEngine::Scene("WelcomeScene")
+Editor::WelcomeScene::WelcomeScene() : Engine::Scene("WelcomeScene")
 {
     SetMainCamera(AddCamera("MainCamera",
-                            MCEngine::TransformComponent(glm::vec3(0.0f, 5.0f, 8.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
-                            MCEngine::CameraComponent(MCEngine::CameraType::Perspective)));
+                            Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 8.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
+                            Engine::CameraComponent(Engine::CameraType::Perspective)));
 
     AddLight("DirectionalLight",
-             MCEngine::TransformComponent(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(-45.0f, -45.0f, 0.0f)),
-             MCEngine::LightComponent(MCEngine::LightType::Directional));
+             Engine::TransformComponent(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(-45.0f, -45.0f, 0.0f)),
+             Engine::LightComponent(Engine::LightType::Directional));
 
-    AddSkybox("Skybox", MCEngine::SkyboxComponent());
+    AddSkybox("Skybox", Engine::SkyboxComponent());
 
     MCEngineLogo();
 }
@@ -94,8 +94,8 @@ void Editor::WelcomeScene::MCEngineLogo()
     // Parent cube
     int size = 9;
     float center = size / 2.0f;
-    MCEngine::Entity cubes = AddEmptyEntity(
-        "Cubes", MCEngine::TransformComponent(glm::vec3(0.0f), glm::vec3(0, 50.0f, 0.0f), glm::vec3(1.0f)));
+    Engine::Entity cubes = AddEmptyEntity(
+        "Cubes", Engine::TransformComponent(glm::vec3(0.0f), glm::vec3(0, 50.0f, 0.0f), glm::vec3(1.0f)));
 
     // Create cubes
     for (int x = 0; x < size; x++)
@@ -107,10 +107,10 @@ void Editor::WelcomeScene::MCEngineLogo()
                 if (positions.find({x, y, z}) != positions.end())
                     continue;
 
-                MCEngine::Entity cube =
+                Engine::Entity cube =
                     Add3DObject("Cube" + std::to_string(x) + std::to_string(y) + std::to_string(z),
-                                MCEngine::TransformComponent(glm::vec3(x - center, y - center, z - center)));
-                MCEngine::RelationshipComponent::SetParentChild(cubes, cube);
+                                Engine::TransformComponent(glm::vec3(x - center, y - center, z - center)));
+                Engine::RelationshipComponent::SetParentChild(cubes, cube);
             }
         }
     }

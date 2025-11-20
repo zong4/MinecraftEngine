@@ -3,7 +3,7 @@
 #include "RenderBuffer.hpp"
 #include "Renderer/Texture/Texture2D.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 enum class FrameBufferType
@@ -53,4 +53,4 @@ private:
     void BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples);
 };
 
-} // namespace MCEngine
+} // namespace Engine

@@ -1,12 +1,12 @@
 #include "UniformBufferLibrary.hpp"
 
-MCEngine::UniformBufferLibrary &MCEngine::UniformBufferLibrary::GetInstance()
+Engine::UniformBufferLibrary &Engine::UniformBufferLibrary::GetInstance()
 {
     static UniformBufferLibrary instance;
     return instance;
 }
 
-std::shared_ptr<MCEngine::UniformBuffer> MCEngine::UniformBufferLibrary::GetUniformBuffer(const std::string &name)
+std::shared_ptr<Engine::UniformBuffer> Engine::UniformBufferLibrary::GetUniformBuffer(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -18,7 +18,7 @@ std::shared_ptr<MCEngine::UniformBuffer> MCEngine::UniformBufferLibrary::GetUnif
     return m_UniformBufferMap[name];
 }
 
-void MCEngine::UniformBufferLibrary::AddUniformBuffer(const std::string &name, size_t size, unsigned int binding)
+void Engine::UniformBufferLibrary::AddUniformBuffer(const std::string &name, size_t size, unsigned int binding)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -31,7 +31,7 @@ void MCEngine::UniformBufferLibrary::AddUniformBuffer(const std::string &name, s
     LOG_ENGINE_INFO("UniformBuffer added: " + name);
 }
 
-void MCEngine::UniformBufferLibrary::RemoveUniformBuffer(const std::string &name)
+void Engine::UniformBufferLibrary::RemoveUniformBuffer(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -44,8 +44,8 @@ void MCEngine::UniformBufferLibrary::RemoveUniformBuffer(const std::string &name
     LOG_ENGINE_INFO("UniformBuffer removed: " + name);
 }
 
-void MCEngine::UniformBufferLibrary::UpdateUniformBuffer(const std::string &name,
-                                                         const std::initializer_list<UniformBufferData> &dataList)
+void Engine::UniformBufferLibrary::UpdateUniformBuffer(const std::string &name,
+                                                       const std::initializer_list<UniformBufferData> &dataList)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -57,7 +57,7 @@ void MCEngine::UniformBufferLibrary::UpdateUniformBuffer(const std::string &name
     m_UniformBufferMap[name]->SetData(dataList);
 }
 
-MCEngine::UniformBufferLibrary::UniformBufferLibrary()
+Engine::UniformBufferLibrary::UniformBufferLibrary()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -65,7 +65,7 @@ MCEngine::UniformBufferLibrary::UniformBufferLibrary()
     AddUniformBuffer("UniformBuffer0", sizeof(glm::mat4) * 10, 0);
 }
 
-bool MCEngine::UniformBufferLibrary::Exists(const std::string &name) const
+bool Engine::UniformBufferLibrary::Exists(const std::string &name) const
 {
     return m_UniformBufferMap.find(name) != m_UniformBufferMap.end();
 }

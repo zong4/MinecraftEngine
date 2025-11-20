@@ -5,7 +5,7 @@
 namespace Editor
 {
 
-class EditorScene : public MCEngine::Scene
+class EditorScene : public Engine::Scene
 {
 public:
     EditorScene();

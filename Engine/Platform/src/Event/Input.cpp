@@ -3,13 +3,13 @@
 #include "KeyCode.hpp"
 #include "MouseButtonCode.hpp"
 
-MCEngine::Input &MCEngine::Input::GetInstance()
+Engine::Input &Engine::Input::GetInstance()
 {
     static Input instance;
     return instance;
 }
 
-bool MCEngine::Input::IsKeyDown(int keyCode) const
+bool Engine::Input::IsKeyDown(int keyCode) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -19,7 +19,7 @@ bool MCEngine::Input::IsKeyDown(int keyCode) const
     return false;
 }
 
-bool MCEngine::Input::IsKeyPressed(int keyCode) const
+bool Engine::Input::IsKeyPressed(int keyCode) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -29,7 +29,7 @@ bool MCEngine::Input::IsKeyPressed(int keyCode) const
     return false;
 }
 
-bool MCEngine::Input::IsKeyReleased(int keyCode) const
+bool Engine::Input::IsKeyReleased(int keyCode) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -39,25 +39,25 @@ bool MCEngine::Input::IsKeyReleased(int keyCode) const
     return false;
 }
 
-bool MCEngine::Input::IsControlDown() const
+bool Engine::Input::IsControlDown() const
 {
     return IsKeyDown(ENGINE_KEY_LEFT_CONTROL) || IsKeyDown(ENGINE_KEY_RIGHT_CONTROL) ||
            IsKeyDown(ENGINE_KEY_LEFT_SUPER) || IsKeyDown(ENGINE_KEY_RIGHT_SUPER);
 }
 
-bool MCEngine::Input::IsShiftDown() const
+bool Engine::Input::IsShiftDown() const
 {
     return IsKeyDown(ENGINE_KEY_LEFT_SHIFT) || IsKeyDown(ENGINE_KEY_RIGHT_SHIFT);
 }
 
-void MCEngine::Input::SetPosition(double x, double y)
+void Engine::Input::SetPosition(double x, double y)
 {
     m_LastPosition = m_Position;
     m_Position = {x, y};
     m_DeltaPosition = m_Position - m_LastPosition;
 }
 
-void MCEngine::Input::Clear()
+void Engine::Input::Clear()
 {
     m_DeltaPosition = {0.0f, 0.0f};
     m_ScrollOffset = {0.0f, 0.0f};

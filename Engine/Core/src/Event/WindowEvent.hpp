@@ -2,10 +2,10 @@
 
 #include "Event.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
-class WindowResizeEvent : public MCEngine::Event
+class WindowResizeEvent : public Engine::Event
 {
 public:
     WindowResizeEvent(int width, int height) : m_Width(width), m_Height(height) {}
@@ -25,4 +25,4 @@ private:
     int m_Height;
 };
 
-} // namespace MCEngine
+} // namespace Engine

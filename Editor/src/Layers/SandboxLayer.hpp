@@ -5,26 +5,26 @@
 namespace Editor
 {
 
-class SandboxLayer : public MCEngine::Layer
+class SandboxLayer : public Engine::Layer
 {
 
 public:
-    SandboxLayer(std::shared_ptr<MCEngine::Window> window);
+    SandboxLayer(std::shared_ptr<Engine::Window> window);
     ~SandboxLayer() override = default;
 
 public:
-    void OnEvent(MCEngine::Event &event) override;
+    void OnEvent(Engine::Event &event) override;
     void OnUpdate(float deltaTime) override;
     void OnRender() override;
     void OnImGuiRender() override;
 
 private:
-    std::shared_ptr<MCEngine::Window> m_Window;
-    std::shared_ptr<MCEngine::Scene> m_EditorScene;
-    std::shared_ptr<MCEngine::Scene> m_ActiveScene;
+    std::shared_ptr<Engine::Window> m_Window;
+    std::shared_ptr<Engine::Scene> m_EditorScene;
+    std::shared_ptr<Engine::Scene> m_ActiveScene;
 
 private:
-    bool OnKeyEvent(MCEngine::KeyEvent &event);
+    bool OnKeyEvent(Engine::KeyEvent &event);
 };
 
 } // namespace Editor

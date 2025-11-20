@@ -1,60 +1,60 @@
 #include "MaterialProperty.hpp"
 
-MCEngine::MaterialProperty::MaterialProperty()
-    : m_Type(MaterialPropertyType::None), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f),
-      m_Vec4(0.0f), m_Mat4(1.0f), m_TextureSlot(0)
+Engine::MaterialProperty::MaterialProperty()
+    : m_Type(MaterialPropertyType::None), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f), m_Vec4(0.0f),
+      m_Mat4(1.0f), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(float value)
+Engine::MaterialProperty::MaterialProperty(float value)
     : m_Type(MaterialPropertyType::Float), m_Float(value), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f),
       m_Vec4(0.0f), m_Mat4(1.0f), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(int value)
+Engine::MaterialProperty::MaterialProperty(int value)
     : m_Type(MaterialPropertyType::Int), m_Float(0.0f), m_Int(value), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f),
       m_Vec4(0.0f), m_Mat4(1.0f), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(unsigned int value)
+Engine::MaterialProperty::MaterialProperty(unsigned int value)
     : m_Type(MaterialPropertyType::UInt), m_Float(0.0f), m_Int(0), m_UInt(value), m_Vec2(0.0f), m_Vec3(0.0f),
       m_Vec4(0.0f), m_Mat4(1.0f), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(const glm::vec2 &value)
-    : m_Type(MaterialPropertyType::Vec2), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(value), m_Vec3(0.0f),
-      m_Vec4(0.0f), m_Mat4(1.0f), m_TextureSlot(0)
+Engine::MaterialProperty::MaterialProperty(const glm::vec2 &value)
+    : m_Type(MaterialPropertyType::Vec2), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(value), m_Vec3(0.0f), m_Vec4(0.0f),
+      m_Mat4(1.0f), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(const glm::vec3 &value)
-    : m_Type(MaterialPropertyType::Vec3), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(value),
-      m_Vec4(0.0f), m_Mat4(1.0f), m_TextureSlot(0)
+Engine::MaterialProperty::MaterialProperty(const glm::vec3 &value)
+    : m_Type(MaterialPropertyType::Vec3), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(value), m_Vec4(0.0f),
+      m_Mat4(1.0f), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(const glm::vec4 &value)
-    : m_Type(MaterialPropertyType::Vec4), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f),
-      m_Vec4(value), m_Mat4(1.0f), m_TextureSlot(0)
+Engine::MaterialProperty::MaterialProperty(const glm::vec4 &value)
+    : m_Type(MaterialPropertyType::Vec4), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f), m_Vec4(value),
+      m_Mat4(1.0f), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(const glm::mat4 &value)
-    : m_Type(MaterialPropertyType::Mat4), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f),
-      m_Vec4(0.0f), m_Mat4(value), m_TextureSlot(0)
+Engine::MaterialProperty::MaterialProperty(const glm::mat4 &value)
+    : m_Type(MaterialPropertyType::Mat4), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f), m_Vec4(0.0f),
+      m_Mat4(value), m_TextureSlot(0)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(const std::shared_ptr<Texture2D> &texture, unsigned int slot)
+Engine::MaterialProperty::MaterialProperty(const std::shared_ptr<Texture2D> &texture, unsigned int slot)
     : m_Type(MaterialPropertyType::Texture2D), m_Float(0.0f), m_Int(0), m_UInt(0), m_Vec2(0.0f), m_Vec3(0.0f),
       m_Vec4(0.0f), m_Mat4(1.0f), m_Texture2D(texture), m_TextureSlot(slot)
 {
 }
 
-MCEngine::MaterialProperty::MaterialProperty(const MaterialProperty &other)
+Engine::MaterialProperty::MaterialProperty(const MaterialProperty &other)
     : m_Type(other.m_Type), m_Texture2D(other.m_Texture2D), m_TextureSlot(other.m_TextureSlot)
 {
     switch (m_Type)
@@ -88,7 +88,7 @@ MCEngine::MaterialProperty::MaterialProperty(const MaterialProperty &other)
     }
 }
 
-MCEngine::MaterialProperty &MCEngine::MaterialProperty::operator=(const MaterialProperty &other)
+Engine::MaterialProperty &Engine::MaterialProperty::operator=(const MaterialProperty &other)
 {
     if (this == &other)
         return *this;
@@ -130,7 +130,7 @@ MCEngine::MaterialProperty &MCEngine::MaterialProperty::operator=(const Material
     return *this;
 }
 
-float MCEngine::MaterialProperty::GetFloat() const
+float Engine::MaterialProperty::GetFloat() const
 {
     if (m_Type != MaterialPropertyType::Float)
     {
@@ -140,7 +140,7 @@ float MCEngine::MaterialProperty::GetFloat() const
     return m_Float;
 }
 
-int MCEngine::MaterialProperty::GetInt() const
+int Engine::MaterialProperty::GetInt() const
 {
     if (m_Type != MaterialPropertyType::Int)
     {
@@ -150,7 +150,7 @@ int MCEngine::MaterialProperty::GetInt() const
     return m_Int;
 }
 
-unsigned int MCEngine::MaterialProperty::GetUInt() const
+unsigned int Engine::MaterialProperty::GetUInt() const
 {
     if (m_Type != MaterialPropertyType::UInt)
     {
@@ -160,7 +160,7 @@ unsigned int MCEngine::MaterialProperty::GetUInt() const
     return m_UInt;
 }
 
-glm::vec2 MCEngine::MaterialProperty::GetVec2() const
+glm::vec2 Engine::MaterialProperty::GetVec2() const
 {
     if (m_Type != MaterialPropertyType::Vec2)
     {
@@ -170,7 +170,7 @@ glm::vec2 MCEngine::MaterialProperty::GetVec2() const
     return m_Vec2;
 }
 
-glm::vec3 MCEngine::MaterialProperty::GetVec3() const
+glm::vec3 Engine::MaterialProperty::GetVec3() const
 {
     if (m_Type != MaterialPropertyType::Vec3)
     {
@@ -180,7 +180,7 @@ glm::vec3 MCEngine::MaterialProperty::GetVec3() const
     return m_Vec3;
 }
 
-glm::vec4 MCEngine::MaterialProperty::GetVec4() const
+glm::vec4 Engine::MaterialProperty::GetVec4() const
 {
     if (m_Type != MaterialPropertyType::Vec4)
     {
@@ -190,7 +190,7 @@ glm::vec4 MCEngine::MaterialProperty::GetVec4() const
     return m_Vec4;
 }
 
-glm::mat4 MCEngine::MaterialProperty::GetMat4() const
+glm::mat4 Engine::MaterialProperty::GetMat4() const
 {
     if (m_Type != MaterialPropertyType::Mat4)
     {
@@ -200,7 +200,7 @@ glm::mat4 MCEngine::MaterialProperty::GetMat4() const
     return m_Mat4;
 }
 
-std::shared_ptr<MCEngine::Texture2D> MCEngine::MaterialProperty::GetTexture2D() const
+std::shared_ptr<Engine::Texture2D> Engine::MaterialProperty::GetTexture2D() const
 {
     if (m_Type != MaterialPropertyType::Texture2D)
     {
@@ -210,56 +210,56 @@ std::shared_ptr<MCEngine::Texture2D> MCEngine::MaterialProperty::GetTexture2D() 
     return m_Texture2D;
 }
 
-void MCEngine::MaterialProperty::SetFloat(float value)
+void Engine::MaterialProperty::SetFloat(float value)
 {
     m_Type = MaterialPropertyType::Float;
     m_Float = value;
 }
 
-void MCEngine::MaterialProperty::SetInt(int value)
+void Engine::MaterialProperty::SetInt(int value)
 {
     m_Type = MaterialPropertyType::Int;
     m_Int = value;
 }
 
-void MCEngine::MaterialProperty::SetUInt(unsigned int value)
+void Engine::MaterialProperty::SetUInt(unsigned int value)
 {
     m_Type = MaterialPropertyType::UInt;
     m_UInt = value;
 }
 
-void MCEngine::MaterialProperty::SetVec2(const glm::vec2 &value)
+void Engine::MaterialProperty::SetVec2(const glm::vec2 &value)
 {
     m_Type = MaterialPropertyType::Vec2;
     m_Vec2 = value;
 }
 
-void MCEngine::MaterialProperty::SetVec3(const glm::vec3 &value)
+void Engine::MaterialProperty::SetVec3(const glm::vec3 &value)
 {
     m_Type = MaterialPropertyType::Vec3;
     m_Vec3 = value;
 }
 
-void MCEngine::MaterialProperty::SetVec4(const glm::vec4 &value)
+void Engine::MaterialProperty::SetVec4(const glm::vec4 &value)
 {
     m_Type = MaterialPropertyType::Vec4;
     m_Vec4 = value;
 }
 
-void MCEngine::MaterialProperty::SetMat4(const glm::mat4 &value)
+void Engine::MaterialProperty::SetMat4(const glm::mat4 &value)
 {
     m_Type = MaterialPropertyType::Mat4;
     m_Mat4 = value;
 }
 
-void MCEngine::MaterialProperty::SetTexture2D(const std::shared_ptr<Texture2D> &texture, unsigned int slot)
+void Engine::MaterialProperty::SetTexture2D(const std::shared_ptr<Texture2D> &texture, unsigned int slot)
 {
     m_Type = MaterialPropertyType::Texture2D;
     m_Texture2D = texture;
     m_TextureSlot = slot;
 }
 
-std::string MCEngine::MaterialProperty::ToString() const
+std::string Engine::MaterialProperty::ToString() const
 {
     switch (m_Type)
     {
@@ -285,4 +285,3 @@ std::string MCEngine::MaterialProperty::ToString() const
         return "None";
     }
 }
-

@@ -2,7 +2,7 @@
 
 #include "Renderer/RendererAPIProperty.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct WindowProperty
@@ -68,4 +68,4 @@ private:
     void Shutdown();
 };
 
-} // namespace MCEngine
+} // namespace Engine

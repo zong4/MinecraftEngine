@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-void MCEngine::RendererCommand::Init()
+void Engine::RendererCommand::Init()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -20,7 +20,7 @@ void MCEngine::RendererCommand::Init()
     LOG_ENGINE_INFO("RendererCommand initialized");
 }
 
-void MCEngine::RendererCommand::GetError(const std::string &functionName)
+void Engine::RendererCommand::GetError(const std::string &functionName)
 {
     GLint error = glGetError();
     if (error != GL_NO_ERROR)
@@ -29,46 +29,46 @@ void MCEngine::RendererCommand::GetError(const std::string &functionName)
     }
 }
 
-void MCEngine::RendererCommand::SetClearColor(const glm::vec4 &color)
+void Engine::RendererCommand::SetClearColor(const glm::vec4 &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
-void MCEngine::RendererCommand::Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
+void Engine::RendererCommand::Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
-void MCEngine::RendererCommand::ClearColorBuffer() { glClear(GL_COLOR_BUFFER_BIT); }
+void Engine::RendererCommand::ClearColorBuffer() { glClear(GL_COLOR_BUFFER_BIT); }
 
-void MCEngine::RendererCommand::ClearDepthBuffer() { glClear(GL_DEPTH_BUFFER_BIT); }
+void Engine::RendererCommand::ClearDepthBuffer() { glClear(GL_DEPTH_BUFFER_BIT); }
 
-void MCEngine::RendererCommand::EnableDepthTest()
+void Engine::RendererCommand::EnableDepthTest()
 {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 }
 
-void MCEngine::RendererCommand::DisableDepthTest() { glDepthFunc(GL_LEQUAL); }
+void Engine::RendererCommand::DisableDepthTest() { glDepthFunc(GL_LEQUAL); }
 
-void MCEngine::RendererCommand::EnableBlend()
+void Engine::RendererCommand::EnableBlend()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void MCEngine::RendererCommand::DisableBlend() { glDisable(GL_BLEND); }
+void Engine::RendererCommand::DisableBlend() { glDisable(GL_BLEND); }
 
-void MCEngine::RendererCommand::EnableFaceCulling() { glEnable(GL_CULL_FACE); }
+void Engine::RendererCommand::EnableFaceCulling() { glEnable(GL_CULL_FACE); }
 
-void MCEngine::RendererCommand::CullFrontFace() { glCullFace(GL_FRONT); }
+void Engine::RendererCommand::CullFrontFace() { glCullFace(GL_FRONT); }
 
-void MCEngine::RendererCommand::CullBackFace() { glCullFace(GL_BACK); }
+void Engine::RendererCommand::CullBackFace() { glCullFace(GL_BACK); }
 
-void MCEngine::RendererCommand::DisableFaceCulling() { glDisable(GL_CULL_FACE); }
+void Engine::RendererCommand::DisableFaceCulling() { glDisable(GL_CULL_FACE); }
 
-void MCEngine::RendererCommand::EnableMultisampling() { glEnable(GL_MULTISAMPLE); }
+void Engine::RendererCommand::EnableMultisampling() { glEnable(GL_MULTISAMPLE); }
 
-void MCEngine::RendererCommand::DisableMultisampling() { glDisable(GL_MULTISAMPLE); }
+void Engine::RendererCommand::DisableMultisampling() { glDisable(GL_MULTISAMPLE); }
 
-void MCEngine::RendererCommand::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+void Engine::RendererCommand::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 {
     glViewport(x, y, width, height);
 }

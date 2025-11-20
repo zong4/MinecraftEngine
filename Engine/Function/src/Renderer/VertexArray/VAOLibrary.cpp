@@ -1,6 +1,6 @@
 #include "VAOLibrary.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct SkyboxCubeData
@@ -54,15 +54,15 @@ struct SkyboxCubeData
 };
 inline const SkyboxCubeData g_SkyboxCubeData;
 
-} // namespace MCEngine
+} // namespace Engine
 
-MCEngine::VAOLibrary &MCEngine::VAOLibrary::GetInstance()
+Engine::VAOLibrary &Engine::VAOLibrary::GetInstance()
 {
     static VAOLibrary instance;
     return instance;
 }
 
-std::string MCEngine::VAOLibrary::GetName(const std::shared_ptr<VertexArray> &vao) const
+std::string Engine::VAOLibrary::GetName(const std::shared_ptr<VertexArray> &vao) const
 {
     for (const auto &[name, ptr] : m_VAOs)
     {
@@ -73,7 +73,7 @@ std::string MCEngine::VAOLibrary::GetName(const std::shared_ptr<VertexArray> &va
     return "";
 }
 
-std::shared_ptr<MCEngine::VertexArray> MCEngine::VAOLibrary::GetVAO(const std::string &name)
+std::shared_ptr<Engine::VertexArray> Engine::VAOLibrary::GetVAO(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -85,7 +85,7 @@ std::shared_ptr<MCEngine::VertexArray> MCEngine::VAOLibrary::GetVAO(const std::s
     return m_VAOs[name];
 }
 
-void MCEngine::VAOLibrary::AddVAO(const std::string &name, const std::shared_ptr<VertexArray> &vao)
+void Engine::VAOLibrary::AddVAO(const std::string &name, const std::shared_ptr<VertexArray> &vao)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -98,7 +98,7 @@ void MCEngine::VAOLibrary::AddVAO(const std::string &name, const std::shared_ptr
     LOG_ENGINE_TRACE("VAO added: " + name);
 }
 
-MCEngine::VAOLibrary::VAOLibrary()
+Engine::VAOLibrary::VAOLibrary()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -127,16 +127,16 @@ MCEngine::VAOLibrary::VAOLibrary()
     AddVAO("Cubes", cubesVAO);
 
     auto &&vertexArray = std::make_shared<VertexArray>(
-        MCEngine::VertexBuffer(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
+        Engine::VertexBuffer(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVAO("Skybox", vertexArray);
 
     auto &&CubeVAO = std::make_shared<VertexArray>(
-        MCEngine::VertexBuffer(g_IdentityCubeData.Positions, sizeof(g_IdentityCubeData.Positions)),
+        Engine::VertexBuffer(g_IdentityCubeData.Positions, sizeof(g_IdentityCubeData.Positions)),
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVAO("Cube", CubeVAO);
 
     LOG_ENGINE_INFO("VAO Library initialized");
 }
 
-bool MCEngine::VAOLibrary::Exists(const std::string &name) const { return m_VAOs.find(name) != m_VAOs.end(); }
+bool Engine::VAOLibrary::Exists(const std::string &name) const { return m_VAOs.find(name) != m_VAOs.end(); }

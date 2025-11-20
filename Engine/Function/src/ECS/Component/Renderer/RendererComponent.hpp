@@ -1,9 +1,9 @@
 #pragma once
 
-#include "pch.hpp"
 #include "Collision/BoundingBox.hpp"
+#include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct SpriteRendererComponent
@@ -33,15 +33,15 @@ public:
     }
 };
 
-//todo: future use for ColliderComponent
+// todo: future use for ColliderComponent
 struct ColliderComponent
 {
     // BoundingBox BBox;
     // BoundingBox WorldBBox;
     // bool IsTrigger = false;
-    
+
     // Extension of BoundingBox
     // ColliderType Type;
 };
 
-} // namespace MCEngine
+} // namespace Engine

@@ -3,7 +3,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 
-std::string MCEngine::Math::ToString(const glm::vec3 &vec, int precision)
+std::string Engine::Math::ToString(const glm::vec3 &vec, int precision)
 {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(precision);
@@ -11,7 +11,7 @@ std::string MCEngine::Math::ToString(const glm::vec3 &vec, int precision)
     return oss.str();
 }
 
-std::string MCEngine::Math::ToString(const glm::vec4 &vec, int precision)
+std::string Engine::Math::ToString(const glm::vec4 &vec, int precision)
 {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(precision);
@@ -19,8 +19,8 @@ std::string MCEngine::Math::ToString(const glm::vec4 &vec, int precision)
     return oss.str();
 }
 
-bool MCEngine::Math::DecomposeTransform(const glm::mat4 &transform, glm::vec3 &translation, glm::vec3 &rotation,
-                                        glm::vec3 &scale)
+bool Engine::Math::DecomposeTransform(const glm::mat4 &transform, glm::vec3 &translation, glm::vec3 &rotation,
+                                      glm::vec3 &scale)
 {
     // From glm::decompose in matrix_decompose.inl
 

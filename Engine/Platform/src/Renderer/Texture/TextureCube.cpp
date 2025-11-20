@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-MCEngine::TextureCube::TextureCube(const glm::vec4 &color)
+Engine::TextureCube::TextureCube(const glm::vec4 &color)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -15,7 +15,7 @@ MCEngine::TextureCube::TextureCube(const glm::vec4 &color)
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-MCEngine::TextureCube::TextureCube(const std::array<std::string, 6> &faces) : Texture()
+Engine::TextureCube::TextureCube(const std::array<std::string, 6> &faces) : Texture()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -43,46 +43,48 @@ MCEngine::TextureCube::TextureCube(const std::array<std::string, 6> &faces) : Te
     for (unsigned int i = 0; i < faces.size(); ++i)
     {
         // Unified loader: returns void* (float* for HDR, unsigned char* for LDR)
-        void* data = LoadImage(faces[i], width, height, channels,
-                               internalFormat, format, type, isHDR,
+        void *data = LoadImage(faces[i], width, height, channels, internalFormat, format, type, isHDR,
                                /*flipVertically=*/false);
-        if (!data) {
+        if (!data)
+        {
             LOG_ENGINE_ASSERT("Failed to load cubemap face: " + faces[i]);
             continue;
         }
 
-        if (firstFace) {
+        if (firstFace)
+        {
             // Lock the spec on the first face
-            baseW = width; baseH = height;
-            baseIF = internalFormat; baseFmt = format; baseType = type;
+            baseW = width;
+            baseH = height;
+            baseIF = internalFormat;
+            baseFmt = format;
+            baseType = type;
             baseIsHDR = isHDR;
             firstFace = false;
-            
+
             // Set pixel alignment based on HDR/LDR: HDR (float) needs 4-byte alignment, LDR can use 1-byte
             glPixelStorei(GL_UNPACK_ALIGNMENT, baseIsHDR ? 4 : 1);
-        } else {
+        }
+        else
+        {
             // Minimal validation (warn only; fix at asset level if mismatched)
-            if (width != baseW || height != baseH) {
+            if (width != baseW || height != baseH)
+            {
                 LOG_ENGINE_WARN("Cubemap face size mismatch: " + faces[i]);
             }
-            if (internalFormat != baseIF || format != baseFmt || type != baseType) {
+            if (internalFormat != baseIF || format != baseFmt || type != baseType)
+            {
                 LOG_ENGINE_WARN("Cubemap face format/type mismatch: " + faces[i]);
             }
-            if (isHDR != baseIsHDR) {
-                LOG_ENGINE_WARN("Cubemap face HDR/LDR mismatch: " + faces[i] + 
-                               " (expected " + (baseIsHDR ? "HDR" : "LDR") + ")");
+            if (isHDR != baseIsHDR)
+            {
+                LOG_ENGINE_WARN("Cubemap face HDR/LDR mismatch: " + faces[i] + " (expected " +
+                                (baseIsHDR ? "HDR" : "LDR") + ")");
             }
         }
 
         // Upload using the first face's spec to keep the texture consistent
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                     0,
-                     baseIF,
-                     width, height,
-                     0,
-                     baseFmt,
-                     baseType,
-                     data);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, baseIF, width, height, 0, baseFmt, baseType, data);
 
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 
@@ -96,10 +98,9 @@ MCEngine::TextureCube::TextureCube(const std::array<std::string, 6> &faces) : Te
     LOG_ENGINE_TRACE("TextureCube created with RendererID: " + std::to_string((uint32_t)m_RendererID));
 }
 
+Engine::TextureCube::~TextureCube() { glDeleteTextures(1, &m_RendererID); }
 
-MCEngine::TextureCube::~TextureCube() { glDeleteTextures(1, &m_RendererID); }
-
-std::shared_ptr<MCEngine::TextureCube> MCEngine::TextureCube::WhiteTexture()
+std::shared_ptr<Engine::TextureCube> Engine::TextureCube::WhiteTexture()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -107,7 +108,7 @@ std::shared_ptr<MCEngine::TextureCube> MCEngine::TextureCube::WhiteTexture()
     return whiteTexture;
 }
 
-void MCEngine::TextureCube::Bind(unsigned int slot) const
+void Engine::TextureCube::Bind(unsigned int slot) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -116,7 +117,7 @@ void MCEngine::TextureCube::Bind(unsigned int slot) const
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::TextureCube::Unbind() const
+void Engine::TextureCube::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 

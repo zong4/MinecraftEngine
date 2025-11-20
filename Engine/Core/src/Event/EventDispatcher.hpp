@@ -2,7 +2,7 @@
 
 #include "Event.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class EventDispatcher
@@ -26,4 +26,4 @@ private:
     Event &m_Event;
 };
 
-} // namespace MCEngine
+} // namespace Engine

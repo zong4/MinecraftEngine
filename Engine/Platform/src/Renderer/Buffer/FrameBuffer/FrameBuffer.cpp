@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-MCEngine::FrameBuffer::FrameBuffer(FrameBufferType type, int width, int height, int samples)
+Engine::FrameBuffer::FrameBuffer(FrameBufferType type, int width, int height, int samples)
     : m_Type(type), m_Width(width), m_Height(height)
 {
     ENGINE_PROFILE_FUNCTION();
@@ -30,14 +30,14 @@ MCEngine::FrameBuffer::FrameBuffer(FrameBufferType type, int width, int height, 
                     (type == FrameBufferType::Multisample ? ", Samples: " + std::to_string(samples) : ""));
 }
 
-MCEngine::FrameBuffer::~FrameBuffer()
+Engine::FrameBuffer::~FrameBuffer()
 {
     ENGINE_PROFILE_FUNCTION();
 
     glDeleteFramebuffers(1, &m_RendererID);
 }
 
-void MCEngine::FrameBuffer::Bind() const
+void Engine::FrameBuffer::Bind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -46,7 +46,7 @@ void MCEngine::FrameBuffer::Bind() const
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::FrameBuffer::Unbind() const
+void Engine::FrameBuffer::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -54,7 +54,7 @@ void MCEngine::FrameBuffer::Unbind() const
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::FrameBuffer::Blit(unsigned int resolveID) const
+void Engine::FrameBuffer::Blit(unsigned int resolveID) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -64,7 +64,7 @@ void MCEngine::FrameBuffer::Blit(unsigned int resolveID) const
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::FrameBuffer::Resize(int width, int height)
+void Engine::FrameBuffer::Resize(int width, int height)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -82,7 +82,7 @@ void MCEngine::FrameBuffer::Resize(int width, int height)
     Unbind();
 }
 
-unsigned int MCEngine::FrameBuffer::PickPixel(int x, int y) const
+unsigned int Engine::FrameBuffer::PickPixel(int x, int y) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -98,7 +98,7 @@ unsigned int MCEngine::FrameBuffer::PickPixel(int x, int y) const
     return pixelData;
 }
 
-void MCEngine::FrameBuffer::BindBasicTexture(int width, int height)
+void Engine::FrameBuffer::BindBasicTexture(int width, int height)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -125,7 +125,7 @@ void MCEngine::FrameBuffer::BindBasicTexture(int width, int height)
     }
 }
 
-void MCEngine::FrameBuffer::BindMultiSampleTexture(int width, int height, int samples)
+void Engine::FrameBuffer::BindMultiSampleTexture(int width, int height, int samples)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -140,7 +140,7 @@ void MCEngine::FrameBuffer::BindMultiSampleTexture(int width, int height, int sa
                            0);
 }
 
-void MCEngine::FrameBuffer::BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples)
+void Engine::FrameBuffer::BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples)
 {
     ENGINE_PROFILE_FUNCTION();
 

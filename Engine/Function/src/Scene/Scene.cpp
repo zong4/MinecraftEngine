@@ -6,12 +6,12 @@
 #include "Renderer/Shader/ShaderLibrary.hpp"
 #include "Renderer/VertexArray/VAOLibrary.hpp"
 
-MCEngine::Scene::~Scene()
+Engine::Scene::~Scene()
 {
-    m_Registry.view<MCEngine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
+    m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
 }
 
-void MCEngine::Scene::SetMainCamera(const Entity &camera)
+void Engine::Scene::SetMainCamera(const Entity &camera)
 {
     if (m_MainCamera)
         m_MainCamera.GetComponent<CameraComponent>()->Primary = false;
@@ -19,7 +19,7 @@ void MCEngine::Scene::SetMainCamera(const Entity &camera)
     m_MainCamera.GetComponent<CameraComponent>()->Primary = true;
 }
 
-void MCEngine::Scene::Update(float deltaTime)
+void Engine::Scene::Update(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -45,7 +45,7 @@ void MCEngine::Scene::Update(float deltaTime)
     }
 
     // Update all scripts
-    m_Registry.view<MCEngine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) {
+    m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) {
         if (!nsc.Instance)
         {
             nsc.Instance = nsc.InstantiateScript();
@@ -55,7 +55,7 @@ void MCEngine::Scene::Update(float deltaTime)
     });
 }
 
-void MCEngine::Scene::PreRender()
+void Engine::Scene::PreRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -64,11 +64,11 @@ void MCEngine::Scene::PreRender()
         int squareIndex = 0;
         std::vector<Vertex2D> squaresVertices;
         std::vector<unsigned int> squaresIndices;
-        auto &&spriteView = m_Registry.view<MCEngine::TransformComponent, MCEngine::SpriteRendererComponent>();
+        auto &&spriteView = m_Registry.view<Engine::TransformComponent, Engine::SpriteRendererComponent>();
         for (auto &&entity : spriteView)
         {
             auto &&[transform, sprite] =
-                spriteView.get<MCEngine::TransformComponent, MCEngine::SpriteRendererComponent>(entity);
+                spriteView.get<Engine::TransformComponent, Engine::SpriteRendererComponent>(entity);
 
             // Vertices
             for (int i = 0; i < 4; i++)
@@ -99,11 +99,11 @@ void MCEngine::Scene::PreRender()
     {
         int cubeIndex = 0;
         std::vector<Vertex3D> cubesVertices;
-        auto &&meshView = m_Registry.view<MCEngine::TransformComponent, MCEngine::MaterialComponent>();
+        auto &&meshView = m_Registry.view<Engine::TransformComponent, Engine::MaterialComponent>();
         for (auto &&entity : meshView)
         {
             auto &&[transform, materialComp] =
-                meshView.get<MCEngine::TransformComponent, MCEngine::MaterialComponent>(entity);
+                meshView.get<Engine::TransformComponent, Engine::MaterialComponent>(entity);
 
             // Get material data from MaterialComponent
             glm::vec4 color = glm::vec4(1.0f);                           // Default color
@@ -148,25 +148,25 @@ void MCEngine::Scene::PreRender()
 }
 
 // todo: only render for the first light for now
-void MCEngine::Scene::RenderShadowMap() const
+void Engine::Scene::RenderShadowMap() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     RendererCommand::CullFrontFace();
-    auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
     shader->Bind();
-    auto &&lightView = m_Registry.view<MCEngine::TransformComponent, MCEngine::LightComponent>();
+    auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
     for (auto &&lightEntity : lightView)
     {
         m_ShadowMap->Bind();
         RendererCommand::ClearDepthBuffer();
 
-        auto &&[transform, light] = lightView.get<MCEngine::TransformComponent, MCEngine::LightComponent>(lightEntity);
+        auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(lightEntity);
         shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
         shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f));
 
         if (m_CubesCount > 0)
-            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
 
         m_ShadowMap->Unbind();
 
@@ -176,7 +176,7 @@ void MCEngine::Scene::RenderShadowMap() const
     RendererCommand::CullBackFace();
 }
 
-void MCEngine::Scene::Render(const Entity &camera) const
+void Engine::Scene::Render(const Entity &camera) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -211,28 +211,28 @@ void MCEngine::Scene::Render(const Entity &camera) const
     // }
 }
 
-void MCEngine::Scene::RenderColorID() const
+void Engine::Scene::RenderColorID() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     // Clear buffers
-    MCEngine::RendererCommand::Clear();
+    Engine::RendererCommand::Clear();
 
     // Render
     {
-        auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
+        auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
         shader->Bind();
 
         if (m_SquaresCount > 0)
-            VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
+            VAOLibrary::GetInstance().GetVAO("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
         if (m_CubesCount > 0)
-            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
 
         shader->Unbind();
     }
 }
 
-void MCEngine::Scene::Resize(float width, float height)
+void Engine::Scene::Resize(float width, float height)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -244,7 +244,7 @@ void MCEngine::Scene::Resize(float width, float height)
     }
 }
 
-void MCEngine::Scene::DeleteEntity(const Entity &entity)
+void Engine::Scene::DeleteEntity(const Entity &entity)
 {
     if (!entity)
         return;
@@ -253,7 +253,7 @@ void MCEngine::Scene::DeleteEntity(const Entity &entity)
     RelationshipComponent::SetParentChild(Entity(), entity);
 }
 
-MCEngine::Entity MCEngine::Scene::AddEmptyEntity(const std::string &name, const TransformComponent &transform)
+Engine::Entity Engine::Scene::AddEmptyEntity(const std::string &name, const TransformComponent &transform)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -264,17 +264,17 @@ MCEngine::Entity MCEngine::Scene::AddEmptyEntity(const std::string &name, const 
     return entity;
 }
 
-MCEngine::Entity MCEngine::Scene::Add2DObject(const std::string &name, const TransformComponent &transform,
-                                              const SpriteRendererComponent &spriteRenderer)
+Engine::Entity Engine::Scene::Add2DObject(const std::string &name, const TransformComponent &transform,
+                                          const SpriteRendererComponent &spriteRenderer)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<SpriteRendererComponent>(spriteRenderer);
     return entity;
 }
 
-MCEngine::Entity MCEngine::Scene::Add3DObject(const std::string &name, const TransformComponent &transform,
-                                              const MaterialComponent &materialComponent,
-                                              const MeshRendererComponent &meshRendererComponent)
+Engine::Entity Engine::Scene::Add3DObject(const std::string &name, const TransformComponent &transform,
+                                          const MaterialComponent &materialComponent,
+                                          const MeshRendererComponent &meshRendererComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<MaterialComponent>(materialComponent);
@@ -282,30 +282,30 @@ MCEngine::Entity MCEngine::Scene::Add3DObject(const std::string &name, const Tra
     return entity;
 }
 
-MCEngine::Entity MCEngine::Scene::AddCamera(const std::string &name, const TransformComponent &transform,
-                                            const CameraComponent &cameraComponent)
+Engine::Entity Engine::Scene::AddCamera(const std::string &name, const TransformComponent &transform,
+                                        const CameraComponent &cameraComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<CameraComponent>(cameraComponent);
     return entity;
 }
 
-MCEngine::Entity MCEngine::Scene::AddLight(const std::string &name, const TransformComponent &transform,
-                                           const LightComponent &lightComponent)
+Engine::Entity Engine::Scene::AddLight(const std::string &name, const TransformComponent &transform,
+                                       const LightComponent &lightComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<LightComponent>(lightComponent);
     return entity;
 }
 
-MCEngine::Entity MCEngine::Scene::AddSkybox(const std::string &name, const SkyboxComponent &skyboxComponent)
+Engine::Entity Engine::Scene::AddSkybox(const std::string &name, const SkyboxComponent &skyboxComponent)
 {
     Entity entity = AddEmptyEntity(name);
     entity.AddComponent<SkyboxComponent>(skyboxComponent);
     return entity;
 }
 
-void MCEngine::Scene::DeleteEntityReal(const Entity &entity)
+void Engine::Scene::DeleteEntityReal(const Entity &entity)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -324,18 +324,18 @@ void MCEngine::Scene::DeleteEntityReal(const Entity &entity)
 }
 
 // todo: check
-void MCEngine::Scene::Render2D() const
+void Engine::Scene::Render2D() const
 {
     ENGINE_PROFILE_FUNCTION();
 
-    auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("Texture");
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Texture");
     shader->Bind();
 
     // Bind textures
-    auto &&spriteView = m_Registry.view<MCEngine::SpriteRendererComponent>();
+    auto &&spriteView = m_Registry.view<Engine::SpriteRendererComponent>();
     for (auto &&entity : spriteView)
     {
-        auto &&sprite = spriteView.get<MCEngine::SpriteRendererComponent>(entity);
+        auto &&sprite = spriteView.get<Engine::SpriteRendererComponent>(entity);
         int texID = TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance);
         if (texID != -1)
             sprite.TextureInstance->Bind(texID);
@@ -343,14 +343,14 @@ void MCEngine::Scene::Render2D() const
 
     // Render squares
     if (m_SquaresCount > 0)
-        VAOLibrary::GetInstance().GetVAO("Squares")->Render(MCEngine::RendererType::Triangles, m_SquaresCount * 6);
+        VAOLibrary::GetInstance().GetVAO("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
     TextureLibrary::GetInstance().ClearTextureSlots();
 
     shader->Unbind();
 }
 
 // todo: only render for the first light for now
-void MCEngine::Scene::Render3D() const
+void Engine::Scene::Render3D() const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -359,10 +359,10 @@ void MCEngine::Scene::Render3D() const
 
     // Light
     int lightIndex = 0;
-    auto &&lightView = m_Registry.view<MCEngine::TransformComponent, MCEngine::LightComponent>();
+    auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
     for (auto &&entity : lightView)
     {
-        auto &&[transform, light] = lightView.get<MCEngine::TransformComponent, MCEngine::LightComponent>(entity);
+        auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(entity);
 
         // Light
         shader->SetUniformInt("u_Light[" + std::to_string(lightIndex) + "].Type", static_cast<int>(light.GetType()));
@@ -405,32 +405,32 @@ void MCEngine::Scene::Render3D() const
     TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
     shader->SetUniformInt("u_Texture", lightIndex + 1);
     if (m_CubesCount > 0)
-        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(MCEngine::RendererType::Triangles, m_CubesCount * 36);
+        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
     TextureLibrary::GetInstance().ClearTextureSlots();
     shader->Unbind();
 }
 
 // todo: default skybox if none exists
-void MCEngine::Scene::RenderSkybox() const
+void Engine::Scene::RenderSkybox() const
 {
     ENGINE_PROFILE_FUNCTION();
 
-    MCEngine::RendererCommand::DisableDepthTest();
-    auto &&shader = MCEngine::ShaderLibrary::GetInstance().GetShader("Skybox");
+    Engine::RendererCommand::DisableDepthTest();
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");
     shader->Bind();
 
-    auto &&view = m_Registry.view<MCEngine::SkyboxComponent>();
+    auto &&view = m_Registry.view<Engine::SkyboxComponent>();
     if (!view.empty())
     {
         if (view.size() > 1)
             LOG_ENGINE_WARN("Multiple SkyboxComponents detected! Only the first one will be rendered.");
 
-        auto &&skybox = m_Registry.get<MCEngine::SkyboxComponent>(view.front());
+        auto &&skybox = m_Registry.get<Engine::SkyboxComponent>(view.front());
         shader->SetUniformInt("u_Skybox", 0);
         skybox.GetTextureCube()->Bind(0);
-        MCEngine::VAOLibrary::GetInstance().GetVAO("Skybox")->Render();
+        Engine::VAOLibrary::GetInstance().GetVAO("Skybox")->Render();
     }
 
     shader->Unbind();
-    MCEngine::RendererCommand::EnableDepthTest();
+    Engine::RendererCommand::EnableDepthTest();
 }

@@ -2,7 +2,7 @@
 
 #include "Texture.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class TextureCube : public Texture
@@ -19,4 +19,4 @@ public:
     virtual void Unbind() const override;
 };
 
-} // namespace MCEngine
+} // namespace Engine

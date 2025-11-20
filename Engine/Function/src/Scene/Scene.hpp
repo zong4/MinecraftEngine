@@ -4,10 +4,10 @@
 #include "ECS/Component/Camera/CameraComponent.hpp"
 #include "ECS/Component/Light/LightComponent.hpp"
 #include "ECS/Component/Light/SkyboxComponent.hpp"
-#include "ECS/Component/Renderer/RendererComponent.hpp"
 #include "ECS/Component/Renderer/MaterialComponent.hpp"
+#include "ECS/Component/Renderer/RendererComponent.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Scene
@@ -64,9 +64,9 @@ private:
     Entity m_MainCamera;
     size_t m_SquaresCount = 0;
     size_t m_CubesCount = 0;
-    std::unique_ptr<MCEngine::FrameBuffer> m_ShadowMap =
-        std::make_unique<MCEngine::FrameBuffer>(MCEngine::FrameBufferType::Depth, 1280, 720);
+    std::unique_ptr<Engine::FrameBuffer> m_ShadowMap =
+        std::make_unique<Engine::FrameBuffer>(Engine::FrameBufferType::Depth, 1280, 720);
     std::vector<Entity> m_DeletedEntities = {};
 };
 
-} // namespace MCEngine
+} // namespace Engine

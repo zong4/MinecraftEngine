@@ -7,7 +7,7 @@ namespace spdlog
 class logger; // forward declaration
 }
 
-namespace MCEngine
+namespace Engine
 {
 
 class Logger
@@ -41,17 +41,17 @@ private:
 
 #ifdef DEBUG
 
-#define LOG_ENGINE_TRACE(msg) MCEngine::Logger::LogEngineTrace(msg)
-#define LOG_ENGINE_INFO(msg) MCEngine::Logger::LogEngineInfo(msg)
-#define LOG_ENGINE_WARN(msg) MCEngine::Logger::LogEngineWarn(msg)
-#define LOG_ENGINE_ERROR(msg) MCEngine::Logger::LogEngineError(msg, false);
-#define LOG_ENGINE_ASSERT(msg) MCEngine::Logger::LogEngineError(msg, true);
+#define LOG_ENGINE_TRACE(msg) Engine::Logger::LogEngineTrace(msg)
+#define LOG_ENGINE_INFO(msg) Engine::Logger::LogEngineInfo(msg)
+#define LOG_ENGINE_WARN(msg) Engine::Logger::LogEngineWarn(msg)
+#define LOG_ENGINE_ERROR(msg) Engine::Logger::LogEngineError(msg, false);
+#define LOG_ENGINE_ASSERT(msg) Engine::Logger::LogEngineError(msg, true);
 
-#define LOG_EDITOR_TRACE(msg) MCEngine::Logger::LogEditorTrace(msg)
-#define LOG_EDITOR_INFO(msg) MCEngine::Logger::LogEditorInfo(msg)
-#define LOG_EDITOR_WARN(msg) MCEngine::Logger::LogEditorWarn(msg)
-#define LOG_EDITOR_ERROR(msg) MCEngine::Logger::LogEditorError(msg, false);
-#define LOG_EDITOR_ASSERT(msg) MCEngine::Logger::LogEditorError(msg, true);
+#define LOG_EDITOR_TRACE(msg) Engine::Logger::LogEditorTrace(msg)
+#define LOG_EDITOR_INFO(msg) Engine::Logger::LogEditorInfo(msg)
+#define LOG_EDITOR_WARN(msg) Engine::Logger::LogEditorWarn(msg)
+#define LOG_EDITOR_ERROR(msg) Engine::Logger::LogEditorError(msg, false);
+#define LOG_EDITOR_ASSERT(msg) Engine::Logger::LogEditorError(msg, true);
 
 #else
 
@@ -69,4 +69,4 @@ private:
 
 #endif
 
-} // namespace MCEngine
+} // namespace Engine

@@ -2,7 +2,7 @@
 
 #include "Entity.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class ScriptableEntity
@@ -50,4 +50,4 @@ private:
     Entity m_Entity;
 };
 
-} // namespace MCEngine
+} // namespace Engine

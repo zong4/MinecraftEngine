@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 
-MCEngine::Shader::Shader(const std::string &vertexSource, const std::string &fragmentSource,
-                         const std::string &geometrySource)
+Engine::Shader::Shader(const std::string &vertexSource, const std::string &fragmentSource,
+                       const std::string &geometrySource)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -37,9 +37,9 @@ MCEngine::Shader::Shader(const std::string &vertexSource, const std::string &fra
     LOG_ENGINE_INFO("Shader program created with ID: " + std::to_string(m_RendererID));
 }
 
-MCEngine::Shader::~Shader() { glDeleteProgram(m_RendererID); }
+Engine::Shader::~Shader() { glDeleteProgram(m_RendererID); }
 
-void MCEngine::Shader::SetUniformInt(const std::string &name, int value)
+void Engine::Shader::SetUniformInt(const std::string &name, int value)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -48,7 +48,7 @@ void MCEngine::Shader::SetUniformInt(const std::string &name, int value)
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Shader::SetUniformUInt(const std::string &name, unsigned int value)
+void Engine::Shader::SetUniformUInt(const std::string &name, unsigned int value)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -57,7 +57,7 @@ void MCEngine::Shader::SetUniformUInt(const std::string &name, unsigned int valu
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Shader::SetUniformFloat(const std::string &name, float value)
+void Engine::Shader::SetUniformFloat(const std::string &name, float value)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -66,7 +66,7 @@ void MCEngine::Shader::SetUniformFloat(const std::string &name, float value)
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Shader::SetUniformVec3(const std::string &name, glm::vec3 vector3)
+void Engine::Shader::SetUniformVec3(const std::string &name, glm::vec3 vector3)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -75,7 +75,7 @@ void MCEngine::Shader::SetUniformVec3(const std::string &name, glm::vec3 vector3
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Shader::SetUniformVec4(const std::string &name, glm::vec4 vector4)
+void Engine::Shader::SetUniformVec4(const std::string &name, glm::vec4 vector4)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -84,7 +84,7 @@ void MCEngine::Shader::SetUniformVec4(const std::string &name, glm::vec4 vector4
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Shader::SetUniformMat4(const std::string &name, glm::mat4 matrix4)
+void Engine::Shader::SetUniformMat4(const std::string &name, glm::mat4 matrix4)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -93,11 +93,11 @@ void MCEngine::Shader::SetUniformMat4(const std::string &name, glm::mat4 matrix4
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Shader::Bind() const { glUseProgram(m_RendererID); }
+void Engine::Shader::Bind() const { glUseProgram(m_RendererID); }
 
-void MCEngine::Shader::Unbind() const { glUseProgram(0); }
+void Engine::Shader::Unbind() const { glUseProgram(0); }
 
-void MCEngine::Shader::CompileShader(unsigned int shaderID, const std::string &source)
+void Engine::Shader::CompileShader(unsigned int shaderID, const std::string &source)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -115,7 +115,7 @@ void MCEngine::Shader::CompileShader(unsigned int shaderID, const std::string &s
     }
 }
 
-void MCEngine::Shader::LinkProgram(unsigned int programID)
+void Engine::Shader::LinkProgram(unsigned int programID)
 {
     ENGINE_PROFILE_FUNCTION();
 

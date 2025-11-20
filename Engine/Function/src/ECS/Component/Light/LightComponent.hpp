@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 enum class LightType
@@ -35,4 +35,4 @@ private:
     LightType m_Type;
 };
 
-} // namespace MCEngine
+} // namespace Engine

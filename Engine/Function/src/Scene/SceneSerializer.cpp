@@ -88,7 +88,7 @@ struct convert<glm::mat4>
 
 } // namespace YAML
 
-void MCEngine::SceneSerializer::Serialize(const std::shared_ptr<Scene> &scene, const std::string &filepath)
+void Engine::SceneSerializer::Serialize(const std::shared_ptr<Scene> &scene, const std::string &filepath)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -107,7 +107,7 @@ void MCEngine::SceneSerializer::Serialize(const std::shared_ptr<Scene> &scene, c
                 continue;
             }
 
-            if (!registry.get<MCEngine::RelationshipComponent>(entity).GetParent())
+            if (!registry.get<Engine::RelationshipComponent>(entity).GetParent())
                 SerializeEntity(out, {entity, &registry});
         }
         out << YAML::EndSeq;
@@ -118,7 +118,7 @@ void MCEngine::SceneSerializer::Serialize(const std::shared_ptr<Scene> &scene, c
     fout << out.c_str();
 }
 
-bool MCEngine::SceneSerializer::Deserialize(const std::shared_ptr<Scene> &scene, const std::string &filepath)
+bool Engine::SceneSerializer::Deserialize(const std::shared_ptr<Scene> &scene, const std::string &filepath)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -143,7 +143,7 @@ bool MCEngine::SceneSerializer::Deserialize(const std::shared_ptr<Scene> &scene,
     return true;
 }
 
-void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngine::Entity &entity)
+void Engine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const Engine::Entity &entity)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -153,7 +153,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     out << YAML::Key << "Entity" << YAML::Value << (uint32_t)entity.GetHandle();
 
     // TagComponent
-    auto &&tagComponent = entity.GetComponent<MCEngine::TagComponent>();
+    auto &&tagComponent = entity.GetComponent<Engine::TagComponent>();
     if (tagComponent)
     {
         out << YAML::Key << "TagComponent";
@@ -163,7 +163,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     }
 
     // TransformComponent
-    auto &&transformComponent = entity.GetComponent<MCEngine::TransformComponent>();
+    auto &&transformComponent = entity.GetComponent<Engine::TransformComponent>();
     if (transformComponent)
     {
         out << YAML::Key << "TransformComponent";
@@ -175,14 +175,14 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     }
 
     // CameraComponent
-    auto &&cameraComponent = entity.GetComponent<MCEngine::CameraComponent>();
+    auto &&cameraComponent = entity.GetComponent<Engine::CameraComponent>();
     if (cameraComponent)
     {
         out << YAML::Key << "CameraComponent";
         out << YAML::BeginMap;
 
         // Common
-        auto &&cameraComponent = entity.GetComponent<MCEngine::CameraComponent>();
+        auto &&cameraComponent = entity.GetComponent<Engine::CameraComponent>();
         out << YAML::Key << "Type" << YAML::Value << (int)cameraComponent->Type;
         out << YAML::Key << "Primary" << YAML::Value << cameraComponent->Primary;
         out << YAML::Key << "BackgroundColor" << YAML::Value << (YAML::Node)cameraComponent->BackgroundColor;
@@ -201,28 +201,28 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     }
 
     // SpriteRendererComponent
-    auto &&spriteRendererComponent = entity.GetComponent<MCEngine::SpriteRendererComponent>();
+    auto &&spriteRendererComponent = entity.GetComponent<Engine::SpriteRendererComponent>();
     if (spriteRendererComponent)
     {
         out << YAML::Key << "SpriteRendererComponent";
         out << YAML::BeginMap;
 
         out << YAML::Key << "Texture" << YAML::Value
-            << MCEngine::TextureLibrary::GetInstance().GetName(spriteRendererComponent->TextureInstance);
+            << Engine::TextureLibrary::GetInstance().GetName(spriteRendererComponent->TextureInstance);
         out << YAML::Key << "Color" << YAML::Value << (YAML::Node)spriteRendererComponent->Color;
 
         out << YAML::EndMap;
     }
 
     // MaterialComponent
-    auto &&materialComponent = entity.GetComponent<MCEngine::MaterialComponent>();
+    auto &&materialComponent = entity.GetComponent<Engine::MaterialComponent>();
     if (materialComponent)
     {
         out << YAML::Key << "MaterialComponent";
         out << YAML::BeginMap;
 
         // Serialize material name (reference to MaterialLibrary)
-        std::string materialName = MCEngine::MaterialLibrary::GetInstance().GetName(materialComponent->GetMaterial());
+        std::string materialName = Engine::MaterialLibrary::GetInstance().GetName(materialComponent->GetMaterial());
         if (!materialName.empty())
         {
             out << YAML::Key << "Material" << YAML::Value << materialName;
@@ -232,8 +232,8 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
             // If material is not in library, serialize inline
             out << YAML::Key << "Material" << YAML::Value << "Inline";
             out << YAML::Key << "Shader" << YAML::Value
-                << MCEngine::ShaderLibrary::GetInstance().GetName(materialComponent->GetMaterial()->GetShader());
-            
+                << Engine::ShaderLibrary::GetInstance().GetName(materialComponent->GetMaterial()->GetShader());
+
             // Serialize all properties
             out << YAML::Key << "Properties" << YAML::BeginMap;
             const auto &properties = materialComponent->GetMaterial()->GetProperties();
@@ -243,13 +243,13 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
                 // For now, we'll serialize basic types
                 switch (prop.GetType())
                 {
-                case MCEngine::MaterialPropertyType::Float:
+                case Engine::MaterialPropertyType::Float:
                     out << YAML::Key << name << YAML::Value << prop.GetFloat();
                     break;
-                case MCEngine::MaterialPropertyType::Vec3:
+                case Engine::MaterialPropertyType::Vec3:
                     out << YAML::Key << name << YAML::Value << (YAML::Node)prop.GetVec3();
                     break;
-                case MCEngine::MaterialPropertyType::Vec4:
+                case Engine::MaterialPropertyType::Vec4:
                     out << YAML::Key << name << YAML::Value << (YAML::Node)prop.GetVec4();
                     break;
                 // Add more types as needed
@@ -268,10 +268,10 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
             {
                 switch (prop.GetType())
                 {
-                case MCEngine::MaterialPropertyType::Float:
+                case Engine::MaterialPropertyType::Float:
                     out << YAML::Key << name << YAML::Value << prop.GetFloat();
                     break;
-                case MCEngine::MaterialPropertyType::Vec3:
+                case Engine::MaterialPropertyType::Vec3:
                     out << YAML::Key << name << YAML::Value << (YAML::Node)prop.GetVec3();
                     break;
                 default:
@@ -285,7 +285,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     }
 
     // MeshRendererComponent
-    auto &&meshRendererComponent = entity.GetComponent<MCEngine::MeshRendererComponent>();
+    auto &&meshRendererComponent = entity.GetComponent<Engine::MeshRendererComponent>();
     if (meshRendererComponent)
     {
         out << YAML::Key << "MeshRendererComponent";
@@ -301,7 +301,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     }
 
     // LightComponent
-    auto &&lightComponent = entity.GetComponent<MCEngine::LightComponent>();
+    auto &&lightComponent = entity.GetComponent<Engine::LightComponent>();
     if (lightComponent)
     {
         out << YAML::Key << "LightComponent";
@@ -325,7 +325,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     }
 
     // SkyboxComponent
-    auto &&skyboxComponent = entity.GetComponent<MCEngine::SkyboxComponent>();
+    auto &&skyboxComponent = entity.GetComponent<Engine::SkyboxComponent>();
     if (skyboxComponent)
     {
         out << YAML::Key << "SkyboxComponent";
@@ -335,7 +335,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     }
 
     // RelationshipComponent
-    auto &&relationshipComponent = entity.GetComponent<MCEngine::RelationshipComponent>();
+    auto &&relationshipComponent = entity.GetComponent<Engine::RelationshipComponent>();
     if (relationshipComponent)
     {
         out << YAML::Key << "RelationshipComponent";
@@ -350,8 +350,7 @@ void MCEngine::SceneSerializer::SerializeEntity(YAML::Emitter &out, const MCEngi
     out << YAML::EndMap;
 }
 
-MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_ptr<Scene> &scene,
-                                                              const YAML::Node &entity)
+Engine::Entity Engine::SceneSerializer::DeserializeEntity(const std::shared_ptr<Scene> &scene, const YAML::Node &entity)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -390,7 +389,7 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
     if (spriteRendererComponentData)
     {
         deserializedEntity.AddComponent<SpriteRendererComponent>(
-            MCEngine::TextureLibrary::GetInstance().GetTexture2D(
+            Engine::TextureLibrary::GetInstance().GetTexture2D(
                 spriteRendererComponentData["Texture"].as<std::string>()),
             spriteRendererComponentData["Color"].as<glm::vec4>());
     }
@@ -400,20 +399,20 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
     if (materialComponentData)
     {
         std::string materialName = materialComponentData["Material"].as<std::string>("");
-        
+
         if (!materialName.empty() && materialName != "Inline")
         {
             // Load from MaterialLibrary
-            auto material = MCEngine::MaterialLibrary::GetInstance().Get(materialName);
+            auto material = Engine::MaterialLibrary::GetInstance().Get(materialName);
             if (material)
             {
-                deserializedEntity.AddComponent<MCEngine::MaterialComponent>(material);
-                
+                deserializedEntity.AddComponent<Engine::MaterialComponent>(material);
+
                 // Load property overrides if any
                 const auto &overridesData = materialComponentData["PropertyOverrides"];
                 if (overridesData)
                 {
-                    auto materialComp = deserializedEntity.GetComponent<MCEngine::MaterialComponent>();
+                    auto materialComp = deserializedEntity.GetComponent<Engine::MaterialComponent>();
                     for (auto it = overridesData.begin(); it != overridesData.end(); ++it)
                     {
                         std::string propName = it->first.as<std::string>();
@@ -439,16 +438,16 @@ MCEngine::Entity MCEngine::SceneSerializer::DeserializeEntity(const std::shared_
     const auto &meshRendererComponentData = entity["MeshRendererComponent"];
     if (meshRendererComponentData)
     {
-        MCEngine::MeshRendererComponent meshRenderer;
+        Engine::MeshRendererComponent meshRenderer;
         const auto &bboxData = meshRendererComponentData["BBox"];
         if (bboxData)
         {
             glm::vec3 min = bboxData["Min"].as<glm::vec3>();
             glm::vec3 max = bboxData["Max"].as<glm::vec3>();
-            meshRenderer.BBox = MCEngine::BoundingBox(min, max);
+            meshRenderer.BBox = Engine::BoundingBox(min, max);
             meshRenderer.WorldBBox = meshRenderer.BBox;
         }
-        deserializedEntity.AddComponent<MCEngine::MeshRendererComponent>(std::move(meshRenderer));
+        deserializedEntity.AddComponent<Engine::MeshRendererComponent>(std::move(meshRenderer));
     }
 
     // LightComponent

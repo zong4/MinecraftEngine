@@ -2,15 +2,15 @@
 
 #include <glad/glad.h>
 
-GLenum ConvertRendererType(MCEngine::RendererType type)
+GLenum ConvertRendererType(Engine::RendererType type)
 {
     switch (type)
     {
-    case MCEngine::RendererType::Points:
+    case Engine::RendererType::Points:
         return GL_POINTS;
-    case MCEngine::RendererType::Lines:
+    case Engine::RendererType::Lines:
         return GL_LINES;
-    case MCEngine::RendererType::Triangles:
+    case Engine::RendererType::Triangles:
         return GL_TRIANGLES;
     default:
         LOG_ENGINE_ASSERT("Unknown RendererType");
@@ -18,15 +18,15 @@ GLenum ConvertRendererType(MCEngine::RendererType type)
     }
 }
 
-GLenum ConvertVertexAttributeType(MCEngine::VertexAttributeType type)
+GLenum ConvertVertexAttributeType(Engine::VertexAttributeType type)
 {
     switch (type)
     {
-    case MCEngine::VertexAttributeType::Float:
+    case Engine::VertexAttributeType::Float:
         return GL_FLOAT;
-    case MCEngine::VertexAttributeType::Int:
+    case Engine::VertexAttributeType::Int:
         return GL_INT;
-    case MCEngine::VertexAttributeType::UnsignedInt:
+    case Engine::VertexAttributeType::UnsignedInt:
         return GL_UNSIGNED_INT;
     default:
         LOG_ENGINE_ASSERT("Unknown VertexAttributeType");
@@ -34,8 +34,8 @@ GLenum ConvertVertexAttributeType(MCEngine::VertexAttributeType type)
     }
 }
 
-MCEngine::VertexArray::VertexArray(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes,
-                                   IndexBuffer &&indexBuffer, int instanceCount)
+Engine::VertexArray::VertexArray(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes,
+                                 IndexBuffer &&indexBuffer, int instanceCount)
     : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
 {
     ENGINE_PROFILE_FUNCTION();
@@ -48,9 +48,9 @@ MCEngine::VertexArray::VertexArray(VertexBuffer &&vertexBuffer, const std::vecto
                     ", Instance Count: " + std::to_string(m_InstanceCount));
 }
 
-MCEngine::VertexArray::~VertexArray() { glDeleteVertexArrays(1, &m_RendererID); }
+Engine::VertexArray::~VertexArray() { glDeleteVertexArrays(1, &m_RendererID); }
 
-MCEngine::VertexArray::VertexArray(VertexArray &&other)
+Engine::VertexArray::VertexArray(VertexArray &&other)
     : m_RendererID(other.m_RendererID), m_AttributeCount(other.m_AttributeCount),
       m_IndexBuffer(std::move(other.m_IndexBuffer)), m_VertexBuffer(std::move(other.m_VertexBuffer)),
       m_InstanceCount(other.m_InstanceCount)
@@ -65,7 +65,7 @@ MCEngine::VertexArray::VertexArray(VertexArray &&other)
     other.m_InstanceCount = 1;
 }
 
-MCEngine::VertexArray &MCEngine::VertexArray::operator=(VertexArray &&other)
+Engine::VertexArray &Engine::VertexArray::operator=(VertexArray &&other)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -89,7 +89,7 @@ MCEngine::VertexArray &MCEngine::VertexArray::operator=(VertexArray &&other)
     return *this;
 }
 
-void MCEngine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes)
+void Engine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -99,7 +99,7 @@ void MCEngine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const s
                     " set with new VertexBuffer ID: " + std::to_string(m_VertexBuffer.GetRendererID()));
 }
 
-void MCEngine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
+void Engine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -108,7 +108,7 @@ void MCEngine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
                     " set with new IndexBuffer ID: " + std::to_string(m_IndexBuffer.GetRendererID()));
 }
 
-void MCEngine::VertexArray::Render(RendererType renderType, size_t positionCount) const
+void Engine::VertexArray::Render(RendererType renderType, size_t positionCount) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -136,21 +136,21 @@ void MCEngine::VertexArray::Render(RendererType renderType, size_t positionCount
     Unbind();
 }
 
-void MCEngine::VertexArray::Bind() const
+void Engine::VertexArray::Bind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindVertexArray(m_RendererID);
 }
 
-void MCEngine::VertexArray::Unbind() const
+void Engine::VertexArray::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindVertexArray(0);
 }
 
-void MCEngine::VertexArray::SetVertexAttributes(const std::vector<VertexAttribute> &attributes)
+void Engine::VertexArray::SetVertexAttributes(const std::vector<VertexAttribute> &attributes)
 {
     ENGINE_PROFILE_FUNCTION();
 

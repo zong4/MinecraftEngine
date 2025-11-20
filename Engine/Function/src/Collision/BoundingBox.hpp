@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class BoundingBox
@@ -31,4 +31,4 @@ private:
     glm::vec4 m_Color;
 };
 
-} // namespace MCEngine
+} // namespace Engine

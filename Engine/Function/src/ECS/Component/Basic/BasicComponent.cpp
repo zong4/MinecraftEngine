@@ -1,6 +1,6 @@
 #include "BasicComponent.hpp"
 
-glm::vec3 MCEngine::TransformComponent::GetForward(TransformSpace space) const
+glm::vec3 Engine::TransformComponent::GetForward(TransformSpace space) const
 {
     if (space == TransformSpace::Local)
         return m_RotationQuat * glm::vec3(0.0f, 0.0f, -1.0f);
@@ -8,7 +8,7 @@ glm::vec3 MCEngine::TransformComponent::GetForward(TransformSpace space) const
         return m_GlobalRotationQuat * glm::vec3(0.0f, 0.0f, -1.0f);
 }
 
-glm::vec3 MCEngine::TransformComponent::GetRight(TransformSpace space) const
+glm::vec3 Engine::TransformComponent::GetRight(TransformSpace space) const
 {
     if (space == TransformSpace::Local)
         return m_RotationQuat * glm::vec3(1.0f, 0.0f, 0.0f);
@@ -16,7 +16,7 @@ glm::vec3 MCEngine::TransformComponent::GetRight(TransformSpace space) const
         return m_GlobalRotationQuat * glm::vec3(1.0f, 0.0f, 0.0f);
 }
 
-glm::vec3 MCEngine::TransformComponent::GetUp(TransformSpace space) const
+glm::vec3 Engine::TransformComponent::GetUp(TransformSpace space) const
 {
     if (space == TransformSpace::Local)
         return m_RotationQuat * glm::vec3(0.0f, 1.0f, 0.0f);
@@ -24,21 +24,21 @@ glm::vec3 MCEngine::TransformComponent::GetUp(TransformSpace space) const
         return m_GlobalRotationQuat * glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
-void MCEngine::TransformComponent::SetRotationRadians(const glm::vec3 &radians)
+void Engine::TransformComponent::SetRotationRadians(const glm::vec3 &radians)
 {
     m_RotationRadians = radians;
     m_RotationQuat = glm::quat(radians);
 }
 
-void MCEngine::TransformComponent::SetRotationEuler(const glm::vec3 &euler)
+void Engine::TransformComponent::SetRotationEuler(const glm::vec3 &euler)
 {
     m_RotationRadians = glm::radians(euler);
     m_RotationQuat = glm::quat(m_RotationRadians);
 }
 
-void MCEngine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix,
-                                                         const glm::quat &parentRotationQuat,
-                                                         RelationshipComponent *relationship)
+void Engine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix,
+                                                       const glm::quat &parentRotationQuat,
+                                                       RelationshipComponent *relationship)
 {
     ENGINE_PROFILE_FUNCTION();
 

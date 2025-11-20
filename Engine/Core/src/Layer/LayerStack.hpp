@@ -2,7 +2,7 @@
 
 #include "Layer.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class LayerStack
@@ -23,4 +23,4 @@ private:
     std::vector<std::shared_ptr<Layer>> m_Layers;
 };
 
-} // namespace MCEngine
+} // namespace Engine

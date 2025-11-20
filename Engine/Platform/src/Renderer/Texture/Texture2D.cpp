@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 
-MCEngine::Texture2D::Texture2D(int width, int height, unsigned int internalFormat, unsigned int format,
-                               unsigned int type, void *data)
+Engine::Texture2D::Texture2D(int width, int height, unsigned int internalFormat, unsigned int format, unsigned int type,
+                             void *data)
     : Texture(), m_Width(width), m_Height(height), m_InternalFormat(internalFormat), m_Format(format), m_Type(type),
       m_Samples(0)
 {
@@ -31,7 +31,7 @@ MCEngine::Texture2D::Texture2D(int width, int height, unsigned int internalForma
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-MCEngine::Texture2D::Texture2D(int width, int height, int samples)
+Engine::Texture2D::Texture2D(int width, int height, int samples)
     : Texture(), m_Width(width), m_Height(height), m_InternalFormat(GL_RGBA8), m_Format(GL_RGBA),
       m_Type(GL_UNSIGNED_BYTE), m_Samples(samples)
 {
@@ -46,7 +46,7 @@ MCEngine::Texture2D::Texture2D(int width, int height, int samples)
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 }
 
-MCEngine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_UNSIGNED_BYTE), m_Samples(0)
+Engine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_UNSIGNED_BYTE), m_Samples(0)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -57,16 +57,16 @@ MCEngine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_U
     bool isHDR = false;
     {
         int channels = 0;
-        unsigned int type = 0; 
+        unsigned int type = 0;
         void *data =
             LoadImage(path, m_Width, m_Height, channels, m_InternalFormat, m_Format, type, isHDR, /*flip*/ true);
 
-        m_Type = type; 
+        m_Type = type;
 
         // Set pixel alignment: HDR textures (float) need 4-byte alignment, LDR can use 1-byte
-        glPixelStorei(GL_UNPACK_ALIGNMENT, isHDR ? 4 : 1); 
+        glPixelStorei(GL_UNPACK_ALIGNMENT, isHDR ? 4 : 1);
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_Format, m_Type, data);
-        
+
         // Generate mipmap only for LDR textures
         // HDR textures (especially environment maps) typically don't need mipmaps
         // and some OpenGL implementations may not support mipmap generation for float textures
@@ -74,7 +74,7 @@ MCEngine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_U
         {
             glGenerateMipmap(GL_TEXTURE_2D);
         }
-        
+
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
         FreeImage(data);
     }
@@ -102,14 +102,14 @@ MCEngine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_U
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-MCEngine::Texture2D::~Texture2D()
+Engine::Texture2D::~Texture2D()
 {
     ENGINE_PROFILE_FUNCTION();
 
     glDeleteTextures(1, &m_RendererID);
 }
 
-std::shared_ptr<MCEngine::Texture2D> MCEngine::Texture2D::WhiteTexture()
+std::shared_ptr<Engine::Texture2D> Engine::Texture2D::WhiteTexture()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -118,7 +118,7 @@ std::shared_ptr<MCEngine::Texture2D> MCEngine::Texture2D::WhiteTexture()
     return whiteTexture;
 }
 
-void MCEngine::Texture2D::Bind(unsigned int slot) const
+void Engine::Texture2D::Bind(unsigned int slot) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -133,7 +133,7 @@ void MCEngine::Texture2D::Bind(unsigned int slot) const
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Texture2D::Unbind() const
+void Engine::Texture2D::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -141,7 +141,7 @@ void MCEngine::Texture2D::Unbind() const
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Texture2D::Resize(int width, int height)
+void Engine::Texture2D::Resize(int width, int height)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -163,8 +163,8 @@ void MCEngine::Texture2D::Resize(int width, int height)
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::Texture2D::CreateTexture(int width, int height, unsigned int internalFormat, unsigned int format,
-                                        unsigned int type, void *data)
+void Engine::Texture2D::CreateTexture(int width, int height, unsigned int internalFormat, unsigned int format,
+                                      unsigned int type, void *data)
 {
     ENGINE_PROFILE_FUNCTION();
 

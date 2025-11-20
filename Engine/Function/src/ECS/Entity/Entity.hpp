@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Entity
@@ -72,4 +72,4 @@ protected:
     entt::registry *m_Registry = nullptr;
 };
 
-} // namespace MCEngine
+} // namespace Engine

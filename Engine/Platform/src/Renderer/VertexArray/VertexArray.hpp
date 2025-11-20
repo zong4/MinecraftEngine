@@ -4,7 +4,7 @@
 #include "Renderer/Buffer/BasicBuffer/VertexBuffer.hpp"
 #include "Renderer/RendererCommand.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 enum class RendererType
@@ -72,4 +72,4 @@ protected:
     void SetVertexAttributes(const std::vector<VertexAttribute> &attributes);
 };
 
-} // namespace MCEngine
+} // namespace Engine

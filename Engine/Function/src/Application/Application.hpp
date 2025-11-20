@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Application
@@ -29,4 +29,4 @@ private:
 
 extern std::unique_ptr<Application> CreateApplication();
 
-} // namespace MCEngine
+} // namespace Engine

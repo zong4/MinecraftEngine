@@ -1,27 +1,24 @@
 #include "MaterialComponent.hpp"
 
-void MCEngine::MaterialComponent::SetOverrideFloat(const std::string &name, float value)
+void Engine::MaterialComponent::SetOverrideFloat(const std::string &name, float value)
 {
     PropertyOverrides[name] = MaterialProperty(value);
 }
 
-void MCEngine::MaterialComponent::SetOverrideVec3(const std::string &name, const glm::vec3 &value)
+void Engine::MaterialComponent::SetOverrideVec3(const std::string &name, const glm::vec3 &value)
 {
     PropertyOverrides[name] = MaterialProperty(value);
 }
 
-void MCEngine::MaterialComponent::SetOverrideTexture2D(const std::string &name,
-                                                       const std::shared_ptr<Texture2D> &texture, unsigned int slot)
+void Engine::MaterialComponent::SetOverrideTexture2D(const std::string &name, const std::shared_ptr<Texture2D> &texture,
+                                                     unsigned int slot)
 {
     PropertyOverrides[name] = MaterialProperty(texture, slot);
 }
 
-void MCEngine::MaterialComponent::RemoveOverride(const std::string &name)
-{
-    PropertyOverrides.erase(name);
-}
+void Engine::MaterialComponent::RemoveOverride(const std::string &name) { PropertyOverrides.erase(name); }
 
-void MCEngine::MaterialComponent::Bind(Shader *shader, const std::string &uniformPrefix) const
+void Engine::MaterialComponent::Bind(Shader *shader, const std::string &uniformPrefix) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -88,4 +85,3 @@ void MCEngine::MaterialComponent::Bind(Shader *shader, const std::string &unifor
         }
     }
 }
-

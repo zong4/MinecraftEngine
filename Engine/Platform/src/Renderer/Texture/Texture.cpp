@@ -4,7 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-// unsigned char *MCEngine::Texture::LoadImage(const std::string &path, int &width, int &height,
+// unsigned char *Engine::Texture::LoadImage(const std::string &path, int &width, int &height,
 //                                             unsigned int &internalFormat, unsigned int &format, bool flipVertically)
 // {
 //     ENGINE_PROFILE_FUNCTION();
@@ -58,8 +58,8 @@ static inline std::string LowerExt(const std::string &p)
     return e;
 }
 
-void *MCEngine::Texture::LoadImage(const std::string &path, int &w, int &h, int &ch, unsigned int &internalFormat,
-                                   unsigned int &format, unsigned int &type, bool &isHDR, bool flip)
+void *Engine::Texture::LoadImage(const std::string &path, int &w, int &h, int &ch, unsigned int &internalFormat,
+                                 unsigned int &format, unsigned int &type, bool &isHDR, bool flip)
 {
     if (!std::filesystem::exists(path))
         throw std::runtime_error("Texture file does not exist: " + path);
@@ -135,7 +135,7 @@ void *MCEngine::Texture::LoadImage(const std::string &path, int &w, int &h, int 
     return data;
 }
 
-void MCEngine::Texture::FreeImage(void *data)
+void Engine::Texture::FreeImage(void *data)
 {
     ENGINE_PROFILE_FUNCTION();
 

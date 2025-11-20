@@ -1,9 +1,9 @@
 #pragma once
 
-#include "pch.hpp"
 #include "Material.hpp"
+#include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class MaterialLibrary
@@ -31,4 +31,4 @@ private:
     ~MaterialLibrary() = default;
 };
 
-} // namespace MCEngine
+} // namespace Engine

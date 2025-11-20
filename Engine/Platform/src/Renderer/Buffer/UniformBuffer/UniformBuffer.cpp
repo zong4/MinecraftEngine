@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-MCEngine::UniformBuffer::UniformBuffer(size_t size, unsigned int binding) : m_Binding(binding)
+Engine::UniformBuffer::UniformBuffer(size_t size, unsigned int binding) : m_Binding(binding)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -17,28 +17,28 @@ MCEngine::UniformBuffer::UniformBuffer(size_t size, unsigned int binding) : m_Bi
                     ", Size: " + std::to_string(size) + ", Binding: " + std::to_string(m_Binding));
 }
 
-MCEngine::UniformBuffer::~UniformBuffer()
+Engine::UniformBuffer::~UniformBuffer()
 {
     ENGINE_PROFILE_FUNCTION();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
-void MCEngine::UniformBuffer::Bind() const
+void Engine::UniformBuffer::Bind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
 }
 
-void MCEngine::UniformBuffer::Unbind() const
+void Engine::UniformBuffer::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void MCEngine::UniformBuffer::SetData(const std::initializer_list<UniformBufferData> &dataList)
+void Engine::UniformBuffer::SetData(const std::initializer_list<UniformBufferData> &dataList)
 {
     ENGINE_PROFILE_FUNCTION();
 

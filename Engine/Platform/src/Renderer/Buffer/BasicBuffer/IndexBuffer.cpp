@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-MCEngine::IndexBuffer::IndexBuffer(size_t size) : BasicBuffer(static_cast<int>(size / sizeof(uint32_t)))
+Engine::IndexBuffer::IndexBuffer(size_t size) : BasicBuffer(static_cast<int>(size / sizeof(uint32_t)))
 {
     glGenBuffers(1, &m_RendererID);
     Bind();
@@ -11,25 +11,24 @@ MCEngine::IndexBuffer::IndexBuffer(size_t size) : BasicBuffer(static_cast<int>(s
     Unbind();
 }
 
-MCEngine::IndexBuffer::IndexBuffer(const void *data, size_t size)
-    : BasicBuffer(static_cast<int>(size / sizeof(uint32_t)))
+Engine::IndexBuffer::IndexBuffer(const void *data, size_t size) : BasicBuffer(static_cast<int>(size / sizeof(uint32_t)))
 {
     CreateBuffer(data, size);
 }
 
-MCEngine::IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices) : BasicBuffer(static_cast<int>(indices.size()))
+Engine::IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices) : BasicBuffer(static_cast<int>(indices.size()))
 {
     CreateBuffer(indices.data(), indices.size() * sizeof(uint32_t));
 }
 
-MCEngine::IndexBuffer::~IndexBuffer()
+Engine::IndexBuffer::~IndexBuffer()
 {
     ENGINE_PROFILE_FUNCTION();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
-MCEngine::IndexBuffer::IndexBuffer(IndexBuffer &&other)
+Engine::IndexBuffer::IndexBuffer(IndexBuffer &&other)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -43,7 +42,7 @@ MCEngine::IndexBuffer::IndexBuffer(IndexBuffer &&other)
     other.m_RendererID = 0;
 }
 
-MCEngine::IndexBuffer &MCEngine::IndexBuffer::operator=(IndexBuffer &&other)
+Engine::IndexBuffer &Engine::IndexBuffer::operator=(IndexBuffer &&other)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -64,21 +63,21 @@ MCEngine::IndexBuffer &MCEngine::IndexBuffer::operator=(IndexBuffer &&other)
     return *this;
 }
 
-void MCEngine::IndexBuffer::Bind() const
+void Engine::IndexBuffer::Bind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 }
 
-void MCEngine::IndexBuffer::Unbind() const
+void Engine::IndexBuffer::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void MCEngine::IndexBuffer::SetData(const void *data, size_t size, size_t offset)
+void Engine::IndexBuffer::SetData(const void *data, size_t size, size_t offset)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -88,7 +87,7 @@ void MCEngine::IndexBuffer::SetData(const void *data, size_t size, size_t offset
     Unbind();
 }
 
-void MCEngine::IndexBuffer::CreateBuffer(const void *data, size_t size)
+void Engine::IndexBuffer::CreateBuffer(const void *data, size_t size)
 {
     ENGINE_PROFILE_FUNCTION();
 

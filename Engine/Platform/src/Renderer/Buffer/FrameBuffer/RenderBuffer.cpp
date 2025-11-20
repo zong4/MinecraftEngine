@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-MCEngine::RenderBuffer::RenderBuffer(int width, int height, unsigned int internalFormat, int samples)
+Engine::RenderBuffer::RenderBuffer(int width, int height, unsigned int internalFormat, int samples)
     : m_InternalFormat(internalFormat), m_Samples(samples)
 {
     ENGINE_PROFILE_FUNCTION();
@@ -15,14 +15,14 @@ MCEngine::RenderBuffer::RenderBuffer(int width, int height, unsigned int interna
                     ", InternalFormat: " + std::to_string(internalFormat) + ", Samples: " + std::to_string(samples));
 }
 
-MCEngine::RenderBuffer::~RenderBuffer()
+Engine::RenderBuffer::~RenderBuffer()
 {
     ENGINE_PROFILE_FUNCTION();
 
     glDeleteRenderbuffers(1, &m_RendererID);
 }
 
-void MCEngine::RenderBuffer::Resize(int width, int height)
+void Engine::RenderBuffer::Resize(int width, int height)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -30,7 +30,7 @@ void MCEngine::RenderBuffer::Resize(int width, int height)
     Unbind();
 }
 
-void MCEngine::RenderBuffer::Bind(int width, int height) const
+void Engine::RenderBuffer::Bind(int width, int height) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -40,7 +40,7 @@ void MCEngine::RenderBuffer::Bind(int width, int height) const
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void MCEngine::RenderBuffer::Unbind() const
+void Engine::RenderBuffer::Unbind() const
 {
     ENGINE_PROFILE_FUNCTION();
 

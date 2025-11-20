@@ -2,7 +2,7 @@
 
 #include "Renderer/RendererCommand.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class BasicBuffer
@@ -31,4 +31,4 @@ protected:
     virtual void CreateBuffer(const void *data, size_t size) = 0;
 };
 
-} // namespace MCEngine
+} // namespace Engine

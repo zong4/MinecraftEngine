@@ -1,18 +1,18 @@
 #include "Instrumentor.hpp"
 
-MCEngine::Instrumentor &MCEngine::Instrumentor::GetInstance()
+Engine::Instrumentor &Engine::Instrumentor::GetInstance()
 {
     static Instrumentor instance;
     return instance;
 }
 
-void MCEngine::Instrumentor::BeginSession(const std::string &filepath)
+void Engine::Instrumentor::BeginSession(const std::string &filepath)
 {
     m_OutputStream.open(filepath);
     WriteHeader();
 }
 
-void MCEngine::Instrumentor::EndSession()
+void Engine::Instrumentor::EndSession()
 {
     WriteFooter();
     m_OutputStream.close();
@@ -21,7 +21,7 @@ void MCEngine::Instrumentor::EndSession()
     m_ProfileCount = 0;
 }
 
-void MCEngine::Instrumentor::WriteProfile(const ProfileResult &result)
+void Engine::Instrumentor::WriteProfile(const ProfileResult &result)
 {
     if (m_ProfileCount++ > 0)
         m_OutputStream << ",";
@@ -45,13 +45,13 @@ void MCEngine::Instrumentor::WriteProfile(const ProfileResult &result)
     m_OutputStream.flush();
 }
 
-void MCEngine::Instrumentor::WriteHeader()
+void Engine::Instrumentor::WriteHeader()
 {
     m_OutputStream << "{\"otherData\": {},\"traceEvents\":[";
     m_OutputStream.flush();
 }
 
-void MCEngine::Instrumentor::WriteFooter()
+void Engine::Instrumentor::WriteFooter()
 {
     m_OutputStream << "]}";
     m_OutputStream.flush();

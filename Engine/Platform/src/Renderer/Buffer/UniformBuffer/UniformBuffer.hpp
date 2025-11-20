@@ -2,7 +2,7 @@
 
 #include "Renderer/RendererCommand.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct UniformBufferData
@@ -40,4 +40,4 @@ private:
     unsigned int m_Binding = 0;
 };
 
-} // namespace MCEngine
+} // namespace Engine

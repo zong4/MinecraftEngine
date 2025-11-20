@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Timer
@@ -21,4 +21,4 @@ private:
     float GetElapsedTime(); // Called once per frame
 };
 
-} // namespace MCEngine
+} // namespace Engine

@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Event
@@ -21,4 +21,4 @@ protected:
     bool m_Handled = false;
 };
 
-} // namespace MCEngine
+} // namespace Engine

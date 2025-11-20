@@ -1,9 +1,9 @@
 #pragma once
 
-#include "pch.hpp"
 #include "MaterialProperty.hpp"
+#include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 // Material class - Unity style with dynamic properties
@@ -15,7 +15,7 @@ public:
     Material &operator=(const Material &other) = default;
     ~Material() = default;
 
-    // Property setters 
+    // Property setters
     void SetFloat(const std::string &name, float value);
     void SetInt(const std::string &name, int value);
     void SetUInt(const std::string &name, unsigned int value);
@@ -57,4 +57,4 @@ private:
     mutable std::unordered_map<std::string, int> m_UniformLocationCache;
 };
 
-} // namespace MCEngine
+} // namespace Engine

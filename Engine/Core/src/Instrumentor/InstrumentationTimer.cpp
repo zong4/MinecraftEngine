@@ -2,12 +2,12 @@
 
 #include "Instrumentor.hpp"
 
-MCEngine::InstrumentationTimer::InstrumentationTimer(const std::string &name)
+Engine::InstrumentationTimer::InstrumentationTimer(const std::string &name)
     : m_Name(name), m_StartTime(std::chrono::high_resolution_clock::now())
 {
 }
 
-MCEngine::InstrumentationTimer::~InstrumentationTimer()
+Engine::InstrumentationTimer::~InstrumentationTimer()
 {
     // Capture end timepoint
     auto &&endTimepoint = std::chrono::high_resolution_clock::now();

@@ -2,13 +2,13 @@
 
 #include <imgui.h>
 
-MCEngine::FontLibrary &MCEngine::FontLibrary::GetInstance()
+Engine::FontLibrary &Engine::FontLibrary::GetInstance()
 {
     static FontLibrary instance;
     return instance;
 }
 
-ImFont *MCEngine::FontLibrary::GetFont(const std::string &name)
+ImFont *Engine::FontLibrary::GetFont(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -20,7 +20,7 @@ ImFont *MCEngine::FontLibrary::GetFont(const std::string &name)
     return m_Fonts[name];
 }
 
-void MCEngine::FontLibrary::AddFont(const std::string &name, const std::string &path, float size)
+void Engine::FontLibrary::AddFont(const std::string &name, const std::string &path, float size)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -41,7 +41,7 @@ void MCEngine::FontLibrary::AddFont(const std::string &name, const std::string &
     LOG_ENGINE_TRACE("Font added: " + name + " from path: " + path + " with size: " + std::to_string(size));
 }
 
-void MCEngine::FontLibrary::Init(float fontSize, float thinScale)
+void Engine::FontLibrary::Init(float fontSize, float thinScale)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -65,4 +65,4 @@ void MCEngine::FontLibrary::Init(float fontSize, float thinScale)
                     " and thin scale: " + std::to_string(thinScale));
 }
 
-bool MCEngine::FontLibrary::Exists(const std::string &name) const { return m_Fonts.find(name) != m_Fonts.end(); }
+bool Engine::FontLibrary::Exists(const std::string &name) const { return m_Fonts.find(name) != m_Fonts.end(); }

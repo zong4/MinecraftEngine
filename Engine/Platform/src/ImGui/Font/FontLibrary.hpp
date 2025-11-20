@@ -4,7 +4,7 @@
 
 struct ImFont;
 
-namespace MCEngine
+namespace Engine
 {
 
 class FontLibrary
@@ -28,4 +28,4 @@ private:
     bool Exists(const std::string &name) const;
 };
 
-} // namespace MCEngine
+} // namespace Engine

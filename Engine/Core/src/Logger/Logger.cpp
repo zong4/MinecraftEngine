@@ -4,10 +4,10 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
-std::shared_ptr<spdlog::logger> MCEngine::Logger::s_EngineLogger = nullptr;
-std::shared_ptr<spdlog::logger> MCEngine::Logger::s_EditorLogger = nullptr;
+std::shared_ptr<spdlog::logger> Engine::Logger::s_EngineLogger = nullptr;
+std::shared_ptr<spdlog::logger> Engine::Logger::s_EditorLogger = nullptr;
 
-void MCEngine::Logger::Init(const std::string &dirPath)
+void Engine::Logger::Init(const std::string &dirPath)
 {
     if (s_EngineLogger && s_EditorLogger)
         return;
@@ -19,26 +19,26 @@ void MCEngine::Logger::Init(const std::string &dirPath)
     LOG_EDITOR_INFO("Editor logger initialized");
 }
 
-void MCEngine::Logger::LogEngineTrace(const std::string &message) { s_EngineLogger->trace(message); }
-void MCEngine::Logger::LogEngineInfo(const std::string &message) { s_EngineLogger->info(message); }
-void MCEngine::Logger::LogEngineWarn(const std::string &message) { s_EngineLogger->warn("Warning: " + message); }
-void MCEngine::Logger::LogEngineError(const std::string &message, bool assertFail)
+void Engine::Logger::LogEngineTrace(const std::string &message) { s_EngineLogger->trace(message); }
+void Engine::Logger::LogEngineInfo(const std::string &message) { s_EngineLogger->info(message); }
+void Engine::Logger::LogEngineWarn(const std::string &message) { s_EngineLogger->warn("Warning: " + message); }
+void Engine::Logger::LogEngineError(const std::string &message, bool assertFail)
 {
     s_EngineLogger->error("Error: " + message);
     if (assertFail)
         assert(false);
 }
 
-void MCEngine::Logger::LogEditorTrace(const std::string &message) { s_EditorLogger->trace(message); }
-void MCEngine::Logger::LogEditorInfo(const std::string &message) { s_EditorLogger->info(message); }
-void MCEngine::Logger::LogEditorWarn(const std::string &message) { s_EditorLogger->warn("Warning: " + message); }
-void MCEngine::Logger::LogEditorError(const std::string &message, bool assertFail)
+void Engine::Logger::LogEditorTrace(const std::string &message) { s_EditorLogger->trace(message); }
+void Engine::Logger::LogEditorInfo(const std::string &message) { s_EditorLogger->info(message); }
+void Engine::Logger::LogEditorWarn(const std::string &message) { s_EditorLogger->warn("Warning: " + message); }
+void Engine::Logger::LogEditorError(const std::string &message, bool assertFail)
 {
     s_EditorLogger->error("Error: " + message);
     assert(false);
 }
 
-std::shared_ptr<spdlog::logger> MCEngine::Logger::CreateLogger(const std::string &dirPath, const std::string &name)
+std::shared_ptr<spdlog::logger> Engine::Logger::CreateLogger(const std::string &dirPath, const std::string &name)
 {
     // Create console sink and file sink
     auto &&console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();

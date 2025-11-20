@@ -1,12 +1,12 @@
 #include "TextureLibrary.hpp"
 
-MCEngine::TextureLibrary &MCEngine::TextureLibrary::GetInstance()
+Engine::TextureLibrary &Engine::TextureLibrary::GetInstance()
 {
     static TextureLibrary instance;
     return instance;
 }
 
-int MCEngine::TextureLibrary::GetTextureSlot(const std::shared_ptr<Texture> &texture)
+int Engine::TextureLibrary::GetTextureSlot(const std::shared_ptr<Texture> &texture)
 {
     for (size_t i = 0; i < m_TextureSlots.size(); ++i)
     {
@@ -30,7 +30,7 @@ int MCEngine::TextureLibrary::GetTextureSlot(const std::shared_ptr<Texture> &tex
     return -1;
 }
 
-std::string MCEngine::TextureLibrary::GetName(const std::shared_ptr<Texture> &texture) const
+std::string Engine::TextureLibrary::GetName(const std::shared_ptr<Texture> &texture) const
 {
     for (const auto &[name, ptr] : m_Textures)
     {
@@ -41,7 +41,7 @@ std::string MCEngine::TextureLibrary::GetName(const std::shared_ptr<Texture> &te
     return "";
 }
 
-std::shared_ptr<MCEngine::Texture2D> MCEngine::TextureLibrary::GetTexture2D(const std::string &name)
+std::shared_ptr<Engine::Texture2D> Engine::TextureLibrary::GetTexture2D(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -53,7 +53,7 @@ std::shared_ptr<MCEngine::Texture2D> MCEngine::TextureLibrary::GetTexture2D(cons
     return std::dynamic_pointer_cast<Texture2D>(m_Textures[name]);
 }
 
-std::shared_ptr<MCEngine::TextureCube> MCEngine::TextureLibrary::GetTextureCube(const std::string &name)
+std::shared_ptr<Engine::TextureCube> Engine::TextureLibrary::GetTextureCube(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -65,7 +65,7 @@ std::shared_ptr<MCEngine::TextureCube> MCEngine::TextureLibrary::GetTextureCube(
     return std::dynamic_pointer_cast<TextureCube>(m_Textures[name]);
 }
 
-void MCEngine::TextureLibrary::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
+void Engine::TextureLibrary::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -78,9 +78,9 @@ void MCEngine::TextureLibrary::AddTexture(const std::string &name, const std::sh
     LOG_ENGINE_TRACE("Texture added: " + name);
 }
 
-void MCEngine::TextureLibrary::ClearTextureSlots() { m_TextureSlots.fill(""); }
+void Engine::TextureLibrary::ClearTextureSlots() { m_TextureSlots.fill(""); }
 
-MCEngine::TextureLibrary::TextureLibrary()
+Engine::TextureLibrary::TextureLibrary()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -125,8 +125,7 @@ MCEngine::TextureLibrary::TextureLibrary()
         else if (entry.is_regular_file())
         {
             // Support LDR textures (.png, .jpg) and HDR textures (.hdr)
-            if (entry.path().extension() == ".png" || 
-                entry.path().extension() == ".jpg" || 
+            if (entry.path().extension() == ".png" || entry.path().extension() == ".jpg" ||
                 entry.path().extension() == ".hdr")
             {
                 AddTexture(entry.path().stem().string(), std::make_shared<Texture2D>(entry.path().string()));
@@ -137,7 +136,4 @@ MCEngine::TextureLibrary::TextureLibrary()
     LOG_ENGINE_INFO("Texture Library initialized");
 }
 
-bool MCEngine::TextureLibrary::Exists(const std::string &name) const
-{
-    return m_Textures.find(name) != m_Textures.end();
-}
+bool Engine::TextureLibrary::Exists(const std::string &name) const { return m_Textures.find(name) != m_Textures.end(); }

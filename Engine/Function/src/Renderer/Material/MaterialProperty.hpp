@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 enum class MaterialPropertyType
@@ -76,5 +76,4 @@ private:
     unsigned int m_TextureSlot;
 };
 
-} // namespace MCEngine
-
+} // namespace Engine

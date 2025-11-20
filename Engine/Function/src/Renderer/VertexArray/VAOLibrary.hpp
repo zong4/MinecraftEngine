@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct Vertex2D
@@ -140,4 +140,4 @@ private:
     bool Exists(const std::string &name) const;
 };
 
-} // namespace MCEngine
+} // namespace Engine

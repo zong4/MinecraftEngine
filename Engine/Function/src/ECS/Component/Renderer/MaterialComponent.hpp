@@ -1,11 +1,11 @@
 #pragma once
 
-#include "pch.hpp"
 #include "Renderer/Material/Material.hpp"
-#include "Renderer/Material/MaterialProperty.hpp"
 #include "Renderer/Material/MaterialLibrary.hpp"
+#include "Renderer/Material/MaterialProperty.hpp"
+#include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct MaterialComponent
@@ -17,9 +17,7 @@ struct MaterialComponent
     std::unordered_map<std::string, MaterialProperty> PropertyOverrides;
 
 public:
-    MaterialComponent(const std::shared_ptr<Material> &material = nullptr) : MaterialInstance(material)
-    {
-    }
+    MaterialComponent(const std::shared_ptr<Material> &material = nullptr) : MaterialInstance(material) {}
 
     // Convenience constructor - create from material name
     MaterialComponent(const std::string &materialName)
@@ -43,7 +41,7 @@ public:
     void SetOverrideFloat(const std::string &name, float value);
     void SetOverrideVec3(const std::string &name, const glm::vec3 &value);
     void SetOverrideTexture2D(const std::string &name, const std::shared_ptr<Texture2D> &texture,
-                               unsigned int slot = 0);
+                              unsigned int slot = 0);
     void RemoveOverride(const std::string &name);
     void ClearOverrides() { PropertyOverrides.clear(); }
 
@@ -51,4 +49,4 @@ public:
     void Bind(Shader *shader, const std::string &uniformPrefix = "u_Material") const;
 };
 
-} // namespace MCEngine
+} // namespace Engine

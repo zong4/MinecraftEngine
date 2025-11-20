@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class WindowUtility
@@ -13,4 +13,4 @@ public:
     static int GetScreenResolutionScale();
 };
 
-} // namespace MCEngine
+} // namespace Engine

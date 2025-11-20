@@ -5,12 +5,12 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-bool MCEngine::Window::IsRunning() const
+bool Engine::Window::IsRunning() const
 {
     return !glfwWindowShouldClose(static_cast<GLFWwindow *>(m_NativeWindow)) && m_Running;
 }
 
-void MCEngine::Window::SetVSync(bool enabled)
+void Engine::Window::SetVSync(bool enabled)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -19,33 +19,33 @@ void MCEngine::Window::SetVSync(bool enabled)
     LOG_ENGINE_INFO("VSync " + std::string(enabled ? "enabled" : "disabled"));
 }
 
-void MCEngine::Window::OnEvent(Event &event)
+void Engine::Window::OnEvent(Event &event)
 {
     ENGINE_PROFILE_FUNCTION();
 
     // Store key states in KeyCodeLibrary
     if (!event.IsHandled())
     {
-        MCEngine::EventDispatcher dispatcher(event);
+        Engine::EventDispatcher dispatcher(event);
 
         // KeyEvent
-        dispatcher.Dispatch<MCEngine::KeyEvent>([this](MCEngine::KeyEvent &event) {
-            MCEngine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
+        dispatcher.Dispatch<Engine::KeyEvent>([this](Engine::KeyEvent &event) {
+            Engine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
             return false;
         });
 
         // MouseEvent
         {
-            dispatcher.Dispatch<MCEngine::MouseButtonEvent>([this](MCEngine::MouseButtonEvent &event) {
-                MCEngine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
+            dispatcher.Dispatch<Engine::MouseButtonEvent>([this](Engine::MouseButtonEvent &event) {
+                Engine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
                 return false;
             });
-            dispatcher.Dispatch<MCEngine::MouseMoveEvent>([this](MCEngine::MouseMoveEvent &event) {
-                MCEngine::Input::GetInstance().SetPosition(event.GetX(), event.GetY());
+            dispatcher.Dispatch<Engine::MouseMoveEvent>([this](Engine::MouseMoveEvent &event) {
+                Engine::Input::GetInstance().SetPosition(event.GetX(), event.GetY());
                 return false;
             });
-            dispatcher.Dispatch<MCEngine::MouseScrollEvent>([this](MCEngine::MouseScrollEvent &event) {
-                MCEngine::Input::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
+            dispatcher.Dispatch<Engine::MouseScrollEvent>([this](Engine::MouseScrollEvent &event) {
+                Engine::Input::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
                 return false;
             });
         }
@@ -54,7 +54,7 @@ void MCEngine::Window::OnEvent(Event &event)
     m_LayerStack.OnEvent(event);
 }
 
-void MCEngine::Window::Update(float deltaTime)
+void Engine::Window::Update(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -69,7 +69,7 @@ void MCEngine::Window::Update(float deltaTime)
     glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));
 }
 
-void MCEngine::Window::Init()
+void Engine::Window::Init()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -114,7 +114,7 @@ void MCEngine::Window::Init()
     RendererCommand::Init();
 }
 
-void MCEngine::Window::Shutdown()
+void Engine::Window::Shutdown()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -123,7 +123,7 @@ void MCEngine::Window::Shutdown()
     LOG_ENGINE_INFO("Window destroyed");
 }
 
-void MCEngine::Window::SetCallbacks()
+void Engine::Window::SetCallbacks()
 {
     ENGINE_PROFILE_FUNCTION();
 

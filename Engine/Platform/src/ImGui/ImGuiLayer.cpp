@@ -8,9 +8,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-MCEngine::ImGuiLayer::ImGuiLayer(std::shared_ptr<Window> window) : Layer("ImGuiLayer"), m_Window(window) {}
+Engine::ImGuiLayer::ImGuiLayer(std::shared_ptr<Window> window) : Layer("ImGuiLayer"), m_Window(window) {}
 
-void MCEngine::ImGuiLayer::OnEvent(Event &event)
+void Engine::ImGuiLayer::OnEvent(Event &event)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -39,7 +39,7 @@ void MCEngine::ImGuiLayer::OnEvent(Event &event)
     }
 }
 
-void MCEngine::ImGuiLayer::BeginRenderImGui() const
+void Engine::ImGuiLayer::BeginRenderImGui() const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -48,7 +48,7 @@ void MCEngine::ImGuiLayer::BeginRenderImGui() const
     ImGui::NewFrame();
 }
 
-void MCEngine::ImGuiLayer::EndRenderImGui() const
+void Engine::ImGuiLayer::EndRenderImGui() const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -60,7 +60,7 @@ void MCEngine::ImGuiLayer::EndRenderImGui() const
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void MCEngine::ImGuiLayer::OnAttach()
+void Engine::ImGuiLayer::OnAttach()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -105,7 +105,7 @@ void MCEngine::ImGuiLayer::OnAttach()
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 }
 
-void MCEngine::ImGuiLayer::OnDetach()
+void Engine::ImGuiLayer::OnDetach()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -123,7 +123,7 @@ static ImVec4 ReverseGammaCorrection(ImVec4 &&color)
     return color;
 }
 
-void MCEngine::ImGuiLayer::SetDarkThemeColors()
+void Engine::ImGuiLayer::SetDarkThemeColors()
 {
     auto &colors = ImGui::GetStyle().Colors;
     colors[ImGuiCol_WindowBg] = ReverseGammaCorrection(ImVec4{0.1f, 0.105f, 0.11f, 1.0f});

@@ -5,10 +5,10 @@
 namespace Editor
 {
 
-class CameraController : public MCEngine::ScriptableEntity
+class CameraController : public Engine::ScriptableEntity
 {
 public:
-    CameraController(MCEngine::Entity entity) : MCEngine::ScriptableEntity(entity) {}
+    CameraController(Engine::Entity entity) : Engine::ScriptableEntity(entity) {}
     ~CameraController() override = default;
 
 public:
@@ -19,7 +19,7 @@ private:
     float m_MoveSpeed = 0.2f;
     float m_RotateSpeed = 2.0f;
     float m_ZoomSpeed = 1.5f;
-    MCEngine::TransformComponent *m_Transform = nullptr;
+    Engine::TransformComponent *m_Transform = nullptr;
 };
 
 } // namespace Editor

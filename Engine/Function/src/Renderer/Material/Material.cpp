@@ -2,54 +2,48 @@
 
 #include <glad/glad.h>
 
-MCEngine::Material::Material(std::shared_ptr<Shader> shader) : m_Shader(shader)
+Engine::Material::Material(std::shared_ptr<Shader> shader) : m_Shader(shader)
 {
     ENGINE_PROFILE_FUNCTION();
     LOG_ENGINE_TRACE("Material created with shader");
 }
 
-void MCEngine::Material::SetFloat(const std::string &name, float value)
+void Engine::Material::SetFloat(const std::string &name, float value) { m_Properties[name] = MaterialProperty(value); }
+
+void Engine::Material::SetInt(const std::string &name, int value) { m_Properties[name] = MaterialProperty(value); }
+
+void Engine::Material::SetUInt(const std::string &name, unsigned int value)
 {
     m_Properties[name] = MaterialProperty(value);
 }
 
-void MCEngine::Material::SetInt(const std::string &name, int value)
+void Engine::Material::SetVec2(const std::string &name, const glm::vec2 &value)
 {
     m_Properties[name] = MaterialProperty(value);
 }
 
-void MCEngine::Material::SetUInt(const std::string &name, unsigned int value)
+void Engine::Material::SetVec3(const std::string &name, const glm::vec3 &value)
 {
     m_Properties[name] = MaterialProperty(value);
 }
 
-void MCEngine::Material::SetVec2(const std::string &name, const glm::vec2 &value)
+void Engine::Material::SetVec4(const std::string &name, const glm::vec4 &value)
 {
     m_Properties[name] = MaterialProperty(value);
 }
 
-void MCEngine::Material::SetVec3(const std::string &name, const glm::vec3 &value)
+void Engine::Material::SetMat4(const std::string &name, const glm::mat4 &value)
 {
     m_Properties[name] = MaterialProperty(value);
 }
 
-void MCEngine::Material::SetVec4(const std::string &name, const glm::vec4 &value)
-{
-    m_Properties[name] = MaterialProperty(value);
-}
-
-void MCEngine::Material::SetMat4(const std::string &name, const glm::mat4 &value)
-{
-    m_Properties[name] = MaterialProperty(value);
-}
-
-void MCEngine::Material::SetTexture2D(const std::string &name, const std::shared_ptr<Texture2D> &texture,
-                                       unsigned int slot)
+void Engine::Material::SetTexture2D(const std::string &name, const std::shared_ptr<Texture2D> &texture,
+                                    unsigned int slot)
 {
     m_Properties[name] = MaterialProperty(texture, slot);
 }
 
-MCEngine::MaterialProperty MCEngine::Material::GetProperty(const std::string &name) const
+Engine::MaterialProperty Engine::Material::GetProperty(const std::string &name) const
 {
     auto it = m_Properties.find(name);
     if (it != m_Properties.end())
@@ -60,19 +54,19 @@ MCEngine::MaterialProperty MCEngine::Material::GetProperty(const std::string &na
     return MaterialProperty();
 }
 
-bool MCEngine::Material::HasProperty(const std::string &name) const
+bool Engine::Material::HasProperty(const std::string &name) const
 {
     return m_Properties.find(name) != m_Properties.end();
 }
 
-void MCEngine::Material::RemoveProperty(const std::string &name)
+void Engine::Material::RemoveProperty(const std::string &name)
 {
     m_Properties.erase(name);
     // Also remove from cache
     m_UniformLocationCache.erase(name);
 }
 
-void MCEngine::Material::Bind(Shader *shader, const std::string &uniformPrefix) const
+void Engine::Material::Bind(Shader *shader, const std::string &uniformPrefix) const
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -140,7 +134,7 @@ void MCEngine::Material::Bind(Shader *shader, const std::string &uniformPrefix) 
     }
 }
 
-std::string MCEngine::Material::ToString() const
+std::string Engine::Material::ToString() const
 {
     std::string result = std::string("Material(Shader: ") + (m_Shader ? "Valid" : "Null") + ", Properties: {";
     bool first = true;
@@ -155,12 +149,12 @@ std::string MCEngine::Material::ToString() const
     return result;
 }
 
-std::shared_ptr<MCEngine::Material> MCEngine::Material::Create(std::shared_ptr<Shader> shader)
+std::shared_ptr<Engine::Material> Engine::Material::Create(std::shared_ptr<Shader> shader)
 {
     return std::make_shared<Material>(shader);
 }
 
-std::shared_ptr<MCEngine::Material> MCEngine::Material::CreateDefault(std::shared_ptr<Shader> shader)
+std::shared_ptr<Engine::Material> Engine::Material::CreateDefault(std::shared_ptr<Shader> shader)
 {
     auto material = std::make_shared<Material>(shader);
     // Set default PBR values

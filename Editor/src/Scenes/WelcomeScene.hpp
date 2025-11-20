@@ -5,7 +5,7 @@
 namespace Editor
 {
 
-class WelcomeScene : public MCEngine::Scene
+class WelcomeScene : public Engine::Scene
 {
 public:
     WelcomeScene();

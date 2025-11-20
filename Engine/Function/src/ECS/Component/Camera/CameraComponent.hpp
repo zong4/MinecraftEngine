@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 enum class CameraType
@@ -42,4 +42,4 @@ private:
     glm::mat4 m_ProjectionMatrix;
 };
 
-} // namespace MCEngine
+} // namespace Engine

@@ -1,12 +1,12 @@
 #include "CameraComponent.hpp"
 
-void MCEngine::CameraComponent::Resize(float width, float height)
+void Engine::CameraComponent::Resize(float width, float height)
 {
     m_Width = width;
     m_Height = height;
 }
 
-void MCEngine::CameraComponent::UpdateProjectionMatrix()
+void Engine::CameraComponent::UpdateProjectionMatrix()
 {
     ENGINE_PROFILE_FUNCTION();
 

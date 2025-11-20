@@ -2,20 +2,20 @@
 
 #include "Renderer/Shader/ShaderLibrary.hpp"
 
-MCEngine::MaterialLibrary &MCEngine::MaterialLibrary::GetInstance()
+Engine::MaterialLibrary &Engine::MaterialLibrary::GetInstance()
 {
-    //Instance
+    // Instance
     static MaterialLibrary instance;
     return instance;
 }
 
-MCEngine::MaterialLibrary::MaterialLibrary()
+Engine::MaterialLibrary::MaterialLibrary()
 {
     ENGINE_PROFILE_FUNCTION();
     LOG_ENGINE_INFO("Material Library initialized");
 }
 
-std::shared_ptr<MCEngine::Material> MCEngine::MaterialLibrary::Load(const std::string &name)
+std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Load(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -31,8 +31,8 @@ std::shared_ptr<MCEngine::Material> MCEngine::MaterialLibrary::Load(const std::s
     return nullptr;
 }
 
-std::shared_ptr<MCEngine::Material> MCEngine::MaterialLibrary::Create(const std::string &name,
-                                                                       std::shared_ptr<Shader> shader)
+std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Create(const std::string &name,
+                                                                  std::shared_ptr<Shader> shader)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -54,7 +54,7 @@ std::shared_ptr<MCEngine::Material> MCEngine::MaterialLibrary::Create(const std:
     return material;
 }
 
-void MCEngine::MaterialLibrary::AddMaterial(const std::string &name, const std::shared_ptr<Material> &material)
+void Engine::MaterialLibrary::AddMaterial(const std::string &name, const std::shared_ptr<Material> &material)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -73,7 +73,7 @@ void MCEngine::MaterialLibrary::AddMaterial(const std::string &name, const std::
     LOG_ENGINE_TRACE("Material added: " + name);
 }
 
-std::shared_ptr<MCEngine::Material> MCEngine::MaterialLibrary::Get(const std::string &name)
+std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Get(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -86,12 +86,12 @@ std::shared_ptr<MCEngine::Material> MCEngine::MaterialLibrary::Get(const std::st
     return m_Materials[name];
 }
 
-bool MCEngine::MaterialLibrary::Exists(const std::string &name) const
+bool Engine::MaterialLibrary::Exists(const std::string &name) const
 {
     return m_Materials.find(name) != m_Materials.end();
 }
 
-std::string MCEngine::MaterialLibrary::GetName(const std::shared_ptr<Material> &material) const
+std::string Engine::MaterialLibrary::GetName(const std::shared_ptr<Material> &material) const
 {
     for (const auto &[name, ptr] : m_Materials)
     {
@@ -101,4 +101,3 @@ std::string MCEngine::MaterialLibrary::GetName(const std::shared_ptr<Material> &
     LOG_ENGINE_WARN("Material not found in library");
     return "";
 }
-

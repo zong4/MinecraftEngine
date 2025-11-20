@@ -10,7 +10,7 @@
 #include <CoreGraphics/CoreGraphics.h>
 #endif
 
-float MCEngine::WindowUtility::GetDPIScale()
+float Engine::WindowUtility::GetDPIScale()
 {
 #ifdef _WIN32
     HMONITOR monitor = MonitorFromWindow(GetDesktopWindow(), MONITOR_DEFAULTTONEAREST);
@@ -34,7 +34,7 @@ float MCEngine::WindowUtility::GetDPIScale()
 #endif
 }
 
-std::pair<int, int> MCEngine::WindowUtility::GetScreenResolution()
+std::pair<int, int> Engine::WindowUtility::GetScreenResolution()
 {
 #ifdef _WIN32
     int width = GetSystemMetrics(SM_CXSCREEN);
@@ -62,7 +62,7 @@ std::pair<int, int> MCEngine::WindowUtility::GetScreenResolution()
 #endif
 }
 
-int MCEngine::WindowUtility::GetScreenResolutionScale()
+int Engine::WindowUtility::GetScreenResolutionScale()
 {
     auto &&[width, height] = GetScreenResolution();
     return width / 1280;

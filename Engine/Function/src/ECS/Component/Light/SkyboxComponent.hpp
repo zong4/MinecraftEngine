@@ -2,7 +2,7 @@
 
 #include "Renderer/Texture/TextureLibrary.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct SkyboxComponent
@@ -15,8 +15,8 @@ public:
     // Getters
     std::shared_ptr<TextureCube> GetTextureCube() const
     {
-        return MCEngine::TextureLibrary::GetInstance().GetTextureCube(TextureCubeName);
+        return Engine::TextureLibrary::GetInstance().GetTextureCube(TextureCubeName);
     }
 };
 
-} // namespace MCEngine
+} // namespace Engine

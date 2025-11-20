@@ -2,10 +2,10 @@
 
 #include "Event.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
-class KeyEvent : public MCEngine::Event
+class KeyEvent : public Engine::Event
 {
 public:
     KeyEvent(int code, int action) : m_Code(code), m_Action(action) {}
@@ -26,4 +26,4 @@ protected:
     int m_Action;
 };
 
-} // namespace MCEngine
+} // namespace Engine

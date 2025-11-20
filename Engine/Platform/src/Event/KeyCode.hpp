@@ -2,7 +2,7 @@
 
 // clang-format off
 
-namespace MCEngine
+namespace Engine
 {
 
 /*! @ingroup input
@@ -184,6 +184,6 @@ namespace MCEngine
 #define ENGINE_MOUSE_BUTTON_MIDDLE    ENGINE_MOUSE_BUTTON_3
 /*! @} */
 
-} // namespace MCEngine
+} // namespace Engine
 
 // clang-format on

@@ -8,7 +8,7 @@ class Node;
 class Emitter;
 } // namespace YAML
 
-namespace MCEngine
+namespace Engine
 {
 
 class SceneSerializer
@@ -21,8 +21,8 @@ public:
     static bool Deserialize(const std::shared_ptr<Scene> &scene, const std::string &filePath);
 
 private:
-    static void SerializeEntity(YAML::Emitter &out, const MCEngine::Entity &entity);
+    static void SerializeEntity(YAML::Emitter &out, const Engine::Entity &entity);
     static Entity DeserializeEntity(const std::shared_ptr<Scene> &scene, const YAML::Node &entity);
 };
 
-} // namespace MCEngine
+} // namespace Engine

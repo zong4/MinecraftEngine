@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 enum class RendererAPI
@@ -26,4 +26,4 @@ private:
     int m_MinorVersion;
 };
 
-} // namespace MCEngine
+} // namespace Engine

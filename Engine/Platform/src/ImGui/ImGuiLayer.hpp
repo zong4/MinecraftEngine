@@ -2,7 +2,7 @@
 
 #include "Window/Window.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class ImGuiLayer : public Layer
@@ -37,4 +37,4 @@ public:
     void SetDarkThemeColors();
 };
 
-} // namespace MCEngine
+} // namespace Engine

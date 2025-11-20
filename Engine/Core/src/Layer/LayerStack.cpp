@@ -2,21 +2,21 @@
 
 #include "Logger/Logger.hpp"
 
-MCEngine::LayerStack::~LayerStack()
+Engine::LayerStack::~LayerStack()
 {
     for (const std::shared_ptr<Layer> &layer : m_Layers)
         layer->OnDetach();
     m_Layers.clear();
 }
 
-void MCEngine::LayerStack::PushLayer(const std::shared_ptr<Layer> &layer)
+void Engine::LayerStack::PushLayer(const std::shared_ptr<Layer> &layer)
 {
     m_Layers.emplace_back(layer);
     layer->OnAttach();
     LOG_ENGINE_INFO("Layer pushed: " + layer->GetName());
 }
 
-void MCEngine::LayerStack::PopLayer(const std::shared_ptr<Layer> &layer)
+void Engine::LayerStack::PopLayer(const std::shared_ptr<Layer> &layer)
 {
     auto &&it = std::find(m_Layers.begin(), m_Layers.end(), layer);
     if (it != m_Layers.end())
@@ -29,7 +29,7 @@ void MCEngine::LayerStack::PopLayer(const std::shared_ptr<Layer> &layer)
     LOG_ENGINE_ASSERT("Layer not found in LayerStack: " + layer->GetName());
 }
 
-void MCEngine::LayerStack::OnEvent(Event &event)
+void Engine::LayerStack::OnEvent(Event &event)
 {
     for (auto &&it = m_Layers.rbegin(); it != m_Layers.rend(); it++)
     {
@@ -40,13 +40,13 @@ void MCEngine::LayerStack::OnEvent(Event &event)
     }
 }
 
-void MCEngine::LayerStack::Update(float deltaTime)
+void Engine::LayerStack::Update(float deltaTime)
 {
     for (const std::shared_ptr<Layer> &layer : m_Layers)
         layer->OnUpdate(deltaTime);
 }
 
-void MCEngine::LayerStack::Render()
+void Engine::LayerStack::Render()
 {
     for (const std::shared_ptr<Layer> &layer : m_Layers)
     {

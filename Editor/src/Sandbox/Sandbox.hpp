@@ -5,10 +5,10 @@
 namespace Editor
 {
 
-class Sandbox : public MCEngine::Application
+class Sandbox : public Engine::Application
 {
 public:
-    Sandbox(const MCEngine::WindowProperty &props);
+    Sandbox(const Engine::WindowProperty &props);
     ~Sandbox() override = default;
 };
 

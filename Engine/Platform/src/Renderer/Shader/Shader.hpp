@@ -2,7 +2,7 @@
 
 #include "Renderer/RendererCommand.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Shader
@@ -34,4 +34,4 @@ private:
     void LinkProgram(unsigned int programID);
 };
 
-} // namespace MCEngine
+} // namespace Engine

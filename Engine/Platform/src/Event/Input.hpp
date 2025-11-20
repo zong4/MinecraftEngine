@@ -2,7 +2,7 @@
 
 #include "pch.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 class Input
@@ -39,4 +39,4 @@ private:
     ~Input() = default;
 };
 
-} // namespace MCEngine
+} // namespace Engine

@@ -1,12 +1,12 @@
 #include "ShaderLibrary.hpp"
 
-MCEngine::ShaderLibrary &MCEngine::ShaderLibrary::GetInstance()
+Engine::ShaderLibrary &Engine::ShaderLibrary::GetInstance()
 {
     static ShaderLibrary instance;
     return instance;
 }
 
-std::string MCEngine::ShaderLibrary::GetName(const std::shared_ptr<Shader> &shader) const
+std::string Engine::ShaderLibrary::GetName(const std::shared_ptr<Shader> &shader) const
 {
     for (const auto &[name, ptr] : m_Shaders)
     {
@@ -17,7 +17,7 @@ std::string MCEngine::ShaderLibrary::GetName(const std::shared_ptr<Shader> &shad
     return "";
 }
 
-std::shared_ptr<MCEngine::Shader> MCEngine::ShaderLibrary::GetShader(const std::string &name)
+std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::GetShader(const std::string &name)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -29,7 +29,7 @@ std::shared_ptr<MCEngine::Shader> MCEngine::ShaderLibrary::GetShader(const std::
     return m_Shaders[name];
 }
 
-void MCEngine::ShaderLibrary::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
+void Engine::ShaderLibrary::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -42,10 +42,10 @@ void MCEngine::ShaderLibrary::AddShader(const std::string &name, const std::shar
     LOG_ENGINE_TRACE("Shader added: " + name);
 }
 
-std::shared_ptr<MCEngine::Shader> MCEngine::ShaderLibrary::LoadShader(const std::string &name,
-                                                                      const std::string &vertexSource,
-                                                                      const std::string &fragmentSource,
-                                                                      const std::string &geometrySource)
+std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::LoadShader(const std::string &name,
+                                                                  const std::string &vertexSource,
+                                                                  const std::string &fragmentSource,
+                                                                  const std::string &geometrySource)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -55,12 +55,12 @@ std::shared_ptr<MCEngine::Shader> MCEngine::ShaderLibrary::LoadShader(const std:
         return m_Shaders[name];
     }
 
-    auto &&shader = std::make_shared<MCEngine::Shader>(vertexSource, fragmentSource, geometrySource);
+    auto &&shader = std::make_shared<Engine::Shader>(vertexSource, fragmentSource, geometrySource);
     AddShader(name, shader);
     return shader;
 }
 
-MCEngine::ShaderLibrary::ShaderLibrary()
+Engine::ShaderLibrary::ShaderLibrary()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -139,4 +139,4 @@ MCEngine::ShaderLibrary::ShaderLibrary()
     LOG_ENGINE_INFO("ShaderLibrary initialized");
 }
 
-bool MCEngine::ShaderLibrary::Exists(const std::string &name) const { return m_Shaders.find(name) != m_Shaders.end(); }
+bool Engine::ShaderLibrary::Exists(const std::string &name) const { return m_Shaders.find(name) != m_Shaders.end(); }

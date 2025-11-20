@@ -2,7 +2,7 @@
 
 #include "Scene/Scene.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct BVHNode
@@ -32,4 +32,4 @@ private:
     void Destroy(BVHNode *node);
 };
 
-} // namespace MCEngine
+} // namespace Engine

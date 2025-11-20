@@ -2,7 +2,7 @@
 
 #include "ECS/Entity/ScriptableEntity.hpp"
 
-namespace MCEngine
+namespace Engine
 {
 
 struct TagComponent
@@ -127,4 +127,4 @@ public:
     }
 };
 
-} // namespace MCEngine
+} // namespace Engine
