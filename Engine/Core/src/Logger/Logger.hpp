@@ -1,6 +1,7 @@
 #pragma once
 
-#include "pch.hpp"
+#include <memory>
+#include <string>
 
 namespace spdlog
 {
