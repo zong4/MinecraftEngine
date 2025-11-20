@@ -5,7 +5,7 @@
 Editor::Sandbox::Sandbox(const MCEngine::WindowProperty &props) : Application(props)
 {
     AddLayer(std::make_shared<SandboxLayer>(m_Window));
-    AddLayer(std::make_shared<MCEngine::ImGuiLayer>(m_Window));
+    // AddLayer(std::make_shared<MCEngine::ImGuiLayer>(m_Window));
 }
 
 std::unique_ptr<MCEngine::Application> MCEngine::CreateApplication()

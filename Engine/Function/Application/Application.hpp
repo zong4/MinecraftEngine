@@ -16,6 +16,7 @@ public:
 
 protected:
     std::shared_ptr<Window> m_Window = nullptr;
+    std::shared_ptr<ImGuiLayer> m_ImGuiLayer = nullptr;
 
 protected:
     void AddLayer(const std::shared_ptr<Layer> &layer) { m_Window->AddLayer(layer); }

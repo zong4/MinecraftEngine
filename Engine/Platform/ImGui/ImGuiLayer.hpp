@@ -19,7 +19,7 @@ public:
     void OnEvent(Event &event) override;
     void OnUpdate(float deltaTime) override {}
     void OnRender() override {}
-    virtual void OnImGuiRender() override;
+    virtual void OnImGuiRender() override {}
 
     // Called by LayerStack
     void OnAttach() override;
@@ -30,7 +30,7 @@ protected:
     std::shared_ptr<Window> m_Window;
     std::string m_ImGuiFilePath;
 
-protected:
+public:
     void BeginRenderImGui() const;
     void EndRenderImGui() const;
 

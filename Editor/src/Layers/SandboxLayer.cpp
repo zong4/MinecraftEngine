@@ -60,9 +60,9 @@ void Editor::SandboxLayer::OnImGuiRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
-    // ImGui::Begin("Sandbox Layer");
-    // ImGui::Text("This is the Sandbox Layer.");
-    // ImGui::End();
+    ImGui::Begin("Sandbox Layer");
+    ImGui::Text("This is the Sandbox Layer.");
+    ImGui::End();
 }
 
 bool Editor::SandboxLayer::OnKeyEvent(MCEngine::KeyEvent &event) { return false; }

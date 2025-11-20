@@ -39,12 +39,6 @@ void MCEngine::ImGuiLayer::OnEvent(Event &event)
     }
 }
 
-void MCEngine::ImGuiLayer::OnImGuiRender()
-{
-    BeginRenderImGui();
-    EndRenderImGui();
-}
-
 void MCEngine::ImGuiLayer::BeginRenderImGui() const
 {
     ENGINE_PROFILE_FUNCTION();
