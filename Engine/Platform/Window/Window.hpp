@@ -42,7 +42,7 @@ public:
 
 public:
     // Main loop
-    void OnEvent(Event &e) { m_LayerStack.OnEvent(e); }
+    void OnEvent(Event &event);
     void Update(float deltaTime);
     void Render() { m_LayerStack.Render(); }
 

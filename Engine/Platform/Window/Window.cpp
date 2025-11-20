@@ -19,6 +19,41 @@ void MCEngine::Window::SetVSync(bool enabled)
     LOG_ENGINE_INFO("VSync " + std::string(enabled ? "enabled" : "disabled"));
 }
 
+void MCEngine::Window::OnEvent(Event &event)
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    // Store key states in KeyCodeLibrary
+    if (!event.IsHandled())
+    {
+        MCEngine::EventDispatcher dispatcher(event);
+
+        // KeyEvent
+        dispatcher.Dispatch<MCEngine::KeyEvent>([this](MCEngine::KeyEvent &event) {
+            MCEngine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
+            return false;
+        });
+
+        // MouseEvent
+        {
+            dispatcher.Dispatch<MCEngine::MouseButtonEvent>([this](MCEngine::MouseButtonEvent &event) {
+                MCEngine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
+                return false;
+            });
+            dispatcher.Dispatch<MCEngine::MouseMoveEvent>([this](MCEngine::MouseMoveEvent &event) {
+                MCEngine::Input::GetInstance().SetPosition(event.GetX(), event.GetY());
+                return false;
+            });
+            dispatcher.Dispatch<MCEngine::MouseScrollEvent>([this](MCEngine::MouseScrollEvent &event) {
+                MCEngine::Input::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
+                return false;
+            });
+        }
+    }
+
+    m_LayerStack.OnEvent(event);
+}
+
 void MCEngine::Window::Update(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();

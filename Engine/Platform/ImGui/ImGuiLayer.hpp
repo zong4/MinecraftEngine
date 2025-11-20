@@ -17,7 +17,7 @@ public:
 public:
     // Main loop
     void OnEvent(Event &event) override;
-    void OnImGuiRender() override;
+    virtual void OnImGuiRender() override;
 
     // Called by LayerStack
     void OnAttach() override;
@@ -30,7 +30,6 @@ protected:
 
 protected:
     void BeginRenderImGui() const;
-    virtual void RenderImGui() = 0;
     void EndRenderImGui() const;
 
     void SetDarkThemeColors();

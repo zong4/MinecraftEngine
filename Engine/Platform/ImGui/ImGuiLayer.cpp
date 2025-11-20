@@ -45,7 +45,6 @@ void MCEngine::ImGuiLayer::OnEvent(Event &event)
 void MCEngine::ImGuiLayer::OnImGuiRender()
 {
     BeginRenderImGui();
-    RenderImGui();
     EndRenderImGui();
 }
 
