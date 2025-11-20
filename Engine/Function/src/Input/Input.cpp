@@ -1,8 +1,5 @@
 #include "Input.hpp"
 
-#include "KeyCode.hpp"
-#include "MouseButtonCode.hpp"
-
 Engine::Input &Engine::Input::GetInstance()
 {
     static Input instance;
@@ -56,6 +53,6 @@ void Engine::Input::SetPosition(double x, double y)
 
 void Engine::Input::Clear()
 {
-    m_DeltaPosition = {0.0f, 0.0f};
-    m_ScrollOffset = {0.0f, 0.0f};
+    m_DeltaPosition = {0.0, 0.0};
+    m_ScrollOffset = {0.0, 0.0};
 }

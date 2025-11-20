@@ -1,6 +1,5 @@
 #include "Window.hpp"
 
-#include "../Event/Input.hpp"
 #include "../ImGui/ImGuiLayer.hpp"
 #include "../Renderer/RendererCommand.hpp"
 #include <GLFW/glfw3.h>
@@ -20,55 +19,12 @@ void Engine::Window::SetVSync(bool enabled)
     LOG_ENGINE_INFO("VSync " + std::string(enabled ? "enabled" : "disabled"));
 }
 
-void Engine::Window::OnEvent(Event &event)
-{
-    PROFILE_FUNCTION();
-
-    m_LayerStack.GetImGuiLayer()->OnEvent(event);
-
-    // Store key states in KeyCodeLibrary
-    if (!event.IsHandled())
-    {
-        Engine::EventDispatcher dispatcher(event);
-
-        // KeyEvent
-        dispatcher.Dispatch<Engine::KeyEvent>([this](Engine::KeyEvent &event) {
-            Engine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
-            return false;
-        });
-
-        // MouseEvent
-        {
-            dispatcher.Dispatch<Engine::MouseButtonEvent>([this](Engine::MouseButtonEvent &event) {
-                Engine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
-                return false;
-            });
-            dispatcher.Dispatch<Engine::MouseMoveEvent>([this](Engine::MouseMoveEvent &event) {
-                Engine::Input::GetInstance().SetPosition(event.GetX(), event.GetY());
-                return false;
-            });
-            dispatcher.Dispatch<Engine::MouseScrollEvent>([this](Engine::MouseScrollEvent &event) {
-                Engine::Input::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
-                return false;
-            });
-        }
-    }
-
-    m_LayerStack.OnEvent(event);
-}
-
 void Engine::Window::Update(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    // Pre-update
-    Input::GetInstance().Clear();
     glfwPollEvents();
-
-    // Update
     m_LayerStack.Update(deltaTime);
-
-    // Post-update
     glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));
 }
 

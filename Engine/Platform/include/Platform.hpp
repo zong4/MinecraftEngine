@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../src/Event/Input.hpp"
 #include "../src/Event/KeyCode.hpp"
 #include "../src/Event/MouseButtonCode.hpp"
 #include "../src/ImGui/Font/FontLibrary.hpp"

@@ -17,6 +17,7 @@ public:
     virtual void OnAttach() {}
     virtual void OnEvent(Event &event) = 0;
     virtual void OnUpdate(float deltaTime) = 0;
+    virtual void OnPostUpdate() {}
     virtual void OnRender() = 0;
     virtual void OnImGuiRender() = 0;
     virtual void OnDetach() {}

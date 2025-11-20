@@ -5,6 +5,7 @@
 Editor::Sandbox::Sandbox(const Engine::WindowProperty &props) : Application(props)
 {
     AddLayer(std::make_shared<SandboxLayer>(m_Window));
+    AddLayer(std::make_shared<Engine::InputLayer>());
     AddLayer(std::make_shared<Engine::ImGuiLayer>(m_Window));
 }
 
