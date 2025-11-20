@@ -27,38 +27,50 @@ void Editor::SandboxLayer::OnUpdate(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    if (m_Mode == SandboxMode::Edit)
+    switch (m_Mode)
+    {
+    case SandboxMode::Edit:
         m_EditorScene->Update(deltaTime);
-    else
+        break;
+    case SandboxMode::Play:
         m_ActiveScene->Update(deltaTime);
+        break;
+    default:
+        LOG_ENGINE_WARN("Unknown SandboxMode!");
+        break;
+    }
 }
 
 void Editor::SandboxLayer::OnRender()
 {
     PROFILE_FUNCTION();
 
-    // Pre-render
+    // todo: check
     {
-        m_ActiveScene->PreRender();
-        m_ActiveScene->RenderShadowMap();
-    }
+        // Pre-render
+        {
+            m_ActiveScene->PreRender();
+            m_ActiveScene->RenderShadowMap();
+        }
 
-    // Render
-    {
         uint32_t viewportWidth = m_Window->GetProperty().FbWidth;
         uint32_t viewportHeight = m_Window->GetProperty().FbHeight;
         Engine::RendererCommand::SetViewport(0, 0, viewportWidth, viewportHeight);
         m_EditorScene->Resize((float)viewportWidth, (float)viewportHeight);
         m_ActiveScene->Resize((float)viewportWidth, (float)viewportHeight);
+    }
 
-        if (m_Mode == SandboxMode::Edit)
-            m_ActiveScene->Render(m_EditorScene->GetMainCamera());
-        else
-            m_ActiveScene->Render(m_ActiveScene->GetMainCamera());
-
-        // test: bvh
-        Engine::BVH bvh(m_ActiveScene);
-        bvh.Render(3);
+    switch (m_Mode)
+    {
+    case SandboxMode::Edit:
+        m_ActiveScene->Render(m_EditorScene->GetMainCamera());
+        break;
+    case SandboxMode::Play:
+        m_ActiveScene->Render(m_ActiveScene->GetMainCamera());
+        break;
+    default:
+        LOG_ENGINE_WARN("Unknown SandboxMode!");
+        break;
     }
 }
 
@@ -68,9 +80,9 @@ void Editor::SandboxLayer::OnImGuiRender()
 
     ImGui::Begin("Sandbox Layer Debug");
     if (m_Mode == SandboxMode::Edit)
-        ImGui::Text("Mode: Edit (Press SPACE to Simulate)");
+        ImGui::Text("Mode: Edit (Press SPACE to Play)");
     else
-        ImGui::Text("Mode: Simulate (Press ESCAPE to Edit)");
+        ImGui::Text("Mode: Play (Press ESCAPE to Edit)");
     ImGui::End();
 }
 
@@ -78,7 +90,7 @@ bool Editor::SandboxLayer::OnKeyEvent(Engine::KeyEvent &event)
 {
     if (Engine::Input::GetInstance().IsKeyPressed(KEY_SPACE))
     {
-        m_Mode = SandboxMode::Simulate;
+        m_Mode = SandboxMode::Play;
         return true;
     }
     else if (Engine::Input::GetInstance().IsKeyPressed(KEY_ESCAPE))

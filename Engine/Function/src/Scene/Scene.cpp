@@ -202,12 +202,12 @@ void Engine::Scene::Render(const Entity &camera) const
             });
     }
 
-    // // Render
-    // {
-    //     Render2D();
-    //     Render3D();
-    //     RenderSkybox();
-    // }
+    // Render
+    {
+        Render2D();
+        Render3D();
+        RenderSkybox();
+    }
 }
 
 void Engine::Scene::RenderColorID() const

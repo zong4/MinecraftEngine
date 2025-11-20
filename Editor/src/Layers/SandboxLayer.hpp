@@ -8,7 +8,8 @@ namespace Editor
 enum class SandboxMode
 {
     Edit = 0,
-    Simulate = 1
+    Play = 1,
+    Pause = 2
 };
 
 class SandboxLayer : public Engine::Layer
