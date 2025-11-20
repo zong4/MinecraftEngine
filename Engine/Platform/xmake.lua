@@ -6,7 +6,7 @@ target("Platform")
     set_kind("static")
 
     add_deps("Core")
-    add_files("src/**/*.c")
+    -- add_files("src/**/*.c")
     add_files("src/**/*.cpp")
     add_includedirs("src")
     add_includedirs("include", {public = true})
