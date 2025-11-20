@@ -1,9 +1,5 @@
 #include "ExampleScene.hpp"
 
-#include "ECS/Component/Renderer/RendererComponent.hpp"
-#include "Renderer/Material/MaterialLibrary.hpp"
-#include "Renderer/Shader/ShaderLibrary.hpp"
-
 Editor::ExampleScene::ExampleScene() : MCEngine::Scene()
 {
     SetMainCamera(AddCamera("MainCamera",

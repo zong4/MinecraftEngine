@@ -8,7 +8,7 @@ namespace MCEngine
 class ImGuiLayer : public Layer
 {
 public:
-    ImGuiLayer(const std::shared_ptr<Window> &window, const std::string &name = "ImGuiLayer");
+    ImGuiLayer(const std::string &name = "ImGuiLayer", std::shared_ptr<Window> window = nullptr);
     virtual ~ImGuiLayer() override = default;
 
     // Setters

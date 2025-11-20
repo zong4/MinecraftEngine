@@ -8,7 +8,7 @@ namespace MCEngine
 class ScriptableEntity
 {
 public:
-    ScriptableEntity(const Entity &entity) : m_Entity(entity) {}
+    ScriptableEntity(Entity entity) : m_Entity(entity) {}
     virtual ~ScriptableEntity() = default;
 
 public:

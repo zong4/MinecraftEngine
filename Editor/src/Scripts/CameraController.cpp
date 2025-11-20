@@ -1,7 +1,5 @@
 #include "CameraController.hpp"
 
-#include <imgui.h>
-
 using namespace MCEngine;
 
 void Editor::CameraController::OnCreate()

@@ -1,10 +1,10 @@
 #include "SandboxLayer.hpp"
 
-#include "Scene/EditorScene.hpp"
-#include "Scene/ExampleScene.hpp"
+#include "Scenes/EditorScene.hpp"
+#include "Scenes/ExampleScene.hpp"
 #include <imgui.h>
 
-Editor::SandboxLayer::SandboxLayer(std::shared_ptr<MCEngine::Window> window) : ImGuiLayer(window, "SandboxLayer")
+Editor::SandboxLayer::SandboxLayer(std::shared_ptr<MCEngine::Window> window) : ImGuiLayer("SandboxLayer", window)
 {
     m_EditorScene = std::make_shared<Editor::EditorScene>();
     m_ActiveScene = std::make_shared<Editor::ExampleScene>();
@@ -32,17 +32,6 @@ void Editor::SandboxLayer::OnUpdate(float deltaTime)
     // m_ActiveScene->Update(deltaTime);
 }
 
-void Editor::SandboxLayer::OnImGuiRender()
-{
-    ENGINE_PROFILE_FUNCTION();
-
-    ImGuiLayer::OnImGuiRender();
-
-    ImGui::Begin("Sandbox Layer");
-    ImGui::Text("This is the Sandbox Layer.");
-    ImGui::End();
-}
-
 void Editor::SandboxLayer::OnRender()
 {
     ENGINE_PROFILE_FUNCTION();
@@ -66,6 +55,15 @@ void Editor::SandboxLayer::OnRender()
         MCEngine::BVH bvh(m_ActiveScene);
         bvh.Render(3);
     }
+}
+
+void Editor::SandboxLayer::OnImGuiRender()
+{
+    ENGINE_PROFILE_FUNCTION();
+
+    // ImGui::Begin("Sandbox Layer");
+    // ImGui::Text("This is the Sandbox Layer.");
+    // ImGui::End();
 }
 
 bool Editor::SandboxLayer::OnKeyEvent(MCEngine::KeyEvent &event) { return false; }
