@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../../Texture/Texture2D.hpp"
 #include "RenderBuffer.hpp"
-#include "Renderer/Texture/Texture2D.hpp"
 
 namespace Engine
 {

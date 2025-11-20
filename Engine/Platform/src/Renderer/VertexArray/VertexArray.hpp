@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Renderer/Buffer/BasicBuffer/IndexBuffer.hpp"
-#include "Renderer/Buffer/BasicBuffer/VertexBuffer.hpp"
-#include "Renderer/RendererCommand.hpp"
+#include "../Buffer/BasicBuffer/IndexBuffer.hpp"
+#include "../Buffer/BasicBuffer/VertexBuffer.hpp"
+#include "../RendererCommand.hpp"
 
 namespace Engine
 {

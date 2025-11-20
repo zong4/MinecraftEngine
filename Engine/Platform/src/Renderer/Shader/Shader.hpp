@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/RendererCommand.hpp"
+#include "../RendererCommand.hpp"
 
 namespace Engine
 {

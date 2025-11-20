@@ -1,7 +1,6 @@
 #pragma once
 
 #include "MaterialProperty.hpp"
-#include "pch.hpp"
 
 namespace Engine
 {

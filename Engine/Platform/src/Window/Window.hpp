@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/RendererAPIProperty.hpp"
+#include "../Renderer/RendererAPIProperty.hpp"
 
 namespace Engine
 {

@@ -8,7 +8,8 @@ target("Platform")
     add_deps("Core")
     add_files("src/**/*.c")
     add_files("src/**/*.cpp")
-    add_includedirs("src", {public = true})
+    add_includedirs("src")
+    add_includedirs("include", {public = true})
 
     if is_plat("windows") then
         add_syslinks("ole32", "comdlg32")
