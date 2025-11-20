@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../src/Collision/BoundingBox.hpp"
+#include "../../../Collision/BoundingBox.hpp"
 
 namespace Engine
 {

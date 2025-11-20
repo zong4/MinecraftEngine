@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../src/ECS/Entity/ScriptableEntity.hpp"
+#include "../../Entity/ScriptableEntity.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -27,29 +27,11 @@ public:
     // Setters
     void SetParent(Entity parent) { Parent = parent; }
     void AddChild(Entity child) { m_Children.push_back(child); }
-    void RemoveChild(Entity child)
-    {
-        m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
-    }
+    void RemoveChild(Entity child);
     void ClearChildren() { m_Children.clear(); }
 
 public:
-    static void SetParentChild(Entity parent, Entity child)
-    {
-        if (auto &&childRelationship = child.GetComponent<RelationshipComponent>())
-        {
-            // Remove from old parent
-            if (auto &&oldParentRelationship = childRelationship->GetParent().GetComponent<RelationshipComponent>())
-                oldParentRelationship->RemoveChild(child);
-
-            // Set new parent
-            childRelationship->SetParent(parent);
-
-            // Add to new parent's children list
-            if (auto &&parentRelationship = parent.GetComponent<RelationshipComponent>())
-                parentRelationship->AddChild(child);
-        }
-    }
+    static void SetParentChild(Entity parent, Entity child);
 
 private:
     Entity Parent;
@@ -62,7 +44,7 @@ enum class TransformSpace
     Global
 };
 
-// Use euler to store
+// Use euler to show and init
 // Use radian to rotate
 // Use quat to calculate
 struct TransformComponent
@@ -72,11 +54,7 @@ struct TransformComponent
 
 public:
     TransformComponent(const glm::vec3 &position = glm::vec3(0.0f), const glm::vec3 &rotation = glm::vec3(0.0f),
-                       const glm::vec3 &scale = glm::vec3(1.0f))
-        : Position(position), Scale(scale)
-    {
-        SetRotationEuler(rotation);
-    }
+                       const glm::vec3 &scale = glm::vec3(1.0f));
 
     // Getters
     const glm::vec3 &GetRotationRadians() const { return m_RotationRadians; }
@@ -87,8 +65,8 @@ public:
     glm::vec3 GetUp(TransformSpace space) const;
 
     // Setters
-    void SetRotationRadians(const glm::vec3 &radians);
-    void SetRotationEuler(const glm::vec3 &euler);
+    void SetRotationRadians(const glm::vec3 &radians) { m_RotationRadians = radians; }
+    void SetRotationEuler(const glm::vec3 &euler) { m_RotationRadians = glm::radians(euler); }
 
 public:
     void UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationQuat,
