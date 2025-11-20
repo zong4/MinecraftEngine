@@ -2,6 +2,7 @@
 
 #include "../ImGui/ImGuiLayer.hpp"
 #include "../Renderer/RendererCommand.hpp"
+#include "../Renderer/RendererProperty.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -46,8 +47,8 @@ void Engine::Window::Init()
     LOG_ENGINE_INFO("GLFW version: " + std::string(glfwGetVersionString()));
 
     // Set OpenGL version
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_RendererAPIProperty.GetMajorVersion());
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_RendererAPIProperty.GetMinorVersion());
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, Engine::RendererProperty::GetInstance().GetMajorVersion());
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, Engine::RendererProperty::GetInstance().GetMinorVersion());
 
     // Other window hints
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

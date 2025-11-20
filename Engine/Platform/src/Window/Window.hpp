@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Renderer/RendererAPIProperty.hpp"
+#include <Core.hpp>
 
 namespace Engine
 {
@@ -31,8 +31,6 @@ public:
     bool IsRunning() const;
     void *GetNativeWindow() const { return m_NativeWindow; }
     WindowProperty &GetProperty() { return m_Property; }
-    const WindowProperty &GetProperty() const { return m_Property; }
-    const RendererAPIProperty &GetRendererAPIProperty() const { return m_RendererAPIProperty; }
 
     // Setters
     void SetRunning(bool running) { m_Running = running; }
@@ -41,7 +39,6 @@ public:
     void RemoveLayer(const std::shared_ptr<Layer> &layer) { m_LayerStack.PopLayer(layer); }
 
 public:
-    // Main loop
     void OnEvent(Event &event) { m_LayerStack.OnEvent(event); }
     void Update(float deltaTime);
     void Render();
@@ -52,19 +49,9 @@ private:
     WindowProperty m_Property;
     LayerStack m_LayerStack;
 
-    // Renderer
-#ifdef __APPLE__
-    RendererAPIProperty m_RendererAPIProperty = RendererAPIProperty(RendererAPI::OpenGL, 4, 1);
-#else
-    RendererAPIProperty m_RendererAPIProperty = RendererAPIProperty(RendererAPI::OpenGL, 4, 2);
-#endif
-
 private:
-    // Initialization
     void Init();
     void SetCallbacks();
-
-    // Cleanup
     void Shutdown();
 };
 
