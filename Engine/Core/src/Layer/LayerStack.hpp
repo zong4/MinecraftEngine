@@ -15,7 +15,6 @@ public:
     void PopLayer(const std::shared_ptr<Layer> &layer);
 
 public:
-    // Main loop
     void OnEvent(Event &event);
     void Update(float deltaTime);
     void Render();

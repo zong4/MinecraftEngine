@@ -11,18 +11,14 @@ public:
     Layer(const std::string &name) : m_Name(name) {}
     virtual ~Layer() = default;
 
-    // Getters
     const std::string &GetName() const { return m_Name; }
 
 public:
-    // Main loop
+    virtual void OnAttach() {}
     virtual void OnEvent(Event &event) = 0;
     virtual void OnUpdate(float deltaTime) = 0;
     virtual void OnRender() = 0;
     virtual void OnImGuiRender() = 0;
-
-    // Called by LayerStack
-    virtual void OnAttach() {}
     virtual void OnDetach() {}
 
 private:

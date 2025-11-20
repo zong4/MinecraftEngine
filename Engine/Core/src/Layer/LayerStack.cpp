@@ -5,9 +5,7 @@
 MCEngine::LayerStack::~LayerStack()
 {
     for (const std::shared_ptr<Layer> &layer : m_Layers)
-    {
         layer->OnDetach();
-    }
     m_Layers.clear();
 }
 
@@ -28,14 +26,15 @@ void MCEngine::LayerStack::PopLayer(const std::shared_ptr<Layer> &layer)
         LOG_ENGINE_INFO("Layer popped: " + layer->GetName());
         return;
     }
-    LOG_ENGINE_WARN("Layer not found: " + layer->GetName());
+    LOG_ENGINE_ASSERT("Layer not found in LayerStack: " + layer->GetName());
 }
 
 void MCEngine::LayerStack::OnEvent(Event &event)
 {
     for (auto &&it = m_Layers.rbegin(); it != m_Layers.rend(); it++)
     {
-        if (event.IsHandled()) // So do not need to check it again in each layer
+        // So do not need to check it again in each layer
+        if (event.IsHandled())
             break;
         it->get()->OnEvent(event);
     }
@@ -44,9 +43,7 @@ void MCEngine::LayerStack::OnEvent(Event &event)
 void MCEngine::LayerStack::Update(float deltaTime)
 {
     for (const std::shared_ptr<Layer> &layer : m_Layers)
-    {
         layer->OnUpdate(deltaTime);
-    }
 }
 
 void MCEngine::LayerStack::Render()
