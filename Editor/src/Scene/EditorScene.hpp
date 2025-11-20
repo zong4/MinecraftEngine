@@ -2,7 +2,7 @@
 
 #include <Function.hpp>
 
-namespace MCEditor
+namespace Editor
 {
 
 class EditorScene : public MCEngine::Scene
@@ -12,4 +12,4 @@ public:
     ~EditorScene() override = default;
 };
 
-} // namespace MCEditor
+} // namespace Editor

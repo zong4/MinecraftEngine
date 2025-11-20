@@ -2,7 +2,7 @@
 
 #include "Script/CameraController.hpp"
 
-MCEditor::EditorScene::EditorScene() : MCEngine::Scene()
+Editor::EditorScene::EditorScene() : MCEngine::Scene()
 {
     ENGINE_PROFILE_FUNCTION();
 

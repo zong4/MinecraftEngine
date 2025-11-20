@@ -1,6 +1,6 @@
 #include "WelcomeScene.hpp"
 
-MCEditor::WelcomeScene::WelcomeScene() : MCEngine::Scene("WelcomeScene")
+Editor::WelcomeScene::WelcomeScene() : MCEngine::Scene("WelcomeScene")
 {
     SetMainCamera(AddCamera("MainCamera",
                             MCEngine::TransformComponent(glm::vec3(0.0f, 5.0f, 8.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
@@ -15,7 +15,7 @@ MCEditor::WelcomeScene::WelcomeScene() : MCEngine::Scene("WelcomeScene")
     MCEngineLogo();
 }
 
-void MCEditor::WelcomeScene::MCEngineLogo()
+void Editor::WelcomeScene::MCEngineLogo()
 {
     ENGINE_PROFILE_FUNCTION();
 

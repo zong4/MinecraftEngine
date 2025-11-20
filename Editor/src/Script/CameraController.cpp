@@ -4,14 +4,14 @@
 
 using namespace MCEngine;
 
-void MCEditor::CameraController::OnCreate()
+void Editor::CameraController::OnCreate()
 {
     m_Transform = GetComponent<MCEngine::TransformComponent>();
     m_Transform->Position = glm::vec3(0.0f, 10.0f, 20.0f);
     m_Transform->SetRotationEuler(glm::vec3(-30.0f, 0.0f, 0.0f));
 }
 
-void MCEditor::CameraController::OnUpdate(float deltaTime)
+void Editor::CameraController::OnUpdate(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
 

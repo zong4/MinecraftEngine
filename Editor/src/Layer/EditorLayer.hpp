@@ -2,7 +2,7 @@
 
 #include <Function.hpp>
 
-namespace MCEditor
+namespace Editor
 {
 
 class EditorLayer : public MCEngine::ImGuiLayer
@@ -17,14 +17,15 @@ public:
     void OnUpdate(float deltaTime) override;
     void OnRender() override;
 
-    bool OnKeyEvent(MCEngine::KeyEvent &event);
-
 private:
     std::shared_ptr<MCEngine::Scene> m_EditorScene;
     std::shared_ptr<MCEngine::Scene> m_ActiveScene;
 
 protected:
     void RenderImGui() override;
+
+private:
+    bool OnKeyEvent(MCEngine::KeyEvent &event);
 };
 
-} // namespace MCEditor
+} // namespace Editor

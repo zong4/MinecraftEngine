@@ -2,7 +2,7 @@
 
 #include <Function.hpp>
 
-namespace MCEditor
+namespace Editor
 {
 
 class WelcomeScene : public MCEngine::Scene
@@ -15,4 +15,4 @@ private:
     void MCEngineLogo();
 };
 
-} // namespace MCEditor
+} // namespace Editor

@@ -4,13 +4,13 @@
 #include "Scene/ExampleScene.hpp"
 #include <imgui.h>
 
-MCEditor::EditorLayer::EditorLayer(const std::shared_ptr<MCEngine::Window> &window) : ImGuiLayer(window, "EditorLayer")
+Editor::EditorLayer::EditorLayer(const std::shared_ptr<MCEngine::Window> &window) : ImGuiLayer(window, "EditorLayer")
 {
-    m_EditorScene = std::make_shared<MCEditor::EditorScene>();
-    m_ActiveScene = std::make_shared<MCEditor::ExampleScene>();
+    m_EditorScene = std::make_shared<Editor::EditorScene>();
+    m_ActiveScene = std::make_shared<Editor::ExampleScene>();
 }
 
-void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
+void Editor::EditorLayer::OnEvent(MCEngine::Event &event)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -54,9 +54,9 @@ void MCEditor::EditorLayer::OnEvent(MCEngine::Event &event)
     }
 }
 
-bool MCEditor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event) { return false; }
+bool Editor::EditorLayer::OnKeyEvent(MCEngine::KeyEvent &event) { return false; }
 
-void MCEditor::EditorLayer::OnUpdate(float deltaTime)
+void Editor::EditorLayer::OnUpdate(float deltaTime)
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -67,7 +67,7 @@ void MCEditor::EditorLayer::OnUpdate(float deltaTime)
     }
 }
 
-void MCEditor::EditorLayer::OnRender()
+void Editor::EditorLayer::OnRender()
 {
     ENGINE_PROFILE_FUNCTION();
 
@@ -92,4 +92,4 @@ void MCEditor::EditorLayer::OnRender()
     }
 }
 
-void MCEditor::EditorLayer::RenderImGui() { ENGINE_PROFILE_FUNCTION() }
+void Editor::EditorLayer::RenderImGui() { ENGINE_PROFILE_FUNCTION() }

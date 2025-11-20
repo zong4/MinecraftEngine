@@ -2,7 +2,7 @@
 
 #include <Function.hpp>
 
-namespace MCEditor
+namespace Editor
 {
 
 class CameraController : public MCEngine::ScriptableEntity
@@ -22,4 +22,4 @@ private:
     MCEngine::TransformComponent *m_Transform = nullptr;
 };
 
-} // namespace MCEditor
+} // namespace Editor
