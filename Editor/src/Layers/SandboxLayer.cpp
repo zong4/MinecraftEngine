@@ -27,10 +27,10 @@ void Editor::SandboxLayer::OnUpdate(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    if (m_Mode == SandboxMode::Simulate)
-        m_ActiveScene->Update(deltaTime);
-    else
+    if (m_Mode == SandboxMode::Edit)
         m_EditorScene->Update(deltaTime);
+    else
+        m_ActiveScene->Update(deltaTime);
 }
 
 void Editor::SandboxLayer::OnRender()
@@ -50,7 +50,11 @@ void Editor::SandboxLayer::OnRender()
         Engine::RendererCommand::SetViewport(0, 0, viewportWidth, viewportHeight);
         m_EditorScene->Resize((float)viewportWidth, (float)viewportHeight);
         m_ActiveScene->Resize((float)viewportWidth, (float)viewportHeight);
-        m_ActiveScene->Render(m_EditorScene->GetMainCamera());
+
+        if (m_Mode == SandboxMode::Edit)
+            m_ActiveScene->Render(m_EditorScene->GetMainCamera());
+        else
+            m_ActiveScene->Render(m_ActiveScene->GetMainCamera());
 
         // test: bvh
         Engine::BVH bvh(m_ActiveScene);
@@ -62,8 +66,11 @@ void Editor::SandboxLayer::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
-    ImGui::Begin("Sandbox Layer");
-    ImGui::Text("This is the Sandbox Layer.");
+    ImGui::Begin("Sandbox Layer Debug");
+    if (m_Mode == SandboxMode::Edit)
+        ImGui::Text("Mode: Edit (Press SPACE to Simulate)");
+    else
+        ImGui::Text("Mode: Simulate (Press ESCAPE to Edit)");
     ImGui::End();
 }
 

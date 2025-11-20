@@ -41,14 +41,11 @@ bool Engine::Input::IsKeyReleased(int keyCode) const
 
 bool Engine::Input::IsControlDown() const
 {
-    return IsKeyDown(ENGINE_KEY_LEFT_CONTROL) || IsKeyDown(ENGINE_KEY_RIGHT_CONTROL) ||
-           IsKeyDown(ENGINE_KEY_LEFT_SUPER) || IsKeyDown(ENGINE_KEY_RIGHT_SUPER);
+    return IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL) || IsKeyDown(KEY_LEFT_SUPER) ||
+           IsKeyDown(KEY_RIGHT_SUPER);
 }
 
-bool Engine::Input::IsShiftDown() const
-{
-    return IsKeyDown(ENGINE_KEY_LEFT_SHIFT) || IsKeyDown(ENGINE_KEY_RIGHT_SHIFT);
-}
+bool Engine::Input::IsShiftDown() const { return IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT); }
 
 void Engine::Input::SetPosition(double x, double y)
 {
