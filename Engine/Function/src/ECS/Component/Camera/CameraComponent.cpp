@@ -8,7 +8,7 @@ void Engine::CameraComponent::Resize(float width, float height)
 
 void Engine::CameraComponent::UpdateProjectionMatrix()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Type == CameraType::Orthographic)
         m_ProjectionMatrix = glm::ortho(-m_Width / 200.0f * Scale, m_Width / 200.0f * Scale, -m_Height / 200.0f * Scale,

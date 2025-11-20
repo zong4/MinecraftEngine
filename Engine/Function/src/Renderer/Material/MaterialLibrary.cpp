@@ -11,13 +11,13 @@ Engine::MaterialLibrary &Engine::MaterialLibrary::GetInstance()
 
 Engine::MaterialLibrary::MaterialLibrary()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
     LOG_ENGINE_INFO("Material Library initialized");
 }
 
 std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Load(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -34,7 +34,7 @@ std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Load(const std::strin
 std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Create(const std::string &name,
                                                                   std::shared_ptr<Shader> shader)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -56,7 +56,7 @@ std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Create(const std::str
 
 void Engine::MaterialLibrary::AddMaterial(const std::string &name, const std::shared_ptr<Material> &material)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -75,7 +75,7 @@ void Engine::MaterialLibrary::AddMaterial(const std::string &name, const std::sh
 
 std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Get(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {

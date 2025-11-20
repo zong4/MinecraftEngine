@@ -8,7 +8,7 @@ Engine::UniformBufferLibrary &Engine::UniformBufferLibrary::GetInstance()
 
 std::shared_ptr<Engine::UniformBuffer> Engine::UniformBufferLibrary::GetUniformBuffer(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -20,7 +20,7 @@ std::shared_ptr<Engine::UniformBuffer> Engine::UniformBufferLibrary::GetUniformB
 
 void Engine::UniformBufferLibrary::AddUniformBuffer(const std::string &name, size_t size, unsigned int binding)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -33,7 +33,7 @@ void Engine::UniformBufferLibrary::AddUniformBuffer(const std::string &name, siz
 
 void Engine::UniformBufferLibrary::RemoveUniformBuffer(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -47,7 +47,7 @@ void Engine::UniformBufferLibrary::RemoveUniformBuffer(const std::string &name)
 void Engine::UniformBufferLibrary::UpdateUniformBuffer(const std::string &name,
                                                        const std::initializer_list<UniformBufferData> &dataList)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -59,7 +59,7 @@ void Engine::UniformBufferLibrary::UpdateUniformBuffer(const std::string &name,
 
 Engine::UniformBufferLibrary::UniformBufferLibrary()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // todo: check size
     AddUniformBuffer("UniformBuffer0", sizeof(glm::mat4) * 10, 0);

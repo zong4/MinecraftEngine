@@ -4,7 +4,7 @@
 
 Engine::TextureCube::TextureCube(const glm::vec4 &color)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
@@ -17,7 +17,7 @@ Engine::TextureCube::TextureCube(const glm::vec4 &color)
 
 Engine::TextureCube::TextureCube(const std::array<std::string, 6> &faces) : Texture()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
@@ -102,7 +102,7 @@ Engine::TextureCube::~TextureCube() { glDeleteTextures(1, &m_RendererID); }
 
 std::shared_ptr<Engine::TextureCube> Engine::TextureCube::WhiteTexture()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     static std::shared_ptr<TextureCube> whiteTexture = std::make_shared<TextureCube>(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     return whiteTexture;
@@ -110,7 +110,7 @@ std::shared_ptr<Engine::TextureCube> Engine::TextureCube::WhiteTexture()
 
 void Engine::TextureCube::Bind(unsigned int slot) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
@@ -119,7 +119,7 @@ void Engine::TextureCube::Bind(unsigned int slot) const
 
 void Engine::TextureCube::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));

@@ -7,7 +7,7 @@
 // unsigned char *Engine::Texture::LoadImage(const std::string &path, int &width, int &height,
 //                                             unsigned int &internalFormat, unsigned int &format, bool flipVertically)
 // {
-//     ENGINE_PROFILE_FUNCTION();
+//     PROFILE_FUNCTION();
 
 //     // Check if file exists
 //     if (!std::filesystem::exists(path))
@@ -137,7 +137,7 @@ void *Engine::Texture::LoadImage(const std::string &path, int &w, int &h, int &c
 
 void Engine::Texture::FreeImage(void *data)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     stbi_image_free(data);
 }

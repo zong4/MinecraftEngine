@@ -43,7 +43,7 @@ std::string Engine::TextureLibrary::GetName(const std::shared_ptr<Texture> &text
 
 std::shared_ptr<Engine::Texture2D> Engine::TextureLibrary::GetTexture2D(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -55,7 +55,7 @@ std::shared_ptr<Engine::Texture2D> Engine::TextureLibrary::GetTexture2D(const st
 
 std::shared_ptr<Engine::TextureCube> Engine::TextureLibrary::GetTextureCube(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -67,7 +67,7 @@ std::shared_ptr<Engine::TextureCube> Engine::TextureLibrary::GetTextureCube(cons
 
 void Engine::TextureLibrary::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -82,7 +82,7 @@ void Engine::TextureLibrary::ClearTextureSlots() { m_TextureSlots.fill(""); }
 
 Engine::TextureLibrary::TextureLibrary()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     AddTexture("DefaultTexture", Texture2D::WhiteTexture());
     AddTexture("DefaultCubeMap", TextureCube::WhiteTexture());

@@ -11,7 +11,7 @@ Engine::Input &Engine::Input::GetInstance()
 
 bool Engine::Input::IsKeyDown(int keyCode) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     auto &&it = m_KeyActions.find(keyCode);
     if (it != m_KeyActions.end())
@@ -21,7 +21,7 @@ bool Engine::Input::IsKeyDown(int keyCode) const
 
 bool Engine::Input::IsKeyPressed(int keyCode) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     auto &&it = m_KeyActions.find(keyCode);
     if (it != m_KeyActions.end())
@@ -31,7 +31,7 @@ bool Engine::Input::IsKeyPressed(int keyCode) const
 
 bool Engine::Input::IsKeyReleased(int keyCode) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     auto &&it = m_KeyActions.find(keyCode);
     if (it != m_KeyActions.end())

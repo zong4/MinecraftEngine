@@ -38,7 +38,7 @@ Engine::VertexArray::VertexArray(VertexBuffer &&vertexBuffer, const std::vector<
                                  IndexBuffer &&indexBuffer, int instanceCount)
     : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenVertexArrays(1, &m_RendererID);
     SetVertexAttributes(attributes);
@@ -55,7 +55,7 @@ Engine::VertexArray::VertexArray(VertexArray &&other)
       m_IndexBuffer(std::move(other.m_IndexBuffer)), m_VertexBuffer(std::move(other.m_VertexBuffer)),
       m_InstanceCount(other.m_InstanceCount)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     LOG_ENGINE_INFO("VertexArray moved with ID: " + std::to_string(m_RendererID));
 
@@ -67,7 +67,7 @@ Engine::VertexArray::VertexArray(VertexArray &&other)
 
 Engine::VertexArray &Engine::VertexArray::operator=(VertexArray &&other)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (this != &other)
     {
@@ -91,7 +91,7 @@ Engine::VertexArray &Engine::VertexArray::operator=(VertexArray &&other)
 
 void Engine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     m_VertexBuffer = std::move(vertexBuffer);
     SetVertexAttributes(attributes);
@@ -101,7 +101,7 @@ void Engine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const std
 
 void Engine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     m_IndexBuffer = std::move(indexBuffer);
     LOG_ENGINE_INFO("VertexArray ID: " + std::to_string(m_RendererID) +
@@ -110,7 +110,7 @@ void Engine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
 
 void Engine::VertexArray::Render(RendererType renderType, size_t positionCount) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Bind();
     m_VertexBuffer.Bind();
@@ -138,21 +138,21 @@ void Engine::VertexArray::Render(RendererType renderType, size_t positionCount) 
 
 void Engine::VertexArray::Bind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindVertexArray(m_RendererID);
 }
 
 void Engine::VertexArray::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindVertexArray(0);
 }
 
 void Engine::VertexArray::SetVertexAttributes(const std::vector<VertexAttribute> &attributes)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Bind();
     m_VertexBuffer.Bind();

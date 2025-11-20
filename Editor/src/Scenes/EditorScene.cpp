@@ -4,7 +4,7 @@
 
 Editor::EditorScene::EditorScene() : Engine::Scene()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Engine::Entity camera =
         AddCamera("MainCamera", Engine::TransformComponent(), Engine::CameraComponent(Engine::CameraType::Perspective));

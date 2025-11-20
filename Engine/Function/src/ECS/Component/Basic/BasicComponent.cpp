@@ -40,7 +40,7 @@ void Engine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTr
                                                        const glm::quat &parentRotationQuat,
                                                        RelationshipComponent *relationship)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Compute local transformation matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), Position);

@@ -20,7 +20,7 @@ void Engine::MaterialComponent::RemoveOverride(const std::string &name) { Proper
 
 void Engine::MaterialComponent::Bind(Shader *shader, const std::string &uniformPrefix) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!MaterialInstance)
     {

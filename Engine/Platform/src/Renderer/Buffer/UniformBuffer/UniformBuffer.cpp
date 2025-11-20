@@ -4,7 +4,7 @@
 
 Engine::UniformBuffer::UniformBuffer(size_t size, unsigned int binding) : m_Binding(binding)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenBuffers(1, &m_RendererID);
     glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
@@ -19,28 +19,28 @@ Engine::UniformBuffer::UniformBuffer(size_t size, unsigned int binding) : m_Bind
 
 Engine::UniformBuffer::~UniformBuffer()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
 void Engine::UniformBuffer::Bind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
 }
 
 void Engine::UniformBuffer::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void Engine::UniformBuffer::SetData(const std::initializer_list<UniformBufferData> &dataList)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Bind();
     for (const auto &data : dataList)

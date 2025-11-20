@@ -10,7 +10,7 @@ Engine::FontLibrary &Engine::FontLibrary::GetInstance()
 
 ImFont *Engine::FontLibrary::GetFont(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -22,7 +22,7 @@ ImFont *Engine::FontLibrary::GetFont(const std::string &name)
 
 void Engine::FontLibrary::AddFont(const std::string &name, const std::string &path, float size)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -43,7 +43,7 @@ void Engine::FontLibrary::AddFont(const std::string &name, const std::string &pa
 
 void Engine::FontLibrary::Init(float fontSize, float thinScale)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Fonts/");
     if (!std::filesystem::exists(path))

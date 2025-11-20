@@ -23,14 +23,14 @@ Engine::IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices) : BasicBu
 
 Engine::IndexBuffer::~IndexBuffer()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
 Engine::IndexBuffer::IndexBuffer(IndexBuffer &&other)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Move data
     m_RendererID = other.m_RendererID;
@@ -44,7 +44,7 @@ Engine::IndexBuffer::IndexBuffer(IndexBuffer &&other)
 
 Engine::IndexBuffer &Engine::IndexBuffer::operator=(IndexBuffer &&other)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (this != &other)
     {
@@ -65,21 +65,21 @@ Engine::IndexBuffer &Engine::IndexBuffer::operator=(IndexBuffer &&other)
 
 void Engine::IndexBuffer::Bind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 }
 
 void Engine::IndexBuffer::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void Engine::IndexBuffer::SetData(const void *data, size_t size, size_t offset)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Bind();
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
@@ -89,7 +89,7 @@ void Engine::IndexBuffer::SetData(const void *data, size_t size, size_t offset)
 
 void Engine::IndexBuffer::CreateBuffer(const void *data, size_t size)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (data == nullptr || size == 0)
     {

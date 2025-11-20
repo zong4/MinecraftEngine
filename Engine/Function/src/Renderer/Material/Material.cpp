@@ -4,7 +4,7 @@
 
 Engine::Material::Material(std::shared_ptr<Shader> shader) : m_Shader(shader)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
     LOG_ENGINE_TRACE("Material created with shader");
 }
 
@@ -68,7 +68,7 @@ void Engine::Material::RemoveProperty(const std::string &name)
 
 void Engine::Material::Bind(Shader *shader, const std::string &uniformPrefix) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Use provided shader or default to material's shader
     Shader *targetShader = shader ? shader : m_Shader.get();

@@ -5,7 +5,7 @@
 Engine::FrameBuffer::FrameBuffer(FrameBufferType type, int width, int height, int samples)
     : m_Type(type), m_Width(width), m_Height(height)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenFramebuffers(1, &m_RendererID);
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
@@ -32,14 +32,14 @@ Engine::FrameBuffer::FrameBuffer(FrameBufferType type, int width, int height, in
 
 Engine::FrameBuffer::~FrameBuffer()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glDeleteFramebuffers(1, &m_RendererID);
 }
 
 void Engine::FrameBuffer::Bind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     glViewport(0, 0, m_Width, m_Height);
@@ -48,7 +48,7 @@ void Engine::FrameBuffer::Bind() const
 
 void Engine::FrameBuffer::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
@@ -56,7 +56,7 @@ void Engine::FrameBuffer::Unbind() const
 
 void Engine::FrameBuffer::Blit(unsigned int resolveID) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_RendererID);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, resolveID);
@@ -66,7 +66,7 @@ void Engine::FrameBuffer::Blit(unsigned int resolveID) const
 
 void Engine::FrameBuffer::Resize(int width, int height)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (width == m_Width && height == m_Height)
         return;
@@ -84,7 +84,7 @@ void Engine::FrameBuffer::Resize(int width, int height)
 
 unsigned int Engine::FrameBuffer::PickPixel(int x, int y) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
@@ -100,7 +100,7 @@ unsigned int Engine::FrameBuffer::PickPixel(int x, int y) const
 
 void Engine::FrameBuffer::BindBasicTexture(int width, int height)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (m_Type == FrameBufferType::Color)
     {
@@ -127,7 +127,7 @@ void Engine::FrameBuffer::BindBasicTexture(int width, int height)
 
 void Engine::FrameBuffer::BindMultiSampleTexture(int width, int height, int samples)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (samples <= 0)
     {
@@ -142,7 +142,7 @@ void Engine::FrameBuffer::BindMultiSampleTexture(int width, int height, int samp
 
 void Engine::FrameBuffer::BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     m_RenderBuffer = std::make_shared<RenderBuffer>(width, height, internalFormat, samples);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,

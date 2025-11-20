@@ -75,7 +75,7 @@ std::string Engine::VAOLibrary::GetName(const std::shared_ptr<VertexArray> &vao)
 
 std::shared_ptr<Engine::VertexArray> Engine::VAOLibrary::GetVAO(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -87,7 +87,7 @@ std::shared_ptr<Engine::VertexArray> Engine::VAOLibrary::GetVAO(const std::strin
 
 void Engine::VAOLibrary::AddVAO(const std::string &name, const std::shared_ptr<VertexArray> &vao)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -100,7 +100,7 @@ void Engine::VAOLibrary::AddVAO(const std::string &name, const std::shared_ptr<V
 
 Engine::VAOLibrary::VAOLibrary()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     static int MaxSquaresNumber = 10000;
     auto &&squaresVAO = std::make_shared<VertexArray>(

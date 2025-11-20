@@ -21,7 +21,7 @@ void Engine::Scene::SetMainCamera(const Entity &camera)
 
 void Engine::Scene::Update(float deltaTime)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Handle deleted entities
     for (auto &&entity : m_DeletedEntities)
@@ -57,7 +57,7 @@ void Engine::Scene::Update(float deltaTime)
 
 void Engine::Scene::PreRender()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Squares
     {
@@ -150,7 +150,7 @@ void Engine::Scene::PreRender()
 // todo: only render for the first light for now
 void Engine::Scene::RenderShadowMap() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     RendererCommand::CullFrontFace();
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
@@ -178,7 +178,7 @@ void Engine::Scene::RenderShadowMap() const
 
 void Engine::Scene::Render(const Entity &camera) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Clear buffers
     {
@@ -213,7 +213,7 @@ void Engine::Scene::Render(const Entity &camera) const
 
 void Engine::Scene::RenderColorID() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Clear buffers
     Engine::RendererCommand::Clear();
@@ -234,7 +234,7 @@ void Engine::Scene::RenderColorID() const
 
 void Engine::Scene::Resize(float width, float height)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     auto &&view = m_Registry.view<CameraComponent>();
     for (auto &&entity : view)
@@ -255,7 +255,7 @@ void Engine::Scene::DeleteEntity(const Entity &entity)
 
 Engine::Entity Engine::Scene::AddEmptyEntity(const std::string &name, const TransformComponent &transform)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Entity entity{m_Registry.create(), &m_Registry};
     entity.AddComponent<TagComponent>(name);
@@ -307,7 +307,7 @@ Engine::Entity Engine::Scene::AddSkybox(const std::string &name, const SkyboxCom
 
 void Engine::Scene::DeleteEntityReal(const Entity &entity)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!entity)
         return;
@@ -326,7 +326,7 @@ void Engine::Scene::DeleteEntityReal(const Entity &entity)
 // todo: check
 void Engine::Scene::Render2D() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Texture");
     shader->Bind();
@@ -352,7 +352,7 @@ void Engine::Scene::Render2D() const
 // todo: only render for the first light for now
 void Engine::Scene::Render3D() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     auto &&shader = ShaderLibrary::GetInstance().GetShader("BlinnPhong");
     shader->Bind();
@@ -413,7 +413,7 @@ void Engine::Scene::Render3D() const
 // todo: default skybox if none exists
 void Engine::Scene::RenderSkybox() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Engine::RendererCommand::DisableDepthTest();
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");

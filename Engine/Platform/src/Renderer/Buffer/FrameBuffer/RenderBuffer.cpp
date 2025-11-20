@@ -5,7 +5,7 @@
 Engine::RenderBuffer::RenderBuffer(int width, int height, unsigned int internalFormat, int samples)
     : m_InternalFormat(internalFormat), m_Samples(samples)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenRenderbuffers(1, &m_RendererID);
     Bind(width, height);
@@ -17,14 +17,14 @@ Engine::RenderBuffer::RenderBuffer(int width, int height, unsigned int internalF
 
 Engine::RenderBuffer::~RenderBuffer()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glDeleteRenderbuffers(1, &m_RendererID);
 }
 
 void Engine::RenderBuffer::Resize(int width, int height)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Bind(width, height);
     Unbind();
@@ -32,7 +32,7 @@ void Engine::RenderBuffer::Resize(int width, int height)
 
 void Engine::RenderBuffer::Bind(int width, int height) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindRenderbuffer(GL_RENDERBUFFER, m_RendererID);
     m_Samples == 0 ? glRenderbufferStorage(GL_RENDERBUFFER, m_InternalFormat, width, height)
@@ -42,7 +42,7 @@ void Engine::RenderBuffer::Bind(int width, int height) const
 
 void Engine::RenderBuffer::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));

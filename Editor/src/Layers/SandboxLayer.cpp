@@ -13,7 +13,7 @@ Editor::SandboxLayer::SandboxLayer(std::shared_ptr<Engine::Window> window)
 
 void Editor::SandboxLayer::OnEvent(Engine::Event &event)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!event.IsHandled())
     {
@@ -25,7 +25,7 @@ void Editor::SandboxLayer::OnEvent(Engine::Event &event)
 
 void Editor::SandboxLayer::OnUpdate(float deltaTime)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     m_EditorScene->Update(deltaTime);
     // m_ActiveScene->Update(deltaTime);
@@ -33,7 +33,7 @@ void Editor::SandboxLayer::OnUpdate(float deltaTime)
 
 void Editor::SandboxLayer::OnRender()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Pre-render
     {
@@ -58,7 +58,7 @@ void Editor::SandboxLayer::OnRender()
 
 void Editor::SandboxLayer::OnImGuiRender()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     ImGui::Begin("Sandbox Layer");
     ImGui::Text("This is the Sandbox Layer.");

@@ -17,13 +17,13 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTime;
 };
 
-#define ENGINE_PROFILE_SCOPE(name) Engine::InstrumentationTimer timer##__LINE__(name);
+#define PROFILE_SCOPE(name) Engine::InstrumentationTimer timer##__LINE__(name);
 
 #ifdef _MSC_VER
 #define FUNCTION_SIGNATURE __FUNCSIG__
 #else
 #define FUNCTION_SIGNATURE __PRETTY_FUNCTION__
 #endif
-#define ENGINE_PROFILE_FUNCTION() ENGINE_PROFILE_SCOPE(FUNCTION_SIGNATURE)
+#define PROFILE_FUNCTION() PROFILE_SCOPE(FUNCTION_SIGNATURE)
 
 } // namespace Engine

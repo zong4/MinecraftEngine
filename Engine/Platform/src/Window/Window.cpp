@@ -12,7 +12,7 @@ bool Engine::Window::IsRunning() const
 
 void Engine::Window::SetVSync(bool enabled)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     m_Property.VSync = enabled;
     enabled ? glfwSwapInterval(1) : glfwSwapInterval(0);
@@ -21,7 +21,7 @@ void Engine::Window::SetVSync(bool enabled)
 
 void Engine::Window::OnEvent(Event &event)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Store key states in KeyCodeLibrary
     if (!event.IsHandled())
@@ -56,7 +56,7 @@ void Engine::Window::OnEvent(Event &event)
 
 void Engine::Window::Update(float deltaTime)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Pre-update
     Input::GetInstance().Clear();
@@ -71,7 +71,7 @@ void Engine::Window::Update(float deltaTime)
 
 void Engine::Window::Init()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Initialize GLFW
     glfwInit();
@@ -116,7 +116,7 @@ void Engine::Window::Init()
 
 void Engine::Window::Shutdown()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glfwDestroyWindow(static_cast<GLFWwindow *>(m_NativeWindow));
     glfwTerminate();
@@ -125,7 +125,7 @@ void Engine::Window::Shutdown()
 
 void Engine::Window::SetCallbacks()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glfwSetWindowUserPointer(static_cast<GLFWwindow *>(m_NativeWindow), this);
 

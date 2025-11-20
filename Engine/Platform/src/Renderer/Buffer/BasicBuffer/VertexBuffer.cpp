@@ -26,14 +26,14 @@ Engine::VertexBuffer::VertexBuffer(const std::vector<float> &vertices) : BasicBu
 
 Engine::VertexBuffer::~VertexBuffer()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glDeleteBuffers(1, &m_RendererID);
 }
 
 Engine::VertexBuffer::VertexBuffer(VertexBuffer &&other)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Move data
     m_RendererID = other.m_RendererID;
@@ -47,7 +47,7 @@ Engine::VertexBuffer::VertexBuffer(VertexBuffer &&other)
 
 Engine::VertexBuffer &Engine::VertexBuffer::operator=(VertexBuffer &&other)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (this != &other)
     {
@@ -68,21 +68,21 @@ Engine::VertexBuffer &Engine::VertexBuffer::operator=(VertexBuffer &&other)
 
 void Engine::VertexBuffer::Bind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 }
 
 void Engine::VertexBuffer::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Engine::VertexBuffer::SetData(const void *data, size_t size, size_t offset)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Bind();
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
@@ -92,7 +92,7 @@ void Engine::VertexBuffer::SetData(const void *data, size_t size, size_t offset)
 
 void Engine::VertexBuffer::CreateBuffer(const void *data, size_t size)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenBuffers(1, &m_RendererID);
     Bind();

@@ -4,7 +4,7 @@
 
 void Engine::Application::Run()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     Timer timer;
     while (m_Window->IsRunning())

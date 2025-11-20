@@ -11,7 +11,7 @@ void Editor::CameraController::OnCreate()
 
 void Editor::CameraController::OnUpdate(float deltaTime)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     // Get mouse input
     glm::vec2 mouseDelta = Input::GetInstance().GetDeltaPosition();

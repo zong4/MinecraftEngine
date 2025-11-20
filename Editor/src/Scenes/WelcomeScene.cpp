@@ -17,7 +17,7 @@ Editor::WelcomeScene::WelcomeScene() : Engine::Scene("WelcomeScene")
 
 void Editor::WelcomeScene::MCEngineLogo()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     struct Position
     {

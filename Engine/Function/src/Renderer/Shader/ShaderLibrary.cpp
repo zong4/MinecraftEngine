@@ -19,7 +19,7 @@ std::string Engine::ShaderLibrary::GetName(const std::shared_ptr<Shader> &shader
 
 std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::GetShader(const std::string &name)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (!Exists(name))
     {
@@ -31,7 +31,7 @@ std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::GetShader(const std::stri
 
 void Engine::ShaderLibrary::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -47,7 +47,7 @@ std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::LoadShader(const std::str
                                                                   const std::string &fragmentSource,
                                                                   const std::string &geometrySource)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (Exists(name))
     {
@@ -62,7 +62,7 @@ std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::LoadShader(const std::str
 
 Engine::ShaderLibrary::ShaderLibrary()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Shaders/");
     if (!std::filesystem::exists(path))

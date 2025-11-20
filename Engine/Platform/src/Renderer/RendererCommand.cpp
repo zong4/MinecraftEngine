@@ -4,7 +4,7 @@
 
 void Engine::RendererCommand::Init()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     EnableDepthTest();
     EnableBlend();

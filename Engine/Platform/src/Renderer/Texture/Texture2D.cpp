@@ -7,7 +7,7 @@ Engine::Texture2D::Texture2D(int width, int height, unsigned int internalFormat,
     : Texture(), m_Width(width), m_Height(height), m_InternalFormat(internalFormat), m_Format(format), m_Type(type),
       m_Samples(0)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     CreateTexture(width, height, internalFormat, format, type, data);
 
@@ -35,7 +35,7 @@ Engine::Texture2D::Texture2D(int width, int height, int samples)
     : Texture(), m_Width(width), m_Height(height), m_InternalFormat(GL_RGBA8), m_Format(GL_RGBA),
       m_Type(GL_UNSIGNED_BYTE), m_Samples(samples)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_RendererID);
@@ -48,7 +48,7 @@ Engine::Texture2D::Texture2D(int width, int height, int samples)
 
 Engine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_UNSIGNED_BYTE), m_Samples(0)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -104,14 +104,14 @@ Engine::Texture2D::Texture2D(const std::string &path) : Texture(), m_Type(GL_UNS
 
 Engine::Texture2D::~Texture2D()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glDeleteTextures(1, &m_RendererID);
 }
 
 std::shared_ptr<Engine::Texture2D> Engine::Texture2D::WhiteTexture()
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     static std::shared_ptr<Texture2D> whiteTexture = std::make_shared<Texture2D>(
         1, 1, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, new unsigned char[4]{255, 255, 255, 255});
@@ -120,7 +120,7 @@ std::shared_ptr<Engine::Texture2D> Engine::Texture2D::WhiteTexture()
 
 void Engine::Texture2D::Bind(unsigned int slot) const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     if (m_Samples > 0)
     {
@@ -135,7 +135,7 @@ void Engine::Texture2D::Bind(unsigned int slot) const
 
 void Engine::Texture2D::Unbind() const
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glBindTexture(GL_TEXTURE_2D, 0);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
@@ -143,7 +143,7 @@ void Engine::Texture2D::Unbind() const
 
 void Engine::Texture2D::Resize(int width, int height)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     m_Width = width;
     m_Height = height;
@@ -166,7 +166,7 @@ void Engine::Texture2D::Resize(int width, int height)
 void Engine::Texture2D::CreateTexture(int width, int height, unsigned int internalFormat, unsigned int format,
                                       unsigned int type, void *data)
 {
-    ENGINE_PROFILE_FUNCTION();
+    PROFILE_FUNCTION();
 
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_2D, m_RendererID);
