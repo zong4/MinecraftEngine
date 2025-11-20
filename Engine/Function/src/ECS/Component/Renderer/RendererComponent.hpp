@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Collision/BoundingBox.hpp"
-#include "pch.hpp"
+#include "../src/Collision/BoundingBox.hpp"
 
 namespace Engine
 {

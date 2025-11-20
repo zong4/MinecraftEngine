@@ -1,6 +1,8 @@
 #pragma once
 
-#include "ECS/Entity/ScriptableEntity.hpp"
+#include "../src/ECS/Entity/ScriptableEntity.hpp"
+
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Engine
 {

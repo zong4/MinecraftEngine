@@ -1,6 +1,7 @@
 #pragma once
 
-#include "pch.hpp"
+#include <Platform.hpp>
+#include <entt/entt.hpp>
 
 namespace Engine
 {

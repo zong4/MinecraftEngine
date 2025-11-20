@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scene/Scene.hpp"
+#include "../src/Scene/Scene.hpp"
 
 namespace Engine
 {
