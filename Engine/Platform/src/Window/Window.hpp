@@ -24,8 +24,7 @@ public:
 class Window
 {
 public:
-    Window(const WindowProperty &property) : m_Property(property) { Init(); }
-    ~Window() { Shutdown(); }
+    static std::shared_ptr<Window> Create(const WindowProperty &property);
 
     // Getters
     bool IsRunning() const;
@@ -43,14 +42,18 @@ public:
     void Update(float deltaTime);
     void Render();
 
-private:
+protected:
     bool m_Running = true;
     void *m_NativeWindow = nullptr;
     WindowProperty m_Property;
     LayerStack m_LayerStack;
 
-private:
-    void Init();
+protected:
+    Window(const WindowProperty &property) : m_Property(property) {}
+    virtual ~Window() { Shutdown(); }
+
+protected:
+    virtual void Init() = 0;
     void SetCallbacks();
     void Shutdown();
 };

@@ -14,6 +14,6 @@ void Engine::Application::Run()
     }
 }
 
-void Engine::Application::Init(const WindowProperty &props) { m_Window = std::make_shared<Window>(props); }
+void Engine::Application::Init(const WindowProperty &props) { m_Window = Window::Create(props); }
 
 void Engine::Application::Shutdown() { m_Window.reset(); }

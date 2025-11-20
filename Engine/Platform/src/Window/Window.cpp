@@ -3,8 +3,23 @@
 #include "../ImGui/ImGuiLayer.hpp"
 #include "../Renderer/RendererCommand.hpp"
 #include "../Renderer/RendererProperty.hpp"
+#include "OpenGLWindow.hpp"
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+
+std::shared_ptr<Engine::Window> Engine::Window::Create(const WindowProperty &property)
+{
+    switch (Engine::RendererProperty::GetInstance().GetAPI())
+    {
+    case Engine::RendererAPI::OpenGL:
+        return std::make_shared<OpenGLWindow>(property);
+    case Engine::RendererAPI::Vulkan:
+        LOG_ENGINE_ERROR("VulkanWindow is not implemented yet");
+        return nullptr;
+    default:
+        LOG_ENGINE_ERROR("Unknown RendererAPI");
+        return nullptr;
+    }
+}
 
 bool Engine::Window::IsRunning() const
 {
@@ -38,60 +53,6 @@ void Engine::Window::Render()
     std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetImGuiLayer())->EndRenderImGui();
 }
 
-void Engine::Window::Init()
-{
-    PROFILE_FUNCTION();
-
-    // Initialize GLFW
-    glfwInit();
-    LOG_ENGINE_INFO("GLFW version: " + std::string(glfwGetVersionString()));
-
-    // Set OpenGL version
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, Engine::RendererProperty::GetInstance().GetMajorVersion());
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, Engine::RendererProperty::GetInstance().GetMinorVersion());
-
-    // Other window hints
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    // Create window
-    m_NativeWindow = glfwCreateWindow(m_Property.Width, m_Property.Height, m_Property.Title.c_str(), nullptr, nullptr);
-    if (!m_NativeWindow)
-    {
-        LOG_ENGINE_ASSERT("Failed to create GLFW window");
-        glfwTerminate();
-    }
-    LOG_ENGINE_INFO("GLFW window created: " + m_Property.Title);
-
-    glfwGetFramebufferSize((GLFWwindow *)m_NativeWindow, &m_Property.FbWidth, &m_Property.FbHeight);
-
-    // Make context current
-    glfwMakeContextCurrent(static_cast<GLFWwindow *>(m_NativeWindow));
-    SetCallbacks();
-    SetVSync(m_Property.VSync);
-
-    // Initialize GLAD
-    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    LOG_ENGINE_INFO("OpenGL version: " + std::string((const char *)glGetString(GL_VERSION)));
-
-    // MSAA samples
-    int samples = 0;
-    glGetIntegerv(GL_SAMPLES, &samples);
-    LOG_ENGINE_INFO("MSAA samples = " + std::to_string(samples));
-
-    // Initialize Renderer
-    RendererCommand::Init();
-}
-
-void Engine::Window::Shutdown()
-{
-    PROFILE_FUNCTION();
-
-    glfwDestroyWindow(static_cast<GLFWwindow *>(m_NativeWindow));
-    glfwTerminate();
-    LOG_ENGINE_INFO("Window destroyed");
-}
-
 void Engine::Window::SetCallbacks()
 {
     PROFILE_FUNCTION();
@@ -103,7 +64,7 @@ void Engine::Window::SetCallbacks()
                                        Window *window = static_cast<Window *>(glfwGetWindowUserPointer(nativeWindow));
 
                                        // Framebuffer size
-                                       glViewport(0, 0, width, height);
+                                       RendererCommand::SetViewport(0, 0, width, height);
                                        window->GetProperty().FbWidth = width;
                                        window->GetProperty().FbHeight = height;
 
@@ -144,4 +105,13 @@ void Engine::Window::SetCallbacks()
                               MouseScrollEvent event(xOffset, yOffset);
                               window->OnEvent(event);
                           });
+}
+
+void Engine::Window::Shutdown()
+{
+    PROFILE_FUNCTION();
+
+    glfwDestroyWindow(static_cast<GLFWwindow *>(m_NativeWindow));
+    glfwTerminate();
+    LOG_ENGINE_INFO("Window destroyed");
 }
