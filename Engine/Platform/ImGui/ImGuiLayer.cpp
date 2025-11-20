@@ -8,10 +8,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-MCEngine::ImGuiLayer::ImGuiLayer(const std::string &name, std::shared_ptr<Window> window)
-    : Layer(name), m_Window(window)
-{
-}
+MCEngine::ImGuiLayer::ImGuiLayer(std::shared_ptr<Window> window) : Layer("ImGuiLayer"), m_Window(window) {}
 
 void MCEngine::ImGuiLayer::OnEvent(Event &event)
 {

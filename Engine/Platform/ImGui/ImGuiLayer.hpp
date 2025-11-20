@@ -8,7 +8,7 @@ namespace MCEngine
 class ImGuiLayer : public Layer
 {
 public:
-    ImGuiLayer(const std::string &name = "ImGuiLayer", std::shared_ptr<Window> window = nullptr);
+    ImGuiLayer(std::shared_ptr<Window> window);
     virtual ~ImGuiLayer() override = default;
 
     // Setters
@@ -17,6 +17,8 @@ public:
 public:
     // Main loop
     void OnEvent(Event &event) override;
+    void OnUpdate(float deltaTime) override {}
+    void OnRender() override {}
     virtual void OnImGuiRender() override;
 
     // Called by LayerStack

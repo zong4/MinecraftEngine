@@ -22,8 +22,8 @@ public:
     virtual void OnImGuiRender() = 0;
 
     // Called by LayerStack
-    virtual void OnAttach() = 0;
-    virtual void OnDetach() = 0;
+    virtual void OnAttach() {}
+    virtual void OnDetach() {}
 
 private:
     std::string m_Name;

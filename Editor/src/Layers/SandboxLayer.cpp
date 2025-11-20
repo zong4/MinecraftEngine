@@ -4,7 +4,8 @@
 #include "Scenes/ExampleScene.hpp"
 #include <imgui.h>
 
-Editor::SandboxLayer::SandboxLayer(std::shared_ptr<MCEngine::Window> window) : ImGuiLayer("SandboxLayer", window)
+Editor::SandboxLayer::SandboxLayer(std::shared_ptr<MCEngine::Window> window)
+    : MCEngine::Layer("SandboxLayer"), m_Window(window)
 {
     m_EditorScene = std::make_shared<Editor::EditorScene>();
     m_ActiveScene = std::make_shared<Editor::ExampleScene>();
@@ -14,10 +15,6 @@ void Editor::SandboxLayer::OnEvent(MCEngine::Event &event)
 {
     ENGINE_PROFILE_FUNCTION();
 
-    // Capture events in ImGuiLayer first
-    ImGuiLayer::OnEvent(event);
-
-    // Then dispatch to SandboxLayer if not handled
     if (!event.IsHandled())
     {
         MCEngine::EventDispatcher dispatcher(event);
@@ -28,6 +25,8 @@ void Editor::SandboxLayer::OnEvent(MCEngine::Event &event)
 
 void Editor::SandboxLayer::OnUpdate(float deltaTime)
 {
+    ENGINE_PROFILE_FUNCTION();
+
     m_EditorScene->Update(deltaTime);
     // m_ActiveScene->Update(deltaTime);
 }

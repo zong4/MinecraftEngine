@@ -5,7 +5,7 @@
 namespace Editor
 {
 
-class SandboxLayer : public MCEngine::ImGuiLayer
+class SandboxLayer : public MCEngine::Layer
 {
 
 public:
@@ -19,6 +19,7 @@ public:
     void OnImGuiRender() override;
 
 private:
+    std::shared_ptr<MCEngine::Window> m_Window;
     std::shared_ptr<MCEngine::Scene> m_EditorScene;
     std::shared_ptr<MCEngine::Scene> m_ActiveScene;
 
