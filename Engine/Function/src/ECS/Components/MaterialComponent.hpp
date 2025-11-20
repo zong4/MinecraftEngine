@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../Renderer/Material/Material.hpp"
-#include "../../../Renderer/Material/MaterialLibrary.hpp"
-#include "../../../Renderer/Material/MaterialProperty.hpp"
+#include "../../Renderer/Material/Material.hpp"
+#include "../../Renderer/Material/MaterialLibrary.hpp"
+#include "../../Renderer/Material/MaterialProperty.hpp"
 
 namespace Engine
 {

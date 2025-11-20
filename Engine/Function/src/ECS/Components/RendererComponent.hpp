@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../Physics/BoundingBox.hpp"
+#include "../../Physics/BoundingBox.hpp"
 
 namespace Engine
 {

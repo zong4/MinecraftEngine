@@ -35,8 +35,22 @@ public:
     const glm::mat4 &GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
 public:
-    void Resize(float width, float height);
-    void UpdateProjectionMatrix(); // Call every frame before using the projection matrix
+    void Resize(float width, float height)
+    {
+        m_Width = width;
+        m_Height = height;
+    }
+
+    // Call every frame before using the projection matrix
+    void UpdateProjectionMatrix()
+    {
+        if (Type == CameraType::Orthographic)
+            m_ProjectionMatrix =
+                glm::ortho(-m_Width / 200.0f * Scale, m_Width / 200.0f * Scale, -m_Height / 200.0f * Scale,
+                           m_Height / 200.0f * Scale, NearClip, FarClip); // Maybe it is hacky
+        else if (Type == CameraType::Perspective)
+            m_ProjectionMatrix = glm::perspective(glm::radians(FOV), m_Width / m_Height, NearClip, FarClip);
+    }
 
 private:
     float m_Width, m_Height;
