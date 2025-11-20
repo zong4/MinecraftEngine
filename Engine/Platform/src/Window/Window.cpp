@@ -1,7 +1,8 @@
 #include "Window.hpp"
 
-#include "Event/Input.hpp"
-#include "Renderer/RendererCommand.hpp"
+#include "../Event/Input.hpp"
+#include "../ImGui/ImGuiLayer.hpp"
+#include "../Renderer/RendererCommand.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -22,6 +23,8 @@ void Engine::Window::SetVSync(bool enabled)
 void Engine::Window::OnEvent(Event &event)
 {
     PROFILE_FUNCTION();
+
+    m_LayerStack.GetImGuiLayer()->OnEvent(event);
 
     // Store key states in KeyCodeLibrary
     if (!event.IsHandled())
@@ -67,6 +70,15 @@ void Engine::Window::Update(float deltaTime)
 
     // Post-update
     glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));
+}
+
+void Engine::Window::Render()
+{
+    PROFILE_FUNCTION();
+
+    std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetImGuiLayer())->BeginRenderImGui();
+    m_LayerStack.Render();
+    std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetImGuiLayer())->EndRenderImGui();
 }
 
 void Engine::Window::Init()

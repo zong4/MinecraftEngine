@@ -44,12 +44,13 @@ public:
     // Main loop
     void OnEvent(Event &event);
     void Update(float deltaTime);
-    void Render() { m_LayerStack.Render(); }
+    void Render();
 
 private:
     bool m_Running = true;
     void *m_NativeWindow = nullptr;
     WindowProperty m_Property;
+    LayerStack m_LayerStack;
 
     // Renderer
 #ifdef __APPLE__
@@ -57,7 +58,6 @@ private:
 #else
     RendererAPIProperty m_RendererAPIProperty = RendererAPIProperty(RendererAPI::OpenGL, 4, 2);
 #endif
-    LayerStack m_LayerStack;
 
 private:
     // Initialization
