@@ -9,7 +9,7 @@ class Sandbox : public Engine::Application
 {
 public:
     Sandbox(const Engine::WindowProperty &props);
-    ~Sandbox() override = default;
+    ~Sandbox() override;
 };
 
 } // namespace Editor
