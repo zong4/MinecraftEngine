@@ -104,19 +104,19 @@ void Engine::FrameBuffer::BindBasicTexture(int width, int height)
 
     if (m_Type == FrameBufferType::Color)
     {
-        m_Texture = std::make_shared<Texture2D>(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
+        m_Texture = Texture2D::Create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
     }
     else if (m_Type == FrameBufferType::Depth)
     {
-        m_Texture = std::make_shared<Texture2D>(width, height, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+        m_Texture = Texture2D::Create(width, height, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
     }
     else if (m_Type == FrameBufferType::Integer)
     {
-        m_Texture = std::make_shared<Texture2D>(width, height, GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT);
+        m_Texture = Texture2D::Create(width, height, GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
     }
     else
@@ -135,7 +135,7 @@ void Engine::FrameBuffer::BindMultiSampleTexture(int width, int height, int samp
         return;
     }
 
-    m_Texture = std::make_shared<Texture2D>(width, height, samples);
+    m_Texture = Texture2D::Create(width, height, samples);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_Texture->GetRendererID(),
                            0);
 }

@@ -124,7 +124,7 @@ Engine::TextureLibrary::TextureLibrary()
             if (entry.path().extension() == ".png" || entry.path().extension() == ".jpg" ||
                 entry.path().extension() == ".hdr")
             {
-                AddTexture(entry.path().stem().string(), std::make_shared<Texture2D>(entry.path().string()));
+                AddTexture(entry.path().stem().string(), Texture2D::Create(entry.path().string()));
             }
         }
     }

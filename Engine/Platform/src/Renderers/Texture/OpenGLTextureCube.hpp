@@ -13,8 +13,8 @@ public:
     virtual ~OpenGLTextureCube() override;
 
 public:
-    virtual void Bind(unsigned int slot) const override;
-    virtual void Unbind() const override;
+    void Bind(unsigned int slot) const override;
+    void Unbind() const override;
 };
 
 } // namespace Engine
