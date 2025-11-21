@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Renderer/Librarys/TextureLibrary.hpp"
+#include "../../Renderers/Librarys/TextureLibrary.hpp"
 
 namespace Engine
 {
