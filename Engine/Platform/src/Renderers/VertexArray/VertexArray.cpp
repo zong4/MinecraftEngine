@@ -2,7 +2,6 @@
 
 #include "../RendererProperty.hpp"
 #include "OpenGLVertexArray.hpp"
-#include <glad/glad.h>
 
 std::shared_ptr<Engine::VertexArray> Engine::VertexArray::Create(std::unique_ptr<VertexBuffer> vertexBuffer,
                                                                  const std::vector<VertexAttribute> &attributes,

@@ -55,7 +55,7 @@ void Engine::OpenGLVertexArray::Render(RendererType renderType, int vertexCount)
     if (!m_IndexBuffer)
     {
         if (vertexCount == 0)
-            vertexCount = m_VertexBuffer->GetVertexCount() / m_AttributeCount;
+            vertexCount = m_VertexBuffer->GetVertexCount() / m_AttributeSize;
         m_InstanceCount == 1 ? glDrawArrays(ConvertRendererType(renderType), 0, vertexCount)
                              : glDrawArraysInstanced(ConvertRendererType(renderType), 0, vertexCount, m_InstanceCount);
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
@@ -87,7 +87,7 @@ void Engine::OpenGLVertexArray::SetVertexAttributes(const std::vector<VertexAttr
     Bind();
     m_VertexBuffer->Bind();
 
-    m_AttributeCount = static_cast<int>(attributes.size());
+    m_AttributeSize = 0;
     for (const auto &attribute : attributes)
     {
         switch (attribute.type)
@@ -96,11 +96,13 @@ void Engine::OpenGLVertexArray::SetVertexAttributes(const std::vector<VertexAttr
         case Engine::VertexAttributeType::UInt:
             glVertexAttribIPointer(attribute.location, attribute.count, ConvertVertexAttributeType(attribute.type),
                                    attribute.stride, attribute.offset);
+            m_AttributeSize += attribute.count;
             break;
         case Engine::VertexAttributeType::Float:
             glVertexAttribPointer(attribute.location, attribute.count, ConvertVertexAttributeType(attribute.type),
                                   attribute.normalized, static_cast<GLsizei>(attribute.stride), attribute.offset);
             glEnableVertexAttribArray(attribute.location);
+            m_AttributeSize += attribute.count;
             break;
         default:
             LOG_ENGINE_ASSERT("Unknown VertexAttributeType");
@@ -113,5 +115,5 @@ void Engine::OpenGLVertexArray::SetVertexAttributes(const std::vector<VertexAttr
     Unbind();
 
     LOG_ENGINE_INFO("VertexArray ID: " + std::to_string(m_RendererID) + " vertex attributes(" +
-                    std::to_string(m_AttributeCount) + ") set/updated");
+                    std::to_string(m_AttributeSize) + ") set/updated");
 }

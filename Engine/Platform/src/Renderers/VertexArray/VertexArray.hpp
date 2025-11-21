@@ -59,7 +59,7 @@ public:
 
 protected:
     unsigned int m_RendererID = 0;
-    int m_AttributeCount = 0;
+    int m_AttributeSize = 0;
     std::unique_ptr<VertexBuffer> m_VertexBuffer;
     std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
