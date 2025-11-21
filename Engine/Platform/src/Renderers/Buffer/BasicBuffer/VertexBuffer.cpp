@@ -1,8 +1,9 @@
 #include "VertexBuffer.hpp"
 
+#include "../../RendererCommand.hpp"
 #include <glad/glad.h>
 
-Engine::VertexBuffer::VertexBuffer(size_t size) : Buffer(static_cast<int>(size / sizeof(float)))
+Engine::VertexBuffer::VertexBuffer(size_t size) : BasicBuffer(static_cast<int>(size / sizeof(float)))
 {
     glGenBuffers(1, &m_RendererID);
     Bind();
@@ -14,12 +15,12 @@ Engine::VertexBuffer::VertexBuffer(size_t size) : Buffer(static_cast<int>(size /
                      " and count: " + std::to_string(m_VertexCount));
 }
 
-Engine::VertexBuffer::VertexBuffer(const void *data, size_t size) : Buffer(static_cast<int>(size / sizeof(float)))
+Engine::VertexBuffer::VertexBuffer(const void *data, size_t size) : BasicBuffer(static_cast<int>(size / sizeof(float)))
 {
     CreateBuffer(data, size);
 }
 
-Engine::VertexBuffer::VertexBuffer(const std::vector<float> &vertices) : Buffer(static_cast<int>(vertices.size()))
+Engine::VertexBuffer::VertexBuffer(const std::vector<float> &vertices) : BasicBuffer(static_cast<int>(vertices.size()))
 {
     CreateBuffer(vertices.data(), vertices.size() * sizeof(float));
 }

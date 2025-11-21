@@ -1,6 +1,6 @@
 #include "IndexBuffer.hpp"
 
-#include "../RendererProperty.hpp"
+#include "../../RendererProperty.hpp"
 #include "OpenGLIndexBuffer.hpp"
 
 std::unique_ptr<Engine::IndexBuffer> Engine::IndexBuffer::Create(size_t size)

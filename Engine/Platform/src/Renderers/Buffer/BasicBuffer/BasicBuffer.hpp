@@ -1,19 +1,19 @@
 #pragma once
 
-#include "../RendererCommand.hpp"
+#include <Core.hpp>
 
 namespace Engine
 {
 
-class Buffer
+class BasicBuffer
 {
 public:
-    Buffer(int vertexCount = 0) : m_VertexCount(vertexCount) {}
-    virtual ~Buffer() = default;
+    BasicBuffer(int vertexCount = 0) : m_VertexCount(vertexCount) {}
+    virtual ~BasicBuffer() = default;
 
     // Copy and move semantics
-    Buffer(const Buffer &) = delete;
-    Buffer &operator=(const Buffer &) = delete;
+    BasicBuffer(const BasicBuffer &) = delete;
+    BasicBuffer &operator=(const BasicBuffer &) = delete;
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Buffer.hpp"
+#include "BasicBuffer.hpp"
 
 namespace Engine
 {
 
-class IndexBuffer : public Buffer
+class IndexBuffer : public BasicBuffer
 {
 public:
     virtual ~IndexBuffer() override = default;
@@ -14,7 +14,7 @@ public:
 
 protected:
     // IndexBuffer() = default;
-    IndexBuffer(int count) : Buffer(count) {}
+    IndexBuffer(int count) : BasicBuffer(count) {}
 };
 
 } // namespace Engine

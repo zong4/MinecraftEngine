@@ -1,5 +1,6 @@
 #include "OpenGLIndexBuffer.hpp"
 
+#include "../../RendererCommand.hpp"
 #include <glad/glad.h>
 
 Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(size_t size) : IndexBuffer(static_cast<int>(size / sizeof(uint32_t)))
