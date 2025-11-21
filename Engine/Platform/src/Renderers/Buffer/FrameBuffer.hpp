@@ -44,7 +44,7 @@ private:
     unsigned int m_RendererID = 0;
     int m_Width, m_Height;
     std::shared_ptr<Texture2D> m_Texture = nullptr;
-    std::shared_ptr<RenderBuffer> m_RenderBuffer = nullptr;
+    std::unique_ptr<RenderBuffer> m_RenderBuffer = nullptr;
 
 private:
     void BindBasicTexture(int width, int height);

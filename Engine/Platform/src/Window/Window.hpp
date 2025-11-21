@@ -24,6 +24,7 @@ public:
 class Window
 {
 public:
+    virtual ~Window() { Shutdown(); }
     static std::shared_ptr<Window> Create(const WindowProperty &property);
 
     // Getters
@@ -50,7 +51,6 @@ protected:
 
 protected:
     Window(const WindowProperty &property) : m_Property(property) {}
-    virtual ~Window() { Shutdown(); }
 
 protected:
     virtual void Init() = 0;

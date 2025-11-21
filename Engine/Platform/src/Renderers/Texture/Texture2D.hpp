@@ -8,6 +8,7 @@ namespace Engine
 class Texture2D : public Texture
 {
 public:
+    virtual ~Texture2D() override = default;
     static std::shared_ptr<Texture2D> Create(int width, int height, unsigned int internalFormat, unsigned int format,
                                              unsigned int type, void *data = nullptr);
     static std::shared_ptr<Texture2D> Create(int width, int height, int samples);
@@ -33,7 +34,6 @@ protected:
           m_Samples(samples)
     {
     }
-    virtual ~Texture2D() override = default;
 };
 
 } // namespace Engine

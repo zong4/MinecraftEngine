@@ -15,6 +15,7 @@ struct UniformBufferData
 class UniformBuffer
 {
 public:
+    virtual ~UniformBuffer() = default;
     static std::shared_ptr<UniformBuffer> Create(size_t size, unsigned int binding);
 
     // Getters
@@ -31,7 +32,6 @@ protected:
 
 protected:
     UniformBuffer(size_t size, unsigned int binding) : m_Binding(binding) {}
-    virtual ~UniformBuffer() = default;
 };
 
 } // namespace Engine

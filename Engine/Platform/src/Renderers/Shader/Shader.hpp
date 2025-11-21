@@ -8,6 +8,7 @@ namespace Engine
 class Shader
 {
 public:
+    virtual ~Shader() = default;
     static std::shared_ptr<Shader> Create(const std::string &vertexSource, const std::string &fragmentSource,
                                           const std::string &geometrySource = "");
 
@@ -31,7 +32,6 @@ protected:
 
 protected:
     Shader() = default;
-    virtual ~Shader() = default;
 
 protected:
     virtual void CompileShader(unsigned int shaderID, const std::string &source) = 0;

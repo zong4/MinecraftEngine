@@ -34,6 +34,7 @@ struct VertexAttribute
 class VertexArray
 {
 public:
+    virtual ~VertexArray() = default;
     static std::shared_ptr<VertexArray> Create(std::unique_ptr<VertexBuffer> vertexBuffer,
                                                const std::vector<VertexAttribute> &attributes,
                                                std::unique_ptr<IndexBuffer> indexBuffer = nullptr,
@@ -71,7 +72,6 @@ protected:
         : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
     {
     }
-    virtual ~VertexArray() = default;
 
 protected:
     virtual void Bind() const = 0;

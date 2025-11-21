@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../RendererCommand.hpp"
+#include <Core.hpp>
 
 namespace Engine
 {
@@ -8,13 +8,8 @@ namespace Engine
 class RenderBuffer
 {
 public:
-    RenderBuffer(int width, int height, unsigned int internalFormat, int samples);
-    ~RenderBuffer();
-
-    RenderBuffer(const RenderBuffer &) = delete;
-    RenderBuffer &operator=(const RenderBuffer &) = delete;
-    RenderBuffer(RenderBuffer &&) = delete;
-    RenderBuffer &operator=(RenderBuffer &&) = delete;
+    virtual ~RenderBuffer() = default;
+    static std::unique_ptr<RenderBuffer> Create(int width, int height, unsigned int internalFormat, int samples);
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }
@@ -22,14 +17,20 @@ public:
 public:
     void Resize(int width, int height);
 
-private:
+protected:
     unsigned int m_RendererID = 0;
     unsigned int m_InternalFormat;
     int m_Samples;
 
-private:
-    void Bind(int width, int height) const;
-    void Unbind() const;
+protected:
+    RenderBuffer(int width, int height, unsigned int internalFormat, int samples)
+        : m_InternalFormat(internalFormat), m_Samples(samples)
+    {
+    }
+
+protected:
+    virtual void Bind(int width, int height) const = 0;
+    virtual void Unbind() const = 0;
 };
 
 } // namespace Engine

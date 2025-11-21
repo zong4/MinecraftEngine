@@ -8,6 +8,7 @@ namespace Engine
 class ImGuiLayer : public Layer
 {
 public:
+    virtual ~ImGuiLayer() override = default;
     static std::shared_ptr<ImGuiLayer> Create(void *nativeWindow);
 
     // Setters
@@ -26,7 +27,6 @@ protected:
 
 protected:
     ImGuiLayer(void *nativeWindow) : Layer("ImGuiLayer"), m_NativeWindow(nativeWindow) {}
-    virtual ~ImGuiLayer() override = default;
 
 protected:
     virtual void InitRenderer() = 0;

@@ -144,7 +144,7 @@ void Engine::FrameBuffer::BindRenderBuffer(int width, int height, unsigned int i
 {
     PROFILE_FUNCTION();
 
-    m_RenderBuffer = std::make_shared<RenderBuffer>(width, height, internalFormat, samples);
+    m_RenderBuffer = RenderBuffer::Create(width, height, internalFormat, samples);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
                               m_RenderBuffer->GetRendererID());
 }
