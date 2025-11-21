@@ -23,7 +23,7 @@ void Engine::UniformLibrary::AddUniform(const std::string &name, size_t size, un
         LOG_ENGINE_WARN("Uniform already exists: " + name);
         return;
     }
-    m_UniformMap[name] = std::make_shared<UniformBuffer>(size, binding);
+    m_UniformMap[name] = UniformBuffer::Create(size, binding);
     LOG_ENGINE_INFO("Uniform added: " + name);
 }
 

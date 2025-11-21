@@ -1,52 +1,19 @@
 #include "UniformBuffer.hpp"
 
-#include <glad/glad.h>
+#include "../RendererProperty.hpp"
+#include "OpenGLUniformBuffer.hpp"
 
-Engine::UniformBuffer::UniformBuffer(size_t size, unsigned int binding) : m_Binding(binding)
+std::shared_ptr<Engine::UniformBuffer> Engine::UniformBuffer::Create(size_t size, unsigned int binding)
 {
-    PROFILE_FUNCTION();
-
-    glGenBuffers(1, &m_RendererID);
-    glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-    glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, m_Binding, m_RendererID);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
-
-    LOG_ENGINE_INFO("UniformBuffer created with ID: " + std::to_string(m_RendererID) +
-                    ", Size: " + std::to_string(size) + ", Binding: " + std::to_string(m_Binding));
-}
-
-Engine::UniformBuffer::~UniformBuffer()
-{
-    PROFILE_FUNCTION();
-
-    glDeleteBuffers(1, &m_RendererID);
-}
-
-void Engine::UniformBuffer::Bind() const
-{
-    PROFILE_FUNCTION();
-
-    glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-}
-
-void Engine::UniformBuffer::Unbind() const
-{
-    PROFILE_FUNCTION();
-
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-}
-
-void Engine::UniformBuffer::SetData(const std::initializer_list<UniformBufferData> &dataList)
-{
-    PROFILE_FUNCTION();
-
-    Bind();
-    for (const auto &data : dataList)
+    switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
-        glBufferSubData(GL_UNIFORM_BUFFER, data.Offset, data.Size, data.Data);
-        RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
+    case Engine::RendererAPI::OpenGL:
+        return std::make_shared<Engine::OpenGLUniformBuffer>(size, binding);
+    case Engine::RendererAPI::Vulkan:
+        LOG_ENGINE_ASSERT("Vulkan UniformBuffer is not implemented yet");
+        return nullptr;
+    default:
+        LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        return nullptr;
     }
-    Unbind();
 }
