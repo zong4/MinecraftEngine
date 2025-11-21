@@ -4,100 +4,61 @@
 
 Engine::MaterialLibrary &Engine::MaterialLibrary::GetInstance()
 {
-    // Instance
     static MaterialLibrary instance;
     return instance;
+}
+
+std::string Engine::MaterialLibrary::GetName(const std::shared_ptr<Material> &material) const
+{
+    for (const auto &[name, ptr] : m_MaterialMap)
+    {
+        if (ptr == material)
+            return name;
+    }
+    LOG_ENGINE_ERROR("Material not found in library");
+    return "";
+}
+
+void Engine::MaterialLibrary::AddMaterial(const std::string &name, const std::shared_ptr<Material> &material)
+{
+    if (!material)
+    {
+        LOG_ENGINE_ASSERT("Cannot add null material: " + name);
+        return;
+    }
+
+    if (Exists(name))
+    {
+        LOG_ENGINE_WARN("Material already exists: " + name);
+        return;
+    }
+    m_MaterialMap[name] = material;
+    LOG_ENGINE_TRACE("Material added: " + name);
+}
+
+std::shared_ptr<Engine::Material> Engine::MaterialLibrary::GetMaterial(const std::string &name)
+{
+    if (!Exists(name))
+    {
+        LOG_ENGINE_ERROR("Material not found: " + name);
+        return nullptr;
+    }
+    return m_MaterialMap[name];
 }
 
 Engine::MaterialLibrary::MaterialLibrary()
 {
     PROFILE_FUNCTION();
-    LOG_ENGINE_INFO("Material Library initialized");
-}
 
-std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Load(const std::string &name)
-{
-    PROFILE_FUNCTION();
+    // Create a material using the new system
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("BlinnPhong");
+    auto &&redMaterial = std::make_shared<Engine::Material>(shader);
 
-    if (Exists(name))
-    {
-        LOG_ENGINE_WARN("Material already exists: " + name + ", returning existing material");
-        return Get(name);
-    }
+    redMaterial->AddProperty("Color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    redMaterial->AddProperty("AmbientStrength", 0.1f);
+    redMaterial->AddProperty("DiffuseStrength", 0.8f);
+    redMaterial->AddProperty("SpecularStrength", 0.5f);
+    redMaterial->AddProperty("Shininess", 32.0f);
 
-    // For now, Load just returns nullptr
-    // In the future, this can load from file (YAML, JSON, etc.)
-    LOG_ENGINE_WARN("Material::Load not implemented yet. Use Create() instead.");
-    return nullptr;
-}
-
-std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Create(const std::string &name,
-                                                                  std::shared_ptr<Shader> shader)
-{
-    PROFILE_FUNCTION();
-
-    if (Exists(name))
-    {
-        LOG_ENGINE_WARN("Material already exists: " + name + ", returning existing material");
-        return Get(name);
-    }
-
-    if (!shader)
-    {
-        LOG_ENGINE_ASSERT("MaterialLibrary::Create: Shader is null for material: " + name);
-        return nullptr;
-    }
-
-    auto material = Material::Create(shader);
-    m_Materials[name] = material;
-    LOG_ENGINE_TRACE("Material created: " + name);
-    return material;
-}
-
-void Engine::MaterialLibrary::AddMaterial(const std::string &name, const std::shared_ptr<Material> &material)
-{
-    PROFILE_FUNCTION();
-
-    if (Exists(name))
-    {
-        LOG_ENGINE_WARN("Material already exists: " + name + ", overwriting");
-    }
-
-    if (!material)
-    {
-        LOG_ENGINE_ASSERT("MaterialLibrary::AddMaterial: Material is null for name: " + name);
-        return;
-    }
-
-    m_Materials[name] = material;
-    LOG_ENGINE_TRACE("Material added: " + name);
-}
-
-std::shared_ptr<Engine::Material> Engine::MaterialLibrary::Get(const std::string &name)
-{
-    PROFILE_FUNCTION();
-
-    if (!Exists(name))
-    {
-        LOG_ENGINE_WARN("Material not found: " + name);
-        return nullptr;
-    }
-
-    return m_Materials[name];
-}
-
-bool Engine::MaterialLibrary::Exists(const std::string &name) const
-{
-    return m_Materials.find(name) != m_Materials.end();
-}
-
-std::string Engine::MaterialLibrary::GetName(const std::shared_ptr<Material> &material) const
-{
-    for (const auto &[name, ptr] : m_Materials)
-    {
-        if (ptr == material)
-            return name;
-    }
-    LOG_ENGINE_WARN("Material not found in library");
-    return "";
+    AddMaterial("RedMaterial", redMaterial);
 }

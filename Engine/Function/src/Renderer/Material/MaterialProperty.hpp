@@ -8,72 +8,65 @@ namespace Engine
 enum class MaterialPropertyType
 {
     None,
-    Float,
     Int,
     UInt,
+    Float,
     Vec2,
     Vec3,
     Vec4,
-    Mat4,
-    Texture2D
+    Texture
 };
+
+using MaterialPropertyValue = std::variant<int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4>;
 
 class MaterialProperty
 {
 public:
-    MaterialProperty();
-    MaterialProperty(float value);
-    MaterialProperty(int value);
-    MaterialProperty(unsigned int value);
-    MaterialProperty(const glm::vec2 &value);
-    MaterialProperty(const glm::vec3 &value);
-    MaterialProperty(const glm::vec4 &value);
-    MaterialProperty(const glm::mat4 &value);
-    MaterialProperty(const std::shared_ptr<Texture2D> &texture, unsigned int slot = 0);
+    MaterialProperty() : m_Type(MaterialPropertyType::None) {}
+    // clang-format off
+    template<typename T>
+    // clang-format on
+    MaterialProperty(const T &value) : m_Value(value)
+    {
+        if (std::holds_alternative<int>(m_Value))
+            m_Type = MaterialPropertyType::Int;
+        else if (std::holds_alternative<unsigned int>(m_Value))
+            m_Type = MaterialPropertyType::UInt;
+        else if (std::holds_alternative<float>(m_Value))
+            m_Type = MaterialPropertyType::Float;
+        else if (std::holds_alternative<glm::vec2>(m_Value))
+            m_Type = MaterialPropertyType::Vec2;
+        else if (std::holds_alternative<glm::vec3>(m_Value))
+            m_Type = MaterialPropertyType::Vec3;
+        else if (std::holds_alternative<glm::vec4>(m_Value))
+            m_Type = MaterialPropertyType::Vec4;
+        else
+        {
+            m_Type = MaterialPropertyType::None;
+            LOG_ENGINE_WARN("MaterialProperty: Unsupported MaterialPropertyValue type");
+        }
+    }
+    MaterialProperty(const std::shared_ptr<Texture2D> &texture)
+        : m_Type(MaterialPropertyType::Texture), m_Texture(texture)
+    {
+    }
 
-    // Copy constructor and assignment
-    MaterialProperty(const MaterialProperty &other);
-    MaterialProperty &operator=(const MaterialProperty &other);
+    // Operators
+    operator bool() const { return m_Type != MaterialPropertyType::None; }
 
     // Getters
     MaterialPropertyType GetType() const { return m_Type; }
-    float GetFloat() const;
-    int GetInt() const;
-    unsigned int GetUInt() const;
-    glm::vec2 GetVec2() const;
-    glm::vec3 GetVec3() const;
-    glm::vec4 GetVec4() const;
-    glm::mat4 GetMat4() const;
-    std::shared_ptr<Texture2D> GetTexture2D() const;
-    unsigned int GetTextureSlot() const { return m_TextureSlot; }
+    const MaterialPropertyValue &GetValue() const { return m_Value; }
+    std::shared_ptr<Texture2D> GetTexture() const { return m_Texture; }
 
     // Setters
-    void SetFloat(float value);
-    void SetInt(int value);
-    void SetUInt(unsigned int value);
-    void SetVec2(const glm::vec2 &value);
-    void SetVec3(const glm::vec3 &value);
-    void SetVec4(const glm::vec4 &value);
-    void SetMat4(const glm::mat4 &value);
-    void SetTexture2D(const std::shared_ptr<Texture2D> &texture, unsigned int slot = 0);
-
-    // Utility
-    std::string ToString() const;
+    void SetValue(const MaterialPropertyValue &value) { m_Value = value; }
+    void SetTexture(const std::shared_ptr<Texture2D> &texture) { m_Texture = texture; }
 
 private:
     MaterialPropertyType m_Type;
-
-    // Use separate members instead of union for non-POD types (C++11 allows but requires careful handling)
-    float m_Float;
-    int m_Int;
-    unsigned int m_UInt;
-    glm::vec2 m_Vec2;
-    glm::vec3 m_Vec3;
-    glm::vec4 m_Vec4;
-    glm::mat4 m_Mat4;
-
-    std::shared_ptr<Texture2D> m_Texture2D;
-    unsigned int m_TextureSlot;
+    MaterialPropertyValue m_Value;
+    std::shared_ptr<Texture2D> m_Texture;
 };
 
 } // namespace Engine

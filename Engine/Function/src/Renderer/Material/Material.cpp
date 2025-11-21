@@ -1,164 +1,80 @@
 #include "Material.hpp"
 
+#include "../Librarys/ShaderLibrary.hpp"
+
 Engine::Material::Material(std::shared_ptr<Shader> shader) : m_Shader(shader)
 {
-    PROFILE_FUNCTION();
-    LOG_ENGINE_TRACE("Material created with shader");
-}
-
-void Engine::Material::SetFloat(const std::string &name, float value) { m_Properties[name] = MaterialProperty(value); }
-
-void Engine::Material::SetInt(const std::string &name, int value) { m_Properties[name] = MaterialProperty(value); }
-
-void Engine::Material::SetUInt(const std::string &name, unsigned int value)
-{
-    m_Properties[name] = MaterialProperty(value);
-}
-
-void Engine::Material::SetVec2(const std::string &name, const glm::vec2 &value)
-{
-    m_Properties[name] = MaterialProperty(value);
-}
-
-void Engine::Material::SetVec3(const std::string &name, const glm::vec3 &value)
-{
-    m_Properties[name] = MaterialProperty(value);
-}
-
-void Engine::Material::SetVec4(const std::string &name, const glm::vec4 &value)
-{
-    m_Properties[name] = MaterialProperty(value);
-}
-
-void Engine::Material::SetMat4(const std::string &name, const glm::mat4 &value)
-{
-    m_Properties[name] = MaterialProperty(value);
-}
-
-void Engine::Material::SetTexture2D(const std::string &name, const std::shared_ptr<Texture2D> &texture,
-                                    unsigned int slot)
-{
-    m_Properties[name] = MaterialProperty(texture, slot);
-}
-
-Engine::MaterialProperty Engine::Material::GetProperty(const std::string &name) const
-{
-    auto it = m_Properties.find(name);
-    if (it != m_Properties.end())
+    if (!ShaderLibrary::GetInstance().GetName(shader).empty())
+        LOG_ENGINE_INFO("Material created with shader: " + ShaderLibrary::GetInstance().GetName(shader));
+    else
     {
-        return it->second;
+        m_Shader = ShaderLibrary::GetInstance().GetDefaultShader();
+        LOG_ENGINE_WARN("Material created with unknown shader, default shader assigned");
     }
-    LOG_ENGINE_WARN("Material: Property '" + name + "' not found");
-    return MaterialProperty();
 }
 
-bool Engine::Material::HasProperty(const std::string &name) const
+const Engine::MaterialProperty &Engine::Material::GetProperty(const std::string &name) const
 {
-    return m_Properties.find(name) != m_Properties.end();
+    if (!Exists(name))
+    {
+        static MaterialProperty defaultProperty;
+        LOG_ENGINE_ERROR("Material::GetProperty: Property not found: " + name);
+        return defaultProperty;
+    }
+    return m_PropertyMap.at(name);
 }
 
 void Engine::Material::RemoveProperty(const std::string &name)
 {
-    m_Properties.erase(name);
-    // Also remove from cache
-    m_UniformLocationCache.erase(name);
+    if (!Exists(name))
+    {
+        LOG_ENGINE_WARN("Material::RemoveProperty: Property not found: " + name);
+        return;
+    }
+    m_PropertyMap.erase(name);
+    LOG_ENGINE_TRACE("Material::RemoveProperty: Property removed: " + name);
 }
 
-void Engine::Material::Bind(Shader *shader, const std::string &uniformPrefix) const
+void Engine::Material::Bind(const std::string &uniformPrefix,
+                            const std::unordered_map<std::string, MaterialProperty> &overrideProperties) const
 {
     PROFILE_FUNCTION();
 
-    // Use provided shader or default to material's shader
-    Shader *targetShader = shader ? shader : m_Shader.get();
-    if (!targetShader)
+    m_Shader->Bind();
+    for (const auto &[name, property] : m_PropertyMap)
     {
-        LOG_ENGINE_WARN("Material::Bind: No shader available");
-        return;
-    }
+        // Check for override
+        auto &&overrideIt = overrideProperties.find(name);
+        const MaterialProperty &propertyToUse =
+            (overrideIt != overrideProperties.end()) ? overrideIt->second : property;
 
-    // Bind all properties to shader
-    for (const auto &[name, property] : m_Properties)
-    {
+        // Set uniform based on property type
         std::string uniformName = uniformPrefix + "." + name;
-
-        switch (property.GetType())
+        switch (propertyToUse.GetType())
         {
-        case MaterialPropertyType::Float:
-            targetShader->SetUniformFloat(uniformName, property.GetFloat());
-            break;
-
         case MaterialPropertyType::Int:
-            targetShader->SetUniformInt(uniformName, property.GetInt());
+            m_Shader->SetUniformInt(uniformName, std::get<int>(propertyToUse.GetValue()));
             break;
-
         case MaterialPropertyType::UInt:
-            targetShader->SetUniformUInt(uniformName, property.GetUInt());
+            m_Shader->SetUniformUInt(uniformName, std::get<unsigned int>(propertyToUse.GetValue()));
             break;
-
-        case MaterialPropertyType::Vec2: {
-            glm::vec2 v = property.GetVec2();
-            // Note: Shader class might need SetUniformVec2, for now we'll use vec3 with z=0
-            targetShader->SetUniformVec3(uniformName, glm::vec3(v.x, v.y, 0.0f));
+        case MaterialPropertyType::Float:
+            m_Shader->SetUniformFloat(uniformName, std::get<float>(propertyToUse.GetValue()));
             break;
-        }
-
         case MaterialPropertyType::Vec3:
-            targetShader->SetUniformVec3(uniformName, property.GetVec3());
+            m_Shader->SetUniformVec3(uniformName, std::get<glm::vec3>(propertyToUse.GetValue()));
             break;
-
         case MaterialPropertyType::Vec4:
-            targetShader->SetUniformVec4(uniformName, property.GetVec4());
+            m_Shader->SetUniformVec4(uniformName, std::get<glm::vec4>(propertyToUse.GetValue()));
             break;
-
-        case MaterialPropertyType::Mat4:
-            targetShader->SetUniformMat4(uniformName, property.GetMat4());
-            break;
-
-        case MaterialPropertyType::Texture2D: {
-            auto texture = property.GetTexture2D();
-            if (texture)
-            {
-                unsigned int slot = property.GetTextureSlot();
-                texture->Bind(slot);
-                targetShader->SetUniformInt(uniformName, static_cast<int>(slot));
-            }
-            break;
-        }
-
+        // case MaterialPropertyType::Texture: {
+        //     int slot = property.GetTexture()->Bind();
+        //     m_Shader->SetUniformInt(uniformName, slot);
+        // }
+        // break;
         default:
-            LOG_ENGINE_WARN("Material::Bind: Unknown property type for '" + name + "'");
+            LOG_ENGINE_WARN("Material::Bind: Unsupported MaterialPropertyType for property: " + name);
             break;
         }
     }
-}
-
-std::string Engine::Material::ToString() const
-{
-    std::string result = std::string("Material(Shader: ") + (m_Shader ? "Valid" : "Null") + ", Properties: {";
-    bool first = true;
-    for (const auto &[name, property] : m_Properties)
-    {
-        if (!first)
-            result += ", ";
-        result += name + "=" + property.ToString();
-        first = false;
-    }
-    result += "})";
-    return result;
-}
-
-std::shared_ptr<Engine::Material> Engine::Material::Create(std::shared_ptr<Shader> shader)
-{
-    return std::make_shared<Material>(shader);
-}
-
-std::shared_ptr<Engine::Material> Engine::Material::CreateDefault(std::shared_ptr<Shader> shader)
-{
-    auto material = std::make_shared<Material>(shader);
-    // Set default PBR values
-    material->SetVec3("Albedo", glm::vec3(1.0f));
-    material->SetFloat("Metallic", 0.0f);
-    material->SetFloat("Roughness", 0.5f);
-    material->SetFloat("AO", 1.0f);
-    return material;
 }

@@ -10,50 +10,30 @@ class Material
 {
 public:
     Material(std::shared_ptr<Shader> shader);
-    Material(const Material &other) = default;
-    Material &operator=(const Material &other) = default;
-    ~Material() = default;
 
-    // Property setters
-    void SetFloat(const std::string &name, float value);
-    void SetInt(const std::string &name, int value);
-    void SetUInt(const std::string &name, unsigned int value);
-    void SetVec2(const std::string &name, const glm::vec2 &value);
-    void SetVec3(const std::string &name, const glm::vec3 &value);
-    void SetVec4(const std::string &name, const glm::vec4 &value);
-    void SetMat4(const std::string &name, const glm::mat4 &value);
-    void SetTexture2D(const std::string &name, const std::shared_ptr<Texture2D> &texture, unsigned int slot = 0);
+    // Operators
+    operator bool() const { return m_Shader != nullptr; }
 
-    // Property getters
-    MaterialProperty GetProperty(const std::string &name) const;
-    bool HasProperty(const std::string &name) const;
+    // Getters
+    std::shared_ptr<Shader> GetShader() const { return m_Shader; }
+    const MaterialProperty &GetProperty(const std::string &name) const;
+    const std::unordered_map<std::string, MaterialProperty> &GetProperties() const { return m_PropertyMap; }
 
-    // Remove property
+    // Setters
+    void SetShader(std::shared_ptr<Shader> shader) { m_Shader = shader; }
+    void AddProperty(const std::string &name, const MaterialProperty &property) { m_PropertyMap[name] = property; }
     void RemoveProperty(const std::string &name);
 
-    // Get all properties (for serialization)
-    const std::unordered_map<std::string, MaterialProperty> &GetProperties() const { return m_Properties; }
-
-    // Shader
-    std::shared_ptr<Shader> GetShader() const { return m_Shader; }
-    void SetShader(std::shared_ptr<Shader> shader) { m_Shader = shader; }
-
-    // Bind material to shader
-    void Bind(Shader *shader = nullptr, const std::string &uniformPrefix = "u_Material") const;
-
-    // Utility
-    std::string ToString() const;
-
-    // Static factory methods
-    static std::shared_ptr<Material> Create(std::shared_ptr<Shader> shader);
-    static std::shared_ptr<Material> CreateDefault(std::shared_ptr<Shader> shader);
+public:
+    void Bind(const std::string &uniformPrefix,
+              const std::unordered_map<std::string, MaterialProperty> &overrideProperties = {}) const;
 
 private:
     std::shared_ptr<Shader> m_Shader;
-    std::unordered_map<std::string, MaterialProperty> m_Properties;
+    std::unordered_map<std::string, MaterialProperty> m_PropertyMap;
 
-    // Uniform location cache for performance
-    mutable std::unordered_map<std::string, int> m_UniformLocationCache;
+private:
+    bool Exists(const std::string &name) const { return m_PropertyMap.find(name) != m_PropertyMap.end(); }
 };
 
 } // namespace Engine

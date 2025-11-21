@@ -108,26 +108,25 @@ void Engine::Scene::PreRender()
             glm::vec4 color = glm::vec4(1.0f);                           // Default color
             glm::vec4 materialData = glm::vec4(0.3f, 1.0f, 0.5f, 32.0f); // Default Blinn-Phong values
 
-            if (materialComp.GetMaterial())
+            if (materialComp.MaterialInstance)
             {
-                auto mat = materialComp.GetMaterial();
-                if (mat->HasProperty("Color"))
+                auto mat = materialComp.MaterialInstance;
+                if (auto &&colorProp = mat->GetProperty("Color"))
                 {
-                    auto colorProp = mat->GetProperty("Color");
                     if (colorProp.GetType() == MaterialPropertyType::Vec4)
-                        color = colorProp.GetVec4();
+                        color = std::get<glm::vec4>(colorProp.GetValue());
                     else if (colorProp.GetType() == MaterialPropertyType::Vec3)
-                        color = glm::vec4(colorProp.GetVec3(), 1.0f);
+                        color = glm::vec4(std::get<glm::vec3>(colorProp.GetValue()), 1.0f);
                 }
                 // Get Blinn-Phong material properties if available
-                if (mat->HasProperty("AmbientStrength"))
-                    materialData.x = mat->GetProperty("AmbientStrength").GetFloat();
-                if (mat->HasProperty("DiffuseStrength"))
-                    materialData.y = mat->GetProperty("DiffuseStrength").GetFloat();
-                if (mat->HasProperty("SpecularStrength"))
-                    materialData.z = mat->GetProperty("SpecularStrength").GetFloat();
-                if (mat->HasProperty("Shininess"))
-                    materialData.w = mat->GetProperty("Shininess").GetFloat();
+                if (auto &&ambientStrengthProp = mat->GetProperty("AmbientStrength"))
+                    materialData.x = std::get<float>(ambientStrengthProp.GetValue());
+                if (auto &&diffuseStrengthProp = mat->GetProperty("DiffuseStrength"))
+                    materialData.y = std::get<float>(diffuseStrengthProp.GetValue());
+                if (auto &&specularStrengthProp = mat->GetProperty("SpecularStrength"))
+                    materialData.z = std::get<float>(specularStrengthProp.GetValue());
+                if (auto &&shininessProp = mat->GetProperty("Shininess"))
+                    materialData.w = std::get<float>(shininessProp.GetValue());
             }
 
             for (int i = 0; i < 36; ++i)
