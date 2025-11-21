@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include <filesystem>
 
 // unsigned char *Engine::Texture::LoadImage(const std::string &path, int &width, int &height,
 //                                             unsigned int &internalFormat, unsigned int &format, bool flipVertically)
