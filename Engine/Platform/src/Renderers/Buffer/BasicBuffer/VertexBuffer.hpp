@@ -8,22 +8,13 @@ namespace Engine
 class VertexBuffer : public BasicBuffer
 {
 public:
-    VertexBuffer(size_t size);
-    VertexBuffer(const void *data, size_t size);
-    VertexBuffer(const std::vector<float> &vertices);
-    virtual ~VertexBuffer() override;
-
-    VertexBuffer(VertexBuffer &&other);
-    VertexBuffer &operator=(VertexBuffer &&other);
-
-public:
-    void Bind() const override;
-    void Unbind() const override;
-
-    void SetData(const void *data, size_t size, size_t offset) override;
+    virtual ~VertexBuffer() override = default;
+    static std::unique_ptr<VertexBuffer> Create(size_t size); // size in bytes
+    static std::unique_ptr<VertexBuffer> Create(const void *data, size_t size);
+    static std::unique_ptr<VertexBuffer> Create(const std::initializer_list<float> &vertices);
 
 protected:
-    void CreateBuffer(const void *data, size_t size) override;
+    VertexBuffer(int count) : BasicBuffer(count) {}
 };
 
 } // namespace Engine

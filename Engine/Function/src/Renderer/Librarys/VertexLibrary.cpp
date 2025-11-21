@@ -107,20 +107,20 @@ Engine::VertexLibrary::VertexLibrary()
     PROFILE_FUNCTION();
 
     auto &&CubeVAO =
-        VertexArray::Create(std::make_unique<Engine::VertexBuffer>(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
+        VertexArray::Create(VertexBuffer::Create(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
                             std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Cube", CubeVAO);
 
-    auto &&vertexArray = VertexArray::Create(
-        std::make_unique<Engine::VertexBuffer>(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
-        std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
+    auto &&vertexArray =
+        VertexArray::Create(VertexBuffer::Create(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
+                            std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Skybox", vertexArray);
 
     // Create dynamic VertexArrays
     ReadConfig();
     {
         auto &&squaresVAO = VertexArray::Create(
-            std::make_unique<Engine::VertexBuffer>(m_MaxSquaresNumber * sizeof(Vertex2D) * 4),
+            VertexBuffer::Create(m_MaxSquaresNumber * sizeof(Vertex2D) * 4),
             std::vector<VertexAttribute>{
                 {0, 1, VertexAttributeType::UInt, 0, sizeof(Vertex2D), (const void *)(0 * sizeof(float))},
                 {1, 3, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(1 * sizeof(float))},
@@ -131,7 +131,7 @@ Engine::VertexLibrary::VertexLibrary()
         AddVertex("Squares", squaresVAO);
 
         auto &&cubesVAO = VertexArray::Create(
-            std::make_unique<Engine::VertexBuffer>(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
+            VertexBuffer::Create(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
             std::vector<VertexAttribute>{
                 {0, 1, VertexAttributeType::UInt, 0, sizeof(Vertex3D), (const void *)(0 * sizeof(float))},
                 {1, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(1 * sizeof(float))},
