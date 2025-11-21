@@ -106,20 +106,20 @@ Engine::VertexLibrary::VertexLibrary()
 {
     PROFILE_FUNCTION();
 
-    auto &&CubeVAO = std::make_shared<VertexArray>(
-        Engine::VertexBuffer(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
-        std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
+    auto &&CubeVAO =
+        VertexArray::Create(Engine::VertexBuffer(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
+                            std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Cube", CubeVAO);
 
-    auto &&vertexArray = std::make_shared<VertexArray>(
-        Engine::VertexBuffer(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
-        std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
+    auto &&vertexArray =
+        VertexArray::Create(Engine::VertexBuffer(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
+                            std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Skybox", vertexArray);
 
     // Create dynamic VertexArrays
     ReadConfig();
     {
-        auto &&squaresVAO = std::make_shared<VertexArray>(
+        auto &&squaresVAO = VertexArray::Create(
             VertexBuffer(m_MaxSquaresNumber * sizeof(Vertex2D) * 4),
             std::vector<VertexAttribute>{
                 {0, 1, VertexAttributeType::UnsignedInt, 0, sizeof(Vertex2D), (const void *)(0 * sizeof(float))},
@@ -130,7 +130,7 @@ Engine::VertexLibrary::VertexLibrary()
             IndexBuffer(m_MaxSquaresNumber * sizeof(unsigned int) * 6));
         AddVertex("Squares", squaresVAO);
 
-        auto &&cubesVAO = std::make_shared<VertexArray>(
+        auto &&cubesVAO = VertexArray::Create(
             VertexBuffer(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
             std::vector<VertexAttribute>{
                 {0, 1, VertexAttributeType::UnsignedInt, 0, sizeof(Vertex3D), (const void *)(0 * sizeof(float))},

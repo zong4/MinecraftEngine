@@ -16,9 +16,9 @@ enum class RendererType
 
 enum class VertexAttributeType
 {
-    Float,
     Int,
-    UnsignedInt,
+    UInt,
+    Float,
 };
 
 struct VertexAttribute
@@ -34,13 +34,13 @@ struct VertexAttribute
 class VertexArray
 {
 public:
-    VertexArray(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes,
-                IndexBuffer &&indexBuffer = IndexBuffer(nullptr, 0), int instanceCount = 1);
-    ~VertexArray();
-
+    static std::shared_ptr<VertexArray> Create(VertexBuffer &&vertexBuffer,
+                                               const std::vector<VertexAttribute> &attributes,
+                                               IndexBuffer &&indexBuffer = IndexBuffer(nullptr, 0),
+                                               int instanceCount = 1);
     VertexArray(const VertexArray &) = delete;
     VertexArray &operator=(const VertexArray &) = delete;
-    VertexArray(VertexArray &&);
+    VertexArray(VertexArray &&other) { CopyFromOther(std::move(other)); }
     VertexArray &operator=(VertexArray &&);
 
     // Getters
@@ -54,22 +54,31 @@ public:
     void SetInstanceCount(int instanceCount) { m_InstanceCount = instanceCount; }
 
 public:
-    void Render(RendererType renderType = RendererType::Triangles, size_t positionCount = 0) const;
+    virtual void Render(RendererType renderType = RendererType::Triangles, size_t positionCount = 0) const = 0;
 
-private:
+protected:
     unsigned int m_RendererID = 0;
     int m_AttributeCount = 0;
     VertexBuffer m_VertexBuffer;
     IndexBuffer m_IndexBuffer;
 
     // Instance rendering
-    int m_InstanceCount;
+    int m_InstanceCount = 1;
 
 protected:
-    void Bind() const;
-    void Unbind() const;
+    VertexArray(VertexBuffer &&vertexBuffer, IndexBuffer &&indexBuffer = IndexBuffer(nullptr, 0), int instanceCount = 1)
+        : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
+    {
+    }
+    virtual ~VertexArray() = default;
 
-    void SetVertexAttributes(const std::vector<VertexAttribute> &attributes);
+protected:
+    virtual void Bind() const = 0;
+    virtual void Unbind() const = 0;
+    virtual void SetVertexAttributes(const std::vector<VertexAttribute> &attributes) = 0;
+
+private:
+    void CopyFromOther(VertexArray &&other);
 };
 
 } // namespace Engine
