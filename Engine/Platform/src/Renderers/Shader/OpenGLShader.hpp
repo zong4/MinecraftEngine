@@ -8,8 +8,7 @@ namespace Engine
 class OpenGLShader : public Shader
 {
 public:
-    OpenGLShader(const std::string &vertexSource, const std::string &fragmentSource,
-                 const std::string &geometrySource = "");
+    OpenGLShader(const std::string &vertexSource, const std::string &fragmentSource, const std::string &geometrySource);
     virtual ~OpenGLShader() override;
 
     // Setters

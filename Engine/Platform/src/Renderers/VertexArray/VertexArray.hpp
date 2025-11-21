@@ -67,8 +67,7 @@ protected:
     int m_InstanceCount = 1;
 
 protected:
-    VertexArray(std::unique_ptr<VertexBuffer> vertexBuffer, std::unique_ptr<IndexBuffer> indexBuffer = nullptr,
-                int instanceCount = 1)
+    VertexArray(std::unique_ptr<VertexBuffer> vertexBuffer, std::unique_ptr<IndexBuffer> indexBuffer, int instanceCount)
         : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
     {
     }

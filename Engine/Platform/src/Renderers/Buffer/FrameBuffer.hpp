@@ -17,13 +17,8 @@ enum class FrameBufferType
 class FrameBuffer
 {
 public:
-    FrameBuffer(FrameBufferType type, int width, int height, int samples = 0);
-    ~FrameBuffer();
-
-    FrameBuffer(const FrameBuffer &) = delete;
-    FrameBuffer &operator=(const FrameBuffer &) = delete;
-    FrameBuffer(FrameBuffer &&) = delete;
-    FrameBuffer &operator=(FrameBuffer &&) = delete;
+    virtual ~FrameBuffer() = default;
+    static std::unique_ptr<FrameBuffer> Create(FrameBufferType type, int width, int height, int samples = 0);
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }
@@ -32,25 +27,29 @@ public:
     std::shared_ptr<Texture2D> GetTexture() const { return m_Texture; }
 
 public:
-    void Bind() const;
-    void Unbind() const;
-    void Blit(unsigned int resolveID) const;
-
+    virtual void Bind() const = 0;
+    virtual void Blit(unsigned int resolveID) const = 0;
+    virtual void Unbind() const = 0;
+    virtual unsigned int PickPixel(int x, int y) const = 0;
     void Resize(int width, int height);
-    unsigned int PickPixel(int x, int y) const;
 
-private:
+protected:
     FrameBufferType m_Type;
     unsigned int m_RendererID = 0;
     int m_Width, m_Height;
     std::shared_ptr<Texture2D> m_Texture = nullptr;
     std::unique_ptr<RenderBuffer> m_RenderBuffer = nullptr;
 
-private:
-    void BindBasicTexture(int width, int height);
-    void BindMultiSampleTexture(int width, int height, int samples);
+protected:
+    FrameBuffer(FrameBufferType type, int width, int height, int samples)
+        : m_Type(type), m_Width(width), m_Height(height)
+    {
+    }
 
-    void BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples);
+protected:
+    virtual void BindBasicTexture(int width, int height) = 0;
+    virtual void BindMultiSampleTexture(int width, int height, int samples) = 0;
+    virtual void BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples) = 0;
 };
 
 } // namespace Engine

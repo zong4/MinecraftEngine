@@ -14,7 +14,7 @@ enum class BufferType
 class BasicBuffer
 {
 public:
-    BasicBuffer(int vertexCount = 0) : m_VertexCount(vertexCount) {}
+    BasicBuffer(int vertexCount) : m_VertexCount(vertexCount) {}
     virtual ~BasicBuffer() = default;
 
     // Copy and move semantics

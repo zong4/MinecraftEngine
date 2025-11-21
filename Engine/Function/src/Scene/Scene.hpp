@@ -58,7 +58,7 @@ private:
     size_t m_SquaresCount = 0;
     size_t m_CubesCount = 0;
     std::unique_ptr<Engine::FrameBuffer> m_ShadowMap =
-        std::make_unique<Engine::FrameBuffer>(Engine::FrameBufferType::Depth, 1280, 720);
+        Engine::FrameBuffer::Create(Engine::FrameBufferType::Depth, 1280, 720);
     std::vector<Entity> m_DeletedEntities = {};
 
 private:
