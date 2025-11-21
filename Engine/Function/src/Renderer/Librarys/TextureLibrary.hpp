@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Platform.hpp>
-#include <array>
-#include <filesystem>
 
 namespace Engine
 {

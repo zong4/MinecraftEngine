@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Platform.hpp>
-#include <filesystem>
 
 namespace Engine
 {

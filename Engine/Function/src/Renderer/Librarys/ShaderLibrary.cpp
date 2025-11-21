@@ -1,5 +1,5 @@
 #include "ShaderLibrary.hpp"
-#include <filesystem>
+
 Engine::ShaderLibrary &Engine::ShaderLibrary::GetInstance()
 {
     static ShaderLibrary instance;
