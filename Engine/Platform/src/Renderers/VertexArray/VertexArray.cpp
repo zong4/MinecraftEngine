@@ -4,9 +4,10 @@
 #include "OpenGLVertexArray.hpp"
 #include <glad/glad.h>
 
-std::shared_ptr<Engine::VertexArray> Engine::VertexArray::Create(VertexBuffer &&vertexBuffer,
+std::shared_ptr<Engine::VertexArray> Engine::VertexArray::Create(std::unique_ptr<VertexBuffer> vertexBuffer,
                                                                  const std::vector<VertexAttribute> &attributes,
-                                                                 IndexBuffer &&indexBuffer, int instanceCount)
+                                                                 std::unique_ptr<IndexBuffer> indexBuffer,
+                                                                 int instanceCount)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
@@ -58,17 +59,18 @@ Engine::VertexArray &Engine::VertexArray::operator=(VertexArray &&other)
     return *this;
 }
 
-void Engine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes)
+void Engine::VertexArray::SetVertexBuffer(std::unique_ptr<VertexBuffer> vertexBuffer,
+                                          const std::vector<VertexAttribute> &attributes)
 {
     m_VertexBuffer = std::move(vertexBuffer);
     SetVertexAttributes(attributes);
     LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) +
-                     " set with new VertexBuffer ID: " + std::to_string(m_VertexBuffer.GetRendererID()));
+                     " set with new VertexBuffer ID: " + std::to_string(m_VertexBuffer->GetRendererID()));
 }
 
-void Engine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
+void Engine::VertexArray::SetIndexBuffer(std::unique_ptr<IndexBuffer> indexBuffer)
 {
     m_IndexBuffer = std::move(indexBuffer);
     LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) +
-                     " set with new IndexBuffer ID: " + std::to_string(m_IndexBuffer.GetRendererID()));
+                     " set with new IndexBuffer ID: " + std::to_string(m_IndexBuffer->GetRendererID()));
 }

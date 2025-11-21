@@ -34,10 +34,9 @@ struct VertexAttribute
 class VertexArray
 {
 public:
-    static std::shared_ptr<VertexArray> Create(VertexBuffer &&vertexBuffer,
-                                               const std::vector<VertexAttribute> &attributes,
-                                               IndexBuffer &&indexBuffer = IndexBuffer(nullptr, 0),
-                                               int instanceCount = 1);
+    static std::shared_ptr<VertexArray> Create(
+        std::unique_ptr<VertexBuffer> vertexBuffer, const std::vector<VertexAttribute> &attributes,
+        std::unique_ptr<IndexBuffer> indexBuffer = std::make_unique<IndexBuffer>(nullptr, 0), int instanceCount = 1);
     VertexArray(const VertexArray &) = delete;
     VertexArray &operator=(const VertexArray &) = delete;
     VertexArray(VertexArray &&);
@@ -45,12 +44,12 @@ public:
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }
-    VertexBuffer &GetVertexBuffer() { return m_VertexBuffer; }
-    IndexBuffer &GetIndexBuffer() { return m_IndexBuffer; }
+    std::unique_ptr<VertexBuffer> &GetVertexBuffer() { return m_VertexBuffer; }
+    std::unique_ptr<IndexBuffer> &GetIndexBuffer() { return m_IndexBuffer; }
 
     // Setters
-    void SetVertexBuffer(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes);
-    void SetIndexBuffer(IndexBuffer &&indexBuffer);
+    void SetVertexBuffer(std::unique_ptr<VertexBuffer> vertexBuffer, const std::vector<VertexAttribute> &attributes);
+    void SetIndexBuffer(std::unique_ptr<IndexBuffer> indexBuffer);
     void SetInstanceCount(int instanceCount) { m_InstanceCount = instanceCount; }
 
 public:
@@ -59,14 +58,16 @@ public:
 protected:
     unsigned int m_RendererID = 0;
     int m_AttributeCount = 0;
-    VertexBuffer m_VertexBuffer;
-    IndexBuffer m_IndexBuffer;
+    std::unique_ptr<VertexBuffer> m_VertexBuffer;
+    std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
     // Instance rendering
     int m_InstanceCount = 1;
 
 protected:
-    VertexArray(VertexBuffer &&vertexBuffer, IndexBuffer &&indexBuffer = IndexBuffer(nullptr, 0), int instanceCount = 1)
+    VertexArray(std::unique_ptr<VertexBuffer> vertexBuffer,
+                std::unique_ptr<IndexBuffer> indexBuffer = std::make_unique<IndexBuffer>(nullptr, 0),
+                int instanceCount = 1)
         : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
     {
     }

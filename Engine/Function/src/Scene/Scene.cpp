@@ -88,9 +88,9 @@ void Engine::Scene::PreRender()
             squareIndex++;
         }
         m_SquaresCount = squareIndex;
-        VertexLibrary::GetInstance().GetVertex("Squares")->GetVertexBuffer().SetData(
+        VertexLibrary::GetInstance().GetVertex("Squares")->GetVertexBuffer()->SetData(
             squaresVertices.data(), m_SquaresCount * 4 * sizeof(Vertex2D), 0);
-        VertexLibrary::GetInstance().GetVertex("Squares")->GetIndexBuffer().SetData(
+        VertexLibrary::GetInstance().GetVertex("Squares")->GetIndexBuffer()->SetData(
             squaresIndices.data(), m_SquaresCount * 6 * sizeof(unsigned int), 0);
     }
 
@@ -140,7 +140,7 @@ void Engine::Scene::PreRender()
             cubeIndex++;
         }
         m_CubesCount = cubeIndex;
-        VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer().SetData(
+        VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
             cubesVertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
     }
 }

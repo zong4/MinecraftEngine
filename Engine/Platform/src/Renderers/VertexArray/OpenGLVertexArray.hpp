@@ -8,8 +8,8 @@ namespace Engine
 class OpenGLVertexArray : public VertexArray
 {
 public:
-    OpenGLVertexArray(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes,
-                      IndexBuffer &&indexBuffer = IndexBuffer(nullptr, 0), int instanceCount = 1);
+    OpenGLVertexArray(std::unique_ptr<VertexBuffer> vertexBuffer, const std::vector<VertexAttribute> &attributes,
+                      std::unique_ptr<IndexBuffer> indexBuffer = nullptr, int instanceCount = 1);
     virtual ~OpenGLVertexArray() override;
 
 public:
