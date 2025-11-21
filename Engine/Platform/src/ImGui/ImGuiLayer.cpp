@@ -1,13 +1,25 @@
 ﻿#include "ImGuiLayer.hpp"
 
 #include "../Renderers/RendererProperty.hpp"
+#include "OpenGLImGuiLayer.hpp"
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 
-Engine::ImGuiLayer::ImGuiLayer(void *nativeWindow) : Layer("ImGuiLayer"), m_NativeWindow(nativeWindow) {}
+std::shared_ptr<Engine::ImGuiLayer> Engine::ImGuiLayer::Create(void *nativeWindow)
+{
+    switch (Engine::RendererProperty::GetInstance().GetAPI())
+    {
+    case Engine::RendererAPI::OpenGL:
+        return std::make_shared<Engine::OpenGLImGuiLayer>(nativeWindow);
+    case Engine::RendererAPI::Vulkan:
+        LOG_ENGINE_ASSERT("VulkanImGuiLayer is not implemented yet");
+        return nullptr;
+    default:
+        LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        return nullptr;
+    }
+}
 
 void Engine::ImGuiLayer::OnEvent(Event &event)
 {
@@ -59,38 +71,14 @@ void Engine::ImGuiLayer::OnAttach()
     SetDarkThemeColors();
 
     // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow *>(m_NativeWindow), true);
-    std::string glsl_version = "#version " + std::to_string(Engine::RendererProperty::GetInstance().GetMajorVersion()) +
-                               std::to_string(Engine::RendererProperty::GetInstance().GetMinorVersion()) + "0";
-    ImGui_ImplOpenGL3_Init(glsl_version.c_str());
-}
-
-void Engine::ImGuiLayer::BeginRenderImGui() const
-{
-    PROFILE_FUNCTION();
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
-
-void Engine::ImGuiLayer::EndRenderImGui() const
-{
-    PROFILE_FUNCTION();
-
-    int width, height;
-    glfwGetWindowSize(static_cast<GLFWwindow *>(m_NativeWindow), &width, &height);
-    ImGuiIO &io = ImGui::GetIO();
-    io.DisplaySize = ImVec2((float)width, (float)height);
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    InitRenderer();
 }
 
 void Engine::ImGuiLayer::OnDetach()
 {
     PROFILE_FUNCTION();
 
-    ImGui_ImplOpenGL3_Shutdown();
+    ShutdownRenderer();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }

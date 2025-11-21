@@ -8,8 +8,7 @@ namespace Engine
 class ImGuiLayer : public Layer
 {
 public:
-    ImGuiLayer(void *nativeWindow);
-    virtual ~ImGuiLayer() override = default;
+    static std::shared_ptr<ImGuiLayer> Create(void *nativeWindow);
 
     // Setters
     void SetBlockEvents(bool block) { m_BlockEvents = block; }
@@ -17,13 +16,21 @@ public:
 public:
     void OnAttach() override;
     void OnEvent(Event &event) override;
-    void BeginRenderImGui() const;
-    void EndRenderImGui() const;
+    virtual void BeginRenderImGui() const = 0;
+    virtual void EndRenderImGui() const = 0;
     void OnDetach() override;
 
 protected:
     bool m_BlockEvents = true;
     void *m_NativeWindow;
+
+protected:
+    ImGuiLayer(void *nativeWindow) : Layer("ImGuiLayer"), m_NativeWindow(nativeWindow) {}
+    virtual ~ImGuiLayer() override = default;
+
+protected:
+    virtual void InitRenderer() = 0;
+    virtual void ShutdownRenderer() = 0;
 
 private:
     void SetDarkThemeColors();

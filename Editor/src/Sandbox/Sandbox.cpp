@@ -7,7 +7,7 @@ Editor::Sandbox::Sandbox(const Engine::WindowProperty &props) : Application(prop
 {
     AddLayer(std::make_shared<SandboxLayer>(m_Window));
     AddLayer(std::make_shared<Engine::InputLayer>());
-    AddLayer(std::make_shared<Engine::ImGuiLayer>(m_Window->GetNativeWindow()));
+    AddLayer(Engine::ImGuiLayer::Create(m_Window->GetNativeWindow()));
 }
 
 std::unique_ptr<Engine::Application> Engine::CreateApplication()
