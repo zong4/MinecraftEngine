@@ -8,37 +8,33 @@ Engine::ShaderLibrary &Engine::ShaderLibrary::GetInstance()
 
 std::string Engine::ShaderLibrary::GetName(const std::shared_ptr<Shader> &shader) const
 {
-    for (const auto &[name, ptr] : m_Shaders)
+    for (const auto &[name, ptr] : m_ShaderMap)
     {
         if (ptr == shader)
             return name;
     }
-    LOG_ENGINE_WARN("Shader not found in library");
+    LOG_ENGINE_ERROR("Shader not found in library");
     return "";
 }
 
 std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::GetShader(const std::string &name)
 {
-    PROFILE_FUNCTION();
-
     if (!Exists(name))
     {
-        LOG_ENGINE_ASSERT("Shader not found: " + name);
+        LOG_ENGINE_ERROR("Shader not found: " + name);
         return nullptr;
     }
-    return m_Shaders[name];
+    return m_ShaderMap[name];
 }
 
 void Engine::ShaderLibrary::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
 {
-    PROFILE_FUNCTION();
-
     if (Exists(name))
     {
-        LOG_ENGINE_ASSERT("Shader already exists: " + name);
+        LOG_ENGINE_WARN("Shader already exists: " + name);
         return;
     }
-    m_Shaders[name] = shader;
+    m_ShaderMap[name] = shader;
     LOG_ENGINE_TRACE("Shader added: " + name);
 }
 
@@ -47,14 +43,11 @@ std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::LoadShader(const std::str
                                                                   const std::string &fragmentSource,
                                                                   const std::string &geometrySource)
 {
-    PROFILE_FUNCTION();
-
     if (Exists(name))
     {
-        LOG_ENGINE_ASSERT("Shader already exists: " + name);
-        return m_Shaders[name];
+        LOG_ENGINE_WARN("Shader already exists: " + name);
+        return m_ShaderMap[name];
     }
-
     auto &&shader = std::make_shared<Engine::Shader>(vertexSource, fragmentSource, geometrySource);
     AddShader(name, shader);
     return shader;
@@ -115,7 +108,7 @@ Engine::ShaderLibrary::ShaderLibrary()
             }
             else
             {
-                LOG_ENGINE_WARN("Vertex shader not found for: " + fragmentPath.string());
+                LOG_ENGINE_ERROR("Vertex shader not found for: " + fragmentPath.string());
                 continue;
             }
 
@@ -139,4 +132,7 @@ Engine::ShaderLibrary::ShaderLibrary()
     LOG_ENGINE_INFO("ShaderLibrary initialized");
 }
 
-bool Engine::ShaderLibrary::Exists(const std::string &name) const { return m_Shaders.find(name) != m_Shaders.end(); }
+bool Engine::ShaderLibrary::Exists(const std::string &name) const
+{
+    return m_ShaderMap.find(name) != m_ShaderMap.end();
+}

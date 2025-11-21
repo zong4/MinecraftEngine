@@ -1,9 +1,9 @@
 #include "Scene.hpp"
 
-#include "../Renderer/Buffer/UniformBufferLibrary.hpp"
+#include "../Renderer/Librarys/ShaderLibrary.hpp"
+#include "../Renderer/Librarys/UniformBufferLibrary.hpp"
+#include "../Renderer/Librarys/VAOLibrary.hpp"
 #include "../Renderer/Material/MaterialLibrary.hpp"
-#include "../Renderer/Shader/ShaderLibrary.hpp"
-#include "../Renderer/VertexArray/VAOLibrary.hpp"
 
 Engine::Scene::~Scene()
 {

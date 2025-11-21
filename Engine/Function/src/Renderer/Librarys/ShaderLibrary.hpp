@@ -17,7 +17,7 @@ public:
                                        const std::string &fragmentSource, const std::string &geometrySource = "");
 
 private:
-    std::unordered_map<std::string, std::shared_ptr<Shader>> m_Shaders;
+    std::unordered_map<std::string, std::shared_ptr<Shader>> m_ShaderMap;
 
 private:
     ShaderLibrary();
