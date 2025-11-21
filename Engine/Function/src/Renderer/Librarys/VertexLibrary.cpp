@@ -1,4 +1,4 @@
-#include "VAOLibrary.hpp"
+#include "VertexLibrary.hpp"
 
 namespace Engine
 {
@@ -56,49 +56,45 @@ inline const SkyboxCubeData g_SkyboxCubeData;
 
 } // namespace Engine
 
-Engine::VAOLibrary &Engine::VAOLibrary::GetInstance()
+Engine::VertexLibrary &Engine::VertexLibrary::GetInstance()
 {
-    static VAOLibrary instance;
+    static VertexLibrary instance;
     return instance;
 }
 
-std::string Engine::VAOLibrary::GetName(const std::shared_ptr<VertexArray> &vao) const
+std::string Engine::VertexLibrary::GetName(const std::shared_ptr<VertexArray> &vao) const
 {
-    for (const auto &[name, ptr] : m_VAOs)
+    for (const auto &[name, ptr] : m_VertexMap)
     {
         if (ptr == vao)
             return name;
     }
-    LOG_ENGINE_WARN("VAO not found in library");
+    LOG_ENGINE_ERROR("VAO not found in library");
     return "";
 }
 
-std::shared_ptr<Engine::VertexArray> Engine::VAOLibrary::GetVAO(const std::string &name)
+std::shared_ptr<Engine::VertexArray> Engine::VertexLibrary::GetVertex(const std::string &name)
 {
-    PROFILE_FUNCTION();
-
     if (!Exists(name))
     {
-        LOG_ENGINE_ASSERT("VAO not found: " + name);
+        LOG_ENGINE_ERROR("VAO not found: " + name);
         return nullptr;
     }
-    return m_VAOs[name];
+    return m_VertexMap[name];
 }
 
-void Engine::VAOLibrary::AddVAO(const std::string &name, const std::shared_ptr<VertexArray> &vao)
+void Engine::VertexLibrary::AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vao)
 {
-    PROFILE_FUNCTION();
-
     if (Exists(name))
     {
         LOG_ENGINE_WARN("VAO already exists: " + name);
         return;
     }
-    m_VAOs[name] = vao;
+    m_VertexMap[name] = vao;
     LOG_ENGINE_TRACE("VAO added: " + name);
 }
 
-Engine::VAOLibrary::VAOLibrary()
+Engine::VertexLibrary::VertexLibrary()
 {
     PROFILE_FUNCTION();
 
@@ -112,7 +108,7 @@ Engine::VAOLibrary::VAOLibrary()
             {3, 1, VertexAttributeType::Int, 0, sizeof(Vertex2D), (const void *)(6 * sizeof(float))},
             {4, 4, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(7 * sizeof(float))}},
         IndexBuffer(MaxSquaresNumber * sizeof(unsigned int) * 6));
-    AddVAO("Squares", squaresVAO);
+    AddVertex("Squares", squaresVAO);
 
     static int MaxCubesNumber = 10000;
     auto &&cubesVAO = std::make_shared<VertexArray>(
@@ -124,19 +120,17 @@ Engine::VAOLibrary::VAOLibrary()
             {3, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(7 * sizeof(float))},
             {4, 4, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(10 * sizeof(float))},
             {5, 4, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(14 * sizeof(float))}});
-    AddVAO("Cubes", cubesVAO);
+    AddVertex("Cubes", cubesVAO);
 
     auto &&vertexArray = std::make_shared<VertexArray>(
         Engine::VertexBuffer(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
-    AddVAO("Skybox", vertexArray);
+    AddVertex("Skybox", vertexArray);
 
     auto &&CubeVAO = std::make_shared<VertexArray>(
-        Engine::VertexBuffer(g_IdentityCubeData.Positions, sizeof(g_IdentityCubeData.Positions)),
+        Engine::VertexBuffer(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
-    AddVAO("Cube", CubeVAO);
+    AddVertex("Cube", CubeVAO);
 
     LOG_ENGINE_INFO("VAO Library initialized");
 }
-
-bool Engine::VAOLibrary::Exists(const std::string &name) const { return m_VAOs.find(name) != m_VAOs.end(); }

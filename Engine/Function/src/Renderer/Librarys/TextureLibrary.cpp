@@ -8,16 +8,14 @@ Engine::TextureLibrary &Engine::TextureLibrary::GetInstance()
 
 int Engine::TextureLibrary::GetTextureSlot(const std::shared_ptr<Texture> &texture)
 {
-    for (size_t i = 0; i < m_TextureSlots.size(); ++i)
+    for (size_t i = 0; i < m_TextureSlots.size(); i++)
     {
         if (m_TextureSlots[i] == GetName(texture))
-        {
             return static_cast<int>(i);
-        }
     }
 
     // Find an empty slot
-    for (size_t i = 0; i < m_TextureSlots.size(); ++i)
+    for (size_t i = 0; i < m_TextureSlots.size(); i++)
     {
         if (m_TextureSlots[i].empty())
         {
@@ -26,59 +24,51 @@ int Engine::TextureLibrary::GetTextureSlot(const std::shared_ptr<Texture> &textu
         }
     }
 
-    LOG_ENGINE_WARN("No available texture slots");
+    LOG_ENGINE_ERROR("No available texture slots");
     return -1;
 }
 
 std::string Engine::TextureLibrary::GetName(const std::shared_ptr<Texture> &texture) const
 {
-    for (const auto &[name, ptr] : m_Textures)
+    for (const auto &[name, ptr] : m_TextureMap)
     {
         if (ptr == texture)
             return name;
     }
-    LOG_ENGINE_WARN("Texture not found in library");
+    LOG_ENGINE_ERROR("Texture not found in library");
     return "";
 }
 
 std::shared_ptr<Engine::Texture2D> Engine::TextureLibrary::GetTexture2D(const std::string &name)
 {
-    PROFILE_FUNCTION();
-
     if (!Exists(name))
     {
-        LOG_ENGINE_ASSERT("Texture not found: " + name);
+        LOG_ENGINE_ERROR("Texture not found: " + name);
         return nullptr;
     }
-    return std::dynamic_pointer_cast<Texture2D>(m_Textures[name]);
+    return std::dynamic_pointer_cast<Texture2D>(m_TextureMap[name]);
 }
 
 std::shared_ptr<Engine::TextureCube> Engine::TextureLibrary::GetTextureCube(const std::string &name)
 {
-    PROFILE_FUNCTION();
-
     if (!Exists(name))
     {
-        LOG_ENGINE_ASSERT("Texture not found: " + name);
+        LOG_ENGINE_ERROR("Texture not found: " + name);
         return nullptr;
     }
-    return std::dynamic_pointer_cast<TextureCube>(m_Textures[name]);
+    return std::dynamic_pointer_cast<TextureCube>(m_TextureMap[name]);
 }
 
 void Engine::TextureLibrary::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
 {
-    PROFILE_FUNCTION();
-
     if (Exists(name))
     {
-        LOG_ENGINE_ASSERT("Texture already exists: " + name);
+        LOG_ENGINE_WARN("Texture already exists: " + name);
         return;
     }
-    m_Textures[name] = texture;
+    m_TextureMap[name] = texture;
     LOG_ENGINE_TRACE("Texture added: " + name);
 }
-
-void Engine::TextureLibrary::ClearTextureSlots() { m_TextureSlots.fill(""); }
 
 Engine::TextureLibrary::TextureLibrary()
 {
@@ -87,7 +77,7 @@ Engine::TextureLibrary::TextureLibrary()
     AddTexture("DefaultTexture", Texture2D::WhiteTexture());
     AddTexture("DefaultCubeMap", TextureCube::WhiteTexture());
 
-    std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Images/");
+    std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Function/resources/Images/");
     if (!std::filesystem::exists(path))
     {
         LOG_ENGINE_ASSERT("Texture directory does not exist: " + path.string());
@@ -135,5 +125,3 @@ Engine::TextureLibrary::TextureLibrary()
 
     LOG_ENGINE_INFO("Texture Library initialized");
 }
-
-bool Engine::TextureLibrary::Exists(const std::string &name) const { return m_Textures.find(name) != m_Textures.end(); }

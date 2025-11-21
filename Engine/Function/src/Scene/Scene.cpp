@@ -1,8 +1,8 @@
 #include "Scene.hpp"
 
 #include "../Renderer/Librarys/ShaderLibrary.hpp"
-#include "../Renderer/Librarys/UniformBufferLibrary.hpp"
-#include "../Renderer/Librarys/VAOLibrary.hpp"
+#include "../Renderer/Librarys/UniformLibrary.hpp"
+#include "../Renderer/Librarys/VertexLibrary.hpp"
 #include "../Renderer/Material/MaterialLibrary.hpp"
 
 Engine::Scene::~Scene()
@@ -74,23 +74,23 @@ void Engine::Scene::PreRender()
             {
                 glm::mat4 u_Model = transform.GetTransformMatrix();
                 squaresVertices.push_back(
-                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentitySquareData.Positions[i], 1.0f)),
-                     g_IdentitySquareData.TexCoords[i],
-                     TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance), sprite.Color});
+                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
+                     g_SquareData.TexCoords[i], TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance),
+                     sprite.Color});
             }
 
             // Indices
             for (int i = 0; i < 6; i++)
             {
-                squaresIndices.push_back(g_IdentitySquareData.Indices[i] + squareIndex * 4);
+                squaresIndices.push_back(g_SquareData.Indices[i] + squareIndex * 4);
             }
 
             squareIndex++;
         }
         m_SquaresCount = squareIndex;
-        VAOLibrary::GetInstance().GetVAO("Squares")->GetVertexBuffer().SetData(
+        VertexLibrary::GetInstance().GetVertex("Squares")->GetVertexBuffer().SetData(
             squaresVertices.data(), m_SquaresCount * 4 * sizeof(Vertex2D), 0);
-        VAOLibrary::GetInstance().GetVAO("Squares")->GetIndexBuffer().SetData(
+        VertexLibrary::GetInstance().GetVertex("Squares")->GetIndexBuffer().SetData(
             squaresIndices.data(), m_SquaresCount * 6 * sizeof(unsigned int), 0);
     }
 
@@ -134,15 +134,15 @@ void Engine::Scene::PreRender()
             {
                 glm::mat4 u_Model = transform.GetTransformMatrix();
                 cubesVertices.push_back(
-                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_IdentityCubeData.Positions[i], 1.0f)),
-                     glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_IdentityCubeData.Normals[i]),
-                     g_IdentityCubeData.Positions[i], color, materialData});
+                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
+                     glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
+                     g_CubeData.Positions[i], color, materialData});
             }
             cubeIndex++;
         }
         m_CubesCount = cubeIndex;
-        VAOLibrary::GetInstance().GetVAO("Cubes")->GetVertexBuffer().SetData(cubesVertices.data(),
-                                                                             m_CubesCount * 36 * sizeof(Vertex3D), 0);
+        VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer().SetData(
+            cubesVertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
     }
 }
 
@@ -165,7 +165,7 @@ void Engine::Scene::RenderShadowMap() const
         shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f));
 
         if (m_CubesCount > 0)
-            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+            VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
 
         m_ShadowMap->Unbind();
 
@@ -193,7 +193,7 @@ void Engine::Scene::Render(const Entity &camera) const
             return;
 
         cameraComp->UpdateProjectionMatrix();
-        UniformBufferLibrary::GetInstance().UpdateUniformBuffer(
+        UniformLibrary::GetInstance().UpdateUniform(
             "UniformBuffer0",
             {
                 {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0},
@@ -223,9 +223,10 @@ void Engine::Scene::RenderColorID() const
         shader->Bind();
 
         if (m_SquaresCount > 0)
-            VAOLibrary::GetInstance().GetVAO("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
+            VertexLibrary::GetInstance().GetVertex("Squares")->Render(Engine::RendererType::Triangles,
+                                                                      m_SquaresCount * 6);
         if (m_CubesCount > 0)
-            VAOLibrary::GetInstance().GetVAO("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+            VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
 
         shader->Unbind();
     }
@@ -342,7 +343,7 @@ void Engine::Scene::Render2D() const
 
     // Render squares
     if (m_SquaresCount > 0)
-        VAOLibrary::GetInstance().GetVAO("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
+        VertexLibrary::GetInstance().GetVertex("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
     TextureLibrary::GetInstance().ClearTextureSlots();
 
     shader->Unbind();
@@ -404,7 +405,7 @@ void Engine::Scene::Render3D() const
     TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
     shader->SetUniformInt("u_Texture", lightIndex + 1);
     if (m_CubesCount > 0)
-        VAOLibrary::GetInstance().GetVAO("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
     TextureLibrary::GetInstance().ClearTextureSlots();
     shader->Unbind();
 }
@@ -427,7 +428,7 @@ void Engine::Scene::RenderSkybox() const
         auto &&skybox = m_Registry.get<Engine::SkyboxComponent>(view.front());
         shader->SetUniformInt("u_Skybox", 0);
         skybox.GetTextureCube()->Bind(0);
-        Engine::VAOLibrary::GetInstance().GetVAO("Skybox")->Render();
+        Engine::VertexLibrary::GetInstance().GetVertex("Skybox")->Render();
     }
 
     shader->Unbind();

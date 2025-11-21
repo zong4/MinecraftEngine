@@ -14,7 +14,7 @@ struct Vertex2D
     glm::vec4 Color;
 };
 
-struct IdentitySquareData
+struct SquareData
 {
     glm::vec3 Positions[4] = {
         {0.5f, 0.5f, 0.0f},   // top right
@@ -34,7 +34,7 @@ struct IdentitySquareData
         1, 3, 2  // second Triangle
     };
 };
-inline const IdentitySquareData g_IdentitySquareData;
+inline const SquareData g_SquareData;
 
 struct Vertex3D
 {
@@ -46,7 +46,7 @@ struct Vertex3D
     glm::vec4 Material; // ambient, diffuse, specular , shininess
 };
 
-struct IdentityCubeData
+struct CubeData
 {
     // clang-format off
     glm::vec3 Positions[36] = {
@@ -119,25 +119,25 @@ struct IdentityCubeData
         glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
     // clang-format on
 };
-inline const IdentityCubeData g_IdentityCubeData;
+inline const CubeData g_CubeData;
 
-class VAOLibrary
+class VertexLibrary
 {
 public:
-    static VAOLibrary &GetInstance();
+    static VertexLibrary &GetInstance();
 
     std::string GetName(const std::shared_ptr<VertexArray> &vao) const;
-    std::shared_ptr<VertexArray> GetVAO(const std::string &name);
-    void AddVAO(const std::string &name, const std::shared_ptr<VertexArray> &vao);
+    std::shared_ptr<VertexArray> GetVertex(const std::string &name);
+    void AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vao);
 
 private:
-    std::unordered_map<std::string, std::shared_ptr<VertexArray>> m_VAOs;
+    std::unordered_map<std::string, std::shared_ptr<VertexArray>> m_VertexMap;
 
 private:
-    VAOLibrary();
-    ~VAOLibrary() = default;
+    VertexLibrary();
+    ~VertexLibrary() = default;
 
-    bool Exists(const std::string &name) const;
+    bool Exists(const std::string &name) const { return m_VertexMap.find(name) != m_VertexMap.end(); }
 };
 
 } // namespace Engine

@@ -23,7 +23,7 @@ private:
     ShaderLibrary();
     ~ShaderLibrary() = default;
 
-    bool Exists(const std::string &name) const;
+    bool Exists(const std::string &name) const { return m_ShaderMap.find(name) != m_ShaderMap.end(); }
 };
 
 } // namespace Engine

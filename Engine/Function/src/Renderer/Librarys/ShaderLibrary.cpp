@@ -57,7 +57,7 @@ Engine::ShaderLibrary::ShaderLibrary()
 {
     PROFILE_FUNCTION();
 
-    std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Resources/Shaders/");
+    std::filesystem::path path(std::string(PROJECT_ROOT) + "/Engine/Function/resources/Shaders/");
     if (!std::filesystem::exists(path))
     {
         LOG_ENGINE_ASSERT("Shader directory does not exist: " + path.string());
@@ -130,9 +130,4 @@ Engine::ShaderLibrary::ShaderLibrary()
     }
 
     LOG_ENGINE_INFO("ShaderLibrary initialized");
-}
-
-bool Engine::ShaderLibrary::Exists(const std::string &name) const
-{
-    return m_ShaderMap.find(name) != m_ShaderMap.end();
 }

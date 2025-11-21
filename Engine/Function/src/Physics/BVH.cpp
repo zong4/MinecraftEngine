@@ -1,7 +1,7 @@
 #include "BVH.hpp"
 
 #include "../Renderer/Librarys/ShaderLibrary.hpp"
-#include "../Renderer/Librarys/VAOLibrary.hpp"
+#include "../Renderer/Librarys/VertexLibrary.hpp"
 
 Engine::BVH::BVH(std::shared_ptr<Scene> scene)
 {
@@ -48,7 +48,7 @@ void Engine::BVH::Render(int maxDepth) const
         shader->SetUniformVec4("uColor", glm::vec4(t, 1.0f - t, 0.5f, 1.0f));
 
         // Render box
-        VAOLibrary::GetInstance().GetVAO("Cube")->Render(RendererType::Lines);
+        VertexLibrary::GetInstance().GetVertex("Cube")->Render(RendererType::Lines);
         renderNode(node->Left, depth + 1);
         renderNode(node->Right, depth + 1);
     };
