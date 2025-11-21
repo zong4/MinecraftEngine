@@ -64,11 +64,11 @@ Engine::VertexLibrary &Engine::VertexLibrary::GetInstance()
     return instance;
 }
 
-std::string Engine::VertexLibrary::GetName(const std::shared_ptr<VertexArray> &vao) const
+std::string Engine::VertexLibrary::GetName(const std::shared_ptr<VertexArray> &vertexArray) const
 {
     for (const auto &[name, ptr] : m_VertexMap)
     {
-        if (ptr == vao)
+        if (ptr == vertexArray)
             return name;
     }
     LOG_ENGINE_ERROR("VAO not found in library");
@@ -85,14 +85,20 @@ std::shared_ptr<Engine::VertexArray> Engine::VertexLibrary::GetVertex(const std:
     return m_VertexMap[name];
 }
 
-void Engine::VertexLibrary::AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vao)
+void Engine::VertexLibrary::AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vertexArray)
 {
+    if (!vertexArray)
+    {
+        LOG_ENGINE_ASSERT("Cannot add null vertex array: " + name);
+        return;
+    }
+
     if (Exists(name))
     {
         LOG_ENGINE_WARN("VAO already exists: " + name);
         return;
     }
-    m_VertexMap[name] = vao;
+    m_VertexMap[name] = vertexArray;
     LOG_ENGINE_TRACE("VAO added: " + name);
 }
 
@@ -100,19 +106,18 @@ Engine::VertexLibrary::VertexLibrary()
 {
     PROFILE_FUNCTION();
 
-    ReadConfig();
+    auto &&CubeVAO = std::make_shared<VertexArray>(
+        Engine::VertexBuffer(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
+        std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
+    AddVertex("Cube", CubeVAO);
 
     auto &&vertexArray = std::make_shared<VertexArray>(
         Engine::VertexBuffer(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Skybox", vertexArray);
 
-    auto &&CubeVAO = std::make_shared<VertexArray>(
-        Engine::VertexBuffer(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
-        std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
-    AddVertex("Cube", CubeVAO);
-
     // Create dynamic VertexArrays
+    ReadConfig();
     {
         auto &&squaresVAO = std::make_shared<VertexArray>(
             VertexBuffer(m_MaxSquaresNumber * sizeof(Vertex2D) * 4),

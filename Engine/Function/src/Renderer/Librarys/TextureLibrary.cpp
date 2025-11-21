@@ -61,6 +61,12 @@ std::shared_ptr<Engine::TextureCube> Engine::TextureLibrary::GetTextureCube(cons
 
 void Engine::TextureLibrary::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
 {
+    if (!texture)
+    {
+        LOG_ENGINE_ASSERT("Cannot add null texture: " + name);
+        return;
+    }
+
     if (Exists(name))
     {
         LOG_ENGINE_WARN("Texture already exists: " + name);

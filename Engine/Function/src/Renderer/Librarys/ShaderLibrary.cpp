@@ -29,6 +29,12 @@ std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::GetShader(const std::stri
 
 void Engine::ShaderLibrary::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
 {
+    if (!shader)
+    {
+        LOG_ENGINE_ASSERT("Cannot add null shader: " + name);
+        return;
+    }
+
     if (Exists(name))
     {
         LOG_ENGINE_WARN("Shader already exists: " + name);

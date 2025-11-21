@@ -128,9 +128,9 @@ public:
 
     int GetMaxSquaresNumber() const { return m_MaxSquaresNumber; }
     int GetMaxCubesNumber() const { return m_MaxCubesNumber; }
-    std::string GetName(const std::shared_ptr<VertexArray> &vao) const;
+    std::string GetName(const std::shared_ptr<VertexArray> &vertexArray) const;
     std::shared_ptr<VertexArray> GetVertex(const std::string &name);
-    void AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vao);
+    void AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vertexArray);
 
 private:
     int m_MaxSquaresNumber;
