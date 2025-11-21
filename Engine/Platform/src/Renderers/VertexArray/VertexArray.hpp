@@ -37,10 +37,10 @@ public:
     static std::shared_ptr<VertexArray> Create(
         std::unique_ptr<VertexBuffer> vertexBuffer, const std::vector<VertexAttribute> &attributes,
         std::unique_ptr<IndexBuffer> indexBuffer = std::make_unique<IndexBuffer>(nullptr, 0), int instanceCount = 1);
+
+    // Copy
     VertexArray(const VertexArray &) = delete;
     VertexArray &operator=(const VertexArray &) = delete;
-    VertexArray(VertexArray &&);
-    VertexArray &operator=(VertexArray &&);
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }

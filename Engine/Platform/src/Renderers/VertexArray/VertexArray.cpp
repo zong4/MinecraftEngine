@@ -23,42 +23,6 @@ std::shared_ptr<Engine::VertexArray> Engine::VertexArray::Create(std::unique_ptr
     }
 }
 
-Engine::VertexArray::VertexArray(VertexArray &&other)
-    : VertexArray(std::move(other.m_VertexBuffer), std::move(other.m_IndexBuffer), other.m_InstanceCount)
-{
-    m_RendererID = other.m_RendererID;
-    m_AttributeCount = other.m_AttributeCount;
-    LOG_ENGINE_TRACE("VertexArray move-constructed with ID: " + std::to_string(m_RendererID));
-
-    // Invalidate the moved-from object
-    other.m_RendererID = 0;
-    other.m_AttributeCount = 0;
-    other.m_InstanceCount = 1;
-}
-
-Engine::VertexArray &Engine::VertexArray::operator=(VertexArray &&other)
-{
-    if (this != &other)
-    {
-        if (m_RendererID != 0)
-            glDeleteVertexArrays(1, &m_RendererID);
-
-        // Move data
-        m_RendererID = other.m_RendererID;
-        m_AttributeCount = other.m_AttributeCount;
-        m_IndexBuffer = std::move(other.m_IndexBuffer);
-        m_VertexBuffer = std::move(other.m_VertexBuffer);
-        m_InstanceCount = other.m_InstanceCount;
-        LOG_ENGINE_TRACE("VertexArray move-assigned with ID: " + std::to_string(m_RendererID));
-
-        // Invalidate the moved-from object
-        other.m_RendererID = 0;
-        other.m_AttributeCount = 0;
-        other.m_InstanceCount = 1;
-    }
-    return *this;
-}
-
 void Engine::VertexArray::SetVertexBuffer(std::unique_ptr<VertexBuffer> vertexBuffer,
                                           const std::vector<VertexAttribute> &attributes)
 {
