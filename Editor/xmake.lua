@@ -1,5 +1,3 @@
-add_requires("nlohmann_json")
-
 target("Editor")
     set_kind("binary")
     if is_plat("windows") then
@@ -10,4 +8,3 @@ target("Editor")
     add_files("src/**/*.cpp")
     add_includedirs("src")
 
-    add_packages("nlohmann_json")

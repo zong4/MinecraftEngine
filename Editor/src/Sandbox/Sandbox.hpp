@@ -5,6 +5,7 @@
 namespace Editor
 {
 
+// How about Creator?
 class Sandbox : public Engine::Application
 {
 public:

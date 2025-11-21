@@ -13,16 +13,16 @@ Editor::Sandbox::Sandbox(const Engine::WindowProperty &props) : Application(prop
 std::unique_ptr<Engine::Application> Engine::CreateApplication()
 {
     nlohmann::json config;
-    std::ifstream configFile(std::string(PROJECT_ROOT) + "/Editor/config/sandbox.json");
+    std::ifstream configFile(std::string(PROJECT_ROOT) + "/Editor/config/Sandbox.json");
     if (configFile.is_open())
     {
         configFile >> config;
         configFile.close();
 
-        std::string title = config.value("title", "Minecraft Engine");
-        int width = config.value("width", 1280);
-        int height = config.value("height", 720);
-        bool vsync = config.value("vsync", true);
+        std::string title = config.value("Title", "Minecraft Engine");
+        int width = config.value("Width", 1280);
+        int height = config.value("Height", 720);
+        bool vsync = config.value("VSync", true);
         return std::make_unique<Editor::Sandbox>(Engine::WindowProperty(title, width, height, vsync));
     }
     else
