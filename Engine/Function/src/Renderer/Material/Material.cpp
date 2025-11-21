@@ -53,19 +53,19 @@ void Engine::Material::Bind(const std::string &uniformPrefix,
         switch (propertyToUse.GetType())
         {
         case MaterialPropertyType::Int:
-            m_Shader->SetUniformInt(uniformName, std::get<int>(propertyToUse.GetValue()));
+            m_Shader->SetUniformInt(uniformName, propertyToUse.GetValueAs<int>());
             break;
         case MaterialPropertyType::UInt:
-            m_Shader->SetUniformUInt(uniformName, std::get<unsigned int>(propertyToUse.GetValue()));
+            m_Shader->SetUniformUInt(uniformName, propertyToUse.GetValueAs<unsigned int>());
             break;
         case MaterialPropertyType::Float:
-            m_Shader->SetUniformFloat(uniformName, std::get<float>(propertyToUse.GetValue()));
+            m_Shader->SetUniformFloat(uniformName, propertyToUse.GetValueAs<float>());
             break;
         case MaterialPropertyType::Vec3:
-            m_Shader->SetUniformVec3(uniformName, std::get<glm::vec3>(propertyToUse.GetValue()));
+            m_Shader->SetUniformVec3(uniformName, propertyToUse.GetValueAs<glm::vec3>());
             break;
         case MaterialPropertyType::Vec4:
-            m_Shader->SetUniformVec4(uniformName, std::get<glm::vec4>(propertyToUse.GetValue()));
+            m_Shader->SetUniformVec4(uniformName, propertyToUse.GetValueAs<glm::vec4>());
             break;
         // case MaterialPropertyType::Texture: {
         //     int slot = property.GetTexture()->Bind();

@@ -114,19 +114,19 @@ void Engine::Scene::PreRender()
                 if (auto &&colorProp = mat->GetProperty("Color"))
                 {
                     if (colorProp.GetType() == MaterialPropertyType::Vec4)
-                        color = std::get<glm::vec4>(colorProp.GetValue());
+                        color = colorProp.GetValueAs<glm::vec4>();
                     else if (colorProp.GetType() == MaterialPropertyType::Vec3)
-                        color = glm::vec4(std::get<glm::vec3>(colorProp.GetValue()), 1.0f);
+                        color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
                 }
                 // Get Blinn-Phong material properties if available
                 if (auto &&ambientStrengthProp = mat->GetProperty("AmbientStrength"))
-                    materialData.x = std::get<float>(ambientStrengthProp.GetValue());
+                    materialData.x = ambientStrengthProp.GetValueAs<float>();
                 if (auto &&diffuseStrengthProp = mat->GetProperty("DiffuseStrength"))
-                    materialData.y = std::get<float>(diffuseStrengthProp.GetValue());
+                    materialData.y = diffuseStrengthProp.GetValueAs<float>();
                 if (auto &&specularStrengthProp = mat->GetProperty("SpecularStrength"))
-                    materialData.z = std::get<float>(specularStrengthProp.GetValue());
+                    materialData.z = specularStrengthProp.GetValueAs<float>();
                 if (auto &&shininessProp = mat->GetProperty("Shininess"))
-                    materialData.w = std::get<float>(shininessProp.GetValue());
+                    materialData.w = shininessProp.GetValueAs<float>();
             }
 
             for (int i = 0; i < 36; ++i)

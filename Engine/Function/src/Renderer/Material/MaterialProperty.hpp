@@ -56,7 +56,10 @@ public:
 
     // Getters
     MaterialPropertyType GetType() const { return m_Type; }
-    const MaterialPropertyValue &GetValue() const { return m_Value; }
+    // clang-format off
+    template <typename T>
+    const T &GetValueAs() const { return std::get<T>(m_Value); }
+    // clang-format on
     std::shared_ptr<Texture2D> GetTexture() const { return m_Texture; }
 
     // Setters
