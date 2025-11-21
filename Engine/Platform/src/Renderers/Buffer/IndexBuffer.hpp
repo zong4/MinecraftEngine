@@ -8,23 +8,13 @@ namespace Engine
 class IndexBuffer : public Buffer
 {
 public:
-    // IndexBuffer() = default;
-    IndexBuffer(size_t size);
-    IndexBuffer(const void *data, size_t size);
-    IndexBuffer(const std::vector<uint32_t> &indices);
-    virtual ~IndexBuffer() override;
-
-    IndexBuffer(IndexBuffer &&other);
-    IndexBuffer &operator=(IndexBuffer &&other);
-
-public:
-    void Bind() const override;
-    void Unbind() const override;
-
-    void SetData(const void *data, size_t size, size_t offset) override;
+    virtual ~IndexBuffer() override = default;
+    static std::unique_ptr<IndexBuffer> Create(size_t size); // size in bytes
+    static std::unique_ptr<IndexBuffer> Create(const std::initializer_list<uint32_t> &indices);
 
 protected:
-    void CreateBuffer(const void *data, size_t size) override;
+    // IndexBuffer() = default;
+    IndexBuffer(int count) : Buffer(count) {}
 };
 
 } // namespace Engine

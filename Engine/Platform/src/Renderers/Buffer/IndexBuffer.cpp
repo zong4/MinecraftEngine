@@ -1,108 +1,34 @@
 #include "IndexBuffer.hpp"
 
-#include <glad/glad.h>
+#include "../RendererProperty.hpp"
+#include "OpenGLIndexBuffer.hpp"
 
-Engine::IndexBuffer::IndexBuffer(size_t size) : Buffer(static_cast<int>(size / sizeof(uint32_t)))
+std::unique_ptr<Engine::IndexBuffer> Engine::IndexBuffer::Create(size_t size)
 {
-    glGenBuffers(1, &m_RendererID);
-    Bind();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-    RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
-    Unbind();
-}
-
-Engine::IndexBuffer::IndexBuffer(const void *data, size_t size) : Buffer(static_cast<int>(size / sizeof(uint32_t)))
-{
-    CreateBuffer(data, size);
-}
-
-Engine::IndexBuffer::IndexBuffer(const std::vector<uint32_t> &indices) : Buffer(static_cast<int>(indices.size()))
-{
-    CreateBuffer(indices.data(), indices.size() * sizeof(uint32_t));
-}
-
-Engine::IndexBuffer::~IndexBuffer()
-{
-    PROFILE_FUNCTION();
-
-    glDeleteBuffers(1, &m_RendererID);
-}
-
-Engine::IndexBuffer::IndexBuffer(IndexBuffer &&other)
-{
-    PROFILE_FUNCTION();
-
-    // Move data
-    m_RendererID = other.m_RendererID;
-    m_Count = other.m_Count;
-    LOG_ENGINE_INFO("IndexBuffer move-assigned with ID: " + std::to_string(m_RendererID) +
-                    " and count: " + std::to_string(m_Count));
-
-    // Invalidate the moved-from object
-    other.m_RendererID = 0;
-}
-
-Engine::IndexBuffer &Engine::IndexBuffer::operator=(IndexBuffer &&other)
-{
-    PROFILE_FUNCTION();
-
-    if (this != &other)
+    switch (RendererProperty::GetInstance().GetAPI())
     {
-        if (m_RendererID != 0)
-            glDeleteBuffers(1, &m_RendererID);
-
-        // Move data
-        m_RendererID = other.m_RendererID;
-        m_Count = other.m_Count;
-        LOG_ENGINE_INFO("IndexBuffer move-assigned with ID: " + std::to_string(m_RendererID) +
-                        " and count: " + std::to_string(m_Count));
-
-        // Invalidate the moved-from object
-        other.m_RendererID = 0;
+    case RendererAPI::OpenGL:
+        return std::make_unique<Engine::OpenGLIndexBuffer>(size);
+    case RendererAPI::Vulkan:
+        LOG_ENGINE_ASSERT("Vulkan IndexBuffer is not implemented yet");
+        return nullptr;
+    default:
+        LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        return nullptr;
     }
-    return *this;
 }
 
-void Engine::IndexBuffer::Bind() const
+std::unique_ptr<Engine::IndexBuffer> Engine::IndexBuffer::Create(const std::initializer_list<uint32_t> &indices)
 {
-    PROFILE_FUNCTION();
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-}
-
-void Engine::IndexBuffer::Unbind() const
-{
-    PROFILE_FUNCTION();
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void Engine::IndexBuffer::SetData(const void *data, size_t size, size_t offset)
-{
-    PROFILE_FUNCTION();
-
-    Bind();
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
-    RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
-    Unbind();
-}
-
-void Engine::IndexBuffer::CreateBuffer(const void *data, size_t size)
-{
-    PROFILE_FUNCTION();
-
-    if (data == nullptr || size == 0)
+    switch (RendererProperty::GetInstance().GetAPI())
     {
-        LOG_ENGINE_WARN("Invalid IndexBuffer data or size");
-        return;
+    case RendererAPI::OpenGL:
+        return std::make_unique<Engine::OpenGLIndexBuffer>(indices);
+    case RendererAPI::Vulkan:
+        LOG_ENGINE_ASSERT("Vulkan IndexBuffer is not implemented yet");
+        return nullptr;
+    default:
+        LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        return nullptr;
     }
-
-    glGenBuffers(1, &m_RendererID);
-    Bind();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-    RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
-    Unbind();
-
-    LOG_ENGINE_INFO("IndexBuffer created with ID: " + std::to_string(m_RendererID) +
-                    " and count: " + std::to_string(m_Count));
 }

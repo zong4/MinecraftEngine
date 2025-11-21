@@ -41,24 +41,21 @@ Engine::OpenGLVertexArray::OpenGLVertexArray(std::unique_ptr<VertexBuffer> verte
 {
     glGenVertexArrays(1, &m_RendererID);
     SetVertexAttributes(attributes);
-    LOG_ENGINE_TRACE("VertexArray created with ID: " + std::to_string(m_RendererID) +
-                     ", VertexBuffer ID: " + std::to_string(m_VertexBuffer->GetRendererID()) +
-                     ", IndexBuffer ID: " + std::to_string(m_IndexBuffer->GetRendererID()) +
-                     ", Instance Count: " + std::to_string(m_InstanceCount));
 }
 
 Engine::OpenGLVertexArray::~OpenGLVertexArray() { glDeleteVertexArrays(1, &m_RendererID); }
 
-void Engine::OpenGLVertexArray::Render(RendererType renderType, size_t positionCount) const
+void Engine::OpenGLVertexArray::Render(RendererType renderType, int vertexCount) const
 {
     PROFILE_FUNCTION();
 
     Bind();
     m_VertexBuffer->Bind();
 
-    if (m_IndexBuffer->GetRendererID() == 0)
+    if (!m_IndexBuffer)
     {
-        size_t vertexCount = positionCount == 0 ? m_VertexBuffer->GetCount() / m_AttributeCount : positionCount;
+        if (vertexCount == 0)
+            vertexCount = m_VertexBuffer->GetVertexCount() / m_AttributeCount;
         m_InstanceCount == 1 ? glDrawArrays(ConvertRendererType(renderType), 0, vertexCount)
                              : glDrawArraysInstanced(ConvertRendererType(renderType), 0, vertexCount, m_InstanceCount);
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
@@ -66,7 +63,8 @@ void Engine::OpenGLVertexArray::Render(RendererType renderType, size_t positionC
     else
     {
         m_IndexBuffer->Bind();
-        size_t vertexCount = positionCount == 0 ? m_IndexBuffer->GetCount() : positionCount;
+        if (vertexCount == 0)
+            vertexCount = m_IndexBuffer->GetVertexCount();
         m_InstanceCount == 1 ? glDrawElements(ConvertRendererType(renderType), vertexCount, GL_UNSIGNED_INT, 0)
                              : glDrawElementsInstanced(ConvertRendererType(renderType), vertexCount, GL_UNSIGNED_INT, 0,
                                                        m_InstanceCount);

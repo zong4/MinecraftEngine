@@ -127,7 +127,7 @@ Engine::VertexLibrary::VertexLibrary()
                 {2, 2, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(4 * sizeof(float))},
                 {3, 1, VertexAttributeType::Int, 0, sizeof(Vertex2D), (const void *)(6 * sizeof(float))},
                 {4, 4, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(7 * sizeof(float))}},
-            std::make_unique<Engine::IndexBuffer>(m_MaxSquaresNumber * sizeof(unsigned int) * 6));
+            Engine::IndexBuffer::Create(m_MaxSquaresNumber * 6 * sizeof(unsigned int)));
         AddVertex("Squares", squaresVAO);
 
         auto &&cubesVAO = VertexArray::Create(

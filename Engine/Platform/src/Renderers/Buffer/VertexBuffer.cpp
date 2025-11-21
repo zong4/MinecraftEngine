@@ -11,7 +11,7 @@ Engine::VertexBuffer::VertexBuffer(size_t size) : Buffer(static_cast<int>(size /
     Unbind();
 
     LOG_ENGINE_TRACE("VertexBuffer created with ID: " + std::to_string(m_RendererID) +
-                     " and count: " + std::to_string(m_Count));
+                     " and count: " + std::to_string(m_VertexCount));
 }
 
 Engine::VertexBuffer::VertexBuffer(const void *data, size_t size) : Buffer(static_cast<int>(size / sizeof(float)))
@@ -37,9 +37,9 @@ Engine::VertexBuffer::VertexBuffer(VertexBuffer &&other)
 
     // Move data
     m_RendererID = other.m_RendererID;
-    m_Count = other.m_Count;
+    m_VertexCount = other.m_VertexCount;
     LOG_ENGINE_TRACE("VertexBuffer move-assigned with ID: " + std::to_string(m_RendererID) +
-                     " and count: " + std::to_string(m_Count));
+                     " and count: " + std::to_string(m_VertexCount));
 
     // Invalidate the moved-from object
     other.m_RendererID = 0;
@@ -56,9 +56,9 @@ Engine::VertexBuffer &Engine::VertexBuffer::operator=(VertexBuffer &&other)
 
         // Move data
         m_RendererID = other.m_RendererID;
-        m_Count = other.m_Count;
+        m_VertexCount = other.m_VertexCount;
         LOG_ENGINE_TRACE("VertexBuffer move-assigned with ID: " + std::to_string(m_RendererID) +
-                         " and count: " + std::to_string(m_Count));
+                         " and count: " + std::to_string(m_VertexCount));
 
         // Invalidate the moved-from object
         other.m_RendererID = 0;
@@ -101,5 +101,5 @@ void Engine::VertexBuffer::CreateBuffer(const void *data, size_t size)
     Unbind();
 
     LOG_ENGINE_TRACE("VertexBuffer created with ID: " + std::to_string(m_RendererID) +
-                     " and count: " + std::to_string(m_Count));
+                     " and count: " + std::to_string(m_VertexCount));
 }

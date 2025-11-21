@@ -34,11 +34,12 @@ struct VertexAttribute
 class VertexArray
 {
 public:
-    static std::shared_ptr<VertexArray> Create(
-        std::unique_ptr<VertexBuffer> vertexBuffer, const std::vector<VertexAttribute> &attributes,
-        std::unique_ptr<IndexBuffer> indexBuffer = std::make_unique<IndexBuffer>(nullptr, 0), int instanceCount = 1);
+    static std::shared_ptr<VertexArray> Create(std::unique_ptr<VertexBuffer> vertexBuffer,
+                                               const std::vector<VertexAttribute> &attributes,
+                                               std::unique_ptr<IndexBuffer> indexBuffer = nullptr,
+                                               int instanceCount = 1);
 
-    // Copy
+    // Copy and move semantics
     VertexArray(const VertexArray &) = delete;
     VertexArray &operator=(const VertexArray &) = delete;
 
@@ -53,7 +54,7 @@ public:
     void SetInstanceCount(int instanceCount) { m_InstanceCount = instanceCount; }
 
 public:
-    virtual void Render(RendererType renderType = RendererType::Triangles, size_t positionCount = 0) const = 0;
+    virtual void Render(RendererType renderType = RendererType::Triangles, int vertexCount = 0) const = 0;
 
 protected:
     unsigned int m_RendererID = 0;
@@ -65,8 +66,7 @@ protected:
     int m_InstanceCount = 1;
 
 protected:
-    VertexArray(std::unique_ptr<VertexBuffer> vertexBuffer,
-                std::unique_ptr<IndexBuffer> indexBuffer = std::make_unique<IndexBuffer>(nullptr, 0),
+    VertexArray(std::unique_ptr<VertexBuffer> vertexBuffer, std::unique_ptr<IndexBuffer> indexBuffer = nullptr,
                 int instanceCount = 1)
         : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
     {
