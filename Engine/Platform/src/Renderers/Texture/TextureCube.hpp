@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Texture.hpp"
+#include <array>
 
 namespace Engine
 {
