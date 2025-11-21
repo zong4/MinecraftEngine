@@ -114,8 +114,8 @@ Engine::TextureLibrary::TextureLibrary()
                 auto &&bottom = findFile(entry.path(), "bottom");
                 auto &&front = findFile(entry.path(), "front");
                 auto &&back = findFile(entry.path(), "back");
-                AddTexture(entry.path().stem().string(), std::make_shared<TextureCube>(std::array<std::string, 6>{
-                                                             right, left, top, bottom, front, back}));
+                AddTexture(entry.path().stem().string(),
+                           TextureCube::Create(std::array<std::string, 6>{right, left, top, bottom, front, back}));
             }
         }
         else if (entry.is_regular_file())
