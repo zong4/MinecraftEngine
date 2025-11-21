@@ -122,7 +122,7 @@ Engine::VertexLibrary::VertexLibrary()
         auto &&squaresVAO = VertexArray::Create(
             VertexBuffer(m_MaxSquaresNumber * sizeof(Vertex2D) * 4),
             std::vector<VertexAttribute>{
-                {0, 1, VertexAttributeType::UnsignedInt, 0, sizeof(Vertex2D), (const void *)(0 * sizeof(float))},
+                {0, 1, VertexAttributeType::UInt, 0, sizeof(Vertex2D), (const void *)(0 * sizeof(float))},
                 {1, 3, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(1 * sizeof(float))},
                 {2, 2, VertexAttributeType::Float, 0, sizeof(Vertex2D), (const void *)(4 * sizeof(float))},
                 {3, 1, VertexAttributeType::Int, 0, sizeof(Vertex2D), (const void *)(6 * sizeof(float))},
@@ -133,7 +133,7 @@ Engine::VertexLibrary::VertexLibrary()
         auto &&cubesVAO = VertexArray::Create(
             VertexBuffer(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
             std::vector<VertexAttribute>{
-                {0, 1, VertexAttributeType::UnsignedInt, 0, sizeof(Vertex3D), (const void *)(0 * sizeof(float))},
+                {0, 1, VertexAttributeType::UInt, 0, sizeof(Vertex3D), (const void *)(0 * sizeof(float))},
                 {1, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(1 * sizeof(float))},
                 {2, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(4 * sizeof(float))},
                 {3, 3, VertexAttributeType::Float, 0, sizeof(Vertex3D), (const void *)(7 * sizeof(float))},

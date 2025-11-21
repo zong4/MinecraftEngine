@@ -22,31 +22,21 @@ std::shared_ptr<Engine::VertexArray> Engine::VertexArray::Create(VertexBuffer &&
     }
 }
 
+Engine::VertexArray::VertexArray(VertexArray &&other)
+    : VertexArray(std::move(other.m_VertexBuffer), std::move(other.m_IndexBuffer), other.m_InstanceCount)
+{
+    m_RendererID = other.m_RendererID;
+    m_AttributeCount = other.m_AttributeCount;
+    LOG_ENGINE_TRACE("VertexArray move-constructed with ID: " + std::to_string(m_RendererID));
+
+    // Invalidate the moved-from object
+    other.m_RendererID = 0;
+    other.m_AttributeCount = 0;
+    other.m_InstanceCount = 1;
+}
+
 Engine::VertexArray &Engine::VertexArray::operator=(VertexArray &&other)
 {
-    CopyFromOther(std::move(other));
-    return *this;
-}
-
-void Engine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes)
-{
-    m_VertexBuffer = std::move(vertexBuffer);
-    SetVertexAttributes(attributes);
-    LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) +
-                     " set with new VertexBuffer ID: " + std::to_string(m_VertexBuffer.GetRendererID()));
-}
-
-void Engine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
-{
-    m_IndexBuffer = std::move(indexBuffer);
-    LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) +
-                     " set with new IndexBuffer ID: " + std::to_string(m_IndexBuffer.GetRendererID()));
-}
-
-void Engine::VertexArray::CopyFromOther(VertexArray &&other)
-{
-    PROFILE_FUNCTION();
-
     if (this != &other)
     {
         if (m_RendererID != 0)
@@ -65,4 +55,20 @@ void Engine::VertexArray::CopyFromOther(VertexArray &&other)
         other.m_AttributeCount = 0;
         other.m_InstanceCount = 1;
     }
+    return *this;
+}
+
+void Engine::VertexArray::SetVertexBuffer(VertexBuffer &&vertexBuffer, const std::vector<VertexAttribute> &attributes)
+{
+    m_VertexBuffer = std::move(vertexBuffer);
+    SetVertexAttributes(attributes);
+    LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) +
+                     " set with new VertexBuffer ID: " + std::to_string(m_VertexBuffer.GetRendererID()));
+}
+
+void Engine::VertexArray::SetIndexBuffer(IndexBuffer &&indexBuffer)
+{
+    m_IndexBuffer = std::move(indexBuffer);
+    LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) +
+                     " set with new IndexBuffer ID: " + std::to_string(m_IndexBuffer.GetRendererID()));
 }

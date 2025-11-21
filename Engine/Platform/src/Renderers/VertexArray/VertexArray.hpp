@@ -40,7 +40,7 @@ public:
                                                int instanceCount = 1);
     VertexArray(const VertexArray &) = delete;
     VertexArray &operator=(const VertexArray &) = delete;
-    VertexArray(VertexArray &&other) { CopyFromOther(std::move(other)); }
+    VertexArray(VertexArray &&);
     VertexArray &operator=(VertexArray &&);
 
     // Getters
@@ -76,9 +76,6 @@ protected:
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
     virtual void SetVertexAttributes(const std::vector<VertexAttribute> &attributes) = 0;
-
-private:
-    void CopyFromOther(VertexArray &&other);
 };
 
 } // namespace Engine
