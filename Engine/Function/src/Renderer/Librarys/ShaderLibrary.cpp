@@ -54,7 +54,7 @@ std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::LoadShader(const std::str
         LOG_ENGINE_WARN("Shader already exists: " + name);
         return m_ShaderMap[name];
     }
-    auto &&shader = std::make_shared<Engine::Shader>(vertexSource, fragmentSource, geometrySource);
+    auto &&shader = Engine::Shader::Create(vertexSource, fragmentSource, geometrySource);
     AddShader(name, shader);
     return shader;
 }
