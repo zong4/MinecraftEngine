@@ -2,7 +2,7 @@
 
 #include "../src/EventCodes/KeyCode.hpp"
 #include "../src/EventCodes/MouseButtonCode.hpp"
-#include "../src/ImGui/ImGuiLayer.hpp"
+#include "../src/ImGuiLayer/ImGuiLayer.hpp"
 #include "../src/Renderers/Buffer/FrameBuffer.hpp"
 #include "../src/Renderers/Buffer/UniformBuffer.hpp"
 #include "../src/Renderers/RendererCommand.hpp"

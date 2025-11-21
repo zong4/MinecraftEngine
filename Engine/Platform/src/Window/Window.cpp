@@ -1,6 +1,6 @@
 #include "Window.hpp"
 
-#include "../ImGui/ImGuiLayer.hpp"
+#include "../ImGuiLayer/ImGuiLayer.hpp"
 #include "../Renderers/RendererCommand.hpp"
 #include "../Renderers/RendererProperty.hpp"
 #include "OpenGLWindow.hpp"
