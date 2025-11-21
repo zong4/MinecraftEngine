@@ -107,12 +107,12 @@ Engine::VertexLibrary::VertexLibrary()
     PROFILE_FUNCTION();
 
     auto &&CubeVAO =
-        VertexArray::Create(VertexBuffer::Create(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
+        VertexArray::Create(VertexBuffer::Create(g_CubeData.Positions),
                             std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Cube", CubeVAO);
 
     auto &&vertexArray =
-        VertexArray::Create(VertexBuffer::Create(g_SkyboxCubeData.vertices, sizeof(g_SkyboxCubeData.vertices)),
+        VertexArray::Create(VertexBuffer::Create(g_SkyboxCubeData.vertices),
                             std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Skybox", vertexArray);
 

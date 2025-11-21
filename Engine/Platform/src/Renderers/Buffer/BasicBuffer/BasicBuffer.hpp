@@ -5,6 +5,12 @@
 namespace Engine
 {
 
+enum class BufferType
+{
+    Static,
+    Dynamic
+};
+
 class BasicBuffer
 {
 public:
@@ -29,7 +35,7 @@ protected:
     int m_VertexCount;
 
 protected:
-    virtual void CreateBuffer(const void *data, size_t size) = 0;
+    virtual void CreateBuffer(const void *data, size_t size, BufferType type) = 0;
 };
 
 } // namespace Engine

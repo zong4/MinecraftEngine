@@ -5,17 +5,21 @@
 
 Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(size_t size) : IndexBuffer(static_cast<int>(size / sizeof(uint32_t)))
 {
-    glGenBuffers(1, &m_RendererID);
-    Bind();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-    RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
-    Unbind();
+    CreateBuffer(nullptr, size, BufferType::Dynamic);
+}
+
+Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(const void *data)
+    : IndexBuffer(static_cast<int>(sizeof(data) / sizeof(uint32_t)))
+{
+    if (!data)
+        LOG_ENGINE_ASSERT("OpenGLIndexBuffer initialized with null data pointer");
+    CreateBuffer(data, sizeof(data), BufferType::Static);
 }
 
 Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(const std::initializer_list<uint32_t> &indices)
     : IndexBuffer(static_cast<int>(indices.size()))
 {
-    CreateBuffer(indices.begin(), indices.size() * sizeof(uint32_t));
+    CreateBuffer(indices.begin(), indices.size() * sizeof(uint32_t), BufferType::Static);
 }
 
 Engine::OpenGLIndexBuffer::~OpenGLIndexBuffer() { glDeleteBuffers(1, &m_RendererID); }
@@ -34,22 +38,24 @@ void Engine::OpenGLIndexBuffer::SetData(const void *data, size_t size, size_t of
     Unbind();
 }
 
-void Engine::OpenGLIndexBuffer::CreateBuffer(const void *data, size_t size)
+void Engine::OpenGLIndexBuffer::CreateBuffer(const void *data, size_t size, BufferType type)
 {
-    PROFILE_FUNCTION();
-
-    if (data == nullptr || size == 0)
-    {
-        LOG_ENGINE_ERROR("Invalid OpenGLIndexBuffer data or size");
-        return;
-    }
-
     glGenBuffers(1, &m_RendererID);
     Bind();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+    switch (type)
+    {
+    case BufferType::Static:
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        break;
+    case BufferType::Dynamic:
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+        break;
+    default:
+        LOG_ENGINE_ASSERT("Unknown BufferType for OpenGLIndexBuffer");
+        break;
+    }
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
     Unbind();
-
     LOG_ENGINE_TRACE("OpenGLIndexBuffer created with ID: " + std::to_string(m_RendererID) +
                      " and count: " + std::to_string(m_VertexCount));
 }

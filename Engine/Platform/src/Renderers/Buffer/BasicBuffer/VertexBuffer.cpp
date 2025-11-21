@@ -18,12 +18,12 @@ std::unique_ptr<Engine::VertexBuffer> Engine::VertexBuffer::Create(size_t size)
     }
 }
 
-std::unique_ptr<Engine::VertexBuffer> Engine::VertexBuffer::Create(const void *data, size_t size)
+std::unique_ptr<Engine::VertexBuffer> Engine::VertexBuffer::Create(const void *data)
 {
     switch (RendererProperty::GetInstance().GetAPI())
     {
     case RendererAPI::OpenGL:
-        return std::make_unique<Engine::OpenGLVertexBuffer>(data, size);
+        return std::make_unique<Engine::OpenGLVertexBuffer>(data);
     case RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan VertexBuffer is not implemented yet");
         return nullptr;
