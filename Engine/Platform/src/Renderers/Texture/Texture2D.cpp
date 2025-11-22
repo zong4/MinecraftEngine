@@ -58,10 +58,13 @@ std::shared_ptr<Engine::Texture2D> Engine::Texture2D::WhiteTexture()
     {
     case RendererAPI::OpenGL:
         whiteTexture = std::make_shared<OpenGLTexture2D>(Texture2DType::Color, 1, 1, new unsigned char[4]{255, 255, 255, 255});
+        break;
     case RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan Texture2D is not implemented yet");
+        break;
     default:
         LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        break;
     }
     return whiteTexture;
 }
