@@ -3,22 +3,26 @@
 // Output
 out vec4 FragColor;
 
+// Lights
 struct Light
 {
-    int Type; // 0: Directional, 1: Point, 2: Spot
+    // -1 Inactive
+    int Type;
 
+    // 0 Directional
     vec3 Position;
     vec3 Color;
 
+    // 1 Point
     float Constant;
     float Linear;
     float Quadratic;
 
+    // 2 Spot
+    vec3 Direction;
     float CutOff;
     float OuterCutOff;
 };
-
-// Lights
 #define MAX_LIGHTS 4
 uniform int u_NumLights;
 uniform Light u_Light[MAX_LIGHTS];
@@ -57,7 +61,7 @@ void main()
 
     // Lights
     vec3 viewDir = normalize(fs_in.CameraPosition - fs_in.Position);
-    for (int i = 0; i < u_NumLights; ++i)
+    for (int i = 0; i < u_NumLights; i++)
     {
         int type = u_Light[i].Type;
         if (type == -1)
@@ -84,27 +88,29 @@ void main()
             if (type == 2)
             {
                 // Spotlight intensity
-                // float theta = dot(lightDir, normalize(-u_Light[i].Direction));
-                // float epsilon = u_Light[i].CutOff - u_Light[i].OuterCutOff;
-                // float intensity = clamp((theta - u_Light[i].OuterCutOff) / epsilon, 0.0, 1.0);
-                // resultLight *= intensity;
+                float theta = dot(lightDir, normalize(-u_Light[i].Direction));
+                float epsilon = u_Light[i].CutOff - u_Light[i].OuterCutOff;
+                float intensity = clamp((theta - u_Light[i].OuterCutOff) / epsilon, 0.0, 1.0);
+                resultLight *= intensity;
             }
         }
         resultLight *= u_Light[i].Color;
         result += resultLight;
+
+        // Ambient
+        result += fs_in.Material[0] * u_Light[i].Color;
     }
 
     // Skybox
     vec3 resultSkybox = vec3(0.0);
-    resultSkybox += texture(u_Skybox, fs_in.Normal).rgb * fs_in.Material[0] * texture(u_Texture, fs_in.TexCoord).rgb *
-                    fs_in.Color.rgb;
+    resultSkybox += fs_in.Material[0] * texture(u_Skybox, fs_in.Normal).rgb;
     // resultSkybox += texture(u_Skybox, reflect(-viewDir, normalize(fs_in.Normal))).rgb *
     // fs_in.Material[2]; resultSkybox += texture(u_Skybox, refract(-viewDir,
     // normalize(fs_in.Normal), 1.00 / 1.52)).rgb * 0.5;
     result += resultSkybox;
 
     // HDR tonemapping
-    float exposure = 1.0;
+    float exposure = 1.0; // todo: output exposure uniform
     result = vec3(1.0) - exp(-result * exposure);
 
     FragColor = vec4(result, fs_in.Color.a);
@@ -118,7 +124,7 @@ vec3 CalcLight(vec3 lightDir, vec3 viewDir)
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(fs_in.Normal, halfwayDir), 0.0), fs_in.Material[3]);
 
-    return (fs_in.Material[0] * diff) * texture(u_Texture, fs_in.TexCoord).rgb * fs_in.Color.rgb +
+    return (fs_in.Material[1] * diff) * texture(u_Texture, fs_in.TexCoord).rgb * fs_in.Color.rgb +
            fs_in.Material[2] * spec;
 }
 
@@ -127,7 +133,6 @@ float CalcShadow(int index, vec4 fragPosLightSpace, vec3 lightDir)
     // transform to [0,1] range
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;
-
     if (projCoords.z > 1.0 || projCoords.x < 0.0 || projCoords.x > 1.0 || projCoords.y < 0.0 || projCoords.y > 1.0)
         return 0.0;
 
