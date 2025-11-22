@@ -65,129 +65,12 @@ void Engine::Scene::Update(float deltaTime)
     });
 }
 
-void Engine::Scene::PreRender()
+void Engine::Scene::Render(const Entity &camera)
 {
     PROFILE_FUNCTION();
 
-    // Squares
-    {
-        int squareIndex = 0;
-        std::vector<Vertex2D> squaresVertices;
-        std::vector<unsigned int> squaresIndices;
-        auto &&spriteView = m_Registry.view<Engine::TransformComponent, Engine::SpriteRendererComponent>();
-        for (auto &&entity : spriteView)
-        {
-            auto &&[transform, sprite] =
-                spriteView.get<Engine::TransformComponent, Engine::SpriteRendererComponent>(entity);
-
-            // Vertices
-            for (int i = 0; i < 4; i++)
-            {
-                glm::mat4 u_Model = transform.GetTransformMatrix();
-                squaresVertices.push_back(
-                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
-                     g_SquareData.TexCoords[i], TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance),
-                     sprite.Color});
-            }
-
-            // Indices
-            for (int i = 0; i < 6; i++)
-            {
-                squaresIndices.push_back(g_SquareData.Indices[i] + squareIndex * 4);
-            }
-
-            squareIndex++;
-        }
-        m_SquaresCount = squareIndex;
-        VertexLibrary::GetInstance().GetVertex("Squares")->GetVertexBuffer()->SetData(
-            squaresVertices.data(), m_SquaresCount * 4 * sizeof(Vertex2D), 0);
-        VertexLibrary::GetInstance().GetVertex("Squares")->GetIndexBuffer()->SetData(
-            squaresIndices.data(), m_SquaresCount * 6 * sizeof(unsigned int), 0);
-    }
-
-    // Cubes
-    {
-        int cubeIndex = 0;
-        std::vector<Vertex3D> cubesVertices;
-        auto &&meshView = m_Registry.view<Engine::TransformComponent, Engine::MaterialComponent>();
-        for (auto &&entity : meshView)
-        {
-            auto &&[transform, materialComp] =
-                meshView.get<Engine::TransformComponent, Engine::MaterialComponent>(entity);
-
-            // Get material data from MaterialComponent
-            glm::vec4 color = glm::vec4(1.0f);                           // Default color
-            glm::vec4 materialData = glm::vec4(0.3f, 1.0f, 0.5f, 32.0f); // Default Blinn-Phong values
-
-            if (materialComp.MaterialInstance)
-            {
-                auto mat = materialComp.MaterialInstance;
-                if (auto &&colorProp = mat->GetProperty("Color"))
-                {
-                    if (colorProp.GetType() == MaterialPropertyType::Vec4)
-                        color = colorProp.GetValueAs<glm::vec4>();
-                    else if (colorProp.GetType() == MaterialPropertyType::Vec3)
-                        color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
-                }
-                // Get Blinn-Phong material properties if available
-                if (auto &&ambientStrengthProp = mat->GetProperty("AmbientStrength"))
-                    materialData.x = ambientStrengthProp.GetValueAs<float>();
-                if (auto &&diffuseStrengthProp = mat->GetProperty("DiffuseStrength"))
-                    materialData.y = diffuseStrengthProp.GetValueAs<float>();
-                if (auto &&specularStrengthProp = mat->GetProperty("SpecularStrength"))
-                    materialData.z = specularStrengthProp.GetValueAs<float>();
-                if (auto &&shininessProp = mat->GetProperty("Shininess"))
-                    materialData.w = shininessProp.GetValueAs<float>();
-            }
-
-            for (int i = 0; i < 36; ++i)
-            {
-                glm::mat4 u_Model = transform.GetTransformMatrix();
-                cubesVertices.push_back(
-                    {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
-                     glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
-                     g_CubeData.Positions[i], color, materialData});
-            }
-            cubeIndex++;
-        }
-        m_CubesCount = cubeIndex;
-        VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
-            cubesVertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
-    }
-}
-
-// todo: only render for the first light for now
-void Engine::Scene::RenderShadowMap() const
-{
-    PROFILE_FUNCTION();
-
-    RendererCommand::CullFrontFace();
-    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
-    shader->Bind();
-    auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
-    for (auto &&lightEntity : lightView)
-    {
-        m_ShadowMap->Bind();
-        RendererCommand::ClearDepthBuffer();
-
-        auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(lightEntity);
-        shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
-        shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f));
-
-        if (m_CubesCount > 0)
-            VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
-
-        m_ShadowMap->Unbind();
-
-        break;
-    }
-    shader->Unbind();
-    RendererCommand::CullBackFace();
-}
-
-void Engine::Scene::Render(const Entity &camera) const
-{
-    PROFILE_FUNCTION();
+    UploadSquaresData();
+    UploadCubesData();
 
     // Clear buffers
     {
@@ -195,56 +78,36 @@ void Engine::Scene::Render(const Entity &camera) const
         RendererCommand::Clear();
     }
 
-    // Update camera
+    // Update camera uniform buffer
+    auto &&transform = camera.GetComponent<TransformComponent>();
+    auto &&cameraComp = camera.GetComponent<CameraComponent>();
+    if (transform && cameraComp)
     {
-        auto &&transform = camera.GetComponent<TransformComponent>();
-        auto &&cameraComp = camera.GetComponent<CameraComponent>();
-        if (!transform || !cameraComp)
-            return;
-
         cameraComp->UpdateProjectionMatrix();
         UniformLibrary::GetInstance().UpdateUniform(
             "UniformBuffer0",
             {
-                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0},
-                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4), sizeof(glm::mat4)},
-                {glm::value_ptr(transform->Position), sizeof(glm::vec3), sizeof(glm::mat4) + sizeof(glm::mat4)},
+                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
+                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
+                 sizeof(glm::mat4)}, // Projection matrix
+                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
+                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
             });
     }
 
-    // Render
-    {
-        Render2D();
-        Render3D();
-        RenderSkybox();
-    }
-}
-
-void Engine::Scene::RenderColorID() const
-{
-    PROFILE_FUNCTION();
-
-    // Clear buffers
-    Engine::RendererCommand::Clear();
-
-    // Render
-    {
-        auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
-        shader->Bind();
-
-        if (m_SquaresCount > 0)
-            VertexLibrary::GetInstance().GetVertex("Squares")->Render(Engine::RendererType::Triangles,
-                                                                      m_SquaresCount * 6);
-        if (m_CubesCount > 0)
-            VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
-
-        shader->Unbind();
-    }
+    Render2D();
+    RenderShadowMap();
+    Render3D();
+    RenderSkybox();
+    RenderColorID();
 }
 
 void Engine::Scene::Resize(float width, float height)
 {
     PROFILE_FUNCTION();
+
+    m_ViewportWidth = static_cast<uint32_t>(width);
+    m_ViewportHeight = static_cast<uint32_t>(height);
 
     auto &&view = m_Registry.view<CameraComponent>();
     for (auto &&entity : view)
@@ -333,7 +196,92 @@ void Engine::Scene::DeleteEntityReal(const Entity &entity)
     m_DeletedEntities.push_back(entity);
 }
 
-// todo: check
+void Engine::Scene::UploadSquaresData()
+{
+    PROFILE_FUNCTION();
+
+    int index = 0;
+    std::vector<Vertex2D> vertices;
+    std::vector<unsigned int> indices;
+    auto &&view = m_Registry.view<Engine::TransformComponent, Engine::SpriteRendererComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, sprite] = view.get<Engine::TransformComponent, Engine::SpriteRendererComponent>(entity);
+
+        // Vertices
+        for (int i = 0; i < 4; i++)
+        {
+            glm::mat4 u_Model = transform.GetTransformMatrix();
+            vertices.push_back({(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
+                                g_SquareData.TexCoords[i],
+                                TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance), sprite.Color});
+        }
+
+        // Indices
+        for (int i = 0; i < 6; i++)
+            indices.push_back(g_SquareData.Indices[i] + index * 4);
+
+        index++;
+    }
+
+    m_SquaresCount = index;
+    VertexLibrary::GetInstance().GetVertex("Squares")->GetVertexBuffer()->SetData(
+        vertices.data(), m_SquaresCount * 4 * sizeof(Vertex2D), 0);
+    VertexLibrary::GetInstance().GetVertex("Squares")->GetIndexBuffer()->SetData(
+        indices.data(), m_SquaresCount * 6 * sizeof(unsigned int), 0);
+}
+
+void Engine::Scene::UploadCubesData()
+{
+    PROFILE_FUNCTION();
+
+    int index = 0;
+    std::vector<Vertex3D> vertices;
+    auto &&view = m_Registry.view<Engine::TransformComponent, Engine::MaterialComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, materialComp] = view.get<Engine::TransformComponent, Engine::MaterialComponent>(entity);
+
+        glm::vec4 color = glm::vec4(1.0f);
+        glm::vec4 materialData = glm::vec4(0.0f);
+        if (auto &&material = materialComp.MaterialInstance)
+        {
+            if (auto &&colorProp = material->GetProperty("Color"))
+            {
+                if (colorProp.GetType() == MaterialPropertyType::Vec4)
+                    color = colorProp.GetValueAs<glm::vec4>();
+                else if (colorProp.GetType() == MaterialPropertyType::Vec3)
+                    color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
+            }
+
+            // Get Blinn-Phong material properties if available
+            if (auto &&ambientStrengthProp = material->GetProperty("AmbientStrength"))
+                materialData.x = ambientStrengthProp.GetValueAs<float>();
+            if (auto &&diffuseStrengthProp = material->GetProperty("DiffuseStrength"))
+                materialData.y = diffuseStrengthProp.GetValueAs<float>();
+            if (auto &&specularStrengthProp = material->GetProperty("SpecularStrength"))
+                materialData.z = specularStrengthProp.GetValueAs<float>();
+            if (auto &&shininessProp = material->GetProperty("Shininess"))
+                materialData.w = shininessProp.GetValueAs<float>();
+        }
+
+        for (int i = 0; i < 36; ++i)
+        {
+            glm::mat4 u_Model = transform.GetTransformMatrix();
+            vertices.push_back(
+                {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
+                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
+                 g_CubeData.Positions[i], color, materialData});
+        }
+
+        index++;
+    }
+
+    m_CubesCount = index;
+    VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
+        vertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
+}
+
 void Engine::Scene::Render2D() const
 {
     PROFILE_FUNCTION();
@@ -359,7 +307,36 @@ void Engine::Scene::Render2D() const
     shader->Unbind();
 }
 
-// todo: only render for the first light for now
+void Engine::Scene::RenderShadowMap() const
+{
+    PROFILE_FUNCTION();
+
+    RendererCommand::CullFrontFace();
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
+    shader->Bind();
+    auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
+    for (auto &&lightEntity : lightView)
+    {
+        auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(lightEntity);
+
+        // Render to shadow map
+        light.ShadowMap->Resize(m_ViewportWidth, m_ViewportHeight);
+        light.ShadowMap->Bind();
+        RendererCommand::ClearDepthBuffer();
+        {
+            shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
+            shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,
+                                                                   20.0f)); // todo: calculate camera view
+            if (m_CubesCount > 0)
+                VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles,
+                                                                        m_CubesCount * 36);
+        }
+        light.ShadowMap->Unbind();
+    }
+    shader->Unbind();
+    RendererCommand::CullBackFace();
+}
+
 void Engine::Scene::Render3D() const
 {
     PROFILE_FUNCTION();
@@ -392,11 +369,9 @@ void Engine::Scene::Render3D() const
         shader->SetUniformMat4("u_LightProjection[" + std::to_string(lightIndex) + "]",
                                glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f));
         shader->SetUniformInt("u_ShadowMap[" + std::to_string(lightIndex) + "]", lightIndex);
-        m_ShadowMap->GetTexture()->Bind(lightIndex);
+        light.ShadowMap->GetTexture()->Bind(lightIndex);
 
         lightIndex++;
-
-        break;
     }
     shader->SetUniformInt("u_NumLights", lightIndex);
 
@@ -417,10 +392,10 @@ void Engine::Scene::Render3D() const
     if (m_CubesCount > 0)
         VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
     TextureLibrary::GetInstance().ClearTextureSlots();
+
     shader->Unbind();
 }
 
-// todo: default skybox if none exists
 void Engine::Scene::RenderSkybox() const
 {
     PROFILE_FUNCTION();
@@ -443,4 +418,24 @@ void Engine::Scene::RenderSkybox() const
 
     shader->Unbind();
     Engine::RendererCommand::EnableDepthTest();
+}
+
+void Engine::Scene::RenderColorID() const
+{
+    PROFILE_FUNCTION();
+
+    m_ColorIDFrameBuffer->Resize(m_ViewportWidth, m_ViewportHeight);
+    m_ColorIDFrameBuffer->Bind();
+    Engine::RendererCommand::Clear();
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
+    shader->Bind();
+
+    // Render entity IDs as color IDs
+    if (m_SquaresCount > 0)
+        VertexLibrary::GetInstance().GetVertex("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
+    if (m_CubesCount > 0)
+        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+
+    shader->Unbind();
+    m_ColorIDFrameBuffer->Unbind();
 }

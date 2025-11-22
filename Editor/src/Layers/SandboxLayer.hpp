@@ -27,6 +27,7 @@ public:
 
 private:
     SandboxMode m_Mode = SandboxMode::Edit;
+    uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
     std::shared_ptr<Engine::Window> m_Window;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;

@@ -46,19 +46,13 @@ void Editor::SandboxLayer::OnRender()
 {
     PROFILE_FUNCTION();
 
-    // todo: check
+    // Resize scenes' viewport if the window size changed
+    if (m_ViewportWidth != m_Window->GetProperty().FbWidth || m_ViewportHeight != m_Window->GetProperty().FbHeight)
     {
-        // Pre-render
-        {
-            m_ActiveScene->PreRender();
-            m_ActiveScene->RenderShadowMap();
-        }
-
-        uint32_t viewportWidth = m_Window->GetProperty().FbWidth;
-        uint32_t viewportHeight = m_Window->GetProperty().FbHeight;
-        Engine::RendererCommand::SetViewport(0, 0, viewportWidth, viewportHeight);
-        m_EditorScene->Resize((float)viewportWidth, (float)viewportHeight);
-        m_ActiveScene->Resize((float)viewportWidth, (float)viewportHeight);
+        m_ViewportWidth = m_Window->GetProperty().FbWidth;
+        m_ViewportHeight = m_Window->GetProperty().FbHeight;
+        m_EditorScene->Resize((float)m_ViewportWidth, (float)m_ViewportHeight);
+        m_ActiveScene->Resize((float)m_ViewportWidth, (float)m_ViewportHeight);
     }
 
     switch (m_Mode)

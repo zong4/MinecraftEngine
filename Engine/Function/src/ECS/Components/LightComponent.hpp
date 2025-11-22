@@ -18,6 +18,8 @@ struct LightComponent
     float Intensity;
     float Constant, Linear, Quadratic;
     float InnerAngle, OuterAngle;
+    std::shared_ptr<Engine::FrameBuffer> ShadowMap =
+        Engine::FrameBuffer::Create(Engine::FrameBufferType::Depth, 1280, 720);
 
 public:
     LightComponent(LightType type, const glm::vec3 &color = glm::vec3(1.0f), float intensity = 1.0f,

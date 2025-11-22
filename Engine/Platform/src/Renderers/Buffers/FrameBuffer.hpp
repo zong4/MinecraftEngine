@@ -18,7 +18,7 @@ class FrameBuffer
 {
 public:
     virtual ~FrameBuffer() = default;
-    static std::unique_ptr<FrameBuffer> Create(FrameBufferType type, int width, int height, int samples = 0);
+    static std::shared_ptr<FrameBuffer> Create(FrameBufferType type, int width, int height, int samples = 0);
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }

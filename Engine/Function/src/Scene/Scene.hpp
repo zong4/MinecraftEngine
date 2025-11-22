@@ -18,8 +18,8 @@ public:
 
     // Getters
     const std::string &GetName() const { return m_Name; }
-    entt::registry &GetRegistry() { return m_Registry; }
     const Entity &GetMainCamera() const { return m_MainCamera; }
+    entt::registry &GetRegistry() { return m_Registry; }
     Entity GetEntityByName(const std::string &name);
 
     // Setters
@@ -28,12 +28,7 @@ public:
 
 public:
     void Update(float deltaTime);
-    void PreRender();
-    void RenderShadowMap() const;
-    void Render(const Entity &camera) const;
-    void RenderColorID() const;
-
-    // Called functions
+    void Render(const Entity &camera);
     void Resize(float width, float height);
 
     // Entity management
@@ -51,21 +46,26 @@ public:
 
 protected:
     std::string m_Name;
+    uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
 private:
-    entt::registry m_Registry = {};
     Entity m_MainCamera;
+    entt::registry m_Registry = {};
+    std::vector<Entity> m_DeletedEntities = {};
+    std::shared_ptr<Engine::FrameBuffer> m_ColorIDFrameBuffer =
+        Engine::FrameBuffer::Create(Engine::FrameBufferType::Integer, 1280, 720);
     size_t m_SquaresCount = 0;
     size_t m_CubesCount = 0;
-    std::unique_ptr<Engine::FrameBuffer> m_ShadowMap =
-        Engine::FrameBuffer::Create(Engine::FrameBufferType::Depth, 1280, 720);
-    std::vector<Entity> m_DeletedEntities = {};
 
 private:
     void DeleteEntityReal(const Entity &entity);
+    void UploadSquaresData();
+    void UploadCubesData();
     void Render2D() const;
+    void RenderShadowMap() const;
     void Render3D() const;
     void RenderSkybox() const;
+    void RenderColorID() const;
 };
 
 } // namespace Engine

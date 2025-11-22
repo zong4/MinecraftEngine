@@ -3,13 +3,13 @@
 #include "../RendererProperty.hpp"
 #include "OpenGLFrameBuffer.hpp"
 
-std::unique_ptr<Engine::FrameBuffer> Engine::FrameBuffer::Create(FrameBufferType type, int width, int height,
+std::shared_ptr<Engine::FrameBuffer> Engine::FrameBuffer::Create(FrameBufferType type, int width, int height,
                                                                  int samples)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
     case Engine::RendererAPI::OpenGL:
-        return std::make_unique<Engine::OpenGLFrameBuffer>(type, width, height, samples);
+        return std::make_shared<Engine::OpenGLFrameBuffer>(type, width, height, samples);
     case Engine::RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan FrameBuffer is not implemented yet");
         return nullptr;
