@@ -85,6 +85,31 @@ void Editor::SandboxLayer::OnImGuiRender()
     Engine::Input::GetInstance().SetBlockEvents(mouseBlock || keyBlock);
     ImGui::Text("ImGui Blocking Events: %s", (mouseBlock || keyBlock) ? "True" : "False");
 
+    auto &&cube = m_ActiveScene->GetEntityByName("Cube");
+    if (cube)
+    {
+        auto &&material = cube.GetComponent<Engine::MaterialComponent>();
+        ImGui::ColorEdit4("Cube Color", glm::value_ptr(material->GetProperty("Color").GetValueAs<glm::vec4>()));
+        ImGui::SliderFloat("Cube Ambient", &material->GetProperty("AmbientStrength").GetValueAs<float>(), 0.0f, 1.0f);
+        ImGui::SliderFloat("Cube Diffuse", &material->GetProperty("DiffuseStrength").GetValueAs<float>(), 0.0f, 1.0f);
+        ImGui::SliderFloat("Cube Specular", &material->GetProperty("SpecularStrength").GetValueAs<float>(), 0.0f, 1.0f);
+        ImGui::SliderFloat("Cube Shininess", &material->GetProperty("Shininess").GetValueAs<float>(), 1.0f, 256.0f);
+    }
+
+    auto &&light = m_ActiveScene->GetEntityByName("DirectionalLight");
+    if (light)
+    {
+        auto &&transform = light.GetComponent<Engine::TransformComponent>();
+        ImGui::SliderFloat3("Light Position", glm::value_ptr(transform->Position), -10.0f, 10.0f);
+        glm::vec3 rotationEuler = transform->GetRotationEuler();
+        ImGui::SliderFloat3("Light Rotation", glm::value_ptr(rotationEuler), -180.0f, 180.0f);
+        transform->SetRotationEuler(rotationEuler);
+
+        auto &&lightComp = light.GetComponent<Engine::LightComponent>();
+        ImGui::ColorEdit4("Light Color", glm::value_ptr(lightComp->Color));
+        ImGui::SliderFloat("Light Intensity", &lightComp->Intensity, 0.0f, 10.0f);
+    }
+
     ImGui::End();
 }
 

@@ -96,14 +96,11 @@ void main()
         }
         resultLight *= u_Light[i].Color;
         result += resultLight;
-
-        // Ambient
-        result += fs_in.Material[0] * u_Light[i].Color;
     }
 
     // Skybox
     vec3 resultSkybox = vec3(0.0);
-    resultSkybox += fs_in.Material[0] * texture(u_Skybox, fs_in.Normal).rgb;
+    // resultSkybox += fs_in.Material[0] * texture(u_Skybox, fs_in.Normal).rgb;
     // resultSkybox += texture(u_Skybox, reflect(-viewDir, normalize(fs_in.Normal))).rgb *
     // fs_in.Material[2]; resultSkybox += texture(u_Skybox, refract(-viewDir,
     // normalize(fs_in.Normal), 1.00 / 1.52)).rgb * 0.5;
@@ -116,7 +113,6 @@ void main()
     FragColor = vec4(result, fs_in.Color.a);
 }
 
-// No ambient light calculation
 vec3 CalcLight(vec3 lightDir, vec3 viewDir)
 {
     float diff = max(dot(fs_in.Normal, lightDir), 0.0);
@@ -124,7 +120,7 @@ vec3 CalcLight(vec3 lightDir, vec3 viewDir)
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(fs_in.Normal, halfwayDir), 0.0), fs_in.Material[3]);
 
-    return (fs_in.Material[1] * diff) * texture(u_Texture, fs_in.TexCoord).rgb * fs_in.Color.rgb +
+    return (fs_in.Material[0] + fs_in.Material[1] * diff) * texture(u_Texture, fs_in.TexCoord).rgb * fs_in.Color.rgb +
            fs_in.Material[2] * spec;
 }
 

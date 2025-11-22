@@ -59,12 +59,21 @@ public:
     MaterialPropertyType GetType() const { return m_Type; }
     // clang-format off
     template <typename T>
-    const T &GetValueAs() const { return std::get<T>(m_Value); }
     // clang-format on
+    T &GetValueAs()
+    {
+        return std::get<T>(m_Value);
+    }
+    // clang-format off
+    template <typename T>
+    // clang-format on
+    const T &GetValueAs() const
+    {
+        return std::get<T>(m_Value);
+    }
     std::shared_ptr<Texture2D> GetTexture() const { return m_Texture; }
 
     // Setters
-    void SetValue(const MaterialPropertyValue &value) { m_Value = value; }
     void SetTexture(const std::shared_ptr<Texture2D> &texture) { m_Texture = texture; }
 
 private:

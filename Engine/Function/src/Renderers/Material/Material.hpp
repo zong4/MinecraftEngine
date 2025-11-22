@@ -17,7 +17,7 @@ public:
     // Getters
     std::shared_ptr<Shader> GetShader() const { return m_Shader; }
     const MaterialProperty &GetProperty(const std::string &name) const;
-    const std::unordered_map<std::string, MaterialProperty> &GetProperties() const { return m_PropertyMap; }
+    const std::unordered_map<std::string, MaterialProperty> &GetPropertyMap() const { return m_PropertyMap; }
 
     // Setters
     void SetShader(std::shared_ptr<Shader> shader) { m_Shader = shader; }

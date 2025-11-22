@@ -52,13 +52,13 @@ Engine::MaterialLibrary::MaterialLibrary()
 
     // Create a material using the new system
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("BlinnPhong");
-    auto &&redMaterial = std::make_shared<Engine::Material>(shader);
+    auto &&whiteMaterial = std::make_shared<Engine::Material>(shader);
 
-    redMaterial->AddProperty("Color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    redMaterial->AddProperty("AmbientStrength", 0.1f);
-    redMaterial->AddProperty("DiffuseStrength", 0.8f);
-    redMaterial->AddProperty("SpecularStrength", 0.5f);
-    redMaterial->AddProperty("Shininess", 32.0f);
+    whiteMaterial->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    whiteMaterial->AddProperty("AmbientStrength", 0.1f);
+    whiteMaterial->AddProperty("DiffuseStrength", 0.8f);
+    whiteMaterial->AddProperty("SpecularStrength", 0.5f);
+    whiteMaterial->AddProperty("Shininess", 32.0f);
 
-    AddMaterial("RedMaterial", redMaterial);
+    AddMaterial("DefaultMaterial", whiteMaterial);
 }

@@ -243,27 +243,24 @@ void Engine::Scene::UploadCubesData()
         auto &&[transform, materialComp] = view.get<Engine::TransformComponent, Engine::MaterialComponent>(entity);
 
         glm::vec4 color = glm::vec4(1.0f);
-        glm::vec4 materialData = glm::vec4(0.0f);
-        if (auto &&material = materialComp.MaterialInstance)
+        if (auto &&colorProp = materialComp.GetProperty("Color"))
         {
-            if (auto &&colorProp = material->GetProperty("Color"))
-            {
-                if (colorProp.GetType() == MaterialPropertyType::Vec4)
-                    color = colorProp.GetValueAs<glm::vec4>();
-                else if (colorProp.GetType() == MaterialPropertyType::Vec3)
-                    color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
-            }
-
-            // Get Blinn-Phong material properties if available
-            if (auto &&ambientStrengthProp = material->GetProperty("AmbientStrength"))
-                materialData.x = ambientStrengthProp.GetValueAs<float>();
-            if (auto &&diffuseStrengthProp = material->GetProperty("DiffuseStrength"))
-                materialData.y = diffuseStrengthProp.GetValueAs<float>();
-            if (auto &&specularStrengthProp = material->GetProperty("SpecularStrength"))
-                materialData.z = specularStrengthProp.GetValueAs<float>();
-            if (auto &&shininessProp = material->GetProperty("Shininess"))
-                materialData.w = shininessProp.GetValueAs<float>();
+            if (colorProp.GetType() == MaterialPropertyType::Vec4)
+                color = colorProp.GetValueAs<glm::vec4>();
+            else if (colorProp.GetType() == MaterialPropertyType::Vec3)
+                color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
         }
+
+        // Get Blinn-Phong material properties if available
+        glm::vec4 materialData = glm::vec4(0.0f);
+        if (auto &&ambientStrengthProp = materialComp.GetProperty("AmbientStrength"))
+            materialData.x = ambientStrengthProp.GetValueAs<float>();
+        if (auto &&diffuseStrengthProp = materialComp.GetProperty("DiffuseStrength"))
+            materialData.y = diffuseStrengthProp.GetValueAs<float>();
+        if (auto &&specularStrengthProp = materialComp.GetProperty("SpecularStrength"))
+            materialData.z = specularStrengthProp.GetValueAs<float>();
+        if (auto &&shininessProp = materialComp.GetProperty("Shininess"))
+            materialData.w = shininessProp.GetValueAs<float>();
 
         for (int i = 0; i < 36; ++i)
         {
@@ -273,7 +270,6 @@ void Engine::Scene::UploadCubesData()
                  glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
                  g_CubeData.Positions[i], color, materialData});
         }
-
         index++;
     }
 

@@ -11,26 +11,32 @@ struct MaterialComponent
 
 public:
     MaterialComponent(
-        const std::shared_ptr<Material> &material = MaterialLibrary::GetInstance().GetMaterial("RedMaterial"))
-        : MaterialInstance(material), PropertyOverrideMap(material->GetProperties())
+        const std::shared_ptr<Material> &material = MaterialLibrary::GetInstance().GetMaterial("DefaultMaterial"))
+        : MaterialInstance(material), PropertyMap(material->GetPropertyMap())
     {
     }
 
-    // Setters
-    void SetOverride(const std::string &name, const MaterialProperty &property)
+    MaterialProperty &GetProperty(const std::string &name)
     {
-        PropertyOverrideMap[name] = property;
+        static MaterialProperty nullProperty;
+
+        auto &&it = PropertyMap.find(name);
+        if (it != PropertyMap.end())
+            return it->second;
+        LOG_ENGINE_WARN("MaterialComponent: Property '" + name + "' not found in MaterialInstance");
+        return nullProperty;
     }
-    void ClearOverride(const std::string &name) { PropertyOverrideMap[name] = MaterialInstance->GetProperty(name); }
+    void SetProperty(const std::string &name, const MaterialProperty &property) { PropertyMap[name] = property; }
+    void ClearProperty(const std::string &name) { PropertyMap[name] = MaterialInstance->GetProperty(name); }
 
 public:
     void Bind(const std::string &uniformPrefix = "u_Material") const
     {
-        MaterialInstance->Bind(uniformPrefix, PropertyOverrideMap);
+        MaterialInstance->Bind(uniformPrefix, PropertyMap);
     }
 
 private:
-    std::unordered_map<std::string, MaterialProperty> PropertyOverrideMap;
+    std::unordered_map<std::string, MaterialProperty> PropertyMap;
 };
 
 } // namespace Engine
