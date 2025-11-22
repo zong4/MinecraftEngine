@@ -64,7 +64,7 @@ enum class TransformSpace
 };
 
 // Use euler to show and init
-// Use radian to rotate
+// Use radian to store
 // Use quat to calculate
 struct TransformComponent
 {

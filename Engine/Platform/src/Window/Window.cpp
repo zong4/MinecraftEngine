@@ -41,7 +41,6 @@ void Engine::Window::Update(float deltaTime)
 
     glfwPollEvents();
     m_LayerStack.Update(deltaTime);
-    glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));
 }
 
 void Engine::Window::Render()
@@ -51,6 +50,7 @@ void Engine::Window::Render()
     std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetImGuiLayer())->BeginRenderImGui();
     m_LayerStack.Render();
     std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetImGuiLayer())->EndRenderImGui();
+    glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));
 }
 
 void Engine::Window::SetCallbacks()

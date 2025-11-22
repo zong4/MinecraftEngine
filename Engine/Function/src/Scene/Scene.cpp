@@ -72,12 +72,6 @@ void Engine::Scene::Render(const Entity &camera)
     UploadSquaresData();
     UploadCubesData();
 
-    // Clear buffers
-    {
-        RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
-        RendererCommand::Clear();
-    }
-
     // Update camera uniform buffer
     auto &&transform = camera.GetComponent<TransformComponent>();
     auto &&cameraComp = camera.GetComponent<CameraComponent>();
@@ -94,6 +88,10 @@ void Engine::Scene::Render(const Entity &camera)
                  sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
             });
     }
+
+    // Clear buffers
+    RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
+    RendererCommand::Clear();
 
     Render2D();
     RenderShadowMap();
