@@ -1,11 +1,11 @@
-#include "Sandbox.hpp"
+#include "Creator.hpp"
 
-#include "Layers/SandboxLayer.hpp"
+#include "Layers/CreatorLayer.hpp"
 #include <nlohmann/json.hpp>
 
-Editor::Sandbox::Sandbox(const Engine::WindowProperty &props) : Application(props)
+Editor::Creator::Creator(const Engine::WindowProperty &props) : Application(props)
 {
-    AddLayer(std::make_shared<SandboxLayer>(m_Window));
+    AddLayer(std::make_shared<CreatorLayer>(m_Window));
     AddLayer(std::make_shared<Engine::InputLayer>());
     AddLayer(Engine::ImGuiLayer::Create(m_Window->GetNativeWindow()));
 }
@@ -13,7 +13,7 @@ Editor::Sandbox::Sandbox(const Engine::WindowProperty &props) : Application(prop
 std::unique_ptr<Engine::Application> Engine::CreateApplication()
 {
     nlohmann::json config;
-    std::ifstream configFile(std::string(PROJECT_ROOT) + "/Editor/config/Sandbox.json");
+    std::ifstream configFile(std::string(PROJECT_ROOT) + "/Editor/config/Creator.json");
     if (configFile.is_open())
     {
         configFile >> config;
@@ -23,19 +23,19 @@ std::unique_ptr<Engine::Application> Engine::CreateApplication()
         int width = config.value("Width", 1280);
         int height = config.value("Height", 720);
         bool vsync = config.value("VSync", true);
-        return std::make_unique<Editor::Sandbox>(Engine::WindowProperty(title, width, height, vsync));
+        return std::make_unique<Editor::Creator>(Engine::WindowProperty(title, width, height, vsync));
     }
     else
     {
-        LOG_ENGINE_WARN("Failed to open sandbox.json, using default window properties");
-        return std::make_unique<Editor::Sandbox>(Engine::WindowProperty("Minecraft Engine", 1280, 720, true));
+        LOG_ENGINE_WARN("Failed to open Creator.json, using default window properties");
+        return std::make_unique<Editor::Creator>(Engine::WindowProperty("Minecraft Engine", 1280, 720, true));
     }
 }
 
-Editor::Sandbox::~Sandbox()
+Editor::Creator::~Creator()
 {
     nlohmann::ordered_json config;
-    std::ofstream configFileOut(std::string(PROJECT_ROOT) + "/Editor/config/sandbox.json");
+    std::ofstream configFileOut(std::string(PROJECT_ROOT) + "/Editor/config/Creator.json");
     if (configFileOut.is_open())
     {
         Engine::WindowProperty &props = m_Window->GetProperty();
@@ -49,6 +49,6 @@ Editor::Sandbox::~Sandbox()
     }
     else
     {
-        LOG_ENGINE_WARN("Failed to save sandbox.json");
+        LOG_ENGINE_WARN("Failed to save Creator.json");
     }
 }

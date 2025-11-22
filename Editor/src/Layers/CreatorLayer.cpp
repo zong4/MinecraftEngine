@@ -1,31 +1,24 @@
-#include "SandboxLayer.hpp"
+#include "CreatorLayer.hpp"
 
 #include "Scenes/EditorScene.hpp"
 #include "Scenes/ExampleScene.hpp"
 #include <imgui.h>
 
-Editor::SandboxLayer::SandboxLayer(std::shared_ptr<Engine::Window> window)
-    : Engine::Layer("SandboxLayer"), m_Window(window)
+Editor::CreatorLayer::CreatorLayer(std::shared_ptr<Engine::Window> window)
+    : Engine::Layer("CreatorLayer"), m_Window(window)
 {
     m_EditorScene = std::make_shared<Editor::EditorScene>();
     m_ActiveScene = std::make_shared<Editor::ExampleScene>();
 }
 
-void Editor::SandboxLayer::OnEvent(Engine::Event &event)
+void Editor::CreatorLayer::OnUpdate(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    if (!event.IsHandled())
-    {
-        Engine::EventDispatcher dispatcher(event);
-        dispatcher.Dispatch<Engine::KeyEvent>(
-            std::function<bool(Engine::KeyEvent &)>(std::bind(&SandboxLayer::OnKeyEvent, this, std::placeholders::_1)));
-    }
-}
-
-void Editor::SandboxLayer::OnUpdate(float deltaTime)
-{
-    PROFILE_FUNCTION();
+    if (Engine::Input::GetInstance().IsKeyPressed(KEY_SPACE))
+        m_Mode = SandboxMode::Play;
+    else if (Engine::Input::GetInstance().IsKeyPressed(KEY_ESCAPE))
+        m_Mode = SandboxMode::Edit;
 
     switch (m_Mode)
     {
@@ -42,7 +35,7 @@ void Editor::SandboxLayer::OnUpdate(float deltaTime)
     }
 }
 
-void Editor::SandboxLayer::OnRender()
+void Editor::CreatorLayer::OnRender()
 {
     PROFILE_FUNCTION();
 
@@ -69,7 +62,7 @@ void Editor::SandboxLayer::OnRender()
     }
 }
 
-void Editor::SandboxLayer::OnImGuiRender()
+void Editor::CreatorLayer::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
@@ -111,20 +104,4 @@ void Editor::SandboxLayer::OnImGuiRender()
     }
 
     ImGui::End();
-}
-
-bool Editor::SandboxLayer::OnKeyEvent(Engine::KeyEvent &event)
-{
-    if (Engine::Input::GetInstance().IsKeyPressed(KEY_SPACE))
-    {
-        m_Mode = SandboxMode::Play;
-        return true;
-    }
-    else if (Engine::Input::GetInstance().IsKeyPressed(KEY_ESCAPE))
-    {
-        m_Mode = SandboxMode::Edit;
-        return true;
-    }
-
-    return false;
 }
