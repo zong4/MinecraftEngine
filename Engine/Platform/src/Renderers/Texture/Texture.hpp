@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../RendererCommand.hpp"
+#include <Core.hpp>
 
 namespace Engine
 {
@@ -15,18 +15,15 @@ public:
     virtual unsigned int GetRendererID() const { return m_RendererID; }
 
 public:
-    virtual void Bind(unsigned int slot) const = 0;
+    virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
+    virtual void Active(unsigned int slot) const = 0;
 
 protected:
     unsigned int m_RendererID = 0;
 
 protected:
-    // unsigned char *LoadImage(const std::string &path, int &width, int &height, unsigned int &internalFormat,
-    //                          unsigned int &format, bool flipVertically);
-    void *LoadImage(const std::string &path, int &width, int &height, int &channels, unsigned int &internalFormat,
-                    unsigned int &format, unsigned int &type, bool &isHDR, bool flipVertically);
-
+    void *LoadImage(const std::string &path, int &width, int &height, int &channels, bool &isHDR, bool flipVertically);
     void FreeImage(void *data);
 };
 

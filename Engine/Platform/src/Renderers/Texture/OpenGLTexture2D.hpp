@@ -8,21 +8,20 @@ namespace Engine
 class OpenGLTexture2D : public Texture2D
 {
 public:
-    // OpenGLTexture2D(int width, int height, void *data);
-    OpenGLTexture2D(int width, int height, unsigned int internalFormat, unsigned int format, unsigned int type,
-                    void *data);
+    OpenGLTexture2D(Texture2DType type, int width, int height, void *data);
     OpenGLTexture2D(int width, int height, int samples);
     OpenGLTexture2D(const std::string &path);
     virtual ~OpenGLTexture2D() override;
 
 public:
-    void Bind(unsigned int slot) const override;
+    void Bind() const override;
     void Unbind() const override;
+    void Active(unsigned int slot) const override;
     void Resize(int width, int height) override;
 
 protected:
     void CreateTexture(int width, int height, unsigned int internalFormat, unsigned int format, unsigned int type,
-                       void *data);
+                       void *data, bool isHDR = false) override;
 };
 
 } // namespace Engine

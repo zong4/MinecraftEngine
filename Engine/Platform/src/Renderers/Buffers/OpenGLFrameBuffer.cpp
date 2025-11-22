@@ -75,17 +75,17 @@ void Engine::OpenGLFrameBuffer::BindBasicTexture(int width, int height)
     switch (m_Type)
     {
     case FrameBufferType::Color:
-        m_Texture = Texture2D::Create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
+        m_Texture = Texture2D::Create(Texture2DType::Color, width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         break;
     case FrameBufferType::Depth:
-        m_Texture = Texture2D::Create(width, height, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+        m_Texture = Texture2D::Create(Texture2DType::Depth, width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
         break;
     case FrameBufferType::Integer:
-        m_Texture = Texture2D::Create(width, height, GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT);
+        m_Texture = Texture2D::Create(Texture2DType::Integer, width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         break;
     default:

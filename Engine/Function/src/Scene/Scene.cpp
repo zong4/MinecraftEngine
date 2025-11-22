@@ -292,7 +292,7 @@ void Engine::Scene::Render2D() const
         auto &&sprite = spriteView.get<Engine::SpriteRendererComponent>(entity);
         int texID = TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance);
         if (texID != -1)
-            sprite.TextureInstance->Bind(texID);
+            sprite.TextureInstance->Active(texID);
     }
 
     // Render squares
@@ -375,7 +375,7 @@ void Engine::Scene::Render3D() const
                 "u_LightProjection[" + std::to_string(lightIndex) + "]",
                 glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f)); // todo: calculate camera view
             shader->SetUniformInt("u_ShadowMap[" + std::to_string(lightIndex) + "]", lightIndex);
-            light.ShadowMap->GetTexture()->Bind(lightIndex);
+            light.ShadowMap->GetTexture()->Active(lightIndex);
 
             lightIndex++;
         }
@@ -391,10 +391,10 @@ void Engine::Scene::Render3D() const
 
         auto &&skybox = m_Registry.get<SkyboxComponent>(view.front());
         shader->SetUniformInt("u_Skybox", lightIndex);
-        skybox.GetTextureCube()->Bind(lightIndex);
+        skybox.GetTextureCube()->Active(lightIndex);
     }
 
-    TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Bind(lightIndex + 1);
+    TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
     shader->SetUniformInt("u_Texture", lightIndex + 1);
     if (m_CubesCount > 0)
         VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
@@ -419,7 +419,7 @@ void Engine::Scene::RenderSkybox() const
 
         auto &&skybox = m_Registry.get<Engine::SkyboxComponent>(view.front());
         shader->SetUniformInt("u_Skybox", 0);
-        skybox.GetTextureCube()->Bind(0);
+        skybox.GetTextureCube()->Active(0);
         Engine::VertexLibrary::GetInstance().GetVertex("Skybox")->Render();
     }
 

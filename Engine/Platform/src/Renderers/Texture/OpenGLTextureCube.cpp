@@ -1,5 +1,6 @@
 #include "OpenGLTextureCube.hpp"
 
+#include "../RendererCommand.hpp"
 #include <glad/glad.h>
 
 Engine::OpenGLTextureCube::OpenGLTextureCube(const glm::vec4 &color) : TextureCube()
@@ -34,15 +35,39 @@ Engine::OpenGLTextureCube::OpenGLTextureCube(const std::array<std::string, 6> &f
     unsigned int baseIF = 0, baseFmt = 0, baseType = 0;
     bool baseIsHDR = false;
 
-    for (unsigned int i = 0; i < faces.size(); ++i)
+    for (unsigned int i = 0; i < faces.size(); i++)
     {
         // Unified loader: returns void* (float* for HDR, unsigned char* for LDR)
-        void *data = LoadImage(faces[i], width, height, channels, internalFormat, format, type, isHDR,
-                               /*flipVertically=*/false);
+        void *data = LoadImage(faces[i], width, height, channels, isHDR, false);
         if (!data)
         {
             LOG_ENGINE_ASSERT("Failed to load cubemap face: " + faces[i]);
             continue;
+        }
+
+        unsigned int format, internalFormat = 0;
+        switch (channels)
+        {
+        case 1:
+            format = GL_RED;
+            internalFormat = isHDR ? GL_R16F : GL_R8;
+            type = isHDR ? GL_FLOAT : GL_UNSIGNED_BYTE;
+            break;
+        case 2:
+            format = GL_RG;
+            internalFormat = isHDR ? GL_RG16F : GL_RG8;
+            type = isHDR ? GL_FLOAT : GL_UNSIGNED_BYTE;
+            break;
+        case 3:
+            format = GL_RGB;
+            internalFormat = isHDR ? GL_RGB16F : GL_SRGB8;
+            type = isHDR ? GL_FLOAT : GL_UNSIGNED_BYTE;
+            break;
+        case 4:
+            format = GL_RGBA;
+            internalFormat = isHDR ? GL_RGBA16F : GL_SRGB8_ALPHA8;
+            type = isHDR ? GL_FLOAT : GL_UNSIGNED_BYTE;
+            break;
         }
 
         if (firstFace)
