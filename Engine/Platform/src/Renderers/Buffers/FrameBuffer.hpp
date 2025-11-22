@@ -6,19 +6,11 @@
 namespace Engine
 {
 
-enum class FrameBufferType
-{
-    Color,
-    Depth,
-    Integer,
-    Multisample,
-};
-
 class FrameBuffer
 {
 public:
     virtual ~FrameBuffer() = default;
-    static std::shared_ptr<FrameBuffer> Create(FrameBufferType type, int width, int height, int samples = 0);
+    static std::shared_ptr<FrameBuffer> Create(Texture2DType type, int width, int height, int samples = 0);
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }
@@ -34,20 +26,16 @@ public:
     void Resize(int width, int height);
 
 protected:
-    FrameBufferType m_Type;
     unsigned int m_RendererID = 0;
     int m_Width, m_Height;
     std::shared_ptr<Texture2D> m_Texture = nullptr;
     std::unique_ptr<RenderBuffer> m_RenderBuffer = nullptr;
 
 protected:
-    FrameBuffer(FrameBufferType type, int width, int height, int samples)
-        : m_Type(type), m_Width(width), m_Height(height)
-    {
-    }
+    FrameBuffer(Texture2DType type, int width, int height, int samples) : m_Width(width), m_Height(height) {}
 
 protected:
-    virtual void BindBasicTexture(int width, int height) = 0;
+    virtual void BindBasicTexture(Texture2DType type, int width, int height) = 0;
     virtual void BindMultiSampleTexture(int width, int height, int samples) = 0;
     virtual void BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples) = 0;
 };

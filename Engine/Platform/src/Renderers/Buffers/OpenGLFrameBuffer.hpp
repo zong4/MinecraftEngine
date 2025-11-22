@@ -8,7 +8,7 @@ namespace Engine
 class OpenGLFrameBuffer : public FrameBuffer
 {
 public:
-    OpenGLFrameBuffer(FrameBufferType type, int width, int height, int samples = 0);
+    OpenGLFrameBuffer(Texture2DType type, int width, int height, int samples = 0);
     virtual ~OpenGLFrameBuffer() override;
 
 public:
@@ -17,8 +17,8 @@ public:
     void Unbind() const override;
     unsigned int PickPixel(int x, int y) const override;
 
-private:
-    void BindBasicTexture(int width, int height) override;
+protected:
+    void BindBasicTexture(Texture2DType type, int width, int height) override;
     void BindMultiSampleTexture(int width, int height, int samples) override;
     void BindRenderBuffer(int width, int height, unsigned int internalFormat, int samples) override;
 };

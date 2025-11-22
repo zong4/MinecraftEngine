@@ -3,7 +3,7 @@
 #include "../RendererCommand.hpp"
 #include <glad/glad.h>
 
-Engine::OpenGLFrameBuffer::OpenGLFrameBuffer(FrameBufferType type, int width, int height, int samples)
+Engine::OpenGLFrameBuffer::OpenGLFrameBuffer(Texture2DType type, int width, int height, int samples)
     : FrameBuffer(type, width, height, samples)
 {
     PROFILE_FUNCTION();
@@ -11,13 +11,13 @@ Engine::OpenGLFrameBuffer::OpenGLFrameBuffer(FrameBufferType type, int width, in
     glGenFramebuffers(1, &m_RendererID);
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
-    if (type != FrameBufferType::Multisample)
-        BindBasicTexture(width, height);
+    if (type != Texture2DType::Multisample)
+        BindBasicTexture(type, width, height);
     else
         BindMultiSampleTexture(width, height, samples);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 
-    if (type != FrameBufferType::Depth)
+    if (type != Texture2DType::Depth)
         BindRenderBuffer(width, height, GL_DEPTH24_STENCIL8, samples);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 
@@ -26,9 +26,9 @@ Engine::OpenGLFrameBuffer::OpenGLFrameBuffer(FrameBufferType type, int width, in
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     LOG_ENGINE_INFO("OpenGLFrameBuffer created with ID: " + std::to_string(m_RendererID) +
-                    ", Type: " + std::to_string(static_cast<int>(m_Type)) + ", Width: " + std::to_string(width) +
-                    ", Height: " + std::to_string(height) +
-                    (type == FrameBufferType::Multisample ? ", Samples: " + std::to_string(samples) : ""));
+                    ", Type: " + std::to_string(static_cast<int>(m_Texture->GetType())) +
+                    ", Width: " + std::to_string(width) + ", Height: " + std::to_string(height) +
+                    (type == Texture2DType::Multisample ? ", Samples: " + std::to_string(samples) : ""));
 }
 
 Engine::OpenGLFrameBuffer::~OpenGLFrameBuffer() { glDeleteFramebuffers(1, &m_RendererID); }
@@ -68,28 +68,28 @@ unsigned int Engine::OpenGLFrameBuffer::PickPixel(int x, int y) const
     return pixelData;
 }
 
-void Engine::OpenGLFrameBuffer::BindBasicTexture(int width, int height)
+void Engine::OpenGLFrameBuffer::BindBasicTexture(Texture2DType type, int width, int height)
 {
     PROFILE_FUNCTION();
 
-    switch (m_Type)
+    switch (type)
     {
-    case FrameBufferType::Color:
+    case Texture2DType::Color:
         m_Texture = Texture2D::Create(Texture2DType::Color, width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         break;
-    case FrameBufferType::Depth:
+    case Texture2DType::Depth:
         m_Texture = Texture2D::Create(Texture2DType::Depth, width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
         break;
-    case FrameBufferType::Integer:
+    case Texture2DType::Integer:
         m_Texture = Texture2D::Create(Texture2DType::Integer, width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         break;
     default:
-        LOG_ENGINE_ASSERT("Invalid FrameBufferType for basic texture.");
+        LOG_ENGINE_ASSERT("Invalid Texture2DType for basic texture.");
     }
 }
 

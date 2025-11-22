@@ -53,7 +53,7 @@ private:
     entt::registry m_Registry = {};
     std::vector<Entity> m_DeletedEntities = {};
     std::shared_ptr<Engine::FrameBuffer> m_ColorIDFrameBuffer =
-        Engine::FrameBuffer::Create(Engine::FrameBufferType::Integer, 1280, 720);
+        Engine::FrameBuffer::Create(Engine::Texture2DType::Integer, 1280, 720);
     size_t m_SquaresCount = 0;
     size_t m_CubesCount = 0;
 

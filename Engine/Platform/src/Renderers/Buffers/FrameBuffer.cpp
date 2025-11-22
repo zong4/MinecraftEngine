@@ -3,8 +3,7 @@
 #include "../RendererProperty.hpp"
 #include "OpenGLFrameBuffer.hpp"
 
-std::shared_ptr<Engine::FrameBuffer> Engine::FrameBuffer::Create(FrameBufferType type, int width, int height,
-                                                                 int samples)
+std::shared_ptr<Engine::FrameBuffer> Engine::FrameBuffer::Create(Texture2DType type, int width, int height, int samples)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
