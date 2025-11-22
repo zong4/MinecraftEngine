@@ -83,6 +83,13 @@ void Editor::SandboxLayer::OnImGuiRender()
         ImGui::Text("Mode: Edit (Press SPACE to Play)");
     else
         ImGui::Text("Mode: Play (Press ESCAPE to Edit)");
+
+    ImGuiIO &io = ImGui::GetIO();
+    bool mouseBlock = io.WantCaptureMouse && ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
+    bool keyBlock = io.WantCaptureKeyboard && ImGui::IsAnyItemActive();
+    Engine::Input::GetInstance().SetBlockEvents(mouseBlock || keyBlock);
+    ImGui::Text("ImGui Blocking Events: %s", (mouseBlock || keyBlock) ? "True" : "False");
+
     ImGui::End();
 }
 

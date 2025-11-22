@@ -20,14 +20,14 @@ public:
     const glm::vec2 &GetScrollOffset() const { return m_ScrollOffset; }
 
     // Setters
-    void SetKeyAction(int keyCode, int action) { m_KeyActions[keyCode] = action; }
+    void SetBlockEvents(bool block) { m_BlockEvents = block; }
+    void SetKeyAction(int keyCode, int action);
     void SetPosition(double x, double y);
-    void SetScrollOffset(double xOffset, double yOffset) { m_ScrollOffset = {xOffset, yOffset}; }
-
-public:
+    void SetScrollOffset(double xOffset, double yOffset);
     void Clear();
 
 private:
+    bool m_BlockEvents = false;
     std::unordered_map<int, int> m_KeyActions;
     glm::vec2 m_Position = {0.0, 0.0};
     glm::vec2 m_LastPosition = {0.0, 0.0};

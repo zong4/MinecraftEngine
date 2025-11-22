@@ -16,13 +16,13 @@ public:
 
 public:
     void OnAttach() override;
-    void OnEvent(Event &event) override;
+    // void OnEvent(Event &event) override;
     virtual void BeginRenderImGui() const = 0;
     virtual void EndRenderImGui() const = 0;
     void OnDetach() override;
 
 protected:
-    bool m_BlockEvents = true;
+    bool m_BlockEvents = false;
     void *m_NativeWindow;
 
 protected:

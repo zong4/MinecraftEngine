@@ -21,34 +21,34 @@ std::shared_ptr<Engine::ImGuiLayer> Engine::ImGuiLayer::Create(void *nativeWindo
     }
 }
 
-void Engine::ImGuiLayer::OnEvent(Event &event)
-{
-    PROFILE_FUNCTION();
+// void Engine::ImGuiLayer::OnEvent(Event &event)
+// {
+//     PROFILE_FUNCTION();
 
-    if (m_BlockEvents && m_NativeWindow)
-    {
-        EventDispatcher dispatcher(event);
+//     if (m_BlockEvents && m_NativeWindow)
+//     {
+//         EventDispatcher dispatcher(event);
 
-        // Keyboard
-        dispatcher.Dispatch<KeyEvent>([](KeyEvent &event) {
-            ImGuiIO &io = ImGui::GetIO();
-            io.AddKeyEvent(static_cast<ImGuiKey>(event.GetCode()), event.GetAction() == 1 || event.GetAction() == 2);
-            return io.WantCaptureKeyboard;
-        });
+//         // Keyboard
+//         dispatcher.Dispatch<KeyEvent>([](KeyEvent &event) {
+//             ImGuiIO &io = ImGui::GetIO();
+//             io.AddKeyEvent(static_cast<ImGuiKey>(event.GetCode()), event.GetAction() == 1 || event.GetAction() == 2);
+//             return io.WantCaptureKeyboard;
+//         });
 
-        // Mouse
-        dispatcher.Dispatch<MouseMoveEvent>([](MouseMoveEvent &event) {
-            ImGuiIO &io = ImGui::GetIO();
-            io.AddMousePosEvent((float)event.GetX(), (float)event.GetY());
-            return io.WantCaptureMouse;
-        });
-        dispatcher.Dispatch<MouseButtonEvent>([](MouseButtonEvent &event) {
-            ImGuiIO &io = ImGui::GetIO();
-            io.AddMouseButtonEvent(event.GetCode(), event.GetAction() == 1 || event.GetAction() == 2);
-            return io.WantCaptureMouse;
-        });
-    }
-}
+//         // Mouse
+//         dispatcher.Dispatch<MouseMoveEvent>([](MouseMoveEvent &event) {
+//             ImGuiIO &io = ImGui::GetIO();
+//             io.AddMousePosEvent((float)event.GetX(), (float)event.GetY());
+//             return io.WantCaptureMouse;
+//         });
+//         dispatcher.Dispatch<MouseButtonEvent>([](MouseButtonEvent &event) {
+//             ImGuiIO &io = ImGui::GetIO();
+//             io.AddMouseButtonEvent(event.GetCode(), event.GetAction() == 1 || event.GetAction() == 2);
+//             return io.WantCaptureMouse;
+//         });
+//     }
+// }
 
 void Engine::ImGuiLayer::OnAttach()
 {

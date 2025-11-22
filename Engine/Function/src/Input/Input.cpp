@@ -44,11 +44,27 @@ bool Engine::Input::IsControlDown() const
 
 bool Engine::Input::IsShiftDown() const { return IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT); }
 
+void Engine::Input::SetKeyAction(int keyCode, int action)
+{
+    if (m_BlockEvents)
+        return;
+    m_KeyActions[keyCode] = action;
+}
+
 void Engine::Input::SetPosition(double x, double y)
 {
+    if (m_BlockEvents)
+        return;
     m_LastPosition = m_Position;
     m_Position = {x, y};
     m_DeltaPosition = m_Position - m_LastPosition;
+}
+
+void Engine::Input::SetScrollOffset(double xOffset, double yOffset)
+{
+    if (m_BlockEvents)
+        return;
+    m_ScrollOffset = {xOffset, yOffset};
 }
 
 void Engine::Input::Clear()
