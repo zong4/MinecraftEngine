@@ -40,5 +40,6 @@ void main()
     vs_out.TexCoord = aTexCoord;
     vs_out.Color = aColor;
     vs_out.Material = aMaterial;
+
     gl_Position = u_Projection * u_View * vec4(vs_out.Position, 1.0);
 }

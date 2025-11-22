@@ -346,34 +346,45 @@ void Engine::Scene::Render3D() const
 
     // Light
     int lightIndex = 0;
-    auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
-    for (auto &&entity : lightView)
     {
-        auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(entity);
+        // Initialize all lights as inactive
+        for (int i = 0; i < 4; i++) // todo: max lights constant
+            shader->SetUniformInt("u_Light[" + std::to_string(i) + "].Type", -1);
 
-        // Light
-        shader->SetUniformInt("u_Light[" + std::to_string(lightIndex) + "].Type", static_cast<int>(light.GetType()));
-        shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Position", transform.Position);
-        shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Color", light.Color * light.Intensity);
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Constant", light.Constant);
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Linear", light.Linear);
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Quadratic", light.Quadratic);
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].CutOff",
-                                glm::cos(glm::radians(light.InnerAngle)));
-        shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].OuterCutOff",
-                                glm::cos(glm::radians(light.OuterAngle)));
+        // Upload active lights
+        auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
+        for (auto &&entity : lightView)
+        {
+            auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(entity);
 
-        // Shadow
-        shader->SetUniformMat4("u_LightView[" + std::to_string(lightIndex) + "]",
-                               glm::inverse(transform.GetTransformMatrix()));
-        shader->SetUniformMat4("u_LightProjection[" + std::to_string(lightIndex) + "]",
-                               glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f));
-        shader->SetUniformInt("u_ShadowMap[" + std::to_string(lightIndex) + "]", lightIndex);
-        light.ShadowMap->GetTexture()->Bind(lightIndex);
+            // Light properties
+            shader->SetUniformInt("u_Light[" + std::to_string(lightIndex) + "].Type",
+                                  static_cast<int>(light.GetType()));
+            shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Position", transform.Position);
+            shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Color", light.Color * light.Intensity);
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Constant", light.Constant);
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Linear", light.Linear);
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Quadratic", light.Quadratic);
+            shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Direction",
+                                   transform.GetForward(TransformSpace::Global));
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].CutOff",
+                                    glm::cos(glm::radians(light.InnerAngle)));
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].OuterCutOff",
+                                    glm::cos(glm::radians(light.OuterAngle)));
 
-        lightIndex++;
+            // Shadow
+            shader->SetUniformMat4("u_LightView[" + std::to_string(lightIndex) + "]",
+                                   glm::inverse(transform.GetTransformMatrix()));
+            shader->SetUniformMat4(
+                "u_LightProjection[" + std::to_string(lightIndex) + "]",
+                glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f)); // todo: calculate camera view
+            shader->SetUniformInt("u_ShadowMap[" + std::to_string(lightIndex) + "]", lightIndex);
+            light.ShadowMap->GetTexture()->Bind(lightIndex);
+
+            lightIndex++;
+        }
+        shader->SetUniformInt("u_NumLights", lightIndex);
     }
-    shader->SetUniformInt("u_NumLights", lightIndex);
 
     // Skybox
     auto &&view = m_Registry.view<SkyboxComponent>();
