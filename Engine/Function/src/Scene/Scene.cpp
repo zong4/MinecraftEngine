@@ -12,11 +12,11 @@ Engine::Scene::~Scene()
 
 Engine::Entity Engine::Scene::GetEntityByName(const std::string &name)
 {
-    auto &&view = m_Registry.view<TagComponent>();
+    auto &&view = m_Registry.view<LabelComponent>();
     for (auto &&entity : view)
     {
-        auto &&nameComponent = view.get<TagComponent>(entity);
-        if (nameComponent.Tag == name)
+        auto &&nameComponent = view.get<LabelComponent>(entity);
+        if (nameComponent.Name == name)
             return Entity(entity, &m_Registry);
     }
     static Entity nullEntity;
@@ -131,7 +131,7 @@ Engine::Entity Engine::Scene::AddEmptyEntity(const std::string &name, const Tran
     PROFILE_FUNCTION();
 
     Entity entity{m_Registry.create(), &m_Registry};
-    entity.AddComponent<TagComponent>(name);
+    entity.AddComponent<LabelComponent>(name);
     entity.AddComponent<TransformComponent>(transform);
     entity.AddComponent<RelationshipComponent>();
     return entity;
