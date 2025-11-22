@@ -10,6 +10,19 @@ Engine::Scene::~Scene()
     m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
 }
 
+Engine::Entity Engine::Scene::GetEntityByName(const std::string &name)
+{
+    auto &&view = m_Registry.view<TagComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&nameComponent = view.get<TagComponent>(entity);
+        if (nameComponent.Tag == name)
+            return Entity(entity, &m_Registry);
+    }
+    static Entity nullEntity;
+    return nullEntity;
+}
+
 void Engine::Scene::SetMainCamera(const Entity &camera)
 {
     if (m_MainCamera)
@@ -38,9 +51,7 @@ void Engine::Scene::Update(float deltaTime)
     {
         auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
         if (!relationship.GetParent())
-        {
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
-        }
     }
 
     // Update all scripts

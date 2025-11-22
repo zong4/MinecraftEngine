@@ -20,6 +20,7 @@ public:
     const std::string &GetName() const { return m_Name; }
     entt::registry &GetRegistry() { return m_Registry; }
     const Entity &GetMainCamera() const { return m_MainCamera; }
+    Entity GetEntityByName(const std::string &name);
 
     // Setters
     void SetName(const std::string &name) { m_Name = name; }
@@ -52,7 +53,6 @@ protected:
     std::string m_Name;
 
 private:
-    // Scene data
     entt::registry m_Registry = {};
     Entity m_MainCamera;
     size_t m_SquaresCount = 0;

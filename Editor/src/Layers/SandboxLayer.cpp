@@ -31,6 +31,7 @@ void Editor::SandboxLayer::OnUpdate(float deltaTime)
     {
     case SandboxMode::Edit:
         m_EditorScene->Update(deltaTime);
+        m_ActiveScene->Update(deltaTime);
         break;
     case SandboxMode::Play:
         m_ActiveScene->Update(deltaTime);
