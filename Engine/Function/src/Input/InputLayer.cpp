@@ -11,22 +11,22 @@ void Engine::InputLayer::OnEvent(Event &event)
         // KeyEvent
         dispatcher.Dispatch<Engine::KeyEvent>([this](Engine::KeyEvent &event) {
             Engine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
-            return false;
+            return true;
         });
 
         // MouseEvent
         {
             dispatcher.Dispatch<Engine::MouseButtonEvent>([this](Engine::MouseButtonEvent &event) {
                 Engine::Input::GetInstance().SetKeyAction(event.GetCode(), event.GetAction());
-                return false;
+                return true;
             });
             dispatcher.Dispatch<Engine::MouseMoveEvent>([this](Engine::MouseMoveEvent &event) {
                 Engine::Input::GetInstance().SetPosition(event.GetX(), event.GetY());
-                return false;
+                return true;
             });
             dispatcher.Dispatch<Engine::MouseScrollEvent>([this](Engine::MouseScrollEvent &event) {
                 Engine::Input::GetInstance().SetScrollOffset(event.GetXOffset(), event.GetYOffset());
-                return false;
+                return true;
             });
         }
     }
