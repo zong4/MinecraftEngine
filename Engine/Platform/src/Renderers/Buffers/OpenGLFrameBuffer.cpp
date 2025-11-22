@@ -31,29 +31,16 @@ Engine::OpenGLFrameBuffer::OpenGLFrameBuffer(FrameBufferType type, int width, in
                     (type == FrameBufferType::Multisample ? ", Samples: " + std::to_string(samples) : ""));
 }
 
-Engine::OpenGLFrameBuffer::~OpenGLFrameBuffer()
-{
-    PROFILE_FUNCTION();
-
-    glDeleteFramebuffers(1, &m_RendererID);
-}
+Engine::OpenGLFrameBuffer::~OpenGLFrameBuffer() { glDeleteFramebuffers(1, &m_RendererID); }
 
 void Engine::OpenGLFrameBuffer::Bind() const
 {
-    PROFILE_FUNCTION();
-
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     glViewport(0, 0, m_Width, m_Height);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void Engine::OpenGLFrameBuffer::Unbind() const
-{
-    PROFILE_FUNCTION();
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
-}
+void Engine::OpenGLFrameBuffer::Unbind() const { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 void Engine::OpenGLFrameBuffer::Blit(unsigned int resolveID) const
 {
@@ -85,25 +72,23 @@ void Engine::OpenGLFrameBuffer::BindBasicTexture(int width, int height)
 {
     PROFILE_FUNCTION();
 
-    if (m_Type == FrameBufferType::Color)
+    switch (m_Type)
     {
+    case FrameBufferType::Color:
         m_Texture = Texture2D::Create(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
-    }
-    else if (m_Type == FrameBufferType::Depth)
-    {
+        break;
+    case FrameBufferType::Depth:
         m_Texture = Texture2D::Create(width, height, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
-    }
-    else if (m_Type == FrameBufferType::Integer)
-    {
+        break;
+    case FrameBufferType::Integer:
         m_Texture = Texture2D::Create(width, height, GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
-    }
-    else
-    {
+        break;
+    default:
         LOG_ENGINE_ASSERT("Invalid FrameBufferType for basic texture.");
     }
 }
@@ -117,7 +102,6 @@ void Engine::OpenGLFrameBuffer::BindMultiSampleTexture(int width, int height, in
         LOG_ENGINE_ASSERT("Samples must be greater than 0 for multisample texture.");
         return;
     }
-
     m_Texture = Texture2D::Create(width, height, samples);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_Texture->GetRendererID(),
                            0);

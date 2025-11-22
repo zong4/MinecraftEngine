@@ -10,8 +10,8 @@ enum class FrameBufferType
 {
     Color,
     Depth,
+    Integer,
     Multisample,
-    Integer
 };
 
 class FrameBuffer

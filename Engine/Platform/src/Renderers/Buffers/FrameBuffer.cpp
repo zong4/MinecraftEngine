@@ -26,13 +26,12 @@ void Engine::FrameBuffer::Resize(int width, int height)
     if (width == m_Width && height == m_Height)
         return;
 
-    m_Width = width;
-    m_Height = height;
-
     m_Texture->Resize(width, height);
     if (m_RenderBuffer)
         m_RenderBuffer->Resize(width, height);
 
+    m_Width = width;
+    m_Height = height;
     Bind();
     Unbind();
 }
