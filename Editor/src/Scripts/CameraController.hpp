@@ -16,9 +16,9 @@ public:
     void OnUpdate(float deltaTime) override;
 
 private:
-    float m_MoveSpeed = 0.2f;
+    float m_MoveSpeed = 0.25f;
     float m_RotateSpeed = 2.0f;
-    float m_ZoomSpeed = 1.5f;
+    float m_ZoomSpeed = 20.0f;
     Engine::TransformComponent *m_Transform = nullptr;
 };
 
