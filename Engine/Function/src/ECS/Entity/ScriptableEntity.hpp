@@ -8,7 +8,7 @@ namespace Engine
 class ScriptableEntity
 {
 public:
-    ScriptableEntity(Entity entity) : m_Entity(entity) {}
+    ScriptableEntity(const Entity &entity) : m_Entity(entity) {}
     virtual ~ScriptableEntity() = default;
 
 public:

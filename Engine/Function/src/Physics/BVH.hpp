@@ -18,7 +18,7 @@ struct BVHNode
 class BVH
 {
 public:
-    BVH(std::shared_ptr<Scene> scene);
+    BVH(const std::shared_ptr<Scene> &scene);
     ~BVH();
 
 public:
@@ -28,7 +28,7 @@ private:
     BVHNode *m_Root;
 
 private:
-    BVHNode *Build(std::vector<Entity> entities, int leafSize);
+    BVHNode *Build(std::vector<Entity> &entities, int leafSize);
     void Destroy(BVHNode *node);
 };
 

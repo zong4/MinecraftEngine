@@ -3,7 +3,7 @@
 #include "../Renderers/Librarys/ShaderLibrary.hpp"
 #include "../Renderers/Librarys/VertexLibrary.hpp"
 
-Engine::BVH::BVH(std::shared_ptr<Scene> scene)
+Engine::BVH::BVH(const std::shared_ptr<Scene> &scene)
 {
     std::vector<Entity> entities;
     auto &&registry = scene->GetRegistry();
@@ -57,7 +57,7 @@ void Engine::BVH::Render(int maxDepth) const
     shader->Unbind();
 }
 
-Engine::BVHNode *Engine::BVH::Build(std::vector<Entity> entities, int leafSize)
+Engine::BVHNode *Engine::BVH::Build(std::vector<Entity> &entities, int leafSize)
 {
     if (entities.empty())
         return nullptr;

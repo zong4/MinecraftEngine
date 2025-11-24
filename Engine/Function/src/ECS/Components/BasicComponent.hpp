@@ -39,18 +39,18 @@ public:
 struct RelationshipComponent
 {
 public:
-    RelationshipComponent(Entity parent = Entity()) : Parent(parent) {}
+    RelationshipComponent(const Entity &parent = Entity()) : Parent(parent) {}
 
     // Getters
-    Entity GetParent() const { return Parent; }
+    const Entity &GetParent() const { return Parent; }
     const std::vector<Entity> &GetChildren() const { return m_Children; }
 
     // Setters
-    void SetParent(Entity parent) { Parent = parent; }
-    void AddChild(Entity child) { m_Children.push_back(child); }
-    void RemoveChild(Entity child);
+    void SetParent(const Entity &parent) { Parent = parent; }
+    void AddChild(const Entity &child) { m_Children.push_back(child); }
+    void RemoveChild(const Entity &child);
     void ClearChildren() { m_Children.clear(); }
-    static void SetParentChild(Entity parent, Entity child);
+    static void SetParentChild(const Entity &parent, const Entity &child);
 
 private:
     Entity Parent;

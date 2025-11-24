@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <fstream>
 #include <string>
 #include <thread>
@@ -32,6 +33,7 @@ private:
     Instrumentor() = default;
     ~Instrumentor() = default;
 
+private:
     void WriteHeader();
     void WriteFooter();
 };

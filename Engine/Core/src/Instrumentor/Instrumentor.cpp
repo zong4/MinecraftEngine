@@ -1,7 +1,5 @@
 #include "Instrumentor.hpp"
 
-#include <algorithm>
-
 Engine::Instrumentor &Engine::Instrumentor::GetInstance()
 {
     static Instrumentor instance;

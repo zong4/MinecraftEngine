@@ -4,7 +4,7 @@
 #include "Scenes/ExampleScene.hpp"
 #include <imgui.h>
 
-Editor::CreatorLayer::CreatorLayer(std::shared_ptr<Engine::Window> window)
+Editor::CreatorLayer::CreatorLayer(const std::shared_ptr<Engine::Window> &window)
     : Engine::Layer("CreatorLayer"), m_Window(window)
 {
     m_EditorScene = std::make_shared<Editor::EditorScene>();

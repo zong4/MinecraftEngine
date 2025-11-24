@@ -20,7 +20,7 @@ public:
     const std::unordered_map<std::string, MaterialProperty> &GetPropertyMap() const { return m_PropertyMap; }
 
     // Setters
-    void SetShader(std::shared_ptr<Shader> shader) { m_Shader = shader; }
+    void SetShader(const std::shared_ptr<Shader> &shader) { m_Shader = shader; }
     void AddProperty(const std::string &name, const MaterialProperty &property) { m_PropertyMap[name] = property; }
     void RemoveProperty(const std::string &name);
 

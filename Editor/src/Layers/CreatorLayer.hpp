@@ -16,7 +16,7 @@ class CreatorLayer : public Engine::Layer
 {
 
 public:
-    CreatorLayer(std::shared_ptr<Engine::Window> window);
+    CreatorLayer(const std::shared_ptr<Engine::Window> &window);
     ~CreatorLayer() override = default;
 
 public:

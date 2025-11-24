@@ -39,10 +39,10 @@ Editor::Creator::~Creator()
     if (configFileOut.is_open())
     {
         Engine::WindowProperty &props = m_Window->GetProperty();
-        config["title"] = props.Title;
-        config["width"] = props.Width;
-        config["height"] = props.Height;
-        config["vsync"] = props.VSync;
+        config["Title"] = props.Title;
+        config["Width"] = props.Width;
+        config["Height"] = props.Height;
+        config["VSync"] = props.VSync;
 
         configFileOut << config.dump(4);
         configFileOut.close();

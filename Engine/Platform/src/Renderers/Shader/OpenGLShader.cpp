@@ -58,21 +58,21 @@ void Engine::OpenGLShader::SetUniformFloat(const std::string &name, float value)
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void Engine::OpenGLShader::SetUniformVec3(const std::string &name, glm::vec3 vector3)
+void Engine::OpenGLShader::SetUniformVec3(const std::string &name, const glm::vec3 &vector3)
 {
     int location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform3fv(location, 1, &vector3[0]);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void Engine::OpenGLShader::SetUniformVec4(const std::string &name, glm::vec4 vector4)
+void Engine::OpenGLShader::SetUniformVec4(const std::string &name, const glm::vec4 &vector4)
 {
     int location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniform4fv(location, 1, &vector4[0]);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void Engine::OpenGLShader::SetUniformMat4(const std::string &name, glm::mat4 matrix4)
+void Engine::OpenGLShader::SetUniformMat4(const std::string &name, const glm::mat4 &matrix4)
 {
     int location = glGetUniformLocation(m_RendererID, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, &matrix4[0][0]);

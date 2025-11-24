@@ -1,11 +1,11 @@
 #include "BasicComponent.hpp"
 
-void Engine::RelationshipComponent::RemoveChild(Entity child)
+void Engine::RelationshipComponent::RemoveChild(const Entity &child)
 {
     m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
 }
 
-void Engine::RelationshipComponent::SetParentChild(Entity parent, Entity child)
+void Engine::RelationshipComponent::SetParentChild(const Entity &parent, const Entity &child)
 {
     if (auto &&childRelationship = child.GetComponent<RelationshipComponent>())
     {

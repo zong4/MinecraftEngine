@@ -8,7 +8,7 @@ namespace Editor
 class CameraController : public Engine::ScriptableEntity
 {
 public:
-    CameraController(Engine::Entity entity) : Engine::ScriptableEntity(entity) {}
+    CameraController(const Engine::Entity &entity) : Engine::ScriptableEntity(entity) {}
     ~CameraController() override = default;
 
 public:

@@ -32,9 +32,4 @@ void Engine::InputLayer::OnEvent(Event &event)
     }
 }
 
-void Engine::InputLayer::OnPostUpdate()
-{
-    PROFILE_FUNCTION();
-
-    Engine::Input::GetInstance().Clear();
-}
+void Engine::InputLayer::OnPostUpdate() { Engine::Input::GetInstance().Clear(); }
