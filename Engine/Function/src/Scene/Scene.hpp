@@ -53,6 +53,13 @@ private:
     std::vector<Entity> m_DeletedEntities = {};
     std::shared_ptr<Engine::FrameBuffer> m_ColorIDFrameBuffer =
         Engine::FrameBuffer::Create(Engine::Texture2DType::Integer, 1280, 720);
+
+    // Ray tracing
+    bool m_RayTracingRunning = false;
+    std::thread m_RayTracingThread;
+    std::vector<glm::vec4> m_RayTracingFrameBuffer;
+
+    // Statistics
     size_t m_SquaresCount = 0;
     size_t m_CubesCount = 0;
 

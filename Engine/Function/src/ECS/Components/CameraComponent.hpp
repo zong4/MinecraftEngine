@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../Physics/Ray.hpp"
 #include <Platform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -23,35 +24,19 @@ struct CameraComponent
 public:
     CameraComponent(CameraType type = CameraType::Perspective, float width = 1280.0f, float height = 720.0f,
                     float fov = 45.0f, float nearClip = 0.1f, float farClip = 100.0f,
-                    const glm::vec4 &backgroundColor = glm::vec4(0.01f, 0.01f, 0.01f, 1.0f))
-        : Type(type), m_Width(width), m_Height(height), FOV(fov), NearClip(nearClip), FarClip(farClip),
-          BackgroundColor(backgroundColor)
-    {
-    }
+                    const glm::vec4 &backgroundColor = glm::vec4(0.01f, 0.01f, 0.01f, 1.0f));
 
     // Getters
     int GetWidth() const { return m_Width; }
     int GetHeight() const { return m_Height; }
     const glm::mat4 &GetProjectionMatrix() const { return m_ProjectionMatrix; }
+    glm::vec3 GetRayWorld(float u, float v) const;
 
 public:
-    void Resize(int width, int height)
-    {
-        m_Width = width;
-        m_Height = height;
-    }
+    void Resize(int width, int height);
 
     // Call every frame before using the projection matrix
-    void UpdateProjectionMatrix()
-    {
-        if (Type == CameraType::Orthographic)
-            m_ProjectionMatrix =
-                glm::ortho(-m_Width / 200.0f * Scale, m_Width / 200.0f * Scale, -m_Height / 200.0f * Scale,
-                           m_Height / 200.0f * Scale, NearClip, FarClip); // Maybe it is hacky
-        else if (Type == CameraType::Perspective)
-            m_ProjectionMatrix =
-                glm::perspective(glm::radians(FOV), (float)m_Width / (float)m_Height, NearClip, FarClip);
-    }
+    void UpdateProjectionMatrix();
 
 private:
     int m_Width, m_Height;

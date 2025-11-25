@@ -1,5 +1,6 @@
 #include "Scene.hpp"
 
+#include "../Physics/RayTracing.hpp"
 #include "../Renderers/Librarys/ShaderLibrary.hpp"
 #include "../Renderers/Librarys/UniformLibrary.hpp"
 #include "../Renderers/Librarys/VertexLibrary.hpp"
@@ -7,6 +8,9 @@
 
 Engine::Scene::~Scene()
 {
+    if (m_RayTracingThread.joinable())
+        m_RayTracingThread.join();
+
     m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
 }
 
@@ -98,6 +102,18 @@ void Engine::Scene::Render(const Entity &camera)
     Render3D();
     RenderSkybox();
     RenderColorID();
+
+    // Ray tracing
+    if (!m_RayTracingRunning)
+    {
+        m_RayTracingRunning = true;
+        m_RayTracingThread = std::thread([this, camera] {
+            std::vector<glm::vec4> tempBuffer;
+            Engine::RayTracing::RenderScene(camera, 1, 1, tempBuffer);
+            m_RayTracingRunning = false;
+        });
+        m_RayTracingThread.detach();
+    }
 }
 
 void Engine::Scene::Resize(int width, int height)
