@@ -46,6 +46,18 @@ std::shared_ptr<Engine::Material> Engine::MaterialLibrary::GetMaterial(const std
     return m_MaterialMap[name];
 }
 
+std::vector<std::string> Engine::MaterialLibrary::GetAllMaterialNames() const
+{
+    std::vector<std::string> names;
+    names.reserve(m_MaterialMap.size());
+    for (const auto &[name, ptr] : m_MaterialMap)
+    {
+        names.push_back(name);
+    }
+    return names;
+}
+
+
 Engine::MaterialLibrary::MaterialLibrary()
 {
     PROFILE_FUNCTION();

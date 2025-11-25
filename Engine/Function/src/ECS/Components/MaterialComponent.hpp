@@ -28,6 +28,20 @@ public:
     }
     void SetProperty(const std::string &name, const MaterialProperty &property) { PropertyMap[name] = property; }
     void ClearProperty(const std::string &name) { PropertyMap[name] = MaterialInstance->GetProperty(name); }
+    bool HasProperty(const std::string &name) const { return PropertyMap.find(name) != PropertyMap.end(); }
+
+    // Set material instance (like Unity's MeshRenderer.material)
+    void SetMaterialInstance(const std::shared_ptr<Material> &material)
+    {
+        if (!material)
+        {
+            LOG_ENGINE_WARN("MaterialComponent::SetMaterialInstance: Cannot set null material");
+            return;
+        }
+        MaterialInstance = material;
+        // Copy properties from material to component
+        PropertyMap = material->GetPropertyMap();
+    }
 
 public:
     void Bind(const std::string &uniformPrefix = "u_Material") const
