@@ -105,10 +105,10 @@ void Engine::Scene::Resize(int width, int height)
     PROFILE_FUNCTION();
 
     // Resize all cameras
-    auto &&view = m_Registry.view<CameraComponent>();
-    for (auto &&entity : view)
+    auto &&cameraView = m_Registry.view<CameraComponent>();
+    for (auto &&entity : cameraView)
     {
-        auto &&camera = view.get<CameraComponent>(entity);
+        auto &&camera = cameraView.get<CameraComponent>(entity);
         camera.Resize(width, height);
     }
 
@@ -116,11 +116,11 @@ void Engine::Scene::Resize(int width, int height)
     m_ColorIDFrameBuffer->Resize(width, height);
 
     // Resize shadow map framebuffers for lights
-    auto &&view = m_Registry.view<LightComponent>();
-    for (auto &&entity : view)
+    auto &&lightView = m_Registry.view<LightComponent>();
+    for (auto &&entity : lightView)
     {
-        auto &&lightComp = view.get<LightComponent>(entity);
-        lightComp->ShadowMap->Resize(width, height);
+        auto &&lightComp = lightView.get<LightComponent>(entity);
+        lightComp.ShadowMap->Resize(width, height);
     }
 }
 

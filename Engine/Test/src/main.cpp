@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "Physics/Ray.hpp"
 
 int main(int argc, char **argv)
 {

@@ -71,7 +71,7 @@ void main()
         vec4 lightSpacePosition = u_LightProjection[i] * u_LightView[i] * vec4(fs_in.Position, 1.0);
         if (type == 0)
         {
-            vec3 lightDir = normalize(u_Light[i].Position);
+            vec3 lightDir = normalize(-u_Light[i].Direction);
             resultLight = CalcLight(lightDir, viewDir) * (1.0 - CalcShadow(i, lightSpacePosition, lightDir));
         }
         else
