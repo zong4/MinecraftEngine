@@ -100,18 +100,27 @@ void Engine::Scene::Render(const Entity &camera)
     RenderColorID();
 }
 
-void Engine::Scene::Resize(float width, float height)
+void Engine::Scene::Resize(int width, int height)
 {
     PROFILE_FUNCTION();
 
-    m_ViewportWidth = static_cast<uint32_t>(width);
-    m_ViewportHeight = static_cast<uint32_t>(height);
-
+    // Resize all cameras
     auto &&view = m_Registry.view<CameraComponent>();
     for (auto &&entity : view)
     {
         auto &&camera = view.get<CameraComponent>(entity);
         camera.Resize(width, height);
+    }
+
+    // Resize color ID framebuffer
+    m_ColorIDFrameBuffer->Resize(width, height);
+
+    // Resize shadow map framebuffers for lights
+    auto &&view = m_Registry.view<LightComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&lightComp = view.get<LightComponent>(entity);
+        lightComp->ShadowMap->Resize(width, height);
     }
 }
 
@@ -314,7 +323,6 @@ void Engine::Scene::RenderShadowMap() const
         auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(lightEntity);
 
         // Render to shadow map
-        light.ShadowMap->Resize(m_ViewportWidth, m_ViewportHeight);
         light.ShadowMap->Bind();
         RendererCommand::ClearDepthBuffer();
         {
@@ -429,7 +437,6 @@ void Engine::Scene::RenderColorID() const
 {
     PROFILE_FUNCTION();
 
-    m_ColorIDFrameBuffer->Resize(m_ViewportWidth, m_ViewportHeight);
     m_ColorIDFrameBuffer->Bind();
     Engine::RendererCommand::Clear();
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");

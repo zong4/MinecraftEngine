@@ -30,12 +30,12 @@ public:
     }
 
     // Getters
-    float GetWidth() const { return m_Width; }
-    float GetHeight() const { return m_Height; }
+    int GetWidth() const { return m_Width; }
+    int GetHeight() const { return m_Height; }
     const glm::mat4 &GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
 public:
-    void Resize(float width, float height)
+    void Resize(int width, int height)
     {
         m_Width = width;
         m_Height = height;
@@ -49,11 +49,12 @@ public:
                 glm::ortho(-m_Width / 200.0f * Scale, m_Width / 200.0f * Scale, -m_Height / 200.0f * Scale,
                            m_Height / 200.0f * Scale, NearClip, FarClip); // Maybe it is hacky
         else if (Type == CameraType::Perspective)
-            m_ProjectionMatrix = glm::perspective(glm::radians(FOV), m_Width / m_Height, NearClip, FarClip);
+            m_ProjectionMatrix =
+                glm::perspective(glm::radians(FOV), (float)m_Width / (float)m_Height, NearClip, FarClip);
     }
 
 private:
-    float m_Width, m_Height;
+    int m_Width, m_Height;
     glm::mat4 m_ProjectionMatrix;
 };
 

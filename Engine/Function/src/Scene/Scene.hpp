@@ -29,7 +29,7 @@ public:
 public:
     void Update(float deltaTime);
     void Render(const Entity &camera);
-    void Resize(float width, float height);
+    void Resize(int width, int height);
 
     // Entity management
     void DeleteEntity(const Entity &entity);
@@ -46,7 +46,6 @@ public:
 
 protected:
     std::string m_Name;
-    uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
 private:
     Entity m_MainCamera;

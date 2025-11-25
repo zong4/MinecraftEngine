@@ -44,8 +44,8 @@ void Editor::CreatorLayer::OnRender()
     {
         m_ViewportWidth = m_Window->GetProperty().FbWidth;
         m_ViewportHeight = m_Window->GetProperty().FbHeight;
-        m_EditorScene->Resize((float)m_ViewportWidth, (float)m_ViewportHeight);
-        m_ActiveScene->Resize((float)m_ViewportWidth, (float)m_ViewportHeight);
+        m_EditorScene->Resize(m_ViewportWidth, m_ViewportHeight);
+        m_ActiveScene->Resize(m_ViewportWidth, m_ViewportHeight);
     }
 
     switch (m_Mode)
