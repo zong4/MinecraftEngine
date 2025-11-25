@@ -1,7 +1,5 @@
 #include "ExampleScene.hpp"
 
-#include "Scripts/RotatingLight.hpp"
-
 Editor::ExampleScene::ExampleScene() : Engine::Scene()
 {
     Engine::Entity camera =

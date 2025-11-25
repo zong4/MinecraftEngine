@@ -2,6 +2,7 @@
 
 #include "Scenes/EditorScene.hpp"
 #include "Scenes/ExampleScene.hpp"
+#include "Scripts/RotatingLight.hpp"
 #include <imgui.h>
 
 Editor::CreatorLayer::CreatorLayer(const std::shared_ptr<Engine::Window> &window)
@@ -101,6 +102,10 @@ void Editor::CreatorLayer::OnImGuiRender()
         auto &&lightComp = light.GetComponent<Engine::LightComponent>();
         ImGui::ColorEdit4("Light Color", glm::value_ptr(lightComp->Color));
         ImGui::SliderFloat("Light Intensity", &lightComp->Intensity, 0.0f, 10.0f);
+
+        bool rotateLight = Editor::RotatingLight::IsRotationEnabled();
+        if (ImGui::Checkbox("Rotate Light", &rotateLight))
+            Editor::RotatingLight::SetRotationEnabled(rotateLight);
     }
 
     ImGui::End();

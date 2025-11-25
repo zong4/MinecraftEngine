@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Function.hpp>
+#include "Scripts/RotatingLight.hpp"
 
 namespace Editor
 {

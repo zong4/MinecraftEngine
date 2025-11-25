@@ -15,9 +15,13 @@ public:
     void OnCreate() override;
     void OnUpdate(float deltaTime) override;
 
+    static void SetRotationEnabled(bool enabled);
+    static bool IsRotationEnabled();
+
 private:
     float m_RotationSpeed = 30.0f; // degrees per second
     Engine::TransformComponent *m_Transform = nullptr;
+    static bool s_RotationEnabled;
 };
 
 } // namespace Editor
