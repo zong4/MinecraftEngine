@@ -2,8 +2,9 @@
 
 #include "Scenes/EditorScene.hpp"
 #include "Scenes/ExampleScene.hpp"
-#include "Scripts/RotatingLight.hpp"
 #include <imgui.h>
+#include <cfloat>
+#include <functional>
 
 Editor::CreatorLayer::CreatorLayer(const std::shared_ptr<Engine::Window> &window)
     : Engine::Layer("CreatorLayer"), m_Window(window)
@@ -79,33 +80,76 @@ void Editor::CreatorLayer::OnImGuiRender()
     Engine::Input::GetInstance().SetBlockEvents(mouseBlock || keyBlock);
     ImGui::Text("ImGui Blocking Events: %s", (mouseBlock || keyBlock) ? "True" : "False");
 
+    auto drawLabeledControl = [](const char *label, const std::function<void()> &controlFn) {
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::TextUnformatted(label);
+        ImGui::TableSetColumnIndex(1);
+        ImGui::SetNextItemWidth(-FLT_MIN);
+        controlFn();
+    };
+
     auto &&cube = m_ActiveScene->GetEntityByName("Cube");
     if (cube)
     {
+        ImGui::SeparatorText("Cube");
         auto &&material = cube.GetComponent<Engine::MaterialComponent>();
-        ImGui::ColorEdit4("Cube Color", glm::value_ptr(material->GetProperty("Color").GetValueAs<glm::vec4>()));
-        ImGui::SliderFloat("Cube Ambient", &material->GetProperty("AmbientStrength").GetValueAs<float>(), 0.0f, 1.0f);
-        ImGui::SliderFloat("Cube Diffuse", &material->GetProperty("DiffuseStrength").GetValueAs<float>(), 0.0f, 1.0f);
-        ImGui::SliderFloat("Cube Specular", &material->GetProperty("SpecularStrength").GetValueAs<float>(), 0.0f, 1.0f);
-        ImGui::SliderFloat("Cube Shininess", &material->GetProperty("Shininess").GetValueAs<float>(), 1.0f, 256.0f);
+        if (ImGui::BeginTable("CubeProperties", 2, ImGuiTableFlags_SizingStretchSame))
+        {
+            drawLabeledControl("Color", [&]() {
+                ImGui::ColorEdit4("##CubeColor", glm::value_ptr(material->GetProperty("Color").GetValueAs<glm::vec4>()));
+            });
+            drawLabeledControl("Ambient", [&]() {
+                ImGui::SliderFloat("##CubeAmbient", &material->GetProperty("AmbientStrength").GetValueAs<float>(), 0.0f, 1.0f);
+            });
+            drawLabeledControl("Diffuse", [&]() {
+                ImGui::SliderFloat("##CubeDiffuse", &material->GetProperty("DiffuseStrength").GetValueAs<float>(), 0.0f, 1.0f);
+            });
+            drawLabeledControl("Specular", [&]() {
+                ImGui::SliderFloat("##CubeSpecular", &material->GetProperty("SpecularStrength").GetValueAs<float>(), 0.0f, 1.0f);
+            });
+            drawLabeledControl("Shininess", [&]() {
+                ImGui::SliderFloat("##CubeShininess", &material->GetProperty("Shininess").GetValueAs<float>(), 1.0f, 256.0f);
+            });
+            ImGui::EndTable();
+        }
     }
 
     auto &&light = m_ActiveScene->GetEntityByName("DirectionalLight");
     if (light)
     {
+        ImGui::SeparatorText("Directional Light");
         auto &&transform = light.GetComponent<Engine::TransformComponent>();
-        ImGui::SliderFloat3("Light Position", glm::value_ptr(transform->Position), -10.0f, 10.0f);
-        glm::vec3 rotationEuler = transform->GetRotationEuler();
-        ImGui::SliderFloat3("Light Rotation", glm::value_ptr(rotationEuler), -180.0f, 180.0f);
-        transform->SetRotationEuler(rotationEuler);
-
         auto &&lightComp = light.GetComponent<Engine::LightComponent>();
-        ImGui::ColorEdit4("Light Color", glm::value_ptr(lightComp->Color));
-        ImGui::SliderFloat("Light Intensity", &lightComp->Intensity, 0.0f, 10.0f);
 
-        bool rotateLight = Editor::RotatingLight::IsRotationEnabled();
-        if (ImGui::Checkbox("Rotate Light", &rotateLight))
-            Editor::RotatingLight::SetRotationEnabled(rotateLight);
+        if (ImGui::BeginTable("LightProperties", 2, ImGuiTableFlags_SizingStretchSame))
+        {
+            drawLabeledControl("Position", [&]() {
+                ImGui::SliderFloat3("##LightPosition", glm::value_ptr(transform->Position), -10.0f, 10.0f);
+            });
+
+            glm::vec3 rotationEuler = transform->GetRotationEuler();
+            drawLabeledControl("Rotation", [&]() {
+                if (ImGui::SliderFloat3("##LightRotation", glm::value_ptr(rotationEuler), -180.0f, 180.0f))
+                    transform->SetRotationEuler(rotationEuler);
+            });
+
+            drawLabeledControl("Color", [&]() {
+                ImGui::ColorEdit4("##LightColor", glm::value_ptr(lightComp->Color));
+            });
+
+            drawLabeledControl("Intensity", [&]() {
+                ImGui::SliderFloat("##LightIntensity", &lightComp->Intensity, 0.0f, 10.0f);
+            });
+
+            bool rotateLight = Editor::RotatingLight::IsRotationEnabled();
+            drawLabeledControl("Rotate", [&]() {
+                if (ImGui::Checkbox("##RotateLight", &rotateLight))
+                    Editor::RotatingLight::SetRotationEnabled(rotateLight);
+            });
+
+            ImGui::EndTable();
+        }
     }
 
     ImGui::End();
