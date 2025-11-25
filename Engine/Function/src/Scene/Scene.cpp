@@ -49,16 +49,7 @@ void Engine::Scene::Update(float deltaTime)
     }
     m_DeletedEntities.clear();
 
-    // Update all transform matrices
-    auto &&view = m_Registry.view<TransformComponent, RelationshipComponent>();
-    for (auto &&entity : view)
-    {
-        auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
-        if (!relationship.GetParent())
-            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
-    }
-
-    // Update all scripts
+    // Update all scripts first so their transform changes are considered this frame
     m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) {
         if (!nsc.Instance)
         {
@@ -67,6 +58,15 @@ void Engine::Scene::Update(float deltaTime)
         }
         nsc.Instance->OnUpdate(deltaTime);
     });
+
+    // Update all transform matrices after scripts have run
+    auto &&view = m_Registry.view<TransformComponent, RelationshipComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
+        if (!relationship.GetParent())
+            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
+    }
 }
 
 void Engine::Scene::Render(const Entity &camera)
