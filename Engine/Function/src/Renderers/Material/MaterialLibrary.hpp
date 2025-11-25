@@ -13,6 +13,7 @@ public:
     std::string GetName(const std::shared_ptr<Material> &material) const;
     std::shared_ptr<Material> GetMaterial(const std::string &name);
     void AddMaterial(const std::string &name, const std::shared_ptr<Material> &material);
+    std::vector<std::string> GetAllMaterialNames() const;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<Material>> m_MaterialMap;

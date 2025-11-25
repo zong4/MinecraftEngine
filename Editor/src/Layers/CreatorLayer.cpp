@@ -68,6 +68,7 @@ void Editor::CreatorLayer::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.09f, 0.10f, 0.65f));
     ImGui::Begin("Sandbox Layer Debug");
     if (m_Mode == SandboxMode::Edit)
         ImGui::Text("Mode: Edit (Press SPACE to Play)");
@@ -153,4 +154,5 @@ void Editor::CreatorLayer::OnImGuiRender()
     }
 
     ImGui::End();
+    ImGui::PopStyleColor();
 }
