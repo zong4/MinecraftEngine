@@ -94,7 +94,7 @@ public:
 private:
     glm::vec3 m_RotationRadians;
     glm::quat m_RotationQuat;
-    glm::quat m_GlobalRotationQuat;
+    glm::quat m_GlobalRotationQuat = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     glm::mat4 m_TransformMatrix = glm::mat4(1.0f);
 };
 

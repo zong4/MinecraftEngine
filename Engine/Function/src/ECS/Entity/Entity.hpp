@@ -48,14 +48,12 @@ public:
     // clang-format off
     template <typename T, typename... Args>
     // clang-format on
-    void AddComponent(Args &&...args)
+    T *AddComponent(Args &&...args)
     {
         if (HasComponent<T>())
-        {
-            LOG_ENGINE_WARN("Entity already has component!");
-            return;
-        }
+            LOG_ENGINE_WARN("Entity already has component! Returning existing component.");
         m_Registry->emplace<T>(m_Handle, std::forward<Args>(args)...);
+        return GetComponent<T>();
     }
 
     // clang-format off

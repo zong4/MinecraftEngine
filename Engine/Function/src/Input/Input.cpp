@@ -8,8 +8,6 @@ Engine::Input &Engine::Input::GetInstance()
 
 bool Engine::Input::IsKeyDown(int keyCode) const
 {
-    PROFILE_FUNCTION();
-
     auto &&it = m_KeyActions.find(keyCode);
     if (it != m_KeyActions.end())
         return it->second == 1 || it->second == 2;
@@ -18,8 +16,6 @@ bool Engine::Input::IsKeyDown(int keyCode) const
 
 bool Engine::Input::IsKeyPressed(int keyCode) const
 {
-    PROFILE_FUNCTION();
-
     auto &&it = m_KeyActions.find(keyCode);
     if (it != m_KeyActions.end())
         return it->second == 1;
@@ -28,8 +24,6 @@ bool Engine::Input::IsKeyPressed(int keyCode) const
 
 bool Engine::Input::IsKeyReleased(int keyCode) const
 {
-    PROFILE_FUNCTION();
-
     auto &&it = m_KeyActions.find(keyCode);
     if (it != m_KeyActions.end())
         return it->second == 0;

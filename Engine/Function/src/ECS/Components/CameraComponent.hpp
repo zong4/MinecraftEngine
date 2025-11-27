@@ -34,9 +34,7 @@ public:
 
 public:
     void Resize(int width, int height);
-
-    // Call every frame before using the projection matrix
-    void UpdateProjectionMatrix();
+    void UpdateProjectionMatrix(); // Call every frame before using the projection matrix
 
 private:
     int m_Width, m_Height;

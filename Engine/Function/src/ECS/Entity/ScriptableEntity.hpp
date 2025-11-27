@@ -36,9 +36,9 @@ public:
     // clang-format off
     template <typename T, typename... Args>
     // clang-format on
-    void AddComponent(Args &&...args)
+    T *AddComponent(Args &&...args)
     {
-        m_Entity.AddComponent<T>(std::forward<Args>(args)...);
+        return m_Entity.AddComponent<T>(std::forward<Args>(args)...);
     }
 
     // clang-format off
