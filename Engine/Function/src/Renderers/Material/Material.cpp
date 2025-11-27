@@ -1,8 +1,9 @@
 #include "Material.hpp"
 
 #include "../Librarys/ShaderLibrary.hpp"
+#include "../Librarys/TextureLibrary.hpp"
 
-Engine::Material::Material(std::shared_ptr<Shader> shader) : m_Shader(shader)
+Engine::Material::Material(const std::shared_ptr<Shader> &shader) : m_Shader(shader)
 {
     if (!ShaderLibrary::GetInstance().GetName(shader).empty())
         LOG_ENGINE_INFO("Material created with shader: " + ShaderLibrary::GetInstance().GetName(shader));
@@ -67,11 +68,10 @@ void Engine::Material::Bind(const std::string &uniformPrefix,
         case MaterialPropertyType::Vec4:
             m_Shader->SetUniformVec4(uniformName, propertyToUse.GetValueAs<glm::vec4>());
             break;
-        // case MaterialPropertyType::Texture: {
-        //     int slot = property.GetTexture()->Bind();
-        //     m_Shader->SetUniformInt(uniformName, slot);
-        // }
-        // break;
+        case MaterialPropertyType::Texture: {
+            m_Shader->SetUniformInt(uniformName, TextureLibrary::GetInstance().GetTextureSlot(property.GetTexture()));
+        }
+        break;
         default:
             LOG_ENGINE_WARN("Material::Bind: Unsupported MaterialPropertyType for property: " + name);
             break;

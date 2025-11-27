@@ -104,15 +104,13 @@ void Engine::Scene::Render(const Entity &camera)
     RenderColorID();
 
     // Ray tracing
-    if (!m_RayTracingRunning)
+    if (!m_RayTracingRunning.exchange(true))
     {
-        m_RayTracingRunning = true;
-        m_RayTracingThread = std::thread([this, camera] {
+        std::thread([this, camera] {
             std::vector<glm::vec4> tempBuffer;
             Engine::RayTracing::RenderScene(camera, 10, 3, tempBuffer);
             m_RayTracingRunning = false;
-        });
-        // m_RayTracingThread.detach();
+        }).detach();
     }
 }
 
@@ -442,7 +440,7 @@ void Engine::Scene::RenderSkybox() const
         auto &&skybox = m_Registry.get<Engine::SkyboxComponent>(view.front());
         shader->SetUniformInt("u_Skybox", 0);
         skybox.GetTextureCube()->Active(0);
-        Engine::VertexLibrary::GetInstance().GetVertex("Skybox")->Render();
+        Engine::VertexLibrary::GetInstance().GetVertex("Cube")->Render();
     }
 
     shader->Unbind();

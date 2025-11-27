@@ -9,7 +9,7 @@ namespace Engine
 class Material
 {
 public:
-    Material(std::shared_ptr<Shader> shader);
+    Material(const std::shared_ptr<Shader> &shader);
 
     // Operators
     operator bool() const { return m_Shader != nullptr; }

@@ -16,6 +16,7 @@ public:
 
 public:
     virtual void Active(unsigned int slot) const = 0;
+    static void SaveImage(const std::string &path, int width, int height, const void *data);
 
 protected:
     unsigned int m_RendererID = 0;

@@ -5,7 +5,7 @@
 namespace Engine
 {
 
-struct SkyboxCubeData
+struct BasicubeData
 {
     float vertices[108] = {
         // clang-format off
@@ -54,7 +54,7 @@ struct SkyboxCubeData
         // clang-format on
     };
 };
-inline const SkyboxCubeData g_SkyboxCubeData;
+inline const BasicubeData g_BasicCubeData;
 
 } // namespace Engine
 
@@ -110,11 +110,6 @@ Engine::VertexLibrary::VertexLibrary()
         VertexArray::Create(VertexBuffer::Create(g_CubeData.Positions),
                             std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
     AddVertex("Cube", CubeVAO);
-
-    auto &&vertexArray =
-        VertexArray::Create(VertexBuffer::Create(g_SkyboxCubeData.vertices),
-                            std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, 0, 0, (const void *)0}});
-    AddVertex("Skybox", vertexArray);
 
     // Create dynamic VertexArrays
     ReadConfig();

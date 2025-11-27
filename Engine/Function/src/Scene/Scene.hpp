@@ -55,7 +55,7 @@ private:
         Engine::FrameBuffer::Create(Engine::Texture2DType::Integer, 1280, 720);
 
     // Ray tracing
-    bool m_RayTracingRunning = false;
+    std::atomic<bool> m_RayTracingRunning = false;
     std::thread m_RayTracingThread;
     std::vector<glm::vec4> m_RayTracingFrameBuffer;
 

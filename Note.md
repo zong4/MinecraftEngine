@@ -1,5 +1,4 @@
-Core
-Platform
-Function/Application
-Function/Timer
-Function/Input
+Function
+except RendererComponent and PhysicsComponent
+except Scene
+except Physics.BVH

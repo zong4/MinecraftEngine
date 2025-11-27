@@ -2,6 +2,21 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
+
+void Engine::Texture::SaveImage(const std::string &path, int width, int height, const void *data)
+{
+    int result = stbi_write_png(path.c_str(), width, height, 4, data, width * 4);
+    if (result == 0)
+    {
+        LOG_ENGINE_ERROR("Failed to save image to: " + path);
+    }
+    else
+    {
+        LOG_ENGINE_INFO("Saved image to: " + path);
+    }
+}
 
 void *Engine::Texture::LoadImage(const std::string &path, int &width, int &height, int &channels, bool &isHDR,
                                  bool flip)

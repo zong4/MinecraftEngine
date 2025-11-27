@@ -1,8 +1,5 @@
 #include "RayTracing.hpp"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <stb_image_write.h>
-
 void Engine::RayTracing::RenderScene(const Entity &camera, int raysPerPixel, int rayBounces,
                                      std::vector<glm::vec4> &frameBuffer)
 {
@@ -21,7 +18,8 @@ void Engine::RayTracing::RenderScene(const Entity &camera, int raysPerPixel, int
             frameBuffer[y * width + x] = glm::vec4(RenderPixel(camera, x, y, raysPerPixel, rayBounces), 1.0f);
         }
 
-        // Progress logging
+// Progress logging
+#pragma omp master
         int percent = (y + 1) * 100 / height;
         if (percent != lastPercent)
         {
@@ -30,7 +28,7 @@ void Engine::RayTracing::RenderScene(const Entity &camera, int raysPerPixel, int
         }
     }
 
-    SaveImage(std::string(PROJECT_ROOT) + "Assets/RayTracedImage.png", width, height, frameBuffer);
+    SaveImage(std::string(PROJECT_ROOT) + "/Assets/RayTracedImage.png", width, height, frameBuffer);
 }
 
 void Engine::RayTracing::SaveImage(const std::string &filepath, int width, int height,
@@ -46,8 +44,7 @@ void Engine::RayTracing::SaveImage(const std::string &filepath, int width, int h
         imageData[i * 4 + 2] = static_cast<uint8_t>(glm::clamp(frameBuffer[i].b, 0.0f, 1.0f) * 255.0f);
         imageData[i * 4 + 3] = static_cast<uint8_t>(glm::clamp(frameBuffer[i].a, 0.0f, 1.0f) * 255.0f);
     }
-    stbi_write_png(filepath.c_str(), width, height, 4, imageData.data(), width * 4);
-    LOG_ENGINE_INFO("Saved ray traced image to: " + filepath);
+    Engine::Texture::SaveImage(filepath, width, height, imageData.data());
 }
 
 glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, int x, int y, int raysPerPixel, int rayBounces)
