@@ -6,6 +6,27 @@
 namespace Engine
 {
 
+class MouseButtonEvent : public Engine::Event
+{
+public:
+    MouseButtonEvent(int code, int action) : m_Code(code), m_Action(action) {}
+
+    int GetCode() const { return m_Code; }
+    int GetAction() const { return m_Action; }
+
+public:
+    std::string ToString() const override
+    {
+        std::stringstream ss;
+        ss << "MouseButtonEvent: " << m_Code << ", " << m_Action;
+        return ss.str();
+    }
+
+private:
+    int m_Code;
+    int m_Action;
+};
+
 class MouseMoveEvent : public Engine::Event
 {
 public:
@@ -48,27 +69,6 @@ public:
 private:
     double m_XOffset;
     double m_YOffset;
-};
-
-class MouseButtonEvent : public Engine::Event
-{
-public:
-    MouseButtonEvent(int code, int action) : m_Code(code), m_Action(action) {}
-
-    int GetCode() const { return m_Code; }
-    int GetAction() const { return m_Action; }
-
-public:
-    std::string ToString() const override
-    {
-        std::stringstream ss;
-        ss << "MouseButtonEvent: " << m_Code << ", " << m_Action;
-        return ss.str();
-    }
-
-private:
-    int m_Code;
-    int m_Action;
 };
 
 } // namespace Engine
