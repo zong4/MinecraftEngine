@@ -42,7 +42,7 @@ void Engine::Instrumentor::WriteProfile(const ProfileResult &result)
 void Engine::Instrumentor::EndSession()
 {
     m_Active = false;
-    m_CV.notify_one();
+    m_CV.notify_one(); // wake writer thread to finish
 
     if (m_WriterThread.joinable())
         m_WriterThread.join();
