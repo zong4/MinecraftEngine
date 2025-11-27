@@ -1,6 +1,6 @@
 #include "Scene.hpp"
 
-#include "../Physics/RayTracing.hpp"
+#include "../Physics/Ray/RayTracing.hpp"
 #include "../Renderers/Librarys/ShaderLibrary.hpp"
 #include "../Renderers/Librarys/UniformLibrary.hpp"
 #include "../Renderers/Librarys/VertexLibrary.hpp"

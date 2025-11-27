@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../ECS/Entity/Entity.hpp"
-#include "../Scene/Scene.hpp"
-#include "Algorithms/Random.hpp"
+#include "../../Algorithms/Random.hpp"
+#include "../../ECS/Entity/Entity.hpp"
+#include "../../Scene/Scene.hpp"
 
 namespace Engine
 {
