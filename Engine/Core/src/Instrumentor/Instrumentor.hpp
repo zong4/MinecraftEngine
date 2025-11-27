@@ -26,6 +26,11 @@ public:
     void EndSession();
 
 private:
+    std::thread m_WriterThread;
+    std::mutex m_QueueMutex;
+    std::condition_variable m_CV;
+    std::vector<ProfileResult> m_Queue;
+    bool m_Active = false;
     int m_ProfileCount = 0;
     std::ofstream m_OutputStream = {};
 
@@ -35,6 +40,7 @@ private:
 
 private:
     void WriteHeader();
+    void WriterThreadFunc();
     void WriteFooter();
 };
 

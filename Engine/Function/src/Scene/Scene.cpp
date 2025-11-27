@@ -112,7 +112,7 @@ void Engine::Scene::Render(const Entity &camera)
             Engine::RayTracing::RenderScene(camera, 1, 1, tempBuffer);
             m_RayTracingRunning = false;
         });
-        m_RayTracingThread.detach();
+        // m_RayTracingThread.detach();
     }
 }
 
