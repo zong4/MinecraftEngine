@@ -28,8 +28,8 @@ public:
 
 public:
     void Update(float deltaTime);
-    void Render(const Entity &camera);
-    void Resize(int width, int height);
+    virtual void Render(const Entity &camera) = 0;
+    virtual void Resize(int width, int height) = 0;
 
     // Entity management
     void DeleteEntity(const Entity &entity);
@@ -46,32 +46,19 @@ public:
 
 protected:
     std::string m_Name;
-
-private:
-    Entity m_MainCamera;
     entt::registry m_Registry = {};
-    std::vector<Entity> m_DeletedEntities = {};
     std::shared_ptr<Engine::FrameBuffer> m_ColorIDFrameBuffer =
         Engine::FrameBuffer::Create(Engine::Texture2DType::Integer, 1280, 720);
 
-    // Ray tracing
-    std::atomic<bool> m_RayTracingRunning = false;
-    std::thread m_RayTracingThread;
-    std::vector<glm::vec4> m_RayTracingFrameBuffer;
+protected:
+    virtual void RenderColorID() const = 0;
 
-    // Statistics
-    size_t m_SquaresCount = 0;
-    size_t m_CubesCount = 0;
+private:
+    Entity m_MainCamera;
+    std::vector<Entity> m_DeletedEntities = {};
 
 private:
     void DeleteEntityReal(const Entity &entity);
-    void UploadSquaresData();
-    void UploadCubesData();
-    void Render2D() const;
-    void RenderShadowMap() const;
-    void Render3D() const;
-    void RenderSkybox() const;
-    void RenderColorID() const;
 };
 
 } // namespace Engine

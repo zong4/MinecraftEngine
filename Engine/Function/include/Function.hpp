@@ -4,4 +4,5 @@
 #include "../src/Input/InputLayer.hpp"
 #include "../src/Physics/BVH.hpp"
 #include "../src/Renderers/Librarys/ShaderLibrary.hpp"
-#include "../src/Scene/Scene.hpp"
+#include "../src/Scene/Scene2D.hpp"
+#include "../src/Scene/Scene3D.hpp"

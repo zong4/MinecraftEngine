@@ -2,7 +2,7 @@
 
 #include "Scripts/RotatingLight.hpp"
 
-Editor::ExampleScene::ExampleScene() : Engine::Scene()
+Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
 {
     Engine::Entity camera =
         AddCamera("MainCamera", Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 8.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),

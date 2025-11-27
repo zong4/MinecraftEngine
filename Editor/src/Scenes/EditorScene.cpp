@@ -2,7 +2,7 @@
 
 #include "Scripts/CameraController.hpp"
 
-Editor::EditorScene::EditorScene() : Engine::Scene()
+Editor::EditorScene::EditorScene() : Engine::Scene3D("EditorScene")
 {
     PROFILE_FUNCTION();
 

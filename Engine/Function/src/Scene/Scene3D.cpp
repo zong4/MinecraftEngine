@@ -1,0 +1,262 @@
+#include "Scene3D.hpp"
+
+#include "../Physics/Ray/RayTracing.hpp"
+#include "../Renderers/Librarys/ShaderLibrary.hpp"
+#include "../Renderers/Librarys/UniformLibrary.hpp"
+#include "../Renderers/Librarys/VertexLibrary.hpp"
+#include "../Renderers/Material/MaterialLibrary.hpp"
+
+void Engine::Scene3D::Render(const Entity &camera)
+{
+    PROFILE_FUNCTION();
+
+    UploadCubesData();
+
+    // Update camera uniform buffer
+    auto &&transform = camera.GetComponent<TransformComponent>();
+    auto &&cameraComp = camera.GetComponent<CameraComponent>();
+    if (transform && cameraComp)
+    {
+        cameraComp->UpdateProjectionMatrix();
+        UniformLibrary::GetInstance().UpdateUniform(
+            "UniformBuffer0",
+            {
+                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
+                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
+                 sizeof(glm::mat4)}, // Projection matrix
+                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
+                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
+            });
+    }
+
+    RenderShadowMap();
+    Render3D(camera);
+    RenderSkybox();
+    RenderColorID();
+
+    // Ray tracing
+    if (!m_RayTracingRunning.exchange(true))
+    {
+        std::thread([this, camera] {
+            std::vector<glm::vec4> tempBuffer;
+            Engine::RayTracing::RenderScene(camera, 10, 3, tempBuffer);
+            m_RayTracingRunning = false;
+        }).detach();
+    }
+}
+
+void Engine::Scene3D::Resize(int width, int height)
+{
+    PROFILE_FUNCTION();
+
+    // Resize all cameras
+    auto &&cameraView = m_Registry.view<CameraComponent>();
+    for (auto &&entity : cameraView)
+    {
+        auto &&camera = cameraView.get<CameraComponent>(entity);
+        camera.Resize(width, height);
+    }
+
+    // Resize color ID framebuffer
+    m_ColorIDFrameBuffer->Resize(width, height);
+
+    // Resize shadow map framebuffers for lights
+    auto &&lightView = m_Registry.view<LightComponent>();
+    for (auto &&entity : lightView)
+    {
+        auto &&lightComp = lightView.get<LightComponent>(entity);
+        lightComp.ShadowMap->Resize(width, height);
+    }
+}
+
+void Engine::Scene3D::RenderColorID() const
+{
+    PROFILE_FUNCTION();
+
+    m_ColorIDFrameBuffer->Bind();
+    Engine::RendererCommand::Clear();
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
+    shader->Bind();
+
+    // Render entity IDs as color IDs
+    if (m_CubesCount > 0)
+        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+
+    shader->Unbind();
+    m_ColorIDFrameBuffer->Unbind();
+}
+
+void Engine::Scene3D::UploadCubesData()
+{
+    PROFILE_FUNCTION();
+
+    int index = 0;
+    std::vector<Vertex3D> vertices;
+    auto &&view = m_Registry.view<Engine::TransformComponent, Engine::MaterialComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, materialComp] = view.get<Engine::TransformComponent, Engine::MaterialComponent>(entity);
+
+        glm::vec4 color = glm::vec4(1.0f);
+        if (auto &&colorProp = materialComp.GetProperty("Color"))
+        {
+            if (colorProp.GetType() == MaterialPropertyType::Vec4)
+                color = colorProp.GetValueAs<glm::vec4>();
+            else if (colorProp.GetType() == MaterialPropertyType::Vec3)
+                color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
+        }
+
+        // Get Blinn-Phong material properties if available
+        glm::vec4 materialData = glm::vec4(0.0f);
+        if (auto &&ambientStrengthProp = materialComp.GetProperty("AmbientStrength"))
+            materialData.x = ambientStrengthProp.GetValueAs<float>();
+        if (auto &&diffuseStrengthProp = materialComp.GetProperty("DiffuseStrength"))
+            materialData.y = diffuseStrengthProp.GetValueAs<float>();
+        if (auto &&specularStrengthProp = materialComp.GetProperty("SpecularStrength"))
+            materialData.z = specularStrengthProp.GetValueAs<float>();
+        if (auto &&shininessProp = materialComp.GetProperty("Shininess"))
+            materialData.w = shininessProp.GetValueAs<float>();
+
+        for (int i = 0; i < 36; ++i)
+        {
+            glm::mat4 u_Model = transform.GetTransformMatrix();
+            vertices.push_back(
+                {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
+                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
+                 g_CubeData.Positions[i], color, materialData});
+        }
+        index++;
+    }
+
+    // Update count and buffer data
+    m_CubesCount = index;
+    VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
+        vertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
+}
+
+void Engine::Scene3D::RenderShadowMap() const
+{
+    PROFILE_FUNCTION();
+
+    RendererCommand::CullFrontFace();
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
+    shader->Bind();
+    auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
+    for (auto &&lightEntity : lightView)
+    {
+        auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(lightEntity);
+
+        // Render to shadow map
+        light.ShadowMap->Bind();
+        RendererCommand::ClearDepthBuffer();
+        {
+            shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
+            shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,
+                                                                   20.0f)); // todo: calculate camera view
+            if (m_CubesCount > 0)
+                VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles,
+                                                                        m_CubesCount * 36);
+        }
+        light.ShadowMap->Unbind();
+    }
+    shader->Unbind();
+    RendererCommand::CullBackFace();
+}
+
+void Engine::Scene3D::Render3D(const Entity &camera) const
+{
+    PROFILE_FUNCTION();
+
+    // Clear buffers
+    RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
+    RendererCommand::Clear();
+
+    auto &&shader = ShaderLibrary::GetInstance().GetShader("BlinnPhong");
+    shader->Bind();
+
+    // Light
+    int lightIndex = 0;
+    {
+        // Initialize all lights as inactive
+        for (int i = 0; i < 4; i++) // todo: max lights constant
+            shader->SetUniformInt("u_Light[" + std::to_string(i) + "].Type", -1);
+
+        // Upload active lights
+        auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
+        for (auto &&entity : lightView)
+        {
+            auto &&[transform, light] = lightView.get<Engine::TransformComponent, Engine::LightComponent>(entity);
+
+            // Light properties
+            shader->SetUniformInt("u_Light[" + std::to_string(lightIndex) + "].Type",
+                                  static_cast<int>(light.GetType()));
+            shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Position", transform.Position);
+            shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Color", light.Color * light.Intensity);
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Constant", light.Constant);
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Linear", light.Linear);
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].Quadratic", light.Quadratic);
+            shader->SetUniformVec3("u_Light[" + std::to_string(lightIndex) + "].Direction",
+                                   transform.GetForward(TransformSpace::Global));
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].CutOff",
+                                    glm::cos(glm::radians(light.InnerAngle)));
+            shader->SetUniformFloat("u_Light[" + std::to_string(lightIndex) + "].OuterCutOff",
+                                    glm::cos(glm::radians(light.OuterAngle)));
+
+            // Shadow
+            shader->SetUniformMat4("u_LightView[" + std::to_string(lightIndex) + "]",
+                                   glm::inverse(transform.GetTransformMatrix()));
+            shader->SetUniformMat4(
+                "u_LightProjection[" + std::to_string(lightIndex) + "]",
+                glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f)); // todo: calculate camera view
+            shader->SetUniformInt("u_ShadowMap[" + std::to_string(lightIndex) + "]", lightIndex);
+            light.ShadowMap->GetTexture()->Active(lightIndex);
+
+            lightIndex++;
+        }
+        shader->SetUniformInt("u_NumLights", lightIndex);
+    }
+
+    // Skybox
+    auto &&view = m_Registry.view<SkyboxComponent>();
+    if (!view.empty())
+    {
+        if (view.size() > 1)
+            LOG_ENGINE_WARN("Multiple SkyboxComponents detected! Only the first one will be rendered.");
+
+        auto &&skybox = m_Registry.get<SkyboxComponent>(view.front());
+        shader->SetUniformInt("u_Skybox", lightIndex);
+        skybox.GetTextureCube()->Active(lightIndex);
+    }
+
+    TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
+    shader->SetUniformInt("u_Texture", lightIndex + 1);
+    if (m_CubesCount > 0)
+        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+    TextureLibrary::GetInstance().ClearTextureSlots();
+
+    shader->Unbind();
+}
+
+void Engine::Scene3D::RenderSkybox() const
+{
+    PROFILE_FUNCTION();
+
+    Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::LessEqual);
+    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");
+    shader->Bind();
+
+    auto &&view = m_Registry.view<Engine::SkyboxComponent>();
+    if (!view.empty())
+    {
+        if (view.size() > 1)
+            LOG_ENGINE_WARN("Multiple SkyboxComponents detected! Only the first one will be rendered.");
+
+        auto &&skybox = m_Registry.get<Engine::SkyboxComponent>(view.front());
+        shader->SetUniformInt("u_Skybox", 0);
+        skybox.GetTextureCube()->Active(0);
+        Engine::VertexLibrary::GetInstance().GetVertex("Cube")->Render();
+    }
+
+    shader->Unbind();
+    Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::Less);
+}
