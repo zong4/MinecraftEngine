@@ -1,5 +1,6 @@
 #include "OpenGLVertexArray.hpp"
 
+#include "../RendererCommand.hpp"
 #include <glad/glad.h>
 
 GLenum ConvertRendererType(Engine::RendererType type)
@@ -90,19 +91,18 @@ void Engine::OpenGLVertexArray::SetVertexAttributes(const std::vector<VertexAttr
     m_AttributeSize = 0;
     for (const auto &attribute : attributes)
     {
+        m_AttributeSize += attribute.count;
         switch (attribute.type)
         {
         case Engine::VertexAttributeType::Int:
         case Engine::VertexAttributeType::UInt:
             glVertexAttribIPointer(attribute.location, attribute.count, ConvertVertexAttributeType(attribute.type),
                                    attribute.stride, attribute.offset);
-            m_AttributeSize += attribute.count;
             break;
         case Engine::VertexAttributeType::Float:
             glVertexAttribPointer(attribute.location, attribute.count, ConvertVertexAttributeType(attribute.type),
                                   attribute.normalized, static_cast<GLsizei>(attribute.stride), attribute.offset);
             glEnableVertexAttribArray(attribute.location);
-            m_AttributeSize += attribute.count;
             break;
         default:
             LOG_ENGINE_ASSERT("Unknown VertexAttributeType");
@@ -114,6 +114,6 @@ void Engine::OpenGLVertexArray::SetVertexAttributes(const std::vector<VertexAttr
     m_VertexBuffer->Unbind();
     Unbind();
 
-    LOG_ENGINE_INFO("VertexArray ID: " + std::to_string(m_RendererID) + " vertex attributes(" +
-                    std::to_string(m_AttributeSize) + ") set/updated");
+    LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) + " vertex attributes(" +
+                     std::to_string(m_AttributeSize) + ") set/updated");
 }

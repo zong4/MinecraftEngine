@@ -111,34 +111,10 @@ Engine::OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : Texture2D()
 
 Engine::OpenGLTexture2D::~OpenGLTexture2D() { glDeleteTextures(1, &m_RendererID); }
 
-void Engine::OpenGLTexture2D::Bind() const
-{
-    switch (m_Type)
-    {
-    case Texture2DType::Multisample:
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_RendererID);
-        break;
-    default:
-        glBindTexture(GL_TEXTURE_2D, m_RendererID);
-        break;
-    }
-}
-
-void Engine::OpenGLTexture2D::Unbind() const
-{
-    switch (m_Type)
-    {
-    case Texture2DType::Multisample:
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-        break;
-    default:
-        glBindTexture(GL_TEXTURE_2D, 0);
-        break;
-    }
-}
-
 void Engine::OpenGLTexture2D::Active(unsigned int slot) const
 {
+    PROFILE_FUNCTION();
+
     if (m_Type == Texture2DType::Multisample)
     {
         LOG_ENGINE_WARN("Activating multisample textures is not supported.");
@@ -179,6 +155,32 @@ void Engine::OpenGLTexture2D::Resize(int width, int height)
     }
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
     Unbind();
+}
+
+void Engine::OpenGLTexture2D::Bind() const
+{
+    switch (m_Type)
+    {
+    case Texture2DType::Multisample:
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_RendererID);
+        break;
+    default:
+        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        break;
+    }
+}
+
+void Engine::OpenGLTexture2D::Unbind() const
+{
+    switch (m_Type)
+    {
+    case Texture2DType::Multisample:
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+        break;
+    default:
+        glBindTexture(GL_TEXTURE_2D, 0);
+        break;
+    }
 }
 
 void Engine::OpenGLTexture2D::CreateTexture(int width, int height, unsigned int internalFormat, unsigned int format,

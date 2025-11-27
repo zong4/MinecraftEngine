@@ -32,7 +32,7 @@ Engine::OpenGLShader::OpenGLShader(const std::string &vertexSource, const std::s
         glDeleteShader(geometryShader);
     }
 
-    LOG_ENGINE_INFO("OpenGLShader program created with ID: " + std::to_string(m_RendererID));
+    LOG_ENGINE_TRACE("OpenGLShader program created with ID: " + std::to_string(m_RendererID));
 }
 
 Engine::OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererID); }
@@ -85,6 +85,8 @@ void Engine::OpenGLShader::Unbind() const { glUseProgram(0); }
 
 void Engine::OpenGLShader::CompileShader(unsigned int shaderID, const std::string &source)
 {
+    PROFILE_FUNCTION();
+
     const char *sourceCStr = source.c_str();
     glShaderSource(shaderID, 1, &sourceCStr, nullptr);
     glCompileShader(shaderID);
@@ -101,6 +103,8 @@ void Engine::OpenGLShader::CompileShader(unsigned int shaderID, const std::strin
 
 void Engine::OpenGLShader::LinkProgram(unsigned int programID)
 {
+    PROFILE_FUNCTION();
+
     glLinkProgram(programID);
 
     int success;

@@ -13,7 +13,7 @@ public:
     virtual ~OpenGLVertexArray() override;
 
 public:
-    void Render(RendererType renderType = RendererType::Triangles, int vertexCount = 0) const override;
+    void Render(RendererType renderType, int vertexCount) const override;
 
 protected:
     void Bind() const override;

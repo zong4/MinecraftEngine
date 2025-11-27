@@ -17,16 +17,16 @@ Engine::OpenGLTextureCube::OpenGLTextureCube(const std::array<std::string, 6> &f
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
 
-    // Record the first face's spec and validate the rest against it
-    bool baseIsHDR = false;
-    int baseWidth = 0, baseHeight = 0;
-    unsigned int baseInternalFormat = 0, baseFormat = 0, baseType = 0;
-
     bool isHDR = false;
     int width = 0, height = 0, channels = 0;
     unsigned int internalFormat = 0, format = 0, type = 0;
     for (int i = 0; i < faces.size(); i++)
     {
+        // Record the first face's spec and validate the rest against it
+        bool baseIsHDR = false;
+        int baseWidth = 0, baseHeight = 0;
+        unsigned int baseInternalFormat = 0, baseFormat = 0, baseType = 0;
+
         void *data = LoadImage(faces[i], width, height, channels, isHDR, false);
         type = isHDR ? GL_FLOAT : GL_UNSIGNED_BYTE;
         switch (channels)
@@ -104,12 +104,14 @@ Engine::OpenGLTextureCube::OpenGLTextureCube(const std::array<std::string, 6> &f
 
 Engine::OpenGLTextureCube::~OpenGLTextureCube() { glDeleteTextures(1, &m_RendererID); }
 
-void Engine::OpenGLTextureCube::Bind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID); }
-
-void Engine::OpenGLTextureCube::Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
-
 void Engine::OpenGLTextureCube::Active(unsigned int slot) const
 {
+    PROFILE_FUNCTION();
+
     glActiveTexture(GL_TEXTURE0 + slot);
     Bind();
 }
+
+void Engine::OpenGLTextureCube::Bind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID); }
+
+void Engine::OpenGLTextureCube::Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }

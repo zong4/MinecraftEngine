@@ -2,7 +2,6 @@
 
 #include "../Buffers/BasicBuffer/IndexBuffer.hpp"
 #include "../Buffers/BasicBuffer/VertexBuffer.hpp"
-#include "../RendererCommand.hpp"
 
 namespace Engine
 {
@@ -34,7 +33,6 @@ struct VertexAttribute
 class VertexArray
 {
 public:
-    virtual ~VertexArray() = default;
     static std::shared_ptr<VertexArray> Create(std::unique_ptr<VertexBuffer> vertexBuffer,
                                                const std::vector<VertexAttribute> &attributes,
                                                std::unique_ptr<IndexBuffer> indexBuffer = nullptr,
@@ -46,8 +44,8 @@ public:
 
     // Getters
     unsigned int GetRendererID() const { return m_RendererID; }
-    std::unique_ptr<VertexBuffer> &GetVertexBuffer() { return m_VertexBuffer; }
-    std::unique_ptr<IndexBuffer> &GetIndexBuffer() { return m_IndexBuffer; }
+    const std::unique_ptr<VertexBuffer> &GetVertexBuffer() const { return m_VertexBuffer; }
+    const std::unique_ptr<IndexBuffer> &GetIndexBuffer() const { return m_IndexBuffer; }
 
     // Setters
     void SetVertexBuffer(std::unique_ptr<VertexBuffer> vertexBuffer, const std::vector<VertexAttribute> &attributes);
@@ -71,6 +69,7 @@ protected:
         : m_VertexBuffer(std::move(vertexBuffer)), m_IndexBuffer(std::move(indexBuffer)), m_InstanceCount(instanceCount)
     {
     }
+    virtual ~VertexArray() = default;
 
 protected:
     virtual void Bind() const = 0;

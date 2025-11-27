@@ -40,6 +40,8 @@ void Engine::OpenGLVertexBuffer::SetData(const void *data, size_t size, size_t o
 
 void Engine::OpenGLVertexBuffer::CreateBuffer(const void *data, size_t size, BufferType type)
 {
+    PROFILE_FUNCTION();
+
     glGenBuffers(1, &m_RendererID);
     Bind();
     switch (type)

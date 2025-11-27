@@ -8,7 +8,7 @@ namespace Engine
 class OpenGLFrameBuffer : public FrameBuffer
 {
 public:
-    OpenGLFrameBuffer(Texture2DType type, int width, int height, int samples = 0);
+    OpenGLFrameBuffer(Texture2DType type, int width, int height, int samples);
     virtual ~OpenGLFrameBuffer() override;
 
 public:

@@ -40,6 +40,8 @@ void Engine::OpenGLIndexBuffer::SetData(const void *data, size_t size, size_t of
 
 void Engine::OpenGLIndexBuffer::CreateBuffer(const void *data, size_t size, BufferType type)
 {
+    PROFILE_FUNCTION();
+
     glGenBuffers(1, &m_RendererID);
     Bind();
     switch (type)

@@ -25,22 +25,29 @@ Engine::OpenGLFrameBuffer::OpenGLFrameBuffer(Texture2DType type, int width, int 
         LOG_ENGINE_ASSERT("OpenGLFrameBuffer is incomplete!");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    LOG_ENGINE_INFO("OpenGLFrameBuffer created with ID: " + std::to_string(m_RendererID) +
-                    ", Type: " + std::to_string(static_cast<int>(m_Texture->GetType())) +
-                    ", Width: " + std::to_string(width) + ", Height: " + std::to_string(height) +
-                    (type == Texture2DType::Multisample ? ", Samples: " + std::to_string(samples) : ""));
+    LOG_ENGINE_TRACE("OpenGLFrameBuffer created with ID: " + std::to_string(m_RendererID) +
+                     ", Type: " + std::to_string(static_cast<int>(m_Texture->GetType())) +
+                     ", Width: " + std::to_string(width) + ", Height: " + std::to_string(height) +
+                     (type == Texture2DType::Multisample ? ", Samples: " + std::to_string(samples) : ""));
 }
 
 Engine::OpenGLFrameBuffer::~OpenGLFrameBuffer() { glDeleteFramebuffers(1, &m_RendererID); }
 
 void Engine::OpenGLFrameBuffer::Bind() const
 {
+    PROFILE_FUNCTION();
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
     glViewport(0, 0, m_Width, m_Height);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
 }
 
-void Engine::OpenGLFrameBuffer::Unbind() const { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+void Engine::OpenGLFrameBuffer::Unbind() const
+{
+    PROFILE_FUNCTION();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 void Engine::OpenGLFrameBuffer::Blit(unsigned int resolveID) const
 {
@@ -50,6 +57,7 @@ void Engine::OpenGLFrameBuffer::Blit(unsigned int resolveID) const
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, resolveID);
     glBlitFramebuffer(0, 0, m_Width, m_Height, 0, 0, m_Width, m_Height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 unsigned int Engine::OpenGLFrameBuffer::PickPixel(int x, int y) const
@@ -72,21 +80,17 @@ void Engine::OpenGLFrameBuffer::BindBasicTexture(Texture2DType type, int width, 
 {
     PROFILE_FUNCTION();
 
+    m_Texture = Texture2D::Create(type, width, height);
     switch (type)
     {
     case Texture2DType::Color:
-        m_Texture = Texture2D::Create(Texture2DType::Color, width, height);
+    case Texture2DType::Integer:
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         break;
     case Texture2DType::Depth:
-        m_Texture = Texture2D::Create(Texture2DType::Depth, width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
-        break;
-    case Texture2DType::Integer:
-        m_Texture = Texture2D::Create(Texture2DType::Integer, width, height);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_Texture->GetRendererID(), 0);
         break;
     default:
         LOG_ENGINE_ASSERT("Invalid Texture2DType for basic texture.");

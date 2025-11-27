@@ -14,12 +14,12 @@ public:
     virtual ~OpenGLTexture2D() override;
 
 public:
-    void Bind() const override;
-    void Unbind() const override;
     void Active(unsigned int slot) const override;
     void Resize(int width, int height) override;
 
 protected:
+    void Bind() const override;
+    void Unbind() const override;
     void CreateTexture(int width, int height, unsigned int internalFormat, unsigned int format, unsigned int type,
                        void *data, bool isHDR = false) override;
 };

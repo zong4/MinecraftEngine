@@ -9,7 +9,6 @@ namespace Engine
 class FrameBuffer
 {
 public:
-    virtual ~FrameBuffer() = default;
     static std::shared_ptr<FrameBuffer> Create(Texture2DType type, int width, int height, int samples = 0);
 
     // Getters
@@ -33,6 +32,7 @@ protected:
 
 protected:
     FrameBuffer(Texture2DType type, int width, int height, int samples) : m_Width(width), m_Height(height) {}
+    virtual ~FrameBuffer() = default;
 
 protected:
     virtual void BindBasicTexture(Texture2DType type, int width, int height) = 0;

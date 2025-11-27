@@ -16,7 +16,6 @@ enum class Texture2DType
 class Texture2D : public Texture
 {
 public:
-    virtual ~Texture2D() override = default;
     static std::shared_ptr<Texture2D> Create(Texture2DType type, int width, int height, void *data = nullptr);
     static std::shared_ptr<Texture2D> Create(int width, int height, int samples);
     static std::shared_ptr<Texture2D> Create(const std::string &path);
@@ -45,6 +44,7 @@ protected:
         : Texture(), m_Type(Texture2DType::Multisample), m_Width(width), m_Height(height), m_Samples(samples)
     {
     }
+    virtual ~Texture2D() override = default;
 
 protected:
     virtual void CreateTexture(int width, int height, unsigned int internalFormat, unsigned int format,
