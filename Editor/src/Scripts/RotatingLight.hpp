@@ -8,7 +8,7 @@ namespace Editor
 class RotatingLight : public Engine::ScriptableEntity
 {
 public:
-    RotatingLight(Engine::Entity entity) : Engine::ScriptableEntity(entity) {}
+    RotatingLight(const Engine::Entity &entity) : Engine::ScriptableEntity(entity) {}
     ~RotatingLight() override = default;
 
 public:
@@ -25,5 +25,3 @@ private:
 };
 
 } // namespace Editor
-
-

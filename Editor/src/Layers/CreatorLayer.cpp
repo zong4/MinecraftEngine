@@ -2,9 +2,8 @@
 
 #include "Scenes/EditorScene.hpp"
 #include "Scenes/ExampleScene.hpp"
+#include "Scripts/RotatingLight.hpp"
 #include <imgui.h>
-#include <cfloat>
-#include <functional>
 
 Editor::CreatorLayer::CreatorLayer(const std::shared_ptr<Engine::Window> &window)
     : Engine::Layer("CreatorLayer"), m_Window(window)
@@ -81,7 +80,7 @@ void Editor::CreatorLayer::OnImGuiRender()
     Engine::Input::GetInstance().SetBlockEvents(mouseBlock || keyBlock);
     ImGui::Text("ImGui Blocking Events: %s", (mouseBlock || keyBlock) ? "True" : "False");
 
-    auto drawLabeledControl = [](const char *label, const std::function<void()> &controlFn) {
+    auto &&drawLabeledControl = [](const char *label, const std::function<void()> &controlFn) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::TextUnformatted(label);
@@ -98,19 +97,24 @@ void Editor::CreatorLayer::OnImGuiRender()
         if (ImGui::BeginTable("CubeProperties", 2, ImGuiTableFlags_SizingStretchSame))
         {
             drawLabeledControl("Color", [&]() {
-                ImGui::ColorEdit4("##CubeColor", glm::value_ptr(material->GetProperty("Color").GetValueAs<glm::vec4>()));
+                ImGui::ColorEdit4("##CubeColor",
+                                  glm::value_ptr(material->GetProperty("Color").GetValueAs<glm::vec4>()));
             });
             drawLabeledControl("Ambient", [&]() {
-                ImGui::SliderFloat("##CubeAmbient", &material->GetProperty("AmbientStrength").GetValueAs<float>(), 0.0f, 1.0f);
+                ImGui::SliderFloat("##CubeAmbient", &material->GetProperty("AmbientStrength").GetValueAs<float>(), 0.0f,
+                                   1.0f);
             });
             drawLabeledControl("Diffuse", [&]() {
-                ImGui::SliderFloat("##CubeDiffuse", &material->GetProperty("DiffuseStrength").GetValueAs<float>(), 0.0f, 1.0f);
+                ImGui::SliderFloat("##CubeDiffuse", &material->GetProperty("DiffuseStrength").GetValueAs<float>(), 0.0f,
+                                   1.0f);
             });
             drawLabeledControl("Specular", [&]() {
-                ImGui::SliderFloat("##CubeSpecular", &material->GetProperty("SpecularStrength").GetValueAs<float>(), 0.0f, 1.0f);
+                ImGui::SliderFloat("##CubeSpecular", &material->GetProperty("SpecularStrength").GetValueAs<float>(),
+                                   0.0f, 1.0f);
             });
             drawLabeledControl("Shininess", [&]() {
-                ImGui::SliderFloat("##CubeShininess", &material->GetProperty("Shininess").GetValueAs<float>(), 1.0f, 256.0f);
+                ImGui::SliderFloat("##CubeShininess", &material->GetProperty("Shininess").GetValueAs<float>(), 1.0f,
+                                   256.0f);
             });
             ImGui::EndTable();
         }
@@ -128,20 +132,15 @@ void Editor::CreatorLayer::OnImGuiRender()
             drawLabeledControl("Position", [&]() {
                 ImGui::SliderFloat3("##LightPosition", glm::value_ptr(transform->Position), -10.0f, 10.0f);
             });
-
             glm::vec3 rotationEuler = transform->GetRotationEuler();
             drawLabeledControl("Rotation", [&]() {
                 if (ImGui::SliderFloat3("##LightRotation", glm::value_ptr(rotationEuler), -180.0f, 180.0f))
                     transform->SetRotationEuler(rotationEuler);
             });
 
-            drawLabeledControl("Color", [&]() {
-                ImGui::ColorEdit4("##LightColor", glm::value_ptr(lightComp->Color));
-            });
-
-            drawLabeledControl("Intensity", [&]() {
-                ImGui::SliderFloat("##LightIntensity", &lightComp->Intensity, 0.0f, 10.0f);
-            });
+            drawLabeledControl("Color", [&]() { ImGui::ColorEdit4("##LightColor", glm::value_ptr(lightComp->Color)); });
+            drawLabeledControl("Intensity",
+                               [&]() { ImGui::SliderFloat("##LightIntensity", &lightComp->Intensity, 0.0f, 10.0f); });
 
             bool rotateLight = Editor::RotatingLight::IsRotationEnabled();
             drawLabeledControl("Rotate", [&]() {
