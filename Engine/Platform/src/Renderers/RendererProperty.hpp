@@ -25,6 +25,7 @@ public:
         return instance;
     }
 
+    // Getters
     RendererAPI GetAPI() const { return m_API; }
     int GetMajorVersion() const { return m_MajorVersion; }
     int GetMinorVersion() const { return m_MinorVersion; }

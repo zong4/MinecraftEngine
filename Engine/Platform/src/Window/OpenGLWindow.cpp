@@ -35,12 +35,6 @@ void Engine::OpenGLWindow::Init()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     LOG_ENGINE_INFO("OpenGL version: " + std::string((const char *)glGetString(GL_VERSION)));
 
-    // Use property to set
-    glfwGetFramebufferSize((GLFWwindow *)m_NativeWindow, &m_Property.FbWidth, &m_Property.FbHeight);
-    RendererCommand::SetViewport(0, 0, m_Property.FbWidth, m_Property.FbHeight);
-    SetVSync(m_Property.VSync);
-    SetCallbacks();
-
     // MSAA samples
     int samples = 0;
     glGetIntegerv(GL_SAMPLES, &samples);
@@ -48,4 +42,10 @@ void Engine::OpenGLWindow::Init()
 
     // Initialize Renderer
     RendererCommand::Init();
+
+    // Use property to set
+    glfwGetFramebufferSize((GLFWwindow *)m_NativeWindow, &m_Property.FbWidth, &m_Property.FbHeight);
+    RendererCommand::SetViewport(0, 0, m_Property.FbWidth, m_Property.FbHeight);
+    SetVSync(m_Property.VSync);
+    SetCallbacks();
 }

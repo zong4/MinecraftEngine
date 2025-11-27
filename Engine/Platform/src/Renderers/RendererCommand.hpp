@@ -5,6 +5,18 @@
 namespace Engine
 {
 
+enum class DepthTestFunction
+{
+    Less = 0,
+    LessEqual = 1,
+    Greater = 2,
+    GreaterEqual = 3,
+    Equal = 4,
+    NotEqual = 5,
+    Always = 6,
+    Never = 7
+};
+
 class RendererCommand
 {
 public:
@@ -18,7 +30,7 @@ public:
     static void ClearDepthBuffer();
 
     static void EnableDepthTest();
-    static void DisableDepthTest();
+    static void SetDepthTestFunction(DepthTestFunction function);
 
     static void EnableBlend();
     static void DisableBlend();

@@ -58,12 +58,13 @@ void Engine::ImGuiLayer::OnAttach()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
+    // Setup IO config flags
     ImGuiIO &io = ImGui::GetIO();
     (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-                                                          // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-                                                          // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -93,6 +94,8 @@ static ImVec4 ReverseGammaCorrection(ImVec4 &&color)
 
 void Engine::ImGuiLayer::SetDarkThemeColors()
 {
+    PROFILE_FUNCTION();
+
     auto &colors = ImGui::GetStyle().Colors;
     colors[ImGuiCol_WindowBg] = ReverseGammaCorrection(ImVec4{0.1f, 0.105f, 0.11f, 1.0f});
 

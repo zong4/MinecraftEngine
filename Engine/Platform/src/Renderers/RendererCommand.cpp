@@ -114,18 +114,124 @@ void Engine::RendererCommand::EnableDepthTest()
     }
 }
 
-void Engine::RendererCommand::DisableDepthTest()
+void Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction function)
 {
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
+    switch (function)
     {
-    case Engine::RendererAPI::OpenGL:
-        glDepthFunc(GL_LEQUAL);
+    case DepthTestFunction::Less:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_LESS);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
         break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan DisableDepthTest is not implemented yet");
+    case DepthTestFunction::LessEqual:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_LEQUAL);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
+        break;
+    case DepthTestFunction::Greater:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_GREATER);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
+        break;
+    case DepthTestFunction::GreaterEqual:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_GEQUAL);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
+        break;
+    case DepthTestFunction::Equal:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_EQUAL);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
+        break;
+    case DepthTestFunction::NotEqual:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_NOTEQUAL);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
+        break;
+    case DepthTestFunction::Always:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_ALWAYS);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
+        break;
+    case DepthTestFunction::Never:
+        switch (Engine::RendererProperty::GetInstance().GetAPI())
+        {
+        case Engine::RendererAPI::OpenGL:
+            glDepthFunc(GL_NEVER);
+            break;
+        case Engine::RendererAPI::Vulkan:
+            LOG_ENGINE_ASSERT("Vulkan SetDepthTestFunction is not implemented yet");
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown RendererAPI");
+            break;
+        }
         break;
     default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        LOG_ENGINE_ASSERT("Unknown DepthTestFunction");
         break;
     }
 }

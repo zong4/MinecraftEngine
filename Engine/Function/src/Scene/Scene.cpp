@@ -429,7 +429,7 @@ void Engine::Scene::RenderSkybox() const
 {
     PROFILE_FUNCTION();
 
-    Engine::RendererCommand::DisableDepthTest();
+    Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::LessEqual);
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");
     shader->Bind();
 
@@ -446,7 +446,7 @@ void Engine::Scene::RenderSkybox() const
     }
 
     shader->Unbind();
-    Engine::RendererCommand::EnableDepthTest();
+    Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::Less);
 }
 
 void Engine::Scene::RenderColorID() const
