@@ -2,6 +2,7 @@
 
 #include "../ECS/Entity/Entity.hpp"
 #include "../Scene/Scene.hpp"
+#include "Algorithms/Random.hpp"
 #include "Ray.hpp"
 
 namespace Engine

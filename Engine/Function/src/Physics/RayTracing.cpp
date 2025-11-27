@@ -37,8 +37,8 @@ glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, int x, int y, in
     auto &&cameraComp = camera.GetComponent<CameraComponent>();
     for (int i = 0; i < raysPerPixel; i++)
     {
-        float u = (x + Engine::Random::RandomFloat()) / (float)(cameraComp->GetWidth());
-        float v = (y + Engine::Random::RandomFloat()) / (float)(cameraComp->GetHeight());
+        float u = (x + Random::GetInstance().NextFloat()) / (float)(cameraComp->GetWidth());
+        float v = (y + Random::GetInstance().NextFloat()) / (float)(cameraComp->GetHeight());
         Ray ray(transform->Position, cameraComp->GetRayWorld(u, v));
 
         // Trace the ray and accumulate color (placeholder logic)
