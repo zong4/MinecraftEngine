@@ -109,7 +109,7 @@ void Engine::Scene::Render(const Entity &camera)
         m_RayTracingRunning = true;
         m_RayTracingThread = std::thread([this, camera] {
             std::vector<glm::vec4> tempBuffer;
-            Engine::RayTracing::RenderScene(camera, 1, 1, tempBuffer);
+            Engine::RayTracing::RenderScene(camera, 10, 3, tempBuffer);
             m_RayTracingRunning = false;
         });
         // m_RayTracingThread.detach();

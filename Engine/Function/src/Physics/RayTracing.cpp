@@ -9,6 +9,7 @@ void Engine::RayTracing::RenderScene(const Entity &camera, int raysPerPixel, int
     int height = camera.GetComponent<CameraComponent>()->GetHeight();
     frameBuffer.resize(width * height);
 
+    int lastPercent = -1;
 #pragma omp parallel for schedule(static)
     for (int y = 0; y < height; y++)
     {
@@ -17,9 +18,13 @@ void Engine::RayTracing::RenderScene(const Entity &camera, int raysPerPixel, int
             frameBuffer[y * width + x] = glm::vec4(RenderPixel(camera, x, y, raysPerPixel, rayBounces), 1.0f);
         }
 
-        // Show progress every 10 rows
-        if (y % 10 == 0)
-            LOG_ENGINE_TRACE("Ray tracing progress: " + std::to_string((y + 1) * 100 / height) + "%");
+        // Progress logging
+        int percent = (y + 1) * 100 / height;
+        if (percent != lastPercent)
+        {
+            lastPercent = percent;
+            LOG_ENGINE_TRACE("Ray Tracing Progress: " + std::to_string(percent) + "%");
+        }
     }
 }
 
