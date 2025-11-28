@@ -7,13 +7,22 @@ Engine::CameraComponent::CameraComponent(CameraType type, float width, float hei
 {
 }
 
-glm::vec3 Engine::CameraComponent::GetRayWorld(float u, float v) const
+glm::vec3 Engine::CameraComponent::GetRayWorld(float u, float v, const glm::mat4 &viewMatrix) const
 {
-    glm::mat4 invProj = glm::inverse(m_ProjectionMatrix);
-    glm::vec4 rayClip = glm::vec4(u * 2.0f - 1.0f, v * 2.0f - 1.0f, -1.0f, 1.0f);
-    glm::vec4 rayEye = invProj * rayClip;
-    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Assuming camera is at origin looking down -Z
-    glm::vec3 rayWorld = glm::normalize(glm::vec3(rayEye));
+    // 1. NDC space
+    float ndcX = u * 2.0f - 1.0f;
+    float ndcY = v * 2.0f - 1.0f;
+
+    // 2. Clip space
+    glm::vec4 rayClip = glm::vec4(ndcX, ndcY, -1.0f, 1.0f); // z = -1 = near plane
+
+    // 2. Clip space -> Eye space
+    glm::vec4 rayEye = glm::inverse(m_ProjectionMatrix) * rayClip;
+    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // w=0 表示方向向量
+
+    // 3. Eye space -> World space
+    glm::vec4 rayWorld4 = glm::inverse(viewMatrix) * rayEye;
+    glm::vec3 rayWorld = glm::normalize(glm::vec3(rayWorld4));
     return rayWorld;
 }
 

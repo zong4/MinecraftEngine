@@ -1,6 +1,6 @@
 #include "RayTracing.hpp"
 
-void Engine::RayTracing::RenderScene(const Entity &camera, const RTSceneData &sceneData, int raysPerPixel,
+void Engine::RayTracing::RenderScene(const Entity &camera, const std::vector<Entity> &entities, int raysPerPixel,
                                      int rayBounces, std::vector<glm::vec4> &frameBuffer)
 {
     PROFILE_FUNCTION();
@@ -15,8 +15,7 @@ void Engine::RayTracing::RenderScene(const Entity &camera, const RTSceneData &sc
     {
         for (int x = 0; x < width; x++)
         {
-            frameBuffer[y * width + x] =
-                glm::vec4(RenderPixel(camera, sceneData, x, y, raysPerPixel, rayBounces), 1.0f);
+            frameBuffer[y * width + x] = glm::vec4(RenderPixel(camera, entities, x, y, raysPerPixel, rayBounces), 1.0f);
         }
 
 // Progress logging
@@ -48,7 +47,7 @@ void Engine::RayTracing::SaveImage(const std::string &filepath, int width, int h
     Engine::Texture::SaveImage(filepath, width, height, imageData.data());
 }
 
-glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, const RTSceneData &sceneData, int x, int y,
+glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, const std::vector<Entity> &entities, int x, int y,
                                           int raysPerPixel, int rayBounces)
 {
     PROFILE_FUNCTION();
@@ -60,12 +59,21 @@ glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, const RTSceneDat
     {
         float u = (x + Random::GetInstance().NextFloat()) / (float)(cameraComp->GetWidth());
         float v = (y + Random::GetInstance().NextFloat()) / (float)(cameraComp->GetHeight());
-        Ray ray(transform->Position, cameraComp->GetRayWorld(u, v));
+        Ray ray(transform->Position, cameraComp->GetRayWorld(u, v, glm::inverse(transform->GetTransformMatrix())));
 
-        // Trace the ray and accumulate color (placeholder logic)
-        glm::vec3 rayColor(1.0f); // Replace with actual ray-scene intersection logic
+        // Trace the ray
+        glm::vec3 rayColor(1.0f);
+        for (auto &&entity : entities)
+        {
+            if (ray.Hit(entity, 0.001f, FLT_MAX))
+            {
+                rayColor = glm::vec3(0.0f);
+            }
+        }
+
         pixelColor += rayColor;
     }
+
     pixelColor /= (float)(raysPerPixel);
     return pixelColor;
 }

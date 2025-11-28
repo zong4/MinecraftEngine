@@ -8,7 +8,7 @@ Engine::BVH::BVH(const std::shared_ptr<Scene> &scene)
     std::vector<Entity> entities;
     auto &&registry = scene->GetRegistry();
     auto &&view = registry.view<TransformComponent, MeshRendererComponent>();
-    for (auto &entity : view)
+    for (auto &&entity : view)
     {
         entities.push_back(Entity{entity, &registry});
     }

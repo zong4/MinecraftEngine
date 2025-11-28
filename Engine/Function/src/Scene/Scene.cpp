@@ -40,19 +40,33 @@ void Engine::Scene::Update(float deltaTime)
     }
     m_DeletedEntities.clear();
 
-    auto &&view = m_Registry.view<TransformComponent, RelationshipComponent>();
-    for (auto &&entity : view)
+    // Update all transform matrices
     {
-        // Update all transform matrices
-        auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
-        if (!relationship.GetParent())
-            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
+        auto &&view = m_Registry.view<TransformComponent, RelationshipComponent>();
+        for (auto &&entity : view)
+        {
+            auto &&[transform, relationship] = view.get<TransformComponent, RelationshipComponent>(entity);
+            if (!relationship.GetParent())
+                transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
+        }
+    }
 
-        // Transform the BoundingBox to world space
-        if (auto &&spriteRenderer = m_Registry.try_get<SpriteRendererComponent>(entity))
-            spriteRenderer->WorldBBox = spriteRenderer->GetBBox().Transform(transform.GetTransformMatrix());
-        else if (auto &&meshRenderer = m_Registry.try_get<MeshRendererComponent>(entity))
-            meshRenderer->WorldBBox = meshRenderer->GetBBox().Transform(transform.GetTransformMatrix());
+    // Transform the BoundingBox to world space
+    {
+        auto &&view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+        for (auto &&entity : view)
+        {
+            auto &&[transform, spriteRenderer] = view.get<TransformComponent, SpriteRendererComponent>(entity);
+            spriteRenderer.WorldBBox = spriteRenderer.GetBBox().Transform(transform.GetTransformMatrix());
+        }
+    }
+    {
+        auto &&view = m_Registry.view<TransformComponent, MeshRendererComponent>();
+        for (auto &&entity : view)
+        {
+            auto &&[transform, meshRenderer] = view.get<TransformComponent, MeshRendererComponent>(entity);
+            meshRenderer.WorldBBox = meshRenderer.GetBBox().Transform(transform.GetTransformMatrix());
+        }
     }
 
     // Update all scripts

@@ -40,9 +40,15 @@ void Engine::Scene3D::Render(const Entity &camera)
     if (!m_RayTracingRunning.exchange(true))
     {
         std::thread([this, camera] {
-            RTSceneData rtSceneData;
+            std::vector<Entity> entities;
+            auto &&registry = this->GetRegistry();
+            auto &&view = registry.view<TransformComponent, MeshRendererComponent>();
+            for (auto &&entity : view)
+            {
+                entities.push_back(Entity{entity, &registry});
+            }
             std::vector<glm::vec4> tempBuffer;
-            Engine::RayTracing::RenderScene(camera, rtSceneData, 10, 3, tempBuffer);
+            Engine::RayTracing::RenderScene(camera, entities, 100, 1, tempBuffer);
             m_RayTracingRunning = false;
         }).detach();
     }

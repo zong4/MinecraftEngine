@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Platform.hpp>
+#include "../../ECS/Entity/Entity.hpp"
+#include "../BoundingBox.hpp"
 
 namespace Engine
 {
@@ -8,12 +9,12 @@ namespace Engine
 class Ray
 {
 public:
-    Ray(const glm::vec3 &origin, const glm::vec3 &direction) : m_Origin(origin), m_Direction(glm::normalize(direction))
-    {
-    }
+    Ray(const glm::vec3 &origin, const glm::vec3 &direction);
 
 public:
     glm::vec3 At(float t) const { return m_Origin + t * m_Direction; }
+    bool Hit(const BoundingBox &bbox, float tMin, float tMax) const;
+    bool Hit(const Entity &entity, float tMin, float tMax) const;
 
 private:
     glm::vec3 m_Origin;

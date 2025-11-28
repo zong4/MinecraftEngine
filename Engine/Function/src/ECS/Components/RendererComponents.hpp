@@ -19,7 +19,7 @@ public:
         const std::shared_ptr<Texture2D> &texture = TextureLibrary::GetInstance().GetTexture2D("DefaultTexture"))
         : Color(color), Texture(texture)
     {
-        BBox = BoundingBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+        BBox = BoundingBox(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f));
         WorldBBox = BBox;
     }
 
@@ -41,8 +41,7 @@ public:
                           std::span<const uint32_t> indices = {})
         : Vertices(vertices.begin(), vertices.end()), Indices(indices.begin(), indices.end())
     {
-        for (const auto &vertex : vertices)
-            BBox = BBox.Extend(vertex);
+        BBox = BoundingBox(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
         WorldBBox = BBox;
     }
 
