@@ -11,12 +11,6 @@ Engine::BVH::BVH(const std::shared_ptr<Scene> &scene)
     for (auto &entity : view)
     {
         entities.push_back(Entity{entity, &registry});
-
-        // todo: move to other place
-        // Transform the BoundingBox to world space
-        registry.try_get<MeshRendererComponent>(entity)->WorldBBox =
-            registry.try_get<MeshRendererComponent>(entity)->BBox.Transform(
-                registry.try_get<TransformComponent>(entity)->GetTransformMatrix());
     }
 
     m_Root = Build(entities, 3);
@@ -67,7 +61,7 @@ Engine::BVHNode *Engine::BVH::Build(std::vector<Entity> &entities, int leafSize)
     // Calculate bounding box for current node
     BoundingBox box = entities[0].GetComponent<MeshRendererComponent>()->WorldBBox;
     for (size_t i = 1; i < entities.size(); i++)
-        box = box.Merge(entities[i].GetComponent<MeshRendererComponent>()->WorldBBox);
+        box = box.Extend(entities[i].GetComponent<MeshRendererComponent>()->WorldBBox);
     node->BBox = box;
 
     // Stop if <= leaf size

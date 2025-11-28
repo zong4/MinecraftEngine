@@ -34,7 +34,7 @@ struct SquareData
         1, 3, 2  // second Triangle
     };
 };
-inline const SquareData g_SquareData;
+const SquareData g_SquareData;
 
 struct Vertex3D
 {
@@ -119,7 +119,7 @@ struct CubeData
         glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f), glm::vec2(0.0f, 0.0f)};
     // clang-format on
 };
-inline const CubeData g_CubeData;
+const CubeData g_CubeData;
 
 class VertexLibrary
 {

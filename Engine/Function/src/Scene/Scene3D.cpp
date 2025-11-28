@@ -6,6 +6,8 @@
 #include "../Renderers/Librarys/VertexLibrary.hpp"
 #include "../Renderers/Material/MaterialLibrary.hpp"
 
+Engine::Scene3D::Scene3D(const std::string &name) : Scene(name) {}
+
 void Engine::Scene3D::Render(const Entity &camera)
 {
     PROFILE_FUNCTION();
@@ -38,8 +40,9 @@ void Engine::Scene3D::Render(const Entity &camera)
     if (!m_RayTracingRunning.exchange(true))
     {
         std::thread([this, camera] {
+            RTSceneData rtSceneData;
             std::vector<glm::vec4> tempBuffer;
-            Engine::RayTracing::RenderScene(camera, 10, 3, tempBuffer);
+            Engine::RayTracing::RenderScene(camera, rtSceneData, 10, 3, tempBuffer);
             m_RayTracingRunning = false;
         }).detach();
     }

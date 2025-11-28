@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../ECS/Components/BasicComponent.hpp"
+#include "../ECS/Components/BasicComponents.hpp"
 #include "../ECS/Components/CameraComponent.hpp"
 #include "../ECS/Components/LightComponent.hpp"
 #include "../ECS/Components/MaterialComponent.hpp"
-#include "../ECS/Components/RendererComponent.hpp"
+#include "../ECS/Components/RendererComponents.hpp"
 #include "../ECS/Components/SkyboxComponent.hpp"
 
 namespace Engine

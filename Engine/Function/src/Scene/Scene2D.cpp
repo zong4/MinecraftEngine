@@ -81,8 +81,8 @@ void Engine::Scene2D::UploadSquaresData()
         {
             glm::mat4 u_Model = transform.GetTransformMatrix();
             vertices.push_back({(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
-                                g_SquareData.TexCoords[i],
-                                TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance), sprite.Color});
+                                g_SquareData.TexCoords[i], TextureLibrary::GetInstance().GetTextureSlot(sprite.Texture),
+                                sprite.Color});
         }
 
         // Indices
@@ -116,9 +116,9 @@ void Engine::Scene2D::Render2D(const Entity &camera) const
     for (auto &&entity : spriteView)
     {
         auto &&sprite = spriteView.get<Engine::SpriteRendererComponent>(entity);
-        int texID = TextureLibrary::GetInstance().GetTextureSlot(sprite.TextureInstance);
+        int texID = TextureLibrary::GetInstance().GetTextureSlot(sprite.Texture);
         if (texID != -1)
-            sprite.TextureInstance->Active(texID);
+            sprite.Texture->Active(texID);
     }
 
     // Render squares

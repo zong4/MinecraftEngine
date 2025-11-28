@@ -1,7 +1,7 @@
 #include "RayTracing.hpp"
 
-void Engine::RayTracing::RenderScene(const Entity &camera, int raysPerPixel, int rayBounces,
-                                     std::vector<glm::vec4> &frameBuffer)
+void Engine::RayTracing::RenderScene(const Entity &camera, const RTSceneData &sceneData, int raysPerPixel,
+                                     int rayBounces, std::vector<glm::vec4> &frameBuffer)
 {
     PROFILE_FUNCTION();
 
@@ -15,7 +15,8 @@ void Engine::RayTracing::RenderScene(const Entity &camera, int raysPerPixel, int
     {
         for (int x = 0; x < width; x++)
         {
-            frameBuffer[y * width + x] = glm::vec4(RenderPixel(camera, x, y, raysPerPixel, rayBounces), 1.0f);
+            frameBuffer[y * width + x] =
+                glm::vec4(RenderPixel(camera, sceneData, x, y, raysPerPixel, rayBounces), 1.0f);
         }
 
 // Progress logging
@@ -47,7 +48,8 @@ void Engine::RayTracing::SaveImage(const std::string &filepath, int width, int h
     Engine::Texture::SaveImage(filepath, width, height, imageData.data());
 }
 
-glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, int x, int y, int raysPerPixel, int rayBounces)
+glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, const RTSceneData &sceneData, int x, int y,
+                                          int raysPerPixel, int rayBounces)
 {
     PROFILE_FUNCTION();
 

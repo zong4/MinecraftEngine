@@ -11,6 +11,20 @@ int Engine::BoundingBox::GetLongestAxis() const
         return 2; // Axis::Z
 }
 
+Engine::BoundingBox Engine::BoundingBox::Extend(const glm::vec3 &point) const
+{
+    glm::vec3 newMin = glm::min(m_Min, point);
+    glm::vec3 newMax = glm::max(m_Max, point);
+    return BoundingBox(newMin, newMax);
+}
+
+Engine::BoundingBox Engine::BoundingBox::Extend(const BoundingBox &other) const
+{
+    glm::vec3 newMin = glm::min(m_Min, other.m_Min);
+    glm::vec3 newMax = glm::max(m_Max, other.m_Max);
+    return BoundingBox(newMin, newMax);
+}
+
 Engine::BoundingBox Engine::BoundingBox::Transform(const glm::mat4 &matrix) const
 {
     glm::vec3 corners[8] = {
@@ -28,12 +42,5 @@ Engine::BoundingBox Engine::BoundingBox::Transform(const glm::mat4 &matrix) cons
         newMax = glm::max(newMax, glm::vec3(transformed));
     }
 
-    return BoundingBox(newMin, newMax);
-}
-
-Engine::BoundingBox Engine::BoundingBox::Merge(const BoundingBox &other) const
-{
-    glm::vec3 newMin = glm::min(m_Min, other.m_Min);
-    glm::vec3 newMax = glm::max(m_Max, other.m_Max);
     return BoundingBox(newMin, newMax);
 }

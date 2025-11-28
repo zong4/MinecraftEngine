@@ -22,8 +22,9 @@ public:
     void SetColor(const glm::vec4 &color) { m_Color = color; }
 
 public:
+    BoundingBox Extend(const glm::vec3 &point) const;
+    BoundingBox Extend(const BoundingBox &other) const;
     BoundingBox Transform(const glm::mat4 &matrix) const;
-    BoundingBox Merge(const BoundingBox &other) const;
 
 private:
     glm::vec3 m_Min;
