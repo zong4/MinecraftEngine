@@ -29,6 +29,14 @@ Engine::TransformComponent::TransformComponent(const glm::vec3 &position, const 
     SetRotationEuler(rotation);
 }
 
+const glm::quat &Engine::TransformComponent::GetRotationQuat(TransformSpace space) const
+{
+    if (space == TransformSpace::Local)
+        return m_RotationQuat;
+    else
+        return m_GlobalRotationQuat;
+}
+
 glm::vec3 Engine::TransformComponent::GetForward(TransformSpace space) const
 {
     if (space == TransformSpace::Local)

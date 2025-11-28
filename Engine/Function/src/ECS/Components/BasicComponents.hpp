@@ -78,6 +78,7 @@ public:
     // Getters
     const glm::vec3 &GetRotationRadians() const { return m_RotationRadians; }
     glm::vec3 GetRotationEuler() const { return glm::degrees(m_RotationRadians); }
+    const glm::quat &GetRotationQuat(TransformSpace space) const;
     const glm::mat4 &GetTransformMatrix() const { return m_TransformMatrix; }
     glm::vec3 GetForward(TransformSpace space) const;
     glm::vec3 GetRight(TransformSpace space) const;

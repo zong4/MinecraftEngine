@@ -59,7 +59,10 @@ glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, const std::vecto
     {
         float u = (x + Random::GetInstance().NextFloat()) / (float)(cameraComp->GetWidth());
         float v = (y + Random::GetInstance().NextFloat()) / (float)(cameraComp->GetHeight());
-        Ray ray(transform->Position, cameraComp->GetRayWorld(u, v, glm::inverse(transform->GetTransformMatrix())));
+        glm::vec3 localDir = cameraComp->GetLocalDir(u, v);
+        Ray ray(transform->Position,
+                glm::normalize(transform->GetRotationQuat(TransformSpace::Global) *
+                               localDir)); // Transform to world space direction
 
         // Trace the ray
         glm::vec3 rayColor(1.0f);

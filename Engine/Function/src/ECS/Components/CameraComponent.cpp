@@ -7,23 +7,21 @@ Engine::CameraComponent::CameraComponent(CameraType type, float width, float hei
 {
 }
 
-glm::vec3 Engine::CameraComponent::GetRayWorld(float u, float v, const glm::mat4 &viewMatrix) const
+glm::vec3 Engine::CameraComponent::GetLocalDir(float u, float v) const
 {
-    // 1. NDC space
-    float ndcX = u * 2.0f - 1.0f;
-    float ndcY = v * 2.0f - 1.0f;
-
-    // 2. Clip space
-    glm::vec4 rayClip = glm::vec4(ndcX, ndcY, -1.0f, 1.0f); // z = -1 = near plane
-
-    // 2. Clip space -> Eye space
-    glm::vec4 rayEye = glm::inverse(m_ProjectionMatrix) * rayClip;
-    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // w=0 表示方向向量
-
-    // 3. Eye space -> World space
-    glm::vec4 rayWorld4 = glm::inverse(viewMatrix) * rayEye;
-    glm::vec3 rayWorld = glm::normalize(glm::vec3(rayWorld4));
-    return rayWorld;
+    if (Type == CameraType::Orthographic)
+    {
+        return glm::vec3(0.0f, 0.0f, -1.0f);
+    }
+    else
+    {
+        float aspectRatio = (float)m_Width / (float)m_Height;
+        float fovRad = glm::radians(FOV);
+        float px = (2.0f * u - 1.0f) * tan(fovRad / 2.0f) * aspectRatio;
+        float py = (1.0f - 2.0f * v) * tan(fovRad / 2.0f);
+        glm::vec3 dir = glm::normalize(glm::vec3(px, py, -1.0f));
+        return dir;
+    }
 }
 
 void Engine::CameraComponent::Resize(int width, int height)
