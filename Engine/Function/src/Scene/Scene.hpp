@@ -6,6 +6,7 @@
 #include "../ECS/Components/MaterialComponent.hpp"
 #include "../ECS/Components/RendererComponents.hpp"
 #include "../ECS/Components/SkyboxComponent.hpp"
+#include "../Renderers/ParticleSystem/ParticleSystem.hpp"
 
 namespace Engine
 {
