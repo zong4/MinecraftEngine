@@ -52,6 +52,20 @@ void Engine::Scene3D::Render(const Entity &camera)
             m_RayTracingRunning = false;
         }).detach();
     }
+
+    // Particle systems
+    for (int i = 0; i < 10; ++i)
+    {
+        m_ParticleSystem.AddParticle(Particle{
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
+                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
+            2.0f,
+        });
+    }
+    m_ParticleSystem.Update(0.016f);
+    ShaderLibrary::GetInstance().GetShader("Particles")->Bind();
+    m_ParticleSystem.Render();
 }
 
 void Engine::Scene3D::Resize(int width, int height)
