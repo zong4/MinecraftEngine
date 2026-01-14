@@ -1,10 +1,14 @@
 #pragma once
 
-#include "../ECS/Components/BasicComponents.hpp"
 #include "../ECS/Components/CameraComponent.hpp"
+#include "../ECS/Components/LabelComponent.hpp"
 #include "../ECS/Components/LightComponent.hpp"
 #include "../ECS/Components/MaterialComponent.hpp"
+#include "../ECS/Components/NativeScriptComponent.hpp"
+#include "../ECS/Components/PhysicComponents.hpp"
+#include "../ECS/Components/RelationshipComponent.hpp"
 #include "../ECS/Components/RendererComponents.hpp"
+#include "../ECS/Components/TransformComponent.hpp"
 #include "../Renderers/ParticleSystem/ParticleSystem.hpp"
 
 namespace Engine
@@ -37,8 +41,9 @@ public:
     Entity Add2DObject(const std::string &name, const TransformComponent &transform,
                        const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent());
     Entity Add3DObject(const std::string &name, const TransformComponent &transform,
+                       const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
                        const MaterialComponent &materialComponent = MaterialComponent(),
-                       const MeshRendererComponent &meshRendererComponent = MeshRendererComponent());
+                       const RigidBodyComponent &rigidBodyComponent = RigidBodyComponent());
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
@@ -55,7 +60,8 @@ protected:
 private:
     Entity m_MainCamera;
     std::vector<Entity> m_DeletedEntities = {};
-    
+    btDiscreteDynamicsWorld *m_DynamicsWorld;
+
 private:
     void DeleteEntityReal(const Entity &entity);
 };
