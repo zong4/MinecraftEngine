@@ -141,7 +141,6 @@ Engine::Entity Engine::Scene::AddCube(const std::string &name, const TransformCo
     entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
     entity.AddComponent<MaterialComponent>(materialComponent);
     entity.AddComponent<RigidBodyComponent>(rigidBodyComponent);
-    m_PhysicSystem.AddCube(entity.GetComponent<TransformComponent>(), entity.GetComponent<RigidBodyComponent>());
     return entity;
 }
 

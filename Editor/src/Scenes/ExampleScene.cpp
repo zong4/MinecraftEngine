@@ -36,10 +36,12 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     for (int i = 0; i < numCubes; i++)
     {
         // Position
-        glm::vec3 randomPosition = glm::vec3(Engine::Random::GetInstance().NextFloat(-5.0f, 5.0f), // X: -5 ~ 5
-                                             5.0f + i * 2.0f, // Y: Starting from 5, each cube stacked
-                                             Engine::Random::GetInstance().NextFloat(-5.0f, 5.0f) // Z: -5 ~ 5
-        );
+        glm::vec3 randomPosition = glm::vec3(
+            Engine::Random::GetInstance().NextFloat(plane.GetComponent<Engine::TransformComponent>()->Scale.x * -0.5f,
+                                                    plane.GetComponent<Engine::TransformComponent>()->Scale.x * 0.5f),
+            5.0f + i * 2.0f, // Y: Starting from 5, each cube stacked
+            Engine::Random::GetInstance().NextFloat(plane.GetComponent<Engine::TransformComponent>()->Scale.z * -0.5f,
+                                                    plane.GetComponent<Engine::TransformComponent>()->Scale.z * 0.5f));
 
         // Random rotation (Euler angles, converted from 0~360 degrees to radians)
         glm::vec3 randomEuler = glm::vec3(Engine::Random::GetInstance().NextFloat(0.0f, 360.0f),

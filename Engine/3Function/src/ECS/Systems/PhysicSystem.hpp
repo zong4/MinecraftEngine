@@ -15,7 +15,6 @@ public:
 public:
     void UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform);
     void Update(float deltaTime) { m_DynamicsWorld->stepSimulation(deltaTime); }
-    void AddCube(TransformComponent *transform, RigidBodyComponent *rigidBody);
 
 private:
     btDefaultCollisionConfiguration *m_CollisionConfiguration;
@@ -23,6 +22,9 @@ private:
     btBroadphaseInterface *m_Broadphase;
     btSequentialImpulseConstraintSolver *m_Solver;
     btDiscreteDynamicsWorld *m_DynamicsWorld;
+
+private:
+    void AddCube(RigidBodyComponent &rigidBody, const TransformComponent &transform);
 };
 
 } // namespace Engine
