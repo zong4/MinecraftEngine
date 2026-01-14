@@ -1,7 +1,7 @@
-includes("Core")
-includes("Platform")
-includes("Function")
-includes("Test")
+includes("1Core")
+includes("2Platform")
+includes("3Function")
+includes("0Test")
 
 target("Engine")
     set_kind("static")
