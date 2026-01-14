@@ -256,7 +256,9 @@ void Engine::Scene3D::RenderSkybox() const
 {
     PROFILE_FUNCTION();
 
+    Engine::RendererCommand::DisableFaceCulling();
     Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::LessEqual);
+    Engine::RendererCommand::DisableDepthTest();
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");
     shader->Bind();
 
@@ -265,5 +267,7 @@ void Engine::Scene3D::RenderSkybox() const
     Engine::VertexLibrary::GetInstance().GetVertex("Cube")->Render();
 
     shader->Unbind();
+    Engine::RendererCommand::EnableDepthTest();
     Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::Less);
+    Engine::RendererCommand::EnableFaceCulling();
 }
