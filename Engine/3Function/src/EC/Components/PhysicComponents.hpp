@@ -8,17 +8,17 @@ namespace Engine
 
 struct RigidBodyComponent
 {
-    bool useGravity = true;
-    float mass = 1.0f;
-    btRigidBody *body = nullptr;
-    btCollisionShape *shape = nullptr;
+    bool UseGravity = true;
+    float Mass = 1.0f;
+    btCollisionShape *Shape = nullptr;
+    btRigidBody *Body = nullptr;
 
     ~RigidBodyComponent()
     {
-        if (body)
-            delete body;
-        if (shape)
-            delete shape;
+        if (Shape)
+            delete Shape;
+        if (Body)
+            delete Body;
     }
 };
 

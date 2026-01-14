@@ -10,11 +10,11 @@ void Engine::RelationshipComponent::SetParentChild(const Entity &parent, const E
     if (auto &&childRelationship = child.GetComponent<RelationshipComponent>())
     {
         // Remove from old parent
-        if (auto &&oldParentRelationship = childRelationship->GetParent().GetComponent<RelationshipComponent>())
+        if (auto &&oldParentRelationship = childRelationship->Parent.GetComponent<RelationshipComponent>())
             oldParentRelationship->RemoveChild(child);
 
         // Set new parent
-        childRelationship->SetParent(parent);
+        childRelationship->Parent = parent;
 
         // Add to new parent's children list
         if (auto &&parentRelationship = parent.GetComponent<RelationshipComponent>())

@@ -43,7 +43,7 @@ public:
     Entity AddCube(const std::string &name, const TransformComponent &transform,
                    const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
                    const MaterialComponent &materialComponent = MaterialComponent(),
-                   const RigidBodyComponent &rigidBodyComponent = RigidBodyComponent());
+                   RigidBodyComponent rigidBodyComponent = RigidBodyComponent());
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);

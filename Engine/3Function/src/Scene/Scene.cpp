@@ -51,7 +51,7 @@ void Engine::Scene::Update(float deltaTime)
     for (auto &&entity : entityView)
     {
         auto &&[transform, relationship] = entityView.get<TransformComponent, RelationshipComponent>(entity);
-        if (!relationship.GetParent())
+        if (!relationship.Parent)
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
     }
 
@@ -131,12 +131,33 @@ Engine::Entity Engine::Scene::AddSquare(const std::string &name, const Transform
 
 Engine::Entity Engine::Scene::AddCube(const std::string &name, const TransformComponent &transform,
                                       const MeshRendererComponent &meshRendererComponent,
-                                      const MaterialComponent &materialComponent,
-                                      const RigidBodyComponent &rigidBodyComponent)
+                                      const MaterialComponent &materialComponent, RigidBodyComponent rigidBodyComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
     entity.AddComponent<MaterialComponent>(materialComponent);
+
+    // // Transform
+    // btTransform btTransform;
+    // btTransform.setIdentity();
+    // btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
+    // btDefaultMotionState *motionState = new btDefaultMotionState(btTransform);
+
+    // // Shape
+    // btVector3 inertia(0, 0, 0);
+    // rigidBodyComponent.Shape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+    // if (rigidBodyComponent.Mass != 0)
+    //     rigidBodyComponent.Shape->calculateLocalInertia(rigidBodyComponent.Mass, inertia);
+
+    // // Rigid body info
+    // btRigidBody::btRigidBodyConstructionInfo rbInfo(rigidBodyComponent.Mass, motionState, rigidBodyComponent.Shape,
+    //                                                 inertia);
+    // rigidBodyComponent.Body = new btRigidBody(rbInfo);
+    // rigidBodyComponent.Body->setActivationState(DISABLE_DEACTIVATION);
+    // rigidBodyComponent.Body->setGravity(btVector3(0, -9.81f, 0));
+
+    // // Add to world
+    // m_DynamicsWorld->addRigidBody(rigidBodyComponent.Body);
     entity.AddComponent<RigidBodyComponent>(rigidBodyComponent);
     return entity;
 }
