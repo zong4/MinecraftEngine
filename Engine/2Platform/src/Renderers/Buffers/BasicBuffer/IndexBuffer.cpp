@@ -18,12 +18,12 @@ std::unique_ptr<Engine::IndexBuffer> Engine::IndexBuffer::Create(size_t size)
     }
 }
 
-std::unique_ptr<Engine::IndexBuffer> Engine::IndexBuffer::Create(const void *data)
+std::unique_ptr<Engine::IndexBuffer> Engine::IndexBuffer::Create(const void *data, size_t size)
 {
     switch (RendererProperty::GetInstance().GetAPI())
     {
     case RendererAPI::OpenGL:
-        return std::make_unique<Engine::OpenGLIndexBuffer>(data);
+        return std::make_unique<Engine::OpenGLIndexBuffer>(data, size);
     case RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan IndexBuffer is not implemented yet");
         return nullptr;

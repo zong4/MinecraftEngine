@@ -8,12 +8,12 @@ Engine::OpenGLVertexBuffer::OpenGLVertexBuffer(size_t size) : VertexBuffer(stati
     CreateBuffer(nullptr, size, BufferType::Dynamic);
 }
 
-Engine::OpenGLVertexBuffer::OpenGLVertexBuffer(const void *data)
-    : VertexBuffer(static_cast<int>(sizeof(data) / sizeof(float)))
+Engine::OpenGLVertexBuffer::OpenGLVertexBuffer(const void *data, size_t size)
+    : VertexBuffer(static_cast<int>(size / sizeof(float)))
 {
     if (!data)
         LOG_ENGINE_ASSERT("OpenGLVertexBuffer initialized with null data pointer");
-    CreateBuffer(data, sizeof(data), BufferType::Static);
+    CreateBuffer(data, size, BufferType::Static);
 }
 
 Engine::OpenGLVertexBuffer::OpenGLVertexBuffer(const std::initializer_list<float> &vertices)

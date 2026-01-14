@@ -9,7 +9,7 @@ class OpenGLIndexBuffer : public IndexBuffer
 {
 public:
     OpenGLIndexBuffer(size_t size);
-    OpenGLIndexBuffer(const void *data);
+    OpenGLIndexBuffer(const void *data, size_t size);
     OpenGLIndexBuffer(const std::initializer_list<uint32_t> &indices);
     virtual ~OpenGLIndexBuffer() override;
 

@@ -51,7 +51,7 @@ Engine::VertexLibrary::VertexLibrary()
     PROFILE_FUNCTION();
 
     auto &&CubeVAO = VertexArray::Create(
-        VertexBuffer::Create(g_CubeData.Positions),
+        VertexBuffer::Create(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, false, 3 * sizeof(float), (const void *)0}});
     AddVertex("Cube", CubeVAO);
 

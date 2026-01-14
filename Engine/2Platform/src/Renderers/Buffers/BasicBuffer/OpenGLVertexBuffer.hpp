@@ -9,7 +9,7 @@ class OpenGLVertexBuffer : public VertexBuffer
 {
 public:
     OpenGLVertexBuffer(size_t size);
-    OpenGLVertexBuffer(const void *data);
+    OpenGLVertexBuffer(const void *data, size_t size);
     OpenGLVertexBuffer(const std::initializer_list<float> &vertices);
     virtual ~OpenGLVertexBuffer() override;
 

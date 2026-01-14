@@ -8,12 +8,12 @@ Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(size_t size) : IndexBuffer(static_c
     CreateBuffer(nullptr, size, BufferType::Dynamic);
 }
 
-Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(const void *data)
-    : IndexBuffer(static_cast<int>(sizeof(data) / sizeof(uint32_t)))
+Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(const void *data, size_t size)
+    : IndexBuffer(static_cast<int>(size / sizeof(uint32_t)))
 {
     if (!data)
         LOG_ENGINE_ASSERT("OpenGLIndexBuffer initialized with null data pointer");
-    CreateBuffer(data, sizeof(data), BufferType::Static);
+    CreateBuffer(data, size, BufferType::Static);
 }
 
 Engine::OpenGLIndexBuffer::OpenGLIndexBuffer(const std::initializer_list<uint32_t> &indices)
