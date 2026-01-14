@@ -13,6 +13,7 @@ public:
     ~PhysicSystem();
 
 public:
+    void UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform);
     void Update(float deltaTime) { m_DynamicsWorld->stepSimulation(deltaTime); }
     void AddCube(TransformComponent *transform, RigidBodyComponent *rigidBody);
 

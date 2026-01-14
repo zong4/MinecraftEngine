@@ -50,6 +50,14 @@ void Engine::Scene::Update(float deltaTime)
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
     }
 
+    // Sync RigidBodies with TransformComponents
+    auto &&view = m_Registry.view<TransformComponent, RigidBodyComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, rigidBody] = view.get<TransformComponent, RigidBodyComponent>(entity);
+        m_PhysicSystem.UpdateRigidBody(rigidBody, transform);
+    }
+
     // Update physics
     m_PhysicSystem.Update(deltaTime);
     auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
