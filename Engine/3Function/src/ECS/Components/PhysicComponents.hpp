@@ -27,11 +27,6 @@ public:
     }
     ~RigidBodyComponent()
     {
-        if (Body)
-        {
-            delete Body->getMotionState();
-            delete Body;
-        }
         if (Shape)
             delete Shape;
     }

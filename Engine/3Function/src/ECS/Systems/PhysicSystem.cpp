@@ -12,7 +12,23 @@ Engine::PhysicSystem::PhysicSystem()
 
 Engine::PhysicSystem::~PhysicSystem()
 {
+    if (!m_DynamicsWorld)
+        return;
+
+    for (int i = m_DynamicsWorld->getNumCollisionObjects() - 1; i >= 0; --i)
+    {
+        btCollisionObject* obj = m_DynamicsWorld->getCollisionObjectArray()[i];
+        btRigidBody* body = btRigidBody::upcast(obj);
+        if (body)
+        {
+            delete body->getMotionState();
+            m_DynamicsWorld->removeRigidBody(body);
+            delete body;
+        }
+    }
+
     delete m_DynamicsWorld;
+    m_DynamicsWorld = nullptr;
     delete m_Solver;
     delete m_Broadphase;
     delete m_Dispatcher;
