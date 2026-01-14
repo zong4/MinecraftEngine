@@ -14,7 +14,7 @@ public:
     ~LayerStack();
 
     // Getters
-    std::shared_ptr<Layer> GetImGuiLayer() const { return m_Layers.back(); } // ImGuiLayer is always the last layer
+    std::shared_ptr<Layer> GetTopLayer() const;
 
     // Setters
     void PushLayer(const std::shared_ptr<Layer> &layer);

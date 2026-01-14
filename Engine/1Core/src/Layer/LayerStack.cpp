@@ -9,6 +9,16 @@ Engine::LayerStack::~LayerStack()
     m_Layers.clear();
 }
 
+std::shared_ptr<Engine::Layer> Engine::LayerStack::GetTopLayer() const
+{
+    if (m_Layers.empty())
+    {
+        LOG_ENGINE_WARN("LayerStack is empty when getting top layer.");
+        return nullptr;
+    }
+    return m_Layers.back();
+}
+
 void Engine::LayerStack::PushLayer(const std::shared_ptr<Layer> &layer)
 {
     m_Layers.emplace_back(layer);
