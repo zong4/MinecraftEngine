@@ -83,7 +83,7 @@ Engine::TextureLibrary::TextureLibrary()
     AddTexture("DefaultTexture", Texture2D::WhiteTexture());
     AddTexture("DefaultCubeMap", TextureCube::WhiteTexture());
 
-    std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resources/Images/");
+    std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resources/Textures/");
     if (!std::filesystem::exists(path))
     {
         LOG_ENGINE_ASSERT("Texture directory does not exist: " + path.string());
