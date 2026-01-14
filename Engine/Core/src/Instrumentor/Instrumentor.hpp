@@ -4,6 +4,9 @@
 #include <fstream>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <vector>
 
 namespace Engine
 {

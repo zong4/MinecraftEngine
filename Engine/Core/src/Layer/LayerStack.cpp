@@ -1,7 +1,6 @@
 #include "LayerStack.hpp"
 
 #include "Logger/Logger.hpp"
-#include <algorithm>
 
 Engine::LayerStack::~LayerStack()
 {

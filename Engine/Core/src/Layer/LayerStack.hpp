@@ -2,6 +2,7 @@
 
 #include "Layer.hpp"
 #include <vector>
+#include <algorithm>
 
 namespace Engine
 {
