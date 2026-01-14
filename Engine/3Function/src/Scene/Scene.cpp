@@ -2,16 +2,8 @@
 
 Engine::Scene::~Scene()
 {
-    // World cleanup
     m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
     m_Registry.clear();
-
-    // Physics cleanup
-    delete m_DynamicsWorld;
-    delete m_Solver;
-    delete m_Broadphase;
-    delete m_Dispatcher;
-    delete m_CollisionConfiguration;
 }
 
 Engine::Entity Engine::Scene::GetEntityByName(const std::string &name)
@@ -59,7 +51,7 @@ void Engine::Scene::Update(float deltaTime)
     }
 
     // Update physics
-    m_DynamicsWorld->stepSimulation(deltaTime, 10);
+    m_PhysicSystem.Update(deltaTime);
     auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
     for (auto &&entity : rigibodyView)
     {
@@ -141,29 +133,7 @@ Engine::Entity Engine::Scene::AddCube(const std::string &name, const TransformCo
     entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
     entity.AddComponent<MaterialComponent>(materialComponent);
     entity.AddComponent<RigidBodyComponent>(rigidBodyComponent);
-    auto &&rigidBody = entity.GetComponent<RigidBodyComponent>();
-
-    // Transform
-    btTransform btTransform;
-    btTransform.setIdentity();
-    btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
-    btDefaultMotionState *motionState = new btDefaultMotionState(btTransform);
-
-    // Shape
-    btVector3 inertia(0, 0, 0);
-    rigidBody->Shape =
-        new btBoxShape(btVector3(0.5f * transform.Scale.x, 0.5f * transform.Scale.y, 0.5f * transform.Scale.z));
-    if (rigidBody->Mass != 0)
-        rigidBody->Shape->calculateLocalInertia(rigidBody->Mass, inertia);
-
-    // Rigid body info
-    btRigidBody::btRigidBodyConstructionInfo rbInfo(rigidBody->Mass, motionState, rigidBody->Shape, inertia);
-    rigidBody->Body = new btRigidBody(rbInfo);
-    rigidBody->Body->setActivationState(DISABLE_DEACTIVATION);
-    rigidBody->Body->setGravity(btVector3(0, -9.81f, 0));
-
-    // Add to world
-    m_DynamicsWorld->addRigidBody(rigidBody->Body);
+    m_PhysicSystem.AddCube(entity.GetComponent<TransformComponent>(), entity.GetComponent<RigidBodyComponent>());
     return entity;
 }
 

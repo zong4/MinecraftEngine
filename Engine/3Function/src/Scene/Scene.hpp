@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../EC/Components/CameraComponent.hpp"
-#include "../EC/Components/LabelComponent.hpp"
-#include "../EC/Components/LightComponent.hpp"
-#include "../EC/Components/MaterialComponent.hpp"
-#include "../EC/Components/NativeScriptComponent.hpp"
-#include "../EC/Components/PhysicComponents.hpp"
-#include "../EC/Components/RelationshipComponent.hpp"
-#include "../EC/Components/RendererComponents.hpp"
-#include "../EC/Components/TransformComponent.hpp"
+#include "../ECS/Components/CameraComponent.hpp"
+#include "../ECS/Components/LabelComponent.hpp"
+#include "../ECS/Components/LightComponent.hpp"
+#include "../ECS/Components/MaterialComponent.hpp"
+#include "../ECS/Components/NativeScriptComponent.hpp"
+#include "../ECS/Components/RelationshipComponent.hpp"
+#include "../ECS/Components/RendererComponents.hpp"
+#include "../ECS/Components/TransformComponent.hpp"
+#include "../ECS/System/PhysicSystem.hpp"
 #include "../Renderers/ParticleSystem/ParticleSystem.hpp"
 
 namespace Engine
@@ -61,13 +61,8 @@ private:
     Entity m_MainCamera;
     std::vector<Entity> m_DeletedEntities = {};
 
-    // Physics
-    btDefaultCollisionConfiguration *m_CollisionConfiguration = new btDefaultCollisionConfiguration();
-    btCollisionDispatcher *m_Dispatcher = new btCollisionDispatcher(m_CollisionConfiguration);
-    btBroadphaseInterface *m_Broadphase = new btDbvtBroadphase();
-    btSequentialImpulseConstraintSolver *m_Solver = new btSequentialImpulseConstraintSolver();
-    btDiscreteDynamicsWorld *m_DynamicsWorld =
-        new btDiscreteDynamicsWorld(m_Dispatcher, m_Broadphase, m_Solver, m_CollisionConfiguration);
+    // Systems
+    PhysicSystem m_PhysicSystem;
 
 private:
     void DeleteEntityReal(const Entity &entity);
