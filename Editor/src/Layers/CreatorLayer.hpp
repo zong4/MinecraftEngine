@@ -9,7 +9,6 @@ enum class SandboxMode
 {
     Edit = 0,
     Play = 1,
-    Pause = 2
 };
 
 class CreatorLayer : public Engine::Layer
@@ -30,7 +29,6 @@ private:
     std::shared_ptr<Engine::Window> m_Window;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;
-    std::shared_ptr<Engine::Scene> m_OriginalScene;
 };
 
 } // namespace Editor

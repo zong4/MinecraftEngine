@@ -27,8 +27,11 @@ public:
             return Instance;
         };
         DestroyScript = [this]() {
-            Instance->OnDestroy();
-            Instance.reset();
+            if (Instance)
+            {
+                Instance->OnDestroy();
+                Instance.reset();
+            }
         };
     }
 };

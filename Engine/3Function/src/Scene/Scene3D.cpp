@@ -36,22 +36,22 @@ void Engine::Scene3D::Render(const Entity &camera)
     RenderSkybox();
     RenderColorID();
 
-    // Ray tracing
-    if (!m_RayTracingRunning.exchange(true))
-    {
-        std::thread([this, camera] {
-            std::vector<Entity> entities;
-            auto &&registry = this->GetRegistry();
-            auto &&view = registry.view<TransformComponent, MeshRendererComponent>();
-            for (auto &&entity : view)
-            {
-                entities.push_back(Entity{entity, &registry});
-            }
-            std::vector<glm::vec4> tempBuffer;
-            Engine::RayTracing::RenderScene(camera, entities, 100, 1, tempBuffer);
-            m_RayTracingRunning = false;
-        }).detach();
-    }
+    // // Ray tracing
+    // if (!m_RayTracingRunning.exchange(true))
+    // {
+    //     std::thread([this, camera] {
+    //         std::vector<Entity> entities;
+    //         auto &&registry = this->GetRegistry();
+    //         auto &&view = registry.view<TransformComponent, MeshRendererComponent>();
+    //         for (auto &&entity : view)
+    //         {
+    //             entities.push_back(Entity{entity, &registry});
+    //         }
+    //         std::vector<glm::vec4> tempBuffer;
+    //         Engine::RayTracing::RenderScene(camera, entities, 100, 1, tempBuffer);
+    //         m_RayTracingRunning = false;
+    //     }).detach();
+    // }
 
     // Particle systems
     for (int i = 0; i < 10; ++i)

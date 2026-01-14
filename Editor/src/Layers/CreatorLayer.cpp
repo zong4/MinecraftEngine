@@ -16,10 +16,19 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    if (Engine::Input::GetInstance().IsKeyPressed(KEY_SPACE))
-        m_Mode = SandboxMode::Play;
-    else if (Engine::Input::GetInstance().IsKeyPressed(KEY_ESCAPE))
-        m_Mode = SandboxMode::Edit;
+    if (Engine::Input::GetInstance().IsKeyReleased(KEY_SPACE))
+    {
+        m_Mode = (m_Mode == SandboxMode::Edit) ? SandboxMode::Play : SandboxMode::Edit;
+    }
+
+    if (Engine::Input::GetInstance().IsKeyReleased(KEY_R))
+    {
+        if (m_Mode == SandboxMode::Edit)
+        {
+            m_ActiveScene = std::make_shared<Editor::ExampleScene>();
+            m_ActiveScene->Resize(m_ViewportWidth, m_ViewportHeight);
+        }
+    }
 
     switch (m_Mode)
     {
@@ -72,9 +81,10 @@ void Editor::CreatorLayer::OnImGuiRender()
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.09f, 0.10f, 0.65f));
     ImGui::Begin("Sandbox Layer Debug");
     if (m_Mode == SandboxMode::Edit)
-        ImGui::Text("Mode: Edit (Press SPACE to Play)");
+        ImGui::Text("Mode: Edit (Press SPACE to Switch to Play)");
     else
-        ImGui::Text("Mode: Play (Press ESCAPE to Edit)");
+        ImGui::Text("Mode: Play (Press SPACE to Switch to Edit)");
+    ImGui::Text("Press R to Reset Scene in Edit Mode");
 
     ImGuiIO &io = ImGui::GetIO();
     bool mouseBlock = io.WantCaptureMouse && ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
