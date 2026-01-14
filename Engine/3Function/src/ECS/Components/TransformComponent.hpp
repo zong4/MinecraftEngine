@@ -24,7 +24,7 @@ public:
     TransformComponent(const glm::vec3 &position = glm::vec3(0.0f),
                        const glm::vec3 &rotation = glm::vec3(0.0f), // Use euler to show and init
                        const glm::vec3 &scale = glm::vec3(1.0f))
-        : Position(position), Rotation(glm::degrees(rotation)), Scale(scale)
+        : Position(position), Rotation(glm::radians(rotation)), Scale(scale)
     {
     }
 
