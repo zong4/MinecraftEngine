@@ -13,7 +13,7 @@ Editor::Creator::Creator(const Engine::WindowProperty &props) : Application(prop
 std::unique_ptr<Engine::Application> Engine::CreateApplication()
 {
     nlohmann::json config;
-    std::ifstream configFile(std::string(PROJECT_ROOT) + "/Editor/config/Creator.json");
+    std::ifstream configFile(std::string(EDITOR_ROOT) + "/config/Creator.json");
     if (configFile.is_open())
     {
         configFile >> config;
@@ -35,7 +35,7 @@ std::unique_ptr<Engine::Application> Engine::CreateApplication()
 Editor::Creator::~Creator()
 {
     nlohmann::ordered_json config;
-    std::ofstream configFileOut(std::string(PROJECT_ROOT) + "/Editor/config/Creator.json");
+    std::ofstream configFileOut(std::string(EDITOR_ROOT) + "/config/Creator.json");
     if (configFileOut.is_open())
     {
         Engine::WindowProperty &props = m_Window->GetProperty();
