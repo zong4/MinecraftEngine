@@ -2,9 +2,9 @@
 
 Editor::WelcomeScene::WelcomeScene() : Engine::Scene3D("WelcomeScene")
 {
-    SetMainCamera(AddCamera("MainCamera",
-                            Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 8.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
-                            Engine::CameraComponent(Engine::CameraType::Perspective)));
+    Engine::Entity camera = AddCamera(
+        "MainCamera", Engine::TransformComponent(glm::vec3(0.0f, 10.0f, 20.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
+        Engine::CameraComponent(Engine::CameraType::Perspective));
 
     AddLight("DirectionalLight",
              Engine::TransformComponent(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(-45.0f, -45.0f, 0.0f)),

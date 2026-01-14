@@ -30,6 +30,7 @@ private:
     std::shared_ptr<Engine::Window> m_Window;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;
+    std::shared_ptr<Engine::Scene> m_OriginalScene;
 };
 
 } // namespace Editor

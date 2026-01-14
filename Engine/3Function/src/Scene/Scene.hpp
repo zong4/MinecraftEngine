@@ -32,6 +32,7 @@ public:
 
 public:
     void Update(float deltaTime);
+    void UpdateRuntime(float deltaTime);
     virtual void Render(const Entity &camera) = 0;
     virtual void Resize(int width, int height) = 0;
 

@@ -25,10 +25,12 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
     {
     case SandboxMode::Edit:
         m_EditorScene->Update(deltaTime);
+        m_EditorScene->UpdateRuntime(deltaTime);
         m_ActiveScene->Update(deltaTime);
         break;
     case SandboxMode::Play:
         m_ActiveScene->Update(deltaTime);
+        m_ActiveScene->UpdateRuntime(deltaTime);
         break;
     default:
         LOG_ENGINE_WARN("Unknown SandboxMode!");

@@ -49,6 +49,11 @@ void Engine::Scene::Update(float deltaTime)
         if (!relationship.Parent)
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
     }
+}
+
+void Engine::Scene::UpdateRuntime(float deltaTime)
+{
+    PROFILE_FUNCTION();
 
     // Sync RigidBodies with TransformComponents
     auto &&view = m_Registry.view<TransformComponent, RigidBodyComponent>();
