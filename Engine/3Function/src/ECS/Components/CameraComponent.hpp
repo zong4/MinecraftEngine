@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Physics/Ray/Ray.hpp"
+#include "../../Physic/Ray/Ray.hpp"
 #include <Platform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

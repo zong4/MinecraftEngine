@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Physics/BoundingBox.hpp"
+#include "../../Physic/Collider/BoundingBox.hpp"
 #include <btBulletDynamicsCommon.h>
 
 namespace Engine
@@ -23,6 +23,11 @@ struct RigidBodyComponent
         if (Shape)
             delete Shape;
     }
+};
+
+struct ColliderComponent
+{
+    BoundingBox BBox;
 };
 
 } // namespace Engine

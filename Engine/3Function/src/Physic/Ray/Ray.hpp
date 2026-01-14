@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../ECS/Entity/Entity.hpp"
-#include "../BoundingBox.hpp"
+#include "../Collider/BoundingBox.hpp"
 
 namespace Engine
 {

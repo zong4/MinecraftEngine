@@ -1,7 +1,7 @@
 #include "BVH.hpp"
 
-#include "../Renderers/Librarys/ShaderLibrary.hpp"
-#include "../Renderers/Librarys/VertexLibrary.hpp"
+#include "../../Renderer/Librarys/ShaderLibrary.hpp"
+#include "../../Renderer/Librarys/VertexLibrary.hpp"
 
 Engine::BVH::BVH(const std::shared_ptr<Scene> &scene)
 {

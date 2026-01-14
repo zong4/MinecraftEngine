@@ -1,8 +1,8 @@
 #include "Window.hpp"
 
 #include "../ImGuiLayer/ImGuiLayer.hpp"
-#include "../Renderers/RendererCommand.hpp"
-#include "../Renderers/RendererProperty.hpp"
+#include "../Renderer/RendererCommand.hpp"
+#include "../Renderer/RendererProperty.hpp"
 #include "OpenGLWindow.hpp"
 #include <GLFW/glfw3.h>
 
@@ -47,7 +47,8 @@ void Engine::Window::Render()
 {
     PROFILE_FUNCTION();
 
-    std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetTopLayer())->BeginRenderImGui(); // ImGuiLayer is always the top layer
+    std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetTopLayer())
+        ->BeginRenderImGui(); // ImGuiLayer is always the top layer
     m_LayerStack.Render();
     std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetTopLayer())->EndRenderImGui();
     glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));

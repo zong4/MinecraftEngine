@@ -1,8 +1,8 @@
 #include "Scene2D.hpp"
 
-#include "../Renderers/Librarys/ShaderLibrary.hpp"
-#include "../Renderers/Librarys/UniformLibrary.hpp"
-#include "../Renderers/Librarys/VertexLibrary.hpp"
+#include "../Renderer/Librarys/ShaderLibrary.hpp"
+#include "../Renderer/Librarys/UniformLibrary.hpp"
+#include "../Renderer/Librarys/VertexLibrary.hpp"
 
 void Engine::Scene2D::Render(const Entity &camera)
 {

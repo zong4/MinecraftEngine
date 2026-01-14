@@ -1,6 +1,6 @@
 ﻿#include "ImGuiLayer.hpp"
 
-#include "../Renderers/RendererProperty.hpp"
+#include "../Renderer/RendererProperty.hpp"
 #include "OpenGLImGuiLayer.hpp"
 #include <GLFW/glfw3.h>
 #include <imgui.h>

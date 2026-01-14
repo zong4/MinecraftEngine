@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../Physics/BoundingBox.hpp"
-#include "../../Renderers/Librarys/TextureLibrary.hpp"
-#include "../../Renderers/Librarys/VertexLibrary.hpp"
+#include "../../Physic/Collider/BoundingBox.hpp"
+#include "../../Renderer/Librarys/TextureLibrary.hpp"
+#include "../../Renderer/Librarys/VertexLibrary.hpp"
 
 namespace Engine
 {

@@ -1,10 +1,10 @@
 #include "Scene3D.hpp"
 
-#include "../Physics/Ray/RayTracing.hpp"
-#include "../Renderers/Librarys/ShaderLibrary.hpp"
-#include "../Renderers/Librarys/UniformLibrary.hpp"
-#include "../Renderers/Librarys/VertexLibrary.hpp"
-#include "../Renderers/Material/MaterialLibrary.hpp"
+#include "../Physic/Ray/RayTracing.hpp"
+#include "../Renderer/Librarys/ShaderLibrary.hpp"
+#include "../Renderer/Librarys/UniformLibrary.hpp"
+#include "../Renderer/Librarys/VertexLibrary.hpp"
+#include "../Renderer/Material/MaterialLibrary.hpp"
 
 Engine::Scene3D::Scene3D(const std::string &name) : Scene(name) {}
 
