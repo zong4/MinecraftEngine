@@ -21,6 +21,10 @@ protected:
 private:
     int m_CubesCount = 0;
 
+    // Skybox
+    std::shared_ptr<TextureCube> m_SkyboxTexture =
+        TextureLibrary::GetInstance().GetTextureCube("Skybox");
+
     // Ray tracing
     std::atomic<bool> m_RayTracingRunning = false;
     std::mutex m_RTMutex;

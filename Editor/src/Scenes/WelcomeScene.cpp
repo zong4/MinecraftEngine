@@ -10,8 +10,6 @@ Editor::WelcomeScene::WelcomeScene() : Engine::Scene3D("WelcomeScene")
              Engine::TransformComponent(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(-45.0f, -45.0f, 0.0f)),
              Engine::LightComponent(Engine::LightType::Directional));
 
-    AddSkybox("Skybox", Engine::SkyboxComponent());
-
     MCEngineLogo();
 }
 

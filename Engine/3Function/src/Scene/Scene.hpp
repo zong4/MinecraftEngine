@@ -5,7 +5,6 @@
 #include "../ECS/Components/LightComponent.hpp"
 #include "../ECS/Components/MaterialComponent.hpp"
 #include "../ECS/Components/RendererComponents.hpp"
-#include "../ECS/Components/SkyboxComponent.hpp"
 #include "../Renderers/ParticleSystem/ParticleSystem.hpp"
 
 namespace Engine
@@ -43,7 +42,6 @@ public:
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
-    Entity AddSkybox(const std::string &name, const SkyboxComponent &skyboxComponent);
 
 protected:
     std::string m_Name;
@@ -57,7 +55,7 @@ protected:
 private:
     Entity m_MainCamera;
     std::vector<Entity> m_DeletedEntities = {};
-
+    
 private:
     void DeleteEntityReal(const Entity &entity);
 };

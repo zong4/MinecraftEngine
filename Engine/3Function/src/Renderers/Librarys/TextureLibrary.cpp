@@ -81,7 +81,7 @@ Engine::TextureLibrary::TextureLibrary()
     PROFILE_FUNCTION();
 
     AddTexture("DefaultTexture", Texture2D::WhiteTexture());
-    AddTexture("DefaultCubeMap", TextureCube::WhiteTexture());
+    AddTexture("DefaultSkybox", TextureCube::WhiteTexture());
 
     std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resources/Textures/");
     if (!std::filesystem::exists(path))

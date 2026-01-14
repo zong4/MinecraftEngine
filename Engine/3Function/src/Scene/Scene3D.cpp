@@ -240,16 +240,8 @@ void Engine::Scene3D::Render3D(const Entity &camera) const
     }
 
     // Skybox
-    auto &&view = m_Registry.view<SkyboxComponent>();
-    if (!view.empty())
-    {
-        if (view.size() > 1)
-            LOG_ENGINE_WARN("Multiple SkyboxComponents detected! Only the first one will be rendered.");
-
-        auto &&skybox = m_Registry.get<SkyboxComponent>(view.front());
-        shader->SetUniformInt("u_Skybox", lightIndex);
-        skybox.GetTextureCube()->Active(lightIndex);
-    }
+    shader->SetUniformInt("u_Skybox", lightIndex);
+    m_SkyboxTexture->Active(lightIndex);
 
     TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
     shader->SetUniformInt("u_Texture", lightIndex + 1);
@@ -268,17 +260,9 @@ void Engine::Scene3D::RenderSkybox() const
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");
     shader->Bind();
 
-    auto &&view = m_Registry.view<Engine::SkyboxComponent>();
-    if (!view.empty())
-    {
-        if (view.size() > 1)
-            LOG_ENGINE_WARN("Multiple SkyboxComponents detected! Only the first one will be rendered.");
-
-        auto &&skybox = m_Registry.get<Engine::SkyboxComponent>(view.front());
-        shader->SetUniformInt("u_Skybox", 0);
-        skybox.GetTextureCube()->Active(0);
-        Engine::VertexLibrary::GetInstance().GetVertex("Cube")->Render();
-    }
+    shader->SetUniformInt("u_Skybox", 0);
+    m_SkyboxTexture->Active(0);
+    Engine::VertexLibrary::GetInstance().GetVertex("Cube")->Render();
 
     shader->Unbind();
     Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::Less);

@@ -133,13 +133,6 @@ Engine::Entity Engine::Scene::AddLight(const std::string &name, const TransformC
     return entity;
 }
 
-Engine::Entity Engine::Scene::AddSkybox(const std::string &name, const SkyboxComponent &skyboxComponent)
-{
-    Entity entity = AddEmptyEntity(name);
-    entity.AddComponent<SkyboxComponent>(skyboxComponent);
-    return entity;
-}
-
 void Engine::Scene::DeleteEntityReal(const Entity &entity)
 {
     if (!entity)
