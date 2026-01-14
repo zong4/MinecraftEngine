@@ -8,6 +8,7 @@ void Engine::RendererCommand::Init()
     PROFILE_FUNCTION();
 
     EnableDepthTest();
+    SetDepthTestFunction(DepthTestFunction::Less);
     EnableBlend();
     EnableFaceCulling();
     EnableMultisampling();
@@ -103,10 +104,25 @@ void Engine::RendererCommand::EnableDepthTest()
     {
     case Engine::RendererAPI::OpenGL:
         glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
         break;
     case Engine::RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan EnableDepthTest is not implemented yet");
+        break;
+    default:
+        LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        break;
+    }
+}
+
+void Engine::RendererCommand::DisableDepthTest()
+{
+    switch (Engine::RendererProperty::GetInstance().GetAPI())
+    {
+    case Engine::RendererAPI::OpenGL:
+        glDisable(GL_DEPTH_TEST);
+        break;
+    case Engine::RendererAPI::Vulkan:
+        LOG_ENGINE_ASSERT("Vulkan DisableDepthTest is not implemented yet");
         break;
     default:
         LOG_ENGINE_ASSERT("Unknown RendererAPI");

@@ -30,6 +30,7 @@ public:
     static void ClearDepthBuffer();
 
     static void EnableDepthTest();
+    static void DisableDepthTest();
     static void SetDepthTestFunction(DepthTestFunction function);
 
     static void EnableBlend();
