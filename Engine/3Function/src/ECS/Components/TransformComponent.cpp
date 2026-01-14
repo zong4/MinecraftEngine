@@ -2,13 +2,6 @@
 
 #include "RelationshipComponent.hpp"
 
-Engine::TransformComponent::TransformComponent(const glm::vec3 &position, const glm::vec3 &rotation,
-                                               const glm::vec3 &scale)
-    : Position(position), Scale(scale)
-{
-    SetRotationEuler(rotation);
-}
-
 const glm::quat &Engine::TransformComponent::GetRotationQuat(TransformSpace space) const
 {
     if (space == TransformSpace::Local)
@@ -49,7 +42,7 @@ void Engine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTr
 
     // Compute local transformation matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), Position);
-    m_RotationQuat = glm::quat(m_RotationRadians);
+    m_RotationQuat = glm::quat(Rotation);
     glm::mat4 rotationMatrix = glm::mat4_cast(m_RotationQuat);
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), Scale);
     glm::mat4 localTransformMatrix = translationMatrix * rotationMatrix * scaleMatrix;

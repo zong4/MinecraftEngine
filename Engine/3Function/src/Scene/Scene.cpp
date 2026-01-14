@@ -70,7 +70,7 @@ void Engine::Scene::Update(float deltaTime)
 
         glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
                            btTransform.getRotation().getY(), btTransform.getRotation().getZ());
-        transform.SetRotationRadians(glm::eulerAngles(rotation));
+        transform.Rotation = glm::eulerAngles(rotation);
     }
 
     // Transform the BoundingBox to world space
