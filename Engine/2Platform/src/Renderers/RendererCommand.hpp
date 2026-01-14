@@ -5,6 +5,13 @@
 namespace Engine
 {
 
+enum class CullingFace
+{
+    None = 0,
+    Front = 1,
+    Back = 2
+};
+
 enum class DepthTestFunction
 {
     Less = 0,
@@ -24,30 +31,23 @@ public:
     static void GetError(const std::string &functionName);
 
 public:
+    // Window
     static void SetClearColor(const glm::vec4 &color);
     static void Clear();
     static void ClearColorBuffer();
     static void ClearDepthBuffer();
-
-    static void EnableDepthTest();
-    static void DisableDepthTest();
-    static void SetDepthTestFunction(DepthTestFunction function);
-
-    static void EnableBlend();
-    static void DisableBlend();
-
-    static void EnableFaceCulling();
-    static void DisableFaceCulling();
-    static void CullFrontFace();
-    static void CullBackFace();
-
-    static void EnableMultisampling();
-    static void DisableMultisampling();
-
-    static void EnableGammaCorrection();
-    static void DisableGammaCorrection();
-
     static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+
+    // Preformance
+    static void SetFaceCulling(CullingFace face);
+    static void SetMultisampling(bool enabled);
+
+    // Post-processing
+    static void SetDepthTest(bool enabled);
+    static void SetDepthWrite(bool enabled);
+    static void SetDepthTestFunction(DepthTestFunction function);
+    static void SetBlend(bool enabled);
+    static void SetGammaCorrection(bool enabled);
 };
 
 } // namespace Engine

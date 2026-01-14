@@ -7,12 +7,16 @@ void Engine::RendererCommand::Init()
 {
     PROFILE_FUNCTION();
 
-    EnableDepthTest();
+    // Preformance
+    SetMultisampling(true);
+    SetFaceCulling(CullingFace::Back);
+
+    // Post-processing
+    SetDepthTest(true);
     SetDepthTestFunction(DepthTestFunction::Less);
-    EnableBlend();
-    EnableFaceCulling();
-    EnableMultisampling();
-    EnableGammaCorrection();
+    SetDepthWrite(true);
+    SetBlend(true);
+    SetGammaCorrection(true);
 }
 
 void Engine::RendererCommand::GetError(const std::string &functionName)
@@ -98,15 +102,30 @@ void Engine::RendererCommand::ClearDepthBuffer()
     }
 }
 
-void Engine::RendererCommand::EnableDepthTest()
+void Engine::RendererCommand::SetFaceCulling(CullingFace face)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
     case Engine::RendererAPI::OpenGL:
-        glEnable(GL_DEPTH_TEST);
+        switch (face)
+        {
+        case CullingFace::None:
+            glDisable(GL_CULL_FACE);
+        case CullingFace::Front:
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_FRONT);
+            break;
+        case CullingFace::Back:
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+            break;
+        default:
+            LOG_ENGINE_ASSERT("Unknown CullingFace");
+            break;
+        }
         break;
     case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan EnableDepthTest is not implemented yet");
+        LOG_ENGINE_ASSERT("Vulkan EnableFaceCulling is not implemented yet");
         break;
     default:
         LOG_ENGINE_ASSERT("Unknown RendererAPI");
@@ -114,15 +133,31 @@ void Engine::RendererCommand::EnableDepthTest()
     }
 }
 
-void Engine::RendererCommand::DisableDepthTest()
+void Engine::RendererCommand::SetDepthTest(bool enabled)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
     case Engine::RendererAPI::OpenGL:
-        glDisable(GL_DEPTH_TEST);
+        enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
         break;
     case Engine::RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan DisableDepthTest is not implemented yet");
+        break;
+    default:
+        LOG_ENGINE_ASSERT("Unknown RendererAPI");
+        break;
+    }
+}
+
+void Engine::RendererCommand::SetDepthWrite(bool enabled)
+{
+    switch (Engine::RendererProperty::GetInstance().GetAPI())
+    {
+    case Engine::RendererAPI::OpenGL:
+        glDepthMask(enabled ? GL_TRUE : GL_FALSE);
+        break;
+    case Engine::RendererAPI::Vulkan:
+        LOG_ENGINE_ASSERT("Vulkan SetDepthWrite is not implemented yet");
         break;
     default:
         LOG_ENGINE_ASSERT("Unknown RendererAPI");
@@ -252,13 +287,20 @@ void Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction function)
     }
 }
 
-void Engine::RendererCommand::EnableBlend()
+void Engine::RendererCommand::SetBlend(bool enabled)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
     case Engine::RendererAPI::OpenGL:
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        if (enabled)
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        else
+        {
+            glDisable(GL_BLEND);
+        }
         break;
     case Engine::RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan EnableBlend is not implemented yet");
@@ -269,124 +311,12 @@ void Engine::RendererCommand::EnableBlend()
     }
 }
 
-void Engine::RendererCommand::DisableBlend()
+void Engine::RendererCommand::SetGammaCorrection(bool enabled)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
     case Engine::RendererAPI::OpenGL:
-        glDisable(GL_BLEND);
-        break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan DisableBlend is not implemented yet");
-        break;
-    default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
-        break;
-    }
-}
-
-void Engine::RendererCommand::EnableFaceCulling()
-{
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
-    {
-    case Engine::RendererAPI::OpenGL:
-        glEnable(GL_CULL_FACE);
-        break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan EnableFaceCulling is not implemented yet");
-        break;
-    default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
-        break;
-    }
-}
-
-void Engine::RendererCommand::DisableFaceCulling()
-{
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
-    {
-    case Engine::RendererAPI::OpenGL:
-        glDisable(GL_CULL_FACE);
-        break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan DisableFaceCulling is not implemented yet");
-        break;
-    default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
-        break;
-    }
-}
-
-void Engine::RendererCommand::CullFrontFace()
-{
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
-    {
-    case Engine::RendererAPI::OpenGL:
-        glCullFace(GL_FRONT);
-        break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan CullFrontFace is not implemented yet");
-        break;
-    default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
-        break;
-    }
-}
-
-void Engine::RendererCommand::CullBackFace()
-{
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
-    {
-    case Engine::RendererAPI::OpenGL:
-        glCullFace(GL_BACK);
-        break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan CullBackFace is not implemented yet");
-        break;
-    default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
-        break;
-    }
-}
-
-void Engine::RendererCommand::EnableMultisampling()
-{
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
-    {
-    case Engine::RendererAPI::OpenGL:
-        glEnable(GL_MULTISAMPLE);
-        break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan EnableMultisampling is not implemented yet");
-        break;
-    default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
-        break;
-    }
-}
-
-void Engine::RendererCommand::DisableMultisampling()
-{
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
-    {
-    case Engine::RendererAPI::OpenGL:
-        glDisable(GL_MULTISAMPLE);
-        break;
-    case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan DisableMultisampling is not implemented yet");
-        break;
-    default:
-        LOG_ENGINE_ASSERT("Unknown RendererAPI");
-        break;
-    }
-}
-
-void Engine::RendererCommand::EnableGammaCorrection()
-{
-    switch (Engine::RendererProperty::GetInstance().GetAPI())
-    {
-    case Engine::RendererAPI::OpenGL:
-        glEnable(GL_FRAMEBUFFER_SRGB);
+        enabled ? glEnable(GL_FRAMEBUFFER_SRGB) : glDisable(GL_FRAMEBUFFER_SRGB);
         break;
     case Engine::RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan EnableGammaCorrection is not implemented yet");
@@ -397,15 +327,15 @@ void Engine::RendererCommand::EnableGammaCorrection()
     }
 }
 
-void Engine::RendererCommand::DisableGammaCorrection()
+void Engine::RendererCommand::SetMultisampling(bool enabled)
 {
     switch (Engine::RendererProperty::GetInstance().GetAPI())
     {
     case Engine::RendererAPI::OpenGL:
-        glDisable(GL_FRAMEBUFFER_SRGB);
+        enabled ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
         break;
     case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("Vulkan DisableGammaCorrection is not implemented yet");
+        LOG_ENGINE_ASSERT("Vulkan EnableMultisampling is not implemented yet");
         break;
     default:
         LOG_ENGINE_ASSERT("Unknown RendererAPI");

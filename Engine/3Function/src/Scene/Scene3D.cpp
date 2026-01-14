@@ -97,7 +97,7 @@ void Engine::Scene3D::RenderColorID() const
     PROFILE_FUNCTION();
 
     m_ColorIDFrameBuffer->Bind();
-    Engine::RendererCommand::Clear();
+    RendererCommand::Clear();
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
     shader->Bind();
 
@@ -161,7 +161,7 @@ void Engine::Scene3D::RenderShadowMap() const
 {
     PROFILE_FUNCTION();
 
-    RendererCommand::CullFrontFace();
+    RendererCommand::SetFaceCulling(CullingFace::Front);
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
     shader->Bind();
     auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
@@ -183,7 +183,7 @@ void Engine::Scene3D::RenderShadowMap() const
         light.ShadowMap->Unbind();
     }
     shader->Unbind();
-    RendererCommand::CullBackFace();
+    RendererCommand::SetFaceCulling(CullingFace::Back);
 }
 
 void Engine::Scene3D::Render3D(const Entity &camera) const
@@ -256,9 +256,9 @@ void Engine::Scene3D::RenderSkybox() const
 {
     PROFILE_FUNCTION();
 
-    Engine::RendererCommand::DisableFaceCulling();
-    Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::LessEqual);
-    Engine::RendererCommand::DisableDepthTest();
+    RendererCommand::SetFaceCulling(CullingFace::Front);
+    RendererCommand::SetDepthTestFunction(DepthTestFunction::LessEqual);
+    RendererCommand::SetDepthWrite(false);
     auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");
     shader->Bind();
 
@@ -267,7 +267,7 @@ void Engine::Scene3D::RenderSkybox() const
     Engine::VertexLibrary::GetInstance().GetVertex("Cube")->Render();
 
     shader->Unbind();
-    Engine::RendererCommand::EnableDepthTest();
-    Engine::RendererCommand::SetDepthTestFunction(DepthTestFunction::Less);
-    Engine::RendererCommand::EnableFaceCulling();
+    RendererCommand::SetDepthWrite(true);
+    RendererCommand::SetDepthTestFunction(DepthTestFunction::Less);
+    RendererCommand::SetFaceCulling(CullingFace::Back);
 }
