@@ -106,8 +106,8 @@ void Editor::WelcomeScene::MCEngineLogo()
                     continue;
 
                 Engine::Entity cube =
-                    Add3DObject("Cube" + std::to_string(x) + std::to_string(y) + std::to_string(z),
-                                Engine::TransformComponent(glm::vec3(x - center, y - center, z - center)));
+                    AddCube("Cube" + std::to_string(x) + std::to_string(y) + std::to_string(z),
+                            Engine::TransformComponent(glm::vec3(x - center, y - center, z - center)));
                 Engine::RelationshipComponent::SetParentChild(cubes, cube);
             }
         }

@@ -1,6 +1,6 @@
 #include "Ray.hpp"
 
-#include "../../ECS/Components/RendererComponents.hpp"
+#include "../../EC/Components/RendererComponents.hpp"
 
 Engine::Ray::Ray(const glm::vec3 &origin, const glm::vec3 &direction)
     : m_Origin(origin), m_Direction(glm::normalize(direction))

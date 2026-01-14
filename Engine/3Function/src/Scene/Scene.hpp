@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../ECS/Components/CameraComponent.hpp"
-#include "../ECS/Components/LabelComponent.hpp"
-#include "../ECS/Components/LightComponent.hpp"
-#include "../ECS/Components/MaterialComponent.hpp"
-#include "../ECS/Components/NativeScriptComponent.hpp"
-#include "../ECS/Components/PhysicComponents.hpp"
-#include "../ECS/Components/RelationshipComponent.hpp"
-#include "../ECS/Components/RendererComponents.hpp"
-#include "../ECS/Components/TransformComponent.hpp"
+#include "../EC/Components/CameraComponent.hpp"
+#include "../EC/Components/LabelComponent.hpp"
+#include "../EC/Components/LightComponent.hpp"
+#include "../EC/Components/MaterialComponent.hpp"
+#include "../EC/Components/NativeScriptComponent.hpp"
+#include "../EC/Components/PhysicComponents.hpp"
+#include "../EC/Components/RelationshipComponent.hpp"
+#include "../EC/Components/RendererComponents.hpp"
+#include "../EC/Components/TransformComponent.hpp"
 #include "../Renderers/ParticleSystem/ParticleSystem.hpp"
 
 namespace Engine
@@ -38,12 +38,12 @@ public:
     // Entity management
     void DeleteEntity(const Entity &entity);
     Entity AddEmptyEntity(const std::string &name, const TransformComponent &transform = TransformComponent());
-    Entity Add2DObject(const std::string &name, const TransformComponent &transform,
-                       const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent());
-    Entity Add3DObject(const std::string &name, const TransformComponent &transform,
-                       const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
-                       const MaterialComponent &materialComponent = MaterialComponent(),
-                       const RigidBodyComponent &rigidBodyComponent = RigidBodyComponent());
+    Entity AddSquare(const std::string &name, const TransformComponent &transform,
+                     const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent());
+    Entity AddCube(const std::string &name, const TransformComponent &transform,
+                   const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
+                   const MaterialComponent &materialComponent = MaterialComponent(),
+                   const RigidBodyComponent &rigidBodyComponent = RigidBodyComponent());
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
@@ -60,7 +60,7 @@ protected:
 private:
     Entity m_MainCamera;
     std::vector<Entity> m_DeletedEntities = {};
-    btDiscreteDynamicsWorld *m_DynamicsWorld;
+    btDiscreteDynamicsWorld *m_DynamicsWorld = nullptr;
 
 private:
     void DeleteEntityReal(const Entity &entity);

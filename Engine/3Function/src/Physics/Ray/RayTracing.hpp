@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Algorithms/Random.hpp"
-#include "../../ECS/Entity/Entity.hpp"
+#include "../../EC/Entity/Entity.hpp"
 #include "../../Scene/Scene.hpp"
 
 namespace Engine

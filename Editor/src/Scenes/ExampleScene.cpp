@@ -16,5 +16,5 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     light.GetComponent<Engine::NativeScriptComponent>()->Bind<RotatingLight>(light);
 
     auto cube =
-        Add3DObject("Cube", Engine::TransformComponent(glm::vec3(-2.0f, 0.5f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+        AddCube("Cube", Engine::TransformComponent(glm::vec3(-2.0f, 0.5f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
 }

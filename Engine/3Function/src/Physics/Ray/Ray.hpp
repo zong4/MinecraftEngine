@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../ECS/Entity/Entity.hpp"
+#include "../../EC/Entity/Entity.hpp"
 #include "../BoundingBox.hpp"
 
 namespace Engine

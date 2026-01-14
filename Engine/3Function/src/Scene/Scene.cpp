@@ -55,24 +55,25 @@ void Engine::Scene::Update(float deltaTime)
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
     }
 
-    // Update physics
-    m_DynamicsWorld->stepSimulation(deltaTime, 10);
-    auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
-    for (auto &&entity : rigibodyView)
-    {
-        auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
-        btTransform btTransform;
-        rigibody.body->getMotionState()->getWorldTransform(btTransform);
+    // // Update physics
+    // m_DynamicsWorld->stepSimulation(deltaTime, 10);
+    // auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
+    // for (auto &&entity : rigibodyView)
+    // {
+    //     auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
+    //     btTransform btTransform;
+    //     rigibody.body->getMotionState()->getWorldTransform(btTransform);
 
-        glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
-                           btTransform.getOrigin().getZ());
-        transform.Position = position;
+    //     glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
+    //                        btTransform.getOrigin().getZ());
+    //     transform.Position = position;
 
-        glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
-                           btTransform.getRotation().getY(), btTransform.getRotation().getZ());
-        transform.Rotation = glm::eulerAngles(rotation);
-    }
+    //     glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
+    //                        btTransform.getRotation().getY(), btTransform.getRotation().getZ());
+    //     transform.Rotation = glm::eulerAngles(rotation);
+    // }
 
+    // todo:: check
     // Transform the BoundingBox to world space
     {
         auto &&spriteView = m_Registry.view<TransformComponent, SpriteRendererComponent>();
@@ -120,18 +121,18 @@ Engine::Entity Engine::Scene::AddEmptyEntity(const std::string &name, const Tran
     return entity;
 }
 
-Engine::Entity Engine::Scene::Add2DObject(const std::string &name, const TransformComponent &transform,
-                                          const SpriteRendererComponent &spriteRenderer)
+Engine::Entity Engine::Scene::AddSquare(const std::string &name, const TransformComponent &transform,
+                                        const SpriteRendererComponent &spriteRenderer)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<SpriteRendererComponent>(spriteRenderer);
     return entity;
 }
 
-Engine::Entity Engine::Scene::Add3DObject(const std::string &name, const TransformComponent &transform,
-                                          const MeshRendererComponent &meshRendererComponent,
-                                          const MaterialComponent &materialComponent,
-                                          const RigidBodyComponent &rigidBodyComponent)
+Engine::Entity Engine::Scene::AddCube(const std::string &name, const TransformComponent &transform,
+                                      const MeshRendererComponent &meshRendererComponent,
+                                      const MaterialComponent &materialComponent,
+                                      const RigidBodyComponent &rigidBodyComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
