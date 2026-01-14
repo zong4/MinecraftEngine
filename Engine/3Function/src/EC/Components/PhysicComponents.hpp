@@ -15,10 +15,13 @@ struct RigidBodyComponent
 
     ~RigidBodyComponent()
     {
+        if (Body)
+        {
+            delete Body->getMotionState();
+            delete Body;
+        }
         if (Shape)
             delete Shape;
-        if (Body)
-            delete Body;
     }
 };
 

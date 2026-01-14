@@ -43,7 +43,7 @@ public:
     Entity AddCube(const std::string &name, const TransformComponent &transform,
                    const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
                    const MaterialComponent &materialComponent = MaterialComponent(),
-                   RigidBodyComponent rigidBodyComponent = RigidBodyComponent());
+                   const RigidBodyComponent &rigidBodyComponent = RigidBodyComponent());
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
@@ -60,7 +60,14 @@ protected:
 private:
     Entity m_MainCamera;
     std::vector<Entity> m_DeletedEntities = {};
-    btDiscreteDynamicsWorld *m_DynamicsWorld = nullptr;
+
+    // Physics
+    btDefaultCollisionConfiguration *m_CollisionConfiguration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher *m_Dispatcher = new btCollisionDispatcher(m_CollisionConfiguration);
+    btBroadphaseInterface *m_Broadphase = new btDbvtBroadphase();
+    btSequentialImpulseConstraintSolver *m_Solver = new btSequentialImpulseConstraintSolver();
+    btDiscreteDynamicsWorld *m_DynamicsWorld =
+        new btDiscreteDynamicsWorld(m_Dispatcher, m_Broadphase, m_Solver, m_CollisionConfiguration);
 
 private:
     void DeleteEntityReal(const Entity &entity);

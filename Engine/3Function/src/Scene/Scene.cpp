@@ -8,7 +8,10 @@ Engine::Scene::~Scene()
 
     // Physics cleanup
     delete m_DynamicsWorld;
-    m_DynamicsWorld = nullptr;
+    delete m_Solver;
+    delete m_Broadphase;
+    delete m_Dispatcher;
+    delete m_CollisionConfiguration;
 }
 
 Engine::Entity Engine::Scene::GetEntityByName(const std::string &name)
@@ -55,23 +58,23 @@ void Engine::Scene::Update(float deltaTime)
             transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
     }
 
-    // // Update physics
-    // m_DynamicsWorld->stepSimulation(deltaTime, 10);
-    // auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
-    // for (auto &&entity : rigibodyView)
-    // {
-    //     auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
-    //     btTransform btTransform;
-    //     rigibody.body->getMotionState()->getWorldTransform(btTransform);
+    // Update physics
+    m_DynamicsWorld->stepSimulation(deltaTime, 10);
+    auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
+    for (auto &&entity : rigibodyView)
+    {
+        auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
+        btTransform btTransform;
+        rigibody.Body->getMotionState()->getWorldTransform(btTransform);
 
-    //     glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
-    //                        btTransform.getOrigin().getZ());
-    //     transform.Position = position;
+        glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
+                           btTransform.getOrigin().getZ());
+        transform.Position = position;
 
-    //     glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
-    //                        btTransform.getRotation().getY(), btTransform.getRotation().getZ());
-    //     transform.Rotation = glm::eulerAngles(rotation);
-    // }
+        glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
+                           btTransform.getRotation().getY(), btTransform.getRotation().getZ());
+        transform.Rotation = glm::eulerAngles(rotation);
+    }
 
     // todo:: check
     // Transform the BoundingBox to world space
@@ -131,34 +134,36 @@ Engine::Entity Engine::Scene::AddSquare(const std::string &name, const Transform
 
 Engine::Entity Engine::Scene::AddCube(const std::string &name, const TransformComponent &transform,
                                       const MeshRendererComponent &meshRendererComponent,
-                                      const MaterialComponent &materialComponent, RigidBodyComponent rigidBodyComponent)
+                                      const MaterialComponent &materialComponent,
+                                      const RigidBodyComponent &rigidBodyComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
     entity.AddComponent<MaterialComponent>(materialComponent);
-
-    // // Transform
-    // btTransform btTransform;
-    // btTransform.setIdentity();
-    // btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
-    // btDefaultMotionState *motionState = new btDefaultMotionState(btTransform);
-
-    // // Shape
-    // btVector3 inertia(0, 0, 0);
-    // rigidBodyComponent.Shape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
-    // if (rigidBodyComponent.Mass != 0)
-    //     rigidBodyComponent.Shape->calculateLocalInertia(rigidBodyComponent.Mass, inertia);
-
-    // // Rigid body info
-    // btRigidBody::btRigidBodyConstructionInfo rbInfo(rigidBodyComponent.Mass, motionState, rigidBodyComponent.Shape,
-    //                                                 inertia);
-    // rigidBodyComponent.Body = new btRigidBody(rbInfo);
-    // rigidBodyComponent.Body->setActivationState(DISABLE_DEACTIVATION);
-    // rigidBodyComponent.Body->setGravity(btVector3(0, -9.81f, 0));
-
-    // // Add to world
-    // m_DynamicsWorld->addRigidBody(rigidBodyComponent.Body);
     entity.AddComponent<RigidBodyComponent>(rigidBodyComponent);
+    auto &&rigidBody = entity.GetComponent<RigidBodyComponent>();
+
+    // Transform
+    btTransform btTransform;
+    btTransform.setIdentity();
+    btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
+    btDefaultMotionState *motionState = new btDefaultMotionState(btTransform);
+
+    // Shape
+    btVector3 inertia(0, 0, 0);
+    rigidBody->Shape =
+        new btBoxShape(btVector3(0.5f * transform.Scale.x, 0.5f * transform.Scale.y, 0.5f * transform.Scale.z));
+    if (rigidBody->Mass != 0)
+        rigidBody->Shape->calculateLocalInertia(rigidBody->Mass, inertia);
+
+    // Rigid body info
+    btRigidBody::btRigidBodyConstructionInfo rbInfo(rigidBody->Mass, motionState, rigidBody->Shape, inertia);
+    rigidBody->Body = new btRigidBody(rbInfo);
+    rigidBody->Body->setActivationState(DISABLE_DEACTIVATION);
+    rigidBody->Body->setGravity(btVector3(0, -9.81f, 0));
+
+    // Add to world
+    m_DynamicsWorld->addRigidBody(rigidBody->Body);
     return entity;
 }
 
