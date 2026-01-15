@@ -10,8 +10,6 @@ struct WindowProperty
     std::string Title;
     int Width;
     int Height;
-    int FbWidth;
-    int FbHeight;
     bool VSync;
 
 public:

@@ -15,18 +15,18 @@ class CreatorLayer : public Engine::Layer
 {
 
 public:
-    CreatorLayer(const std::shared_ptr<Engine::Window> &window);
+    CreatorLayer();
     ~CreatorLayer() override = default;
 
 public:
+    void OnEvent(Engine::Event &event) override;
     void OnUpdate(float deltaTime) override;
     void OnRender() override;
     void OnImGuiRender() override;
 
 private:
     SandboxMode m_Mode = SandboxMode::Edit;
-    int m_ViewportWidth = 0, m_ViewportHeight = 0;
-    std::shared_ptr<Engine::Window> m_Window;
+    int m_FbWidth, m_FbHeight;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;
 };

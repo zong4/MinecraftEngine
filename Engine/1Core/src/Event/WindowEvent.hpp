@@ -16,8 +16,8 @@ public:
 
     int GetWidth() const { return m_Width; }
     int GetHeight() const { return m_Height; }
-    int GetFramebufferWidth() const { return m_FbWidth; }
-    int GetFramebufferHeight() const { return m_FbHeight; }
+    int GetFbWidth() const { return m_FbWidth; }
+    int GetFbHeight() const { return m_FbHeight; }
 
     std::string ToString() const override
     {

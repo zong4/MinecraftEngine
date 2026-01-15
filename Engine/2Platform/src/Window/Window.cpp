@@ -66,11 +66,9 @@ void Engine::Window::SetCallbacks()
 
                                        // Framebuffer size
                                        RendererCommand::SetViewport(0, 0, fbWidth, fbHeight);
-                                       window->GetProperty().FbWidth = fbWidth;
-                                       window->GetProperty().FbHeight = fbHeight;
 
                                        // Window size
-                                        int width, height;
+                                       int width, height;
                                        glfwGetWindowSize(nativeWindow, &width, &height);
                                        window->GetProperty().Width = width;
                                        window->GetProperty().Height = height;

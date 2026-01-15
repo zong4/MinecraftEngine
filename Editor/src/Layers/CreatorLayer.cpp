@@ -5,11 +5,24 @@
 #include "Scripts/RotatingLight.hpp"
 #include <imgui.h>
 
-Editor::CreatorLayer::CreatorLayer(const std::shared_ptr<Engine::Window> &window)
-    : Engine::Layer("CreatorLayer"), m_Window(window)
+Editor::CreatorLayer::CreatorLayer() : Engine::Layer("CreatorLayer")
 {
     m_EditorScene = std::make_shared<Editor::EditorScene>();
     m_ActiveScene = std::make_shared<Editor::ExampleScene>();
+}
+
+void Editor::CreatorLayer::OnEvent(Engine::Event &event)
+{
+    PROFILE_FUNCTION();
+
+    Engine::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<Engine::WindowResizeEvent>([this](Engine::WindowResizeEvent &event) {
+        m_FbWidth = event.GetFbWidth();
+        m_FbHeight = event.GetFbHeight();
+        m_EditorScene->Resize(m_FbWidth, m_FbHeight);
+        m_ActiveScene->Resize(m_FbWidth, m_FbHeight);
+        return true;
+    });
 }
 
 void Editor::CreatorLayer::OnUpdate(float deltaTime)
@@ -26,7 +39,7 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
         if (m_Mode == SandboxMode::Edit)
         {
             m_ActiveScene = std::make_shared<Editor::ExampleScene>();
-            m_ActiveScene->Resize(m_ViewportWidth, m_ViewportHeight);
+            m_ActiveScene->Resize(m_FbWidth, m_FbHeight);
         }
     }
 
@@ -50,15 +63,6 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
 void Editor::CreatorLayer::OnRender()
 {
     PROFILE_FUNCTION();
-
-    // Resize scenes' viewport if the window size changed
-    if (m_ViewportWidth != m_Window->GetProperty().FbWidth || m_ViewportHeight != m_Window->GetProperty().FbHeight)
-    {
-        m_ViewportWidth = m_Window->GetProperty().FbWidth;
-        m_ViewportHeight = m_Window->GetProperty().FbHeight;
-        m_EditorScene->Resize(m_ViewportWidth, m_ViewportHeight);
-        m_ActiveScene->Resize(m_ViewportWidth, m_ViewportHeight);
-    }
 
     switch (m_Mode)
     {
