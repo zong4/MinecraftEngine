@@ -3,8 +3,8 @@ target("Editor")
     if is_plat("windows") then
         add_ldflags("/subsystem:console")
     end
+    set_default(true)
 
     add_deps("Engine")
     add_files("src/**/*.cpp")
     add_includedirs("src")
-
