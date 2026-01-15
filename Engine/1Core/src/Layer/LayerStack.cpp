@@ -36,7 +36,7 @@ void Engine::LayerStack::PopLayer(const std::shared_ptr<Layer> &layer)
         LOG_ENGINE_INFO("Layer popped: " + layer->GetName());
         return;
     }
-    LOG_ENGINE_ASSERT("Layer not found in LayerStack: " + layer->GetName());
+    LOG_ENGINE_WARN("Layer not found in LayerStack: " + layer->GetName());
 }
 
 void Engine::LayerStack::OnEvent(Event &event)

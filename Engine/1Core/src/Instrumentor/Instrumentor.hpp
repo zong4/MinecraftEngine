@@ -29,10 +29,13 @@ public:
     void EndSession();
 
 private:
+    // Multi-threading
     std::mutex m_QueueMutex;
     std::condition_variable m_CV;
     std::thread m_WriterThread;
     std::vector<ProfileResult> m_Queue;
+
+    // Original members
     bool m_Active = false;
     int m_ProfileCount = 0;
     std::ofstream m_OutputStream = {};

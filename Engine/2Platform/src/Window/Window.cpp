@@ -61,21 +61,22 @@ void Engine::Window::SetCallbacks()
     glfwSetWindowUserPointer(static_cast<GLFWwindow *>(m_NativeWindow), this);
 
     glfwSetFramebufferSizeCallback(static_cast<GLFWwindow *>(m_NativeWindow),
-                                   [](GLFWwindow *nativeWindow, int width, int height) {
+                                   [](GLFWwindow *nativeWindow, int fbWidth, int fbHeight) {
                                        Window *window = static_cast<Window *>(glfwGetWindowUserPointer(nativeWindow));
 
                                        // Framebuffer size
-                                       RendererCommand::SetViewport(0, 0, width, height);
-                                       window->GetProperty().FbWidth = width;
-                                       window->GetProperty().FbHeight = height;
+                                       RendererCommand::SetViewport(0, 0, fbWidth, fbHeight);
+                                       window->GetProperty().FbWidth = fbWidth;
+                                       window->GetProperty().FbHeight = fbHeight;
 
                                        // Window size
+                                        int width, height;
                                        glfwGetWindowSize(nativeWindow, &width, &height);
                                        window->GetProperty().Width = width;
                                        window->GetProperty().Height = height;
 
                                        // Notify event
-                                       WindowResizeEvent event(width, height);
+                                       WindowResizeEvent event(width, height, fbWidth, fbHeight);
                                        window->OnEvent(event);
                                    });
 
