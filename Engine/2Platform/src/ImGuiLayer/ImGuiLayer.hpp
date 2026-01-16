@@ -11,7 +11,7 @@ public:
     static std::shared_ptr<ImGuiLayer> Create(void *nativeWindow);
 
     // Setters
-    void SetBlockEvents(bool block) { m_BlockEvents = block; }
+    // void SetBlockEvents(bool block) { m_BlockEvents = block; }
 
 public:
     void OnAttach() override;
@@ -21,7 +21,7 @@ public:
     void OnDetach() override;
 
 protected:
-    bool m_BlockEvents = false;
+    // bool m_BlockEvents = false;
     void *m_NativeWindow;
 
 protected:
