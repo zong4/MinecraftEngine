@@ -21,10 +21,7 @@ std::shared_ptr<Engine::Window> Engine::Window::Create(const WindowProperty &pro
     }
 }
 
-bool Engine::Window::IsRunning() const
-{
-    return !glfwWindowShouldClose(static_cast<GLFWwindow *>(m_NativeWindow)) && m_Running;
-}
+bool Engine::Window::IsRunning() const { return !glfwWindowShouldClose(static_cast<GLFWwindow *>(m_NativeWindow)); }
 
 void Engine::Window::SetVSync(bool enabled)
 {
@@ -62,14 +59,13 @@ void Engine::Window::SetCallbacks()
 
     glfwSetFramebufferSizeCallback(static_cast<GLFWwindow *>(m_NativeWindow),
                                    [](GLFWwindow *nativeWindow, int fbWidth, int fbHeight) {
-                                       Window *window = static_cast<Window *>(glfwGetWindowUserPointer(nativeWindow));
-
                                        // Framebuffer size
                                        RendererCommand::SetViewport(0, 0, fbWidth, fbHeight);
 
                                        // Window size
                                        int width, height;
                                        glfwGetWindowSize(nativeWindow, &width, &height);
+                                       Window *window = static_cast<Window *>(glfwGetWindowUserPointer(nativeWindow));
                                        window->GetProperty().Width = width;
                                        window->GetProperty().Height = height;
 

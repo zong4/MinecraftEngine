@@ -30,7 +30,6 @@ public:
     WindowProperty &GetProperty() { return m_Property; }
 
     // Setters
-    void SetRunning(bool running) { m_Running = running; }
     void SetVSync(bool enabled);
     void AddLayer(const std::shared_ptr<Layer> &layer) { m_LayerStack.PushLayer(layer); }
     void RemoveLayer(const std::shared_ptr<Layer> &layer) { m_LayerStack.PopLayer(layer); }
@@ -41,7 +40,6 @@ public:
     void Render();
 
 protected:
-    bool m_Running = true;
     void *m_NativeWindow = nullptr;
     WindowProperty m_Property;
     LayerStack m_LayerStack;
