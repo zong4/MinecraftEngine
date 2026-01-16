@@ -13,7 +13,7 @@ std::shared_ptr<Engine::ImGuiLayer> Engine::ImGuiLayer::Create(void *nativeWindo
     case Engine::RendererAPI::OpenGL:
         return std::make_shared<Engine::OpenGLImGuiLayer>(nativeWindow);
     case Engine::RendererAPI::Vulkan:
-        LOG_ENGINE_ASSERT("VulkanImGuiLayer is not implemented yet");
+        LOG_ENGINE_ASSERT("Vulkan ImGuiLayer is not implemented yet");
         return nullptr;
     default:
         LOG_ENGINE_ASSERT("Unknown RendererAPI");

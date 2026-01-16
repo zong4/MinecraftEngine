@@ -5,6 +5,8 @@
 
 Engine::OpenGLTextureCube::OpenGLTextureCube(const glm::vec4 &color) : TextureCube()
 {
+    PROFILE_FUNCTION();
+
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
     for (unsigned int i = 0; i < 6; i++)
@@ -14,6 +16,8 @@ Engine::OpenGLTextureCube::OpenGLTextureCube(const glm::vec4 &color) : TextureCu
 
 Engine::OpenGLTextureCube::OpenGLTextureCube(const std::array<std::string, 6> &faces) : TextureCube()
 {
+    PROFILE_FUNCTION();
+
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
 

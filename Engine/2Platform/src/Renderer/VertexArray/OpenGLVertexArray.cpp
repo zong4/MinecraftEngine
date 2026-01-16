@@ -52,7 +52,6 @@ void Engine::OpenGLVertexArray::Render(RendererType renderType, int vertexCount)
 
     Bind();
     m_VertexBuffer->Bind();
-
     if (!m_IndexBuffer)
     {
         if (vertexCount == 0)
@@ -72,7 +71,6 @@ void Engine::OpenGLVertexArray::Render(RendererType renderType, int vertexCount)
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
         m_IndexBuffer->Unbind();
     }
-
     m_VertexBuffer->Unbind();
     Unbind();
 }
@@ -110,10 +108,9 @@ void Engine::OpenGLVertexArray::SetVertexAttributes(const std::vector<VertexAttr
         }
         RendererCommand::GetError(std::string(FUNCTION_SIGNATURE));
     }
+    LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) + " vertex attributes(" +
+                     std::to_string(m_AttributeSize) + ") set/updated");
 
     m_VertexBuffer->Unbind();
     Unbind();
-
-    LOG_ENGINE_TRACE("VertexArray ID: " + std::to_string(m_RendererID) + " vertex attributes(" +
-                     std::to_string(m_AttributeSize) + ") set/updated");
 }

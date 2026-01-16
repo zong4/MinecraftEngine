@@ -27,7 +27,7 @@ std::shared_ptr<Engine::TextureCube> Engine::TextureCube::WhiteTexture()
     switch (RendererProperty::GetInstance().GetAPI())
     {
     case RendererAPI::OpenGL:
-        whiteTexture = std::make_shared<OpenGLTextureCube>(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+        whiteTexture = std::make_shared<OpenGLTextureCube>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         break;
     case RendererAPI::Vulkan:
         LOG_ENGINE_ASSERT("Vulkan TextureCube is not implemented yet");

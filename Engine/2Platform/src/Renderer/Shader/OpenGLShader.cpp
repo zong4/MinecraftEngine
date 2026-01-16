@@ -28,9 +28,7 @@ Engine::OpenGLShader::OpenGLShader(const std::string &vertexSource, const std::s
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     if (!geometrySource.empty())
-    {
         glDeleteShader(geometryShader);
-    }
 
     LOG_ENGINE_TRACE("OpenGLShader program created with ID: " + std::to_string(m_RendererID));
 }

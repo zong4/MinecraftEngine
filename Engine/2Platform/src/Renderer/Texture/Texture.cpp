@@ -9,21 +9,16 @@ void Engine::Texture::SaveImage(const std::string &path, int width, int height, 
 {
     int result = stbi_write_png(path.c_str(), width, height, 4, data, width * 4);
     if (result == 0)
-    {
         LOG_ENGINE_ERROR("Failed to save image to: " + path);
-    }
     else
-    {
         LOG_ENGINE_INFO("Saved image to: " + path);
-    }
 }
 
 void *Engine::Texture::LoadImage(const std::string &path, int &width, int &height, int &channels, bool &isHDR,
                                  bool flip)
 {
     if (!std::filesystem::exists(path))
-        LOG_ENGINE_ASSERT("Texture file does not exist: " + path);
-
+        LOG_ENGINE_ERROR("Texture file does not exist: " + path);
     stbi_set_flip_vertically_on_load(flip);
 
     isHDR = stbi_is_hdr(path.c_str());
