@@ -44,6 +44,13 @@ void Engine::Window::Render()
 {
     PROFILE_FUNCTION();
 
+    if (m_FirstFrame)
+    {
+        WindowResizeEvent event(m_Property.Width, m_Property.Height, m_Property.FbWidth, m_Property.FbHeight);
+        OnEvent(event);
+        m_FirstFrame = false;
+    }
+
     std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetTopLayer())
         ->BeginRenderImGui(); // ImGuiLayer is always the top layer
     m_LayerStack.Render();
@@ -68,6 +75,8 @@ void Engine::Window::SetCallbacks()
                                        Window *window = static_cast<Window *>(glfwGetWindowUserPointer(nativeWindow));
                                        window->GetProperty().Width = width;
                                        window->GetProperty().Height = height;
+                                       window->GetProperty().FbWidth = fbWidth;
+                                       window->GetProperty().FbHeight = fbHeight;
 
                                        // Notify event
                                        WindowResizeEvent event(width, height, fbWidth, fbHeight);

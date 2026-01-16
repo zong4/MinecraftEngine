@@ -44,9 +44,8 @@ void Engine::OpenGLWindow::Init()
     RendererCommand::Init();
 
     // Use property to set
-    int fbWidth, fbHeight;
-    glfwGetFramebufferSize((GLFWwindow *)m_NativeWindow, &fbWidth, &fbHeight);
-    RendererCommand::SetViewport(0, 0, fbWidth, fbHeight);
+    glfwGetFramebufferSize((GLFWwindow *)m_NativeWindow, &m_Property.FbWidth, &m_Property.FbHeight);
+    RendererCommand::SetViewport(0, 0, m_Property.FbWidth, m_Property.FbHeight);
     SetVSync(m_Property.VSync);
     SetCallbacks();
 }

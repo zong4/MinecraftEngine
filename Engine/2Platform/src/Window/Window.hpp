@@ -10,6 +10,8 @@ struct WindowProperty
     std::string Title;
     int Width;
     int Height;
+    int FbWidth;
+    int FbHeight;
     bool VSync;
 
 public:
@@ -40,6 +42,7 @@ public:
     void Render();
 
 protected:
+    bool m_FirstFrame = true;
     void *m_NativeWindow = nullptr;
     WindowProperty m_Property;
     LayerStack m_LayerStack;
