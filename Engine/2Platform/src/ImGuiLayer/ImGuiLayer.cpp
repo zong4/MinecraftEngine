@@ -21,6 +21,31 @@ std::shared_ptr<Engine::ImGuiLayer> Engine::ImGuiLayer::Create(void *nativeWindo
     }
 }
 
+void Engine::ImGuiLayer::OnAttach()
+{
+    PROFILE_FUNCTION();
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    // Setup IO config flags
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    // ImGui::StyleColorsClassic();
+    SetDarkThemeColors();
+
+    // Setup Platform/Renderer bindings
+    InitRenderer();
+}
+
 // void Engine::ImGuiLayer::OnEvent(Event &event)
 // {
 //     PROFILE_FUNCTION();
@@ -49,31 +74,6 @@ std::shared_ptr<Engine::ImGuiLayer> Engine::ImGuiLayer::Create(void *nativeWindo
 //         });
 //     }
 // }
-
-void Engine::ImGuiLayer::OnAttach()
-{
-    PROFILE_FUNCTION();
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
-    // Setup IO config flags
-    ImGuiIO &io = ImGui::GetIO();
-    (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    // ImGui::StyleColorsClassic();
-    SetDarkThemeColors();
-
-    // Setup Platform/Renderer bindings
-    InitRenderer();
-}
 
 void Engine::ImGuiLayer::OnDetach()
 {
