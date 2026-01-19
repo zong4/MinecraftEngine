@@ -31,9 +31,6 @@ private:
     std::thread m_RayTracingThread;
     std::vector<glm::vec4> m_RayTracingFrameBuffer;
 
-    // Particle systems
-    ParticleSystem m_ParticleSystem{1000};
-
 private:
     void UploadCubesData();
     void RenderShadowMap() const;

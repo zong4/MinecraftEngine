@@ -1,50 +1,15 @@
 #include "Scene2D.hpp"
 
-#include "../Renderer/Librarys/ShaderLibrary.hpp"
-#include "../Renderer/Librarys/UniformLibrary.hpp"
 #include "../Renderer/Librarys/VertexLibrary.hpp"
 
 void Engine::Scene2D::Render(const Entity &camera)
 {
-    PROFILE_FUNCTION();
-
     UploadSquaresData();
 
-    // Update camera uniform buffer
-    auto &&transform = camera.GetComponent<TransformComponent>();
-    auto &&cameraComp = camera.GetComponent<CameraComponent>();
-    if (transform && cameraComp)
-    {
-        cameraComp->UpdateProjectionMatrix();
-        UniformLibrary::GetInstance().UpdateUniform(
-            "UniformBuffer0",
-            {
-                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
-                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
-                 sizeof(glm::mat4)}, // Projection matrix
-                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
-                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
-            });
-    }
-
+    // Render scene
+    Scene::Render(camera);
     Render2D(camera);
     RenderColorID();
-}
-
-void Engine::Scene2D::Resize(int width, int height)
-{
-    PROFILE_FUNCTION();
-
-    // Resize all cameras
-    auto &&cameraView = m_Registry.view<CameraComponent>();
-    for (auto &&entity : cameraView)
-    {
-        auto &&camera = cameraView.get<CameraComponent>(entity);
-        camera.Resize(width, height);
-    }
-
-    // Resize color ID framebuffer
-    m_ColorIDFrameBuffer->Resize(width, height);
 }
 
 void Engine::Scene2D::RenderColorID() const

@@ -10,9 +10,7 @@ Engine::CameraComponent::CameraComponent(CameraType type, float width, float hei
 glm::vec3 Engine::CameraComponent::GetLocalDir(float u, float v) const
 {
     if (Type == CameraType::Orthographic)
-    {
         return glm::vec3(0.0f, 0.0f, -1.0f);
-    }
     else
     {
         float aspectRatio = (float)m_Width / (float)m_Height;

@@ -9,6 +9,7 @@
 #include "../ECS/Components/RendererComponents.hpp"
 #include "../ECS/Components/TransformComponent.hpp"
 #include "../ECS/Systems/PhysicSystem.hpp"
+#include "../Renderer/Librarys/ShaderLibrary.hpp"
 #include "../Renderer/ParticleSystem/ParticleSystem.hpp"
 
 namespace Engine
@@ -33,8 +34,8 @@ public:
 public:
     void Update(float deltaTime);
     void UpdateRuntime(float deltaTime);
-    virtual void Render(const Entity &camera) = 0;
-    virtual void Resize(int width, int height) = 0;
+    virtual void Render(const Entity &camera);
+    virtual void Resize(int width, int height);
 
     // Entity management
     void DeleteEntity(const Entity &entity);
@@ -64,6 +65,7 @@ private:
 
     // Systems
     PhysicSystem m_PhysicSystem;
+    ParticleSystem m_ParticleSystem{1000};
 
 private:
     void DeleteEntityReal(const Entity &entity);

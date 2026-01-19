@@ -1,5 +1,7 @@
 #include "Scene.hpp"
 
+#include "../Renderer/Librarys/UniformLibrary.hpp"
+
 Engine::Scene::~Scene()
 {
     m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
@@ -108,6 +110,58 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
         }
         nsc.Instance->OnUpdate(deltaTime);
     });
+}
+
+void Engine::Scene::Render(const Entity &camera)
+{
+    PROFILE_FUNCTION();
+
+    // Update camera uniform buffer
+    auto &&transform = camera.GetComponent<TransformComponent>();
+    auto &&cameraComp = camera.GetComponent<CameraComponent>();
+    if (transform && cameraComp)
+    {
+        cameraComp->UpdateProjectionMatrix();
+        UniformLibrary::GetInstance().UpdateUniform(
+            "UniformBuffer0",
+            {
+                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
+                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
+                 sizeof(glm::mat4)}, // Projection matrix
+                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
+                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
+            });
+    }
+
+    // Particle systems
+    for (int i = 0; i < 10; ++i)
+    {
+        m_ParticleSystem.AddParticle(Particle{
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
+                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
+            2.0f,
+        });
+    }
+    m_ParticleSystem.Update(0.016f);
+    ShaderLibrary::GetInstance().GetShader("Particles")->Bind();
+    m_ParticleSystem.Render();
+}
+
+void Engine::Scene::Resize(int width, int height)
+{
+    PROFILE_FUNCTION();
+
+    // Resize all cameras
+    auto &&cameraView = m_Registry.view<CameraComponent>();
+    for (auto &&entity : cameraView)
+    {
+        auto &&camera = cameraView.get<CameraComponent>(entity);
+        camera.Resize(width, height);
+    }
+
+    // Resize color ID framebuffer
+    m_ColorIDFrameBuffer->Resize(width, height);
 }
 
 void Engine::Scene::DeleteEntity(const Entity &entity)

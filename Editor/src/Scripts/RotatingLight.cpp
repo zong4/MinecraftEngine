@@ -4,10 +4,7 @@ using namespace Engine;
 
 bool Editor::RotatingLight::s_RotationEnabled = false;
 
-void Editor::RotatingLight::OnCreate()
-{
-    m_Transform = GetComponent<Engine::TransformComponent>();
-}
+void Editor::RotatingLight::OnCreate() { m_Transform = GetComponent<Engine::TransformComponent>(); }
 
 void Editor::RotatingLight::OnUpdate(float deltaTime)
 {
@@ -22,15 +19,3 @@ void Editor::RotatingLight::OnUpdate(float deltaTime)
         rotation.y -= 360.0f;
     m_Transform->SetRotationEuler(rotation);
 }
-
-void Editor::RotatingLight::SetRotationEnabled(bool enabled)
-{
-    s_RotationEnabled = enabled;
-}
-
-bool Editor::RotatingLight::IsRotationEnabled()
-{
-    return s_RotationEnabled;
-}
-
-
