@@ -9,9 +9,13 @@ void Engine::Texture::SaveImage(const std::string &path, int width, int height, 
 {
     int result = stbi_write_png(path.c_str(), width, height, 4, data, width * 4);
     if (result == 0)
+    {
         LOG_ENGINE_ERROR("Failed to save image to: " + path);
+    }
     else
+    {
         LOG_ENGINE_INFO("Saved image to: " + path);
+    }
 }
 
 void *Engine::Texture::LoadImage(const std::string &path, int &width, int &height, int &channels, bool &isHDR,
