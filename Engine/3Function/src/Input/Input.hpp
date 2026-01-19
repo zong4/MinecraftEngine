@@ -28,11 +28,11 @@ public:
 
 private:
     bool m_BlockEvents = false;
-    std::unordered_map<int, int> m_KeyActions;
     glm::vec2 m_Position = {0.0, 0.0};
     glm::vec2 m_LastPosition = {0.0, 0.0};
     glm::vec2 m_DeltaPosition = {0.0, 0.0};
     glm::vec2 m_ScrollOffset = {0.0, 0.0};
+    std::unordered_map<int, int> m_KeyActions;
 
 private:
     Input() = default;
