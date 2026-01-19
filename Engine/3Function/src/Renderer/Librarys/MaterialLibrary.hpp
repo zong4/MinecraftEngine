@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Material.hpp"
+#include "../Material/Material.hpp"
 
 namespace Engine
 {
