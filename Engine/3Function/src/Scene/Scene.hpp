@@ -8,9 +8,9 @@
 #include "../ECS/Components/RelationshipComponent.hpp"
 #include "../ECS/Components/RendererComponents.hpp"
 #include "../ECS/Components/TransformComponent.hpp"
-#include "../ECS/Systems/PhysicSystem.hpp"
+#include "../ECS/Systems/ParticleSystem/ParticleSystem.hpp"
+#include "../ECS/Systems/PhysicSystem/PhysicSystem.hpp"
 #include "../Renderer/Librarys/ShaderLibrary.hpp"
-#include "../Renderer/ParticleSystem/ParticleSystem.hpp"
 
 namespace Engine
 {
@@ -68,6 +68,10 @@ private:
     ParticleSystem m_ParticleSystem{1000};
 
 private:
+    void UpdateTransformSystem(float deltaTime);
+    void UpdatePhysicSystem(float deltaTime);
+    void UpdateParticleSystem(float deltaTime);
+    void UpdateScriptSystem(float deltaTime);
     void DeleteEntityReal(const Entity &entity);
 };
 

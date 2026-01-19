@@ -43,45 +43,14 @@ void Engine::Scene::Update(float deltaTime)
     }
     m_DeletedEntities.clear();
 
-    // Update all transform matrices
-    auto &&entityView = m_Registry.view<TransformComponent, RelationshipComponent>();
-    for (auto &&entity : entityView)
-    {
-        auto &&[transform, relationship] = entityView.get<TransformComponent, RelationshipComponent>(entity);
-        if (!relationship.Parent)
-            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
-    }
+    UpdateTransformSystem(deltaTime);
 }
 
 void Engine::Scene::UpdateRuntime(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    // Sync RigidBodies with TransformComponents
-    auto &&view = m_Registry.view<TransformComponent, RigidBodyComponent>();
-    for (auto &&entity : view)
-    {
-        auto &&[transform, rigidBody] = view.get<TransformComponent, RigidBodyComponent>(entity);
-        m_PhysicSystem.UpdateRigidBody(rigidBody, transform);
-    }
-
-    // Update physics
-    m_PhysicSystem.Update(deltaTime);
-    auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
-    for (auto &&entity : rigibodyView)
-    {
-        auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
-        btTransform btTransform;
-        rigibody.Body->getMotionState()->getWorldTransform(btTransform);
-
-        glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
-                           btTransform.getOrigin().getZ());
-        transform.Position = position;
-
-        glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
-                           btTransform.getRotation().getY(), btTransform.getRotation().getZ());
-        transform.Rotation = glm::eulerAngles(rotation);
-    }
+    UpdatePhysicSystem(deltaTime);
 
     // todo:: check
     // Transform the BoundingBox to world space
@@ -101,15 +70,8 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
         }
     }
 
-    // Update all scripts
-    m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) {
-        if (!nsc.Instance)
-        {
-            nsc.Instance = nsc.InstantiateScript();
-            nsc.Instance->OnStart();
-        }
-        nsc.Instance->OnUpdate(deltaTime);
-    });
+    UpdateParticleSystem(deltaTime);
+    UpdateScriptSystem(deltaTime);
 }
 
 void Engine::Scene::Render(const Entity &camera)
@@ -134,16 +96,6 @@ void Engine::Scene::Render(const Entity &camera)
     }
 
     // Particle systems
-    for (int i = 0; i < 10; ++i)
-    {
-        m_ParticleSystem.AddParticle(Particle{
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
-                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
-            2.0f,
-        });
-    }
-    m_ParticleSystem.Update(0.016f);
     ShaderLibrary::GetInstance().GetShader("Particles")->Bind();
     m_ParticleSystem.Render();
 }
@@ -217,6 +169,85 @@ Engine::Entity Engine::Scene::AddLight(const std::string &name, const TransformC
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<LightComponent>(lightComponent);
     return entity;
+}
+
+void Engine::Scene::UpdateTransformSystem(float deltaTime)
+{
+    PROFILE_FUNCTION();
+
+    // Update all transform matrices
+    auto &&entityView = m_Registry.view<TransformComponent, RelationshipComponent>();
+    for (auto &&entity : entityView)
+    {
+        auto &&[transform, relationship] = entityView.get<TransformComponent, RelationshipComponent>(entity);
+        if (!relationship.Parent)
+            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
+    }
+}
+
+void Engine::Scene::UpdatePhysicSystem(float deltaTime)
+{
+    PROFILE_FUNCTION();
+
+    // Sync RigidBodies with TransformComponents
+    auto &&view = m_Registry.view<TransformComponent, RigidBodyComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, rigidBody] = view.get<TransformComponent, RigidBodyComponent>(entity);
+        m_PhysicSystem.UpdateRigidBody(rigidBody, transform);
+    }
+
+    // Update physics
+    m_PhysicSystem.Update(deltaTime);
+
+    // Sync TransformComponents with RigidBodies
+    auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
+    for (auto &&entity : rigibodyView)
+    {
+        auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
+        btTransform btTransform;
+        rigibody.Body->getMotionState()->getWorldTransform(btTransform);
+
+        glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
+                           btTransform.getOrigin().getZ());
+        transform.Position = position;
+
+        glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
+                           btTransform.getRotation().getY(), btTransform.getRotation().getZ());
+        transform.Rotation = glm::eulerAngles(rotation);
+    }
+}
+
+void Engine::Scene::UpdateParticleSystem(float deltaTime)
+{
+    PROFILE_FUNCTION();
+
+    // Particle systems
+    for (int i = 0; i < 10; ++i)
+    {
+        m_ParticleSystem.AddParticle(Particle{
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
+                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
+            2.0f,
+        });
+    }
+    m_ParticleSystem.Update(deltaTime);
+}
+
+void Engine::Scene::UpdateScriptSystem(float deltaTime)
+{
+    PROFILE_FUNCTION();
+
+    // Update all scripts
+    m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) {
+        if (!nsc.Instance)
+        {
+            nsc.Instance = nsc.InstantiateScript();
+            nsc.Instance->OnStart();
+        }
+        nsc.Instance->OnUpdate(deltaTime);
+    });
 }
 
 void Engine::Scene::DeleteEntityReal(const Entity &entity)

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Components/PhysicComponents.hpp"
-#include "../Components/TransformComponent.hpp"
+#include "../../Components/PhysicComponents.hpp"
+#include "../../Components/TransformComponent.hpp"
 
 namespace Engine
 {
