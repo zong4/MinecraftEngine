@@ -1,5 +1,11 @@
 #include "ParticleSystem.hpp"
 
+Engine::ParticleSystem &Engine::ParticleSystem::GetInstance()
+{
+    static ParticleSystem instance;
+    return instance;
+}
+
 void Engine::ParticleSystem::UpdateParticle(ParticleComponent &particleComponent, float deltaTime)
 {
     // Update existing particles

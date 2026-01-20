@@ -1,10 +1,10 @@
 #version 330 core
 
 // Layouts
-layout(location = 1) in vec3 aPosition;
-layout(location = 2) in vec3 aVelocity;
-layout(location = 3) in float aLife;
-layout(location = 4) in float aLifeMax;
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec3 aVelocity;
+layout(location = 2) in float aLife;
+layout(location = 3) in float aLifeMax;
 
 // Uniforms
 layout(std140) uniform UniformBuffer0

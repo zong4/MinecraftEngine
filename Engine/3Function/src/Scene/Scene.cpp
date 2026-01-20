@@ -51,6 +51,7 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
     PROFILE_FUNCTION();
 
     UpdatePhysicSystem(deltaTime);
+    UpdateParticleSystem(deltaTime);
 
     // todo:: check
     // Transform the BoundingBox to world space
@@ -166,6 +167,20 @@ Engine::Entity Engine::Scene::AddLight(const std::string &name, const TransformC
     return entity;
 }
 
+void Engine::Scene::RenderParticles()
+{
+    PROFILE_FUNCTION();
+
+    // Particle systems
+    ShaderLibrary::GetInstance().GetShader("Particles")->Bind();
+    auto &&view = m_Registry.view<ParticleComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&particleComp = view.get<ParticleComponent>(entity);
+        ParticleSystem::GetInstance().Render(particleComp);
+    }
+}
+
 void Engine::Scene::UpdateTransformSystem(float deltaTime)
 {
     PROFILE_FUNCTION();
@@ -210,6 +225,19 @@ void Engine::Scene::UpdatePhysicSystem(float deltaTime)
         glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
                            btTransform.getRotation().getY(), btTransform.getRotation().getZ());
         transform.Rotation = glm::eulerAngles(rotation);
+    }
+}
+
+void Engine::Scene::UpdateParticleSystem(float deltaTime)
+{
+    PROFILE_FUNCTION();
+
+    // Update all particle components
+    auto &&view = m_Registry.view<ParticleComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&particleComp = view.get<ParticleComponent>(entity);
+        ParticleSystem::GetInstance().UpdateParticle(particleComp, deltaTime);
     }
 }
 

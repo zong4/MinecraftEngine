@@ -58,6 +58,7 @@ protected:
 
 protected:
     virtual void RenderColorID() const = 0;
+    void RenderParticles();
 
 private:
     Entity m_MainCamera;
@@ -69,6 +70,7 @@ private:
 private:
     void UpdateTransformSystem(float deltaTime);
     void UpdatePhysicSystem(float deltaTime);
+    void UpdateParticleSystem(float deltaTime);
     void UpdateScriptSystem(float deltaTime);
     void DeleteEntityReal(const Entity &entity);
 };
