@@ -29,6 +29,9 @@ private:
     int m_FbWidth, m_FbHeight;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;
+
+private:
+    void DrawConsole(Engine::Console &console);
 };
 
 } // namespace Editor

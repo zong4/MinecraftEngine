@@ -2,6 +2,7 @@
 
 #include "../src/Algorithms/Random.hpp"
 #include "../src/Application/Application.hpp"
+#include "../src/Input/CommandManager.hpp"
 #include "../src/Input/InputLayer.hpp"
 #include "../src/Physic/Collider/BVH.hpp"
 #include "../src/Scene/Scene2D.hpp"

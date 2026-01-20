@@ -82,6 +82,8 @@ void Editor::CreatorLayer::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
+    DrawConsole(Engine::g_Console);
+
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.09f, 0.10f, 0.65f));
     ImGui::Begin("Sandbox Layer Debug");
     if (m_Mode == SandboxMode::Edit)
@@ -170,4 +172,46 @@ void Editor::CreatorLayer::OnImGuiRender()
 
     ImGui::End();
     ImGui::PopStyleColor();
+}
+
+void Editor::CreatorLayer::DrawConsole(Engine::Console &console)
+{
+    PROFILE_FUNCTION();
+
+    ImGui::Begin("Console");
+
+    // Display console items
+    for (const auto &item : console.Items)
+        ImGui::TextUnformatted(item.c_str());
+
+    // Auto-scroll
+    if (console.AutoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+        ImGui::SetScrollHereY(1.0f);
+
+    // Input text box
+    ImGui::Separator();
+    ImGui::InputText("Input", console.InputBuf, sizeof(console.InputBuf),
+                     ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
+
+    // Handle input submission
+    if (ImGui::IsItemActive() && ImGui::IsKeyPressed(ImGuiKey_Enter))
+    {
+        LOG_ENGINE_INFO("Enter key pressed in Console");
+
+        std::string inputStr = console.InputBuf;
+        if (!inputStr.empty())
+        {
+            Engine::CommandManager::GetInstance().Log("> " + inputStr);
+            Engine::CommandManager::GetInstance().Execute(inputStr);
+
+            // Add to history
+            console.History.push_back(inputStr);
+            console.HistoryPos = -1;
+
+            // Clear input buffer
+            console.InputBuf[0] = '\0';
+        }
+    }
+
+    ImGui::End();
 }
