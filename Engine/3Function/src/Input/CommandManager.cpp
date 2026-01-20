@@ -15,7 +15,7 @@ void Engine::CommandManager::Execute(const std::string &input)
     auto &&tokens = Tokenize(input);
     if (tokens.empty())
         return;
-    Log("> " + input);
+    g_Console.AddLog("> " + input);
 
     auto &&it = m_Commands.find(tokens[0]);
     if (it != m_Commands.end())
@@ -26,7 +26,7 @@ void Engine::CommandManager::Execute(const std::string &input)
     }
     else
     {
-        Log("Unknown command: " + tokens[0]);
+        g_Console.AddLog("Unknown command: " + tokens[0]);
     }
 }
 

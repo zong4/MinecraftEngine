@@ -65,6 +65,8 @@ void Engine::Input::Clear()
 {
     m_DeltaPosition = {0.0, 0.0};
     m_ScrollOffset = {0.0, 0.0};
+
+    // Update key actions if needed
     for (auto &&[key, action] : m_KeyActions)
     {
         if (action == 0)

@@ -186,19 +186,23 @@ void Editor::CreatorLayer::DrawConsole(Engine::Console &console)
 
     ImGui::Begin("Console");
 
-    ImGui::Text("Len: %d / %d", (int)strlen(console.InputBuf), IM_ARRAYSIZE(console.InputBuf) - 1);
-
+    // Console output area
+    ImGui::BeginChild("ScrollingRegion", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), false);
     // Display console items
     for (const auto &item : console.Items)
         ImGui::TextUnformatted(item.c_str());
-
-    // Auto-scroll
-    if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+    // Auto-scroll to bottom
+    if (console.ScrollToBottom)
+    {
         ImGui::SetScrollHereY(1.0f);
+        console.ScrollToBottom = false;
+    }
+    ImGui::EndChild();
 
     // Input text box
     ImGui::Separator();
-    if (ImGui::InputText("#Input", console.InputBuf, IM_ARRAYSIZE(console.InputBuf),
+    ImGui::SetNextItemWidth(-FLT_MIN);
+    if (ImGui::InputText("##Input", console.InputBuf, IM_ARRAYSIZE(console.InputBuf),
                          ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
     {
         std::string inputStr = console.InputBuf;
