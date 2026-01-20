@@ -15,12 +15,14 @@ void Engine::CommandManager::Execute(const std::string &input)
     auto &&tokens = Tokenize(input);
     if (tokens.empty())
         return;
+    Log("> " + input);
 
     auto &&it = m_Commands.find(tokens[0]);
     if (it != m_Commands.end())
     {
         tokens.erase(tokens.begin());
         it->second(tokens);
+        g_Console.History.push_back(input);
     }
     else
     {

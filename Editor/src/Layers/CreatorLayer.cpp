@@ -186,33 +186,25 @@ void Editor::CreatorLayer::DrawConsole(Engine::Console &console)
 
     ImGui::Begin("Console");
 
+    ImGui::Text("Len: %d / %d", (int)strlen(console.InputBuf), IM_ARRAYSIZE(console.InputBuf) - 1);
+
     // Display console items
     for (const auto &item : console.Items)
         ImGui::TextUnformatted(item.c_str());
 
     // Auto-scroll
-    if (console.AutoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+    if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
         ImGui::SetScrollHereY(1.0f);
 
     // Input text box
     ImGui::Separator();
-    ImGui::InputText("Input", console.InputBuf, sizeof(console.InputBuf),
-                     ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
-
-    // Handle input submission
-    if (ImGui::IsItemActive() && ImGui::IsKeyPressed(ImGuiKey_Enter))
+    if (ImGui::InputText("#Input", console.InputBuf, IM_ARRAYSIZE(console.InputBuf),
+                         ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
     {
         std::string inputStr = console.InputBuf;
         if (!inputStr.empty())
         {
-            Engine::CommandManager::GetInstance().Log("> " + inputStr);
             Engine::CommandManager::GetInstance().Execute(inputStr);
-
-            // Add to history
-            console.History.push_back(inputStr);
-            console.HistoryPos = -1;
-
-            // Clear input buffer
             console.InputBuf[0] = '\0';
         }
     }

@@ -15,6 +15,7 @@ public:
         return instance;
     }
 
+    // Getters
     int NextInt(int min = 0, int max = 1)
     {
         std::uniform_int_distribution<int> distribution(min, max);

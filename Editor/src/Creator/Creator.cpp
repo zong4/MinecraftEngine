@@ -5,9 +5,9 @@
 
 Editor::Creator::Creator(const Engine::WindowProperty &props) : Application(props)
 {
-    AddLayer(std::make_shared<CreatorLayer>());
-    AddLayer(std::make_shared<Engine::InputLayer>());
-    AddLayer(Engine::ImGuiLayer::Create(m_Window->GetNativeWindow()));
+    PushLayer(std::make_shared<CreatorLayer>());
+    PushLayer(std::make_shared<Engine::InputLayer>());
+    PushLayer(Engine::ImGuiLayer::Create(m_Window->GetNativeWindow()));
 }
 
 std::unique_ptr<Engine::Application> Engine::CreateApplication()

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Timer.hpp"
 #include <Platform.hpp>
 
 namespace Engine
@@ -12,18 +13,29 @@ public:
     virtual ~Application() { Shutdown(); }
 
 public:
-    void Run();
+    void Run()
+    {
+        PROFILE_FUNCTION();
+
+        Timer timer;
+        while (m_Window->IsRunning())
+        {
+            m_Window->Update(timer.GetElapsedSeconds());
+            m_Window->Render();
+            m_Window->PostUpdate();
+        }
+    }
 
 protected:
     std::shared_ptr<Window> m_Window = nullptr;
 
 protected:
-    void AddLayer(const std::shared_ptr<Layer> &layer) { m_Window->AddLayer(layer); }
-    void RemoveLayer(const std::shared_ptr<Layer> &layer) { m_Window->RemoveLayer(layer); }
+    void PushLayer(const std::shared_ptr<Layer> &layer) { m_Window->PushLayer(layer); }
+    void PopLayer(const std::shared_ptr<Layer> &layer) { m_Window->PopLayer(layer); }
 
 private:
-    void Init(const WindowProperty &props);
-    void Shutdown();
+    void Init(const WindowProperty &props) { m_Window = Window::Create(props); }
+    void Shutdown() { m_Window.reset(); }
 };
 
 extern std::unique_ptr<Application> CreateApplication();
