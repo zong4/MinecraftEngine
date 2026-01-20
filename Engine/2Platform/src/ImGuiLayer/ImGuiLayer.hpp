@@ -10,18 +10,14 @@ class ImGuiLayer : public Layer
 public:
     static std::shared_ptr<ImGuiLayer> Create(void *nativeWindow);
 
-    // Setters
-    // void SetBlockEvents(bool block) { m_BlockEvents = block; }
-
 public:
     void OnAttach() override;
-    // void OnEvent(Event &event) override;
+    void OnEvent(Event &event) override;
     virtual void BeginRenderImGui() const = 0;
     virtual void EndRenderImGui() const = 0;
     void OnDetach() override;
 
 protected:
-    // bool m_BlockEvents = false;
     void *m_NativeWindow;
 
 protected:
