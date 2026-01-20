@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Layer.hpp"
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 namespace Engine
 {
@@ -24,6 +24,7 @@ public:
     void OnEvent(Event &event);
     void Update(float deltaTime);
     void Render();
+    void PostUpdate();
 
 private:
     std::vector<std::shared_ptr<Layer>> m_Layers;

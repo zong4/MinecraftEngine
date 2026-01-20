@@ -54,10 +54,6 @@ void Engine::LayerStack::Update(float deltaTime)
 {
     for (const std::shared_ptr<Layer> &layer : m_Layers)
         layer->OnUpdate(deltaTime);
-
-    // After all layers updated
-    for (const std::shared_ptr<Layer> &layer : m_Layers)
-        layer->OnPostUpdate();
 }
 
 void Engine::LayerStack::Render()
@@ -67,4 +63,10 @@ void Engine::LayerStack::Render()
         layer->OnRender();
         layer->OnImGuiRender(); // Should be called after all OnRender calls?
     }
+}
+
+void Engine::LayerStack::PostUpdate()
+{
+    for (const std::shared_ptr<Layer> &layer : m_Layers)
+        layer->OnPostUpdate();
 }

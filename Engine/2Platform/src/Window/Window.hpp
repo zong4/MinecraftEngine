@@ -37,9 +37,10 @@ public:
     void RemoveLayer(const std::shared_ptr<Layer> &layer) { m_LayerStack.PopLayer(layer); }
 
 public:
-    void OnEvent(Event &event) { m_LayerStack.OnEvent(event); }
+    void OnEvent(Event &event);
     void Update(float deltaTime);
     void Render();
+    void PostUpdate();
 
 protected:
     bool m_FirstFrame = true;

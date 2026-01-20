@@ -32,6 +32,13 @@ void Engine::Window::SetVSync(bool enabled)
     LOG_ENGINE_INFO("VSync " + std::string(enabled ? "enabled" : "disabled"));
 }
 
+void Engine::Window::OnEvent(Event &event)
+{
+    PROFILE_FUNCTION();
+
+    m_LayerStack.OnEvent(event);
+}
+
 void Engine::Window::Update(float deltaTime)
 {
     PROFILE_FUNCTION();
@@ -56,6 +63,13 @@ void Engine::Window::Render()
     m_LayerStack.Render();
     std::dynamic_pointer_cast<ImGuiLayer>(m_LayerStack.GetTopLayer())->EndRenderImGui();
     glfwSwapBuffers(static_cast<GLFWwindow *>(m_NativeWindow));
+}
+
+void Engine::Window::PostUpdate()
+{
+    PROFILE_FUNCTION();
+
+    m_LayerStack.PostUpdate();
 }
 
 void Engine::Window::SetCallbacks()

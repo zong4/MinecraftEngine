@@ -11,6 +11,7 @@ void Engine::Application::Run()
     {
         m_Window->Update(timer.GetElapsedSeconds());
         m_Window->Render();
+        m_Window->PostUpdate();
     }
 }
 
