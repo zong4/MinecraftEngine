@@ -25,6 +25,7 @@ By narrowing the engine’s scope, development can target **core voxel mechanics
 - [✔] UI layer built with ImGui for in-engine tools and debugging. 
 - [✔] ECS architecture for modular game object management.
 - [✔] Physics system with basic collision detection and response.
+- [✔] Basic particle system for visual effects.
 
 ## What is next?
 
