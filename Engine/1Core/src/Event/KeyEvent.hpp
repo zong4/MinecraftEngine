@@ -10,6 +10,7 @@ class KeyEvent : public Engine::Event
 public:
     KeyEvent(int code, int action) : m_Code(code), m_Action(action) {}
 
+    // Getters
     int GetCode() const { return m_Code; }
     int GetAction() const { return m_Action; }
 

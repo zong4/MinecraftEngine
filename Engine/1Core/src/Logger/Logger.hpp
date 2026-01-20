@@ -16,11 +16,13 @@ class Logger
 public:
     static void Init(const std::string &dirPath);
 
+    // Engine Logger
     static void LogEngineTrace(const std::string &message);
     static void LogEngineInfo(const std::string &message);
     static void LogEngineWarn(const std::string &message);
     static void LogEngineError(const std::string &message, bool assertFail);
 
+    // Editor Logger
     static void LogEditorTrace(const std::string &message);
     static void LogEditorInfo(const std::string &message);
     static void LogEditorWarn(const std::string &message);

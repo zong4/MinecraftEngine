@@ -12,7 +12,10 @@ public:
     Event() = default;
     virtual ~Event() = default;
 
+    // Getters
     bool IsHandled() const { return m_Handled; }
+
+    // Setters
     void SetHandled(bool handled) { m_Handled = handled; }
 
 public:

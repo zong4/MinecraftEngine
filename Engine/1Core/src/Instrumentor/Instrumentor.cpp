@@ -50,7 +50,6 @@ void Engine::Instrumentor::EndSession()
     WriteFooter();
     if (m_OutputStream.is_open())
         m_OutputStream.close();
-
     m_ProfileCount = 0;
 }
 
