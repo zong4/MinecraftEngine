@@ -31,6 +31,7 @@ private:
     std::shared_ptr<Engine::Scene> m_ActiveScene;
 
 private:
+    void DrawDebugUI();
     void DrawConsole(Engine::Console &console);
 };
 

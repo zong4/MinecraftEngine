@@ -10,7 +10,7 @@ void Editor::RotatingLight::OnUpdate(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    if (!s_RotationEnabled || !m_Transform)
+    if (!s_RotationEnabled)
         return;
 
     glm::vec3 rotation = m_Transform->GetRotationEuler();

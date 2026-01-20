@@ -12,7 +12,7 @@ public:
     ~WelcomeScene() override = default;
 
 private:
-    void MCEngineLogo();
+    void AddMCEngineLogo();
 };
 
 } // namespace Editor

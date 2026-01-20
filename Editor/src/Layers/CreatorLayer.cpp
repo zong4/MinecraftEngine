@@ -55,7 +55,7 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
         m_ActiveScene->UpdateRuntime(deltaTime);
         break;
     default:
-        LOG_ENGINE_WARN("Unknown SandboxMode!");
+        LOG_ENGINE_ASSERT("Unknown SandboxMode!");
         break;
     }
 }
@@ -73,7 +73,7 @@ void Editor::CreatorLayer::OnRender()
         m_ActiveScene->Render(m_ActiveScene->GetMainCamera());
         break;
     default:
-        LOG_ENGINE_WARN("Unknown SandboxMode!");
+        LOG_ENGINE_ASSERT("Unknown SandboxMode!");
         break;
     }
 }
@@ -82,10 +82,17 @@ void Editor::CreatorLayer::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
+    DrawDebugUI();
     DrawConsole(Engine::g_Console);
+}
 
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.09f, 0.10f, 0.65f));
-    ImGui::Begin("Sandbox Layer Debug");
+void Editor::CreatorLayer::DrawDebugUI()
+{
+    PROFILE_FUNCTION();
+
+    ImGui::Begin("Debug Info");
+
+    // Sandbox Mode
     if (m_Mode == SandboxMode::Edit)
         ImGui::Text("Mode: Edit (Press SPACE to Switch to Play)");
     else
@@ -171,7 +178,6 @@ void Editor::CreatorLayer::OnImGuiRender()
     }
 
     ImGui::End();
-    ImGui::PopStyleColor();
 }
 
 void Editor::CreatorLayer::DrawConsole(Engine::Console &console)
@@ -196,8 +202,6 @@ void Editor::CreatorLayer::DrawConsole(Engine::Console &console)
     // Handle input submission
     if (ImGui::IsItemActive() && ImGui::IsKeyPressed(ImGuiKey_Enter))
     {
-        LOG_ENGINE_INFO("Enter key pressed in Console");
-
         std::string inputStr = console.InputBuf;
         if (!inputStr.empty())
         {

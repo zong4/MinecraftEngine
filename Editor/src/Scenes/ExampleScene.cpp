@@ -4,6 +4,8 @@
 
 Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
 {
+    PROFILE_FUNCTION();
+
     // ------------------
     // Camera
     // ------------------

@@ -11,7 +11,10 @@ public:
     RotatingLight(const Engine::Entity &entity) : Engine::ScriptableEntity(entity) {}
     ~RotatingLight() override = default;
 
+    // Getters
     static bool IsRotationEnabled() { return s_RotationEnabled; }
+
+    // Setters
     static void SetRotationEnabled(bool enabled) { s_RotationEnabled = enabled; }
 
 public:

@@ -12,6 +12,8 @@ Editor::Creator::Creator(const Engine::WindowProperty &props) : Application(prop
 
 std::unique_ptr<Engine::Application> Engine::CreateApplication()
 {
+    PROFILE_FUNCTION();
+
     nlohmann::json config;
     std::ifstream configFile(std::string(EDITOR_ROOT) + "/config/Creator.json");
     if (configFile.is_open())
@@ -34,6 +36,8 @@ std::unique_ptr<Engine::Application> Engine::CreateApplication()
 
 Editor::Creator::~Creator()
 {
+    PROFILE_FUNCTION();
+
     nlohmann::ordered_json config;
     std::ofstream configFileOut(std::string(EDITOR_ROOT) + "/config/Creator.json");
     if (configFileOut.is_open())

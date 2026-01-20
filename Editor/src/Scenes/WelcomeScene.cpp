@@ -2,21 +2,30 @@
 
 Editor::WelcomeScene::WelcomeScene() : Engine::Scene3D("WelcomeScene")
 {
+    PROFILE_FUNCTION();
+
+    // ------------------
+    // Camera
+    // ------------------
     Engine::Entity camera = AddCamera(
         "MainCamera", Engine::TransformComponent(glm::vec3(0.0f, 10.0f, 20.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
         Engine::CameraComponent(Engine::CameraType::Perspective));
 
+    // ------------------
+    // Light
+    // ------------------
     AddLight("DirectionalLight",
              Engine::TransformComponent(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(-45.0f, -45.0f, 0.0f)),
              Engine::LightComponent(Engine::LightType::Directional));
 
-    MCEngineLogo();
+    // ------------------
+    // MC Engine Logo
+    // ------------------
+    AddMCEngineLogo();
 }
 
-void Editor::WelcomeScene::MCEngineLogo()
+void Editor::WelcomeScene::AddMCEngineLogo()
 {
-    PROFILE_FUNCTION();
-
     struct Position
     {
         int x, y, z;

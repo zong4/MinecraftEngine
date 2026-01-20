@@ -19,17 +19,23 @@ void Editor::CameraController::OnUpdate(float deltaTime)
 
     // Move
     if (Input::GetInstance().IsKeyDown(MOUSE_BUTTON_LEFT))
-        m_Transform->Position += (-m_Transform->GetRight(TransformSpace::Global) * mouseDelta.x +
-                                  m_Transform->GetUp(TransformSpace::Global) * mouseDelta.y) *
-                                 m_MoveSpeed * deltaTime;
+    {
+        glm::vec3 movement = -m_Transform->GetRight(TransformSpace::Global) * mouseDelta.x +
+                             m_Transform->GetUp(TransformSpace::Global) * mouseDelta.y;
+        m_Transform->Position += movement * m_MoveSpeed * deltaTime;
+    }
 
     // Rotate
     if (Input::GetInstance().IsKeyDown(MOUSE_BUTTON_RIGHT))
-        m_Transform->SetRotationEuler(m_Transform->GetRotationEuler() -
-                                      glm::vec3(mouseDelta.y, mouseDelta.x, 0.0f) * m_RotateSpeed * deltaTime);
+    {
+        glm::vec3 rotation = glm::vec3(mouseDelta.y, mouseDelta.x, 0.0f);
+        m_Transform->SetRotationEuler(m_Transform->GetRotationEuler() - rotation * m_RotateSpeed * deltaTime);
+    }
 
     // Zoom
     if (scrollOffset.y != 0.0)
-        m_Transform->Position +=
-            m_Transform->GetForward(TransformSpace::Global) * scrollOffset.y * m_ZoomSpeed * deltaTime;
+    {
+        glm::vec3 movement = m_Transform->GetForward(TransformSpace::Global) * scrollOffset.y;
+        m_Transform->Position += movement * m_ZoomSpeed * deltaTime;
+    }
 }
