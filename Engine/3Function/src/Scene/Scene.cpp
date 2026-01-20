@@ -70,7 +70,6 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
         }
     }
 
-    UpdateParticleSystem(deltaTime);
     UpdateScriptSystem(deltaTime);
 }
 
@@ -94,10 +93,6 @@ void Engine::Scene::Render(const Entity &camera)
                  sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
             });
     }
-
-    // Particle systems
-    ShaderLibrary::GetInstance().GetShader("Particles")->Bind();
-    m_ParticleSystem.Render();
 }
 
 void Engine::Scene::Resize(int width, int height)
@@ -216,23 +211,6 @@ void Engine::Scene::UpdatePhysicSystem(float deltaTime)
                            btTransform.getRotation().getY(), btTransform.getRotation().getZ());
         transform.Rotation = glm::eulerAngles(rotation);
     }
-}
-
-void Engine::Scene::UpdateParticleSystem(float deltaTime)
-{
-    PROFILE_FUNCTION();
-
-    // Particle systems
-    for (int i = 0; i < 10; ++i)
-    {
-        m_ParticleSystem.AddParticle(Particle{
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
-                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
-            2.0f,
-        });
-    }
-    m_ParticleSystem.Update(deltaTime);
 }
 
 void Engine::Scene::UpdateScriptSystem(float deltaTime)

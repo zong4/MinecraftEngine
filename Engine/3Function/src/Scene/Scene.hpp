@@ -65,12 +65,10 @@ private:
 
     // Systems
     PhysicSystem m_PhysicSystem;
-    ParticleSystem m_ParticleSystem{1000};
 
 private:
     void UpdateTransformSystem(float deltaTime);
     void UpdatePhysicSystem(float deltaTime);
-    void UpdateParticleSystem(float deltaTime);
     void UpdateScriptSystem(float deltaTime);
     void DeleteEntityReal(const Entity &entity);
 };

@@ -4,7 +4,18 @@
 #include "../Renderer/Librarys/MaterialLibrary.hpp"
 #include "../Renderer/Librarys/VertexLibrary.hpp"
 
-Engine::Scene3D::Scene3D(const std::string &name) : Scene(name) {}
+Engine::Scene3D::Scene3D(const std::string &name) : Scene(name)
+{
+    auto particle = AddEmptyEntity("ParticleSystem");
+    particle.AddComponent<ParticleComponent>([]() -> Particle {
+        return Particle{
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
+                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
+            2.0f,
+        };
+    });
+}
 
 void Engine::Scene3D::Render(const Entity &camera)
 {
@@ -33,6 +44,16 @@ void Engine::Scene3D::Render(const Entity &camera)
     //         m_RayTracingRunning = false;
     //     }).detach();
     // }
+
+    // Particle systems
+    ShaderLibrary::GetInstance().GetShader("Particles")->Bind();
+    auto &&view = m_Registry.view<ParticleComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&particleComp = view.get<ParticleComponent>(entity);
+        m_ParticleSystem.UpdateParticle(particleComp, 0.016f);
+        m_ParticleSystem.Render(particleComp);
+    }
 }
 
 void Engine::Scene3D::Resize(int width, int height)
