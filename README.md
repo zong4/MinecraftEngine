@@ -1,47 +1,38 @@
-# 🧱 Minecraft Engine
+# Minecraft Engine
 
-> A custom **game engine** built from scratch for voxel-style games like *Minecraft* and *Terraria* — optimized for procedural world generation, chunk rendering, and simulation performance.
+[![C++](https://img.shields.io/badge/Language-C++-00599C?logo=c%2B%2B)](https://isocpp.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+[![Status](https://img.shields.io/badge/Build-Release-blue)]()
 
 <p align="center">
   <img src="./Assets/Logo.png" alt="Logo" width="200">
 </p>
 
----
+> A custom **game engine** built for voxel-style games like *Minecraft* and *Terraria* — optimized for procedural world generation, chunk rendering, and simulation performance.
 
-## 🚀 Overview
+## What we want?
 
 This engine is designed specifically for **Minecraft-like voxel games**, focusing on performance, chunk management, and real-time procedural generation — without the overhead of general-purpose engines like Unity or Unreal.
 
 By narrowing the engine’s scope, development can target **core voxel mechanics** (terrain, lighting, rendering, and physics) with maximum efficiency.
 
----
-
-## 🛠️ Current Features
+## What we have?
 
 ![Editor](./Assets/Editor.png)
 
-<!-- <p align="center">
-  <img src="./Assets/Editor.png" alt="Editor" width="200">
-</p> -->
+- [✔] Input handling for keyboard and mouse interactions.
+- [✔] Render system optimized for rendering basic voxel primitives (cubes).
+- [✔] UI layer built with ImGui for in-engine tools and debugging. 
+- [✔] ECS architecture for modular game object management.
+- [✔] Physics system with basic collision detection and response.
 
-- [x] **OpenGL-based rendering** of squares and cubes using the **Blinn–Phong lighting model** — optimized to draw entire scenes in a **single draw call**.  
-- [x] Integrated **[Dear ImGui](https://github.com/ocornut/imgui)** for lightweight, real-time UI controls and debugging interfaces.  
-- [x] Basic window management, input handling, and rendering loop via C++/OpenGL backend.  
-- [x] Configurable camera controls and shader-based material system.  
+## What is next?
 
----
-
-## 🧩 Planned Features
-
-- [ ] **Additional Primitive Support** — spheres, cylinders, cones, and more.  
 - [ ] **Procedural Generation Algorithms** — Perlin Noise, Simplex Noise, and hybrid terrain methods.  
 - [ ] **World Generation Techniques** — Chunked LOD, Greedy Meshing, seamless world streaming.  
-- [ ] **Basic Physics System** — rigid bodies, collisions, and forces.  
-- [ ] **Physics-Driven Animation** — ragdoll, procedural motion, and dynamic interaction.  
+- [ ] **Physics-Driven Animation** — ragdoll, procedural motion, and dynamic interaction.
 
----
-
-## ⚙️ Build & Run
+## How to run?
 
 ### 1️⃣ Clone the repository
 ```bash
@@ -58,33 +49,4 @@ cd MinecraftEngine
 xmake run -y
 ```
 
-> 💡 xmake will automatically download and compile all required dependencies on first run.
-
-## 💡 Design Philosophy
-
-> “Focus on what matters for voxel games.”
-
-This engine deliberately avoids unnecessary systems (animation controllers, complex asset pipelines, etc.) to prioritize:
-
-* **Efficiency** — small codebase, optimized memory layout
-* **Clarity** — clean architecture for rapid iteration
-* **Flexibility** — modular design for future expansion
-
-The goal is to understand — and control — **every piece** of a voxel-based engine from the ground up.
-
-## 📚 References & Inspirations
-* 📘 [OpenGL Tutorials – LearnOpenGL.com](https://learnopengl.com/)
-* 🧠 [Game Engine Architecture (by Jason Gregory)](https://www.gameenginearchitecture.com/)
-* 🧱 [Hazel Engine (by TheCherno)](https://github.com/TheCherno/Hazel)
-
-## 🧠 Tech Stack
-
-| Category              | Technology                               |
-| --------------------- | ---------------------------------------- |
-| **Language**          | C++17                                    |
-| **Build System**      | [XMake](https://xmake.io)                |
-| **Rendering**         | OpenGL                                   |
-| **UI Layer**          | Dear ImGui                               |
-| **Lighting**          | Blinn–Phong model                        |
-| **Physics (planned)** | Custom lightweight solver                |
-| **Platform**          | Windows & MacOS                          |
+> xmake will automatically download and compile all required dependencies on first run.
