@@ -41,6 +41,17 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
         AddCube(rigidBody, transform);
     btRigidBody *body = rigidBody.Body;
 
+    // Transform
+    btTransform btTransform;
+    btTransform.setIdentity();
+    btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
+    glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
+    btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
+
+    // Update transform from TransformComponent
+    body->getMotionState()->setWorldTransform(btTransform);
+    body->setWorldTransform(btTransform);
+
     // Update RigidBodyType
     switch (rigidBody.Type)
     {
@@ -58,20 +69,10 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
         break;
     }
     case RigidBodyType::Kinematic: {
-        // Set kinematic flag
         body->setCollisionFlags((body->getCollisionFlags() & ~btCollisionObject::CF_STATIC_OBJECT) |
                                 btCollisionObject::CF_KINEMATIC_OBJECT);
         body->setMassProps(0.0f, btVector3(0, 0, 0));
         body->setActivationState(DISABLE_DEACTIVATION);
-
-        // Update transform from TransformComponent
-        btTransform newTransform;
-        newTransform.setIdentity();
-        newTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
-        glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
-        newTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
-        body->getMotionState()->setWorldTransform(newTransform);
-        body->setWorldTransform(newTransform);
         break;
     }
     }
