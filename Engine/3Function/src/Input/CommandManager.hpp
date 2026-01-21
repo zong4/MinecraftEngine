@@ -35,6 +35,10 @@ public:
 
 private:
     std::unordered_map<std::string, CommandFunction> m_Commands;
+
+private:
+    CommandManager() = default;
+    ~CommandManager() = default;
 };
 
 } // namespace Engine

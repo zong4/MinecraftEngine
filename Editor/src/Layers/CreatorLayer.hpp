@@ -15,7 +15,7 @@ class CreatorLayer : public Engine::Layer
 {
 
 public:
-    CreatorLayer();
+    CreatorLayer() : Engine::Layer("CreatorLayer") {}
     ~CreatorLayer() override = default;
 
 public:
@@ -27,12 +27,9 @@ public:
 private:
     SandboxMode m_Mode = SandboxMode::Edit;
     int m_FbWidth, m_FbHeight;
-    std::shared_ptr<Engine::Scene> m_EditorScene;
-    std::shared_ptr<Engine::Scene> m_ActiveScene;
 
 private:
     void DrawDebugUI();
-    void DrawConsole(Engine::Console &console);
 };
 
 } // namespace Editor
