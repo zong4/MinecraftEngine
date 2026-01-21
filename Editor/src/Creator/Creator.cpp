@@ -1,6 +1,6 @@
 #include "Creator.hpp"
 
-#include "Layers/CreatorLayer.hpp"
+#include "CreatorLayer.hpp"
 #include <nlohmann/json.hpp>
 
 Editor::Creator::Creator(const Engine::WindowProperty &props) : Application(props)
@@ -15,7 +15,7 @@ std::unique_ptr<Engine::Application> Engine::CreateApplication()
     PROFILE_FUNCTION();
 
     nlohmann::json config;
-    std::ifstream configFile(std::string(EDITOR_ROOT) + "/config/Creator.json");
+    std::ifstream configFile(std::string(EDITOR_ROOT) + "/configs/Creator.json");
     if (configFile.is_open())
     {
         configFile >> config;
@@ -39,7 +39,7 @@ Editor::Creator::~Creator()
     PROFILE_FUNCTION();
 
     nlohmann::ordered_json config;
-    std::ofstream configFileOut(std::string(EDITOR_ROOT) + "/config/Creator.json");
+    std::ofstream configFileOut(std::string(EDITOR_ROOT) + "/configs/Creator.json");
     if (configFileOut.is_open())
     {
         Engine::WindowProperty &props = m_Window->GetProperty();

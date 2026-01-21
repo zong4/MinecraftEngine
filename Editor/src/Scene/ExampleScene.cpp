@@ -1,7 +1,7 @@
 #include "ExampleScene.hpp"
 
-#include "Scripts/PlayerController.hpp"
-#include "Scripts/RotatingLight.hpp"
+#include "../Script/PlayerController.hpp"
+#include "../Script/RotatingLight.hpp"
 
 Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
 {

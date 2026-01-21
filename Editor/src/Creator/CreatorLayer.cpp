@@ -1,8 +1,8 @@
 #include "CreatorLayer.hpp"
 
-#include "Scenes/SceneManager.hpp"
-#include "Scripts/RotatingLight.hpp"
-#include "UI/FileBrowserPanel.hpp"
+#include "../Scene/SceneManager.hpp"
+#include "../Script/RotatingLight.hpp"
+#include "../UI/FileBrowserPanel.hpp"
 #include <imgui.h>
 
 void Editor::CreatorLayer::OnEvent(Engine::Event &event)

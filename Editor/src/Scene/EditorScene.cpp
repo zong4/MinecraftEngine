@@ -1,6 +1,6 @@
 #include "EditorScene.hpp"
 
-#include "Scripts/CameraController.hpp"
+#include "../Script/CameraController.hpp"
 
 Editor::EditorScene::EditorScene() : Engine::Scene3D("EditorScene")
 {
