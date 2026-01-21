@@ -2,7 +2,7 @@
 
 [![C++](https://img.shields.io/badge/Language-C++-00599C?logo=c%2B%2B)](https://isocpp.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-[![Status](https://img.shields.io/badge/Build-Release-blue)]()
+[![Status](https://img.shields.io/badge/Build-Release-blue)](./releases)
 
 <p align="center">
   <img src="./Assets/Logo.png" alt="Logo" width="200">
