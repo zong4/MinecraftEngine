@@ -5,8 +5,8 @@ int main()
     // Create Application
     std::unique_ptr<Engine::Application> app;
     {
-        Engine::Instrumentor::GetInstance().BeginSession(std::string(PROJECT_ROOT) + "/Logs/EngineProfile-Init.json");
-        Engine::Logger::Init(std::string(PROJECT_ROOT) + "/Logs");
+        Engine::Instrumentor::GetInstance().BeginSession(std::string(PROJECT_ROOT) + "/logs/EngineProfile-Init.json");
+        Engine::Logger::Init(std::string(PROJECT_ROOT) + "/logs");
         app = Engine::CreateApplication();
         Engine::Instrumentor::GetInstance().EndSession();
     }
@@ -14,7 +14,7 @@ int main()
     // Run Application
     {
         Engine::Instrumentor::GetInstance().BeginSession(std::string(PROJECT_ROOT) +
-                                                         "/Logs/EngineProfile-Runtime.json");
+                                                         "/logs/EngineProfile-Runtime.json");
         app->Run();
         Engine::Instrumentor::GetInstance().EndSession();
     }
@@ -22,7 +22,7 @@ int main()
     // Shutdown Application
     {
         Engine::Instrumentor::GetInstance().BeginSession(std::string(PROJECT_ROOT) +
-                                                         "/Logs/EngineProfile-Shutdown.json");
+                                                         "/logs/EngineProfile-Shutdown.json");
         app.reset();
         Engine::Instrumentor::GetInstance().EndSession();
     }

@@ -16,6 +16,8 @@ vsxmake*/
 # Logs
 Logs/
 logs/
+Log/
+log/
 
 # ImGui
 imgui.ini
