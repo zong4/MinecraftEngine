@@ -1,8 +1,8 @@
 #include "Scene3D.hpp"
 
 #include "../Physic/Ray/RayTracing.hpp"
-#include "../Renderer/Librarys/MaterialLibrary.hpp"
-#include "../Renderer/Librarys/VertexLibrary.hpp"
+#include "../Renderer/Library/MaterialLibrary.hpp"
+#include "../Renderer/Library/VertexLibrary.hpp"
 
 Engine::Scene3D::Scene3D(const std::string &name) : Scene(name)
 {

@@ -1,6 +1,6 @@
 #include "MaterialLibrary.hpp"
 
-#include "../Librarys/ShaderLibrary.hpp"
+#include "../Library/ShaderLibrary.hpp"
 
 Engine::MaterialLibrary &Engine::MaterialLibrary::GetInstance()
 {

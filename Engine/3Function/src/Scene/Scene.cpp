@@ -1,6 +1,6 @@
 #include "Scene.hpp"
 
-#include "../Renderer/Librarys/UniformLibrary.hpp"
+#include "../Renderer/Library/UniformLibrary.hpp"
 
 Engine::Scene::~Scene()
 {

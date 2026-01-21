@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Renderer/Librarys/MaterialLibrary.hpp"
+#include "../../Renderer/Library/MaterialLibrary.hpp"
 
 namespace Engine
 {

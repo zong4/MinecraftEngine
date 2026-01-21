@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Components/ParticleComponent.hpp"
+#include "../../Component/ParticleComponent.hpp"
 
 namespace Engine
 {

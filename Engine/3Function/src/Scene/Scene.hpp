@@ -1,16 +1,16 @@
 #pragma once
 
-#include "../ECS/Components/CameraComponent.hpp"
-#include "../ECS/Components/LabelComponent.hpp"
-#include "../ECS/Components/LightComponent.hpp"
-#include "../ECS/Components/MaterialComponent.hpp"
-#include "../ECS/Components/NativeScriptComponent.hpp"
-#include "../ECS/Components/RelationshipComponent.hpp"
-#include "../ECS/Components/RendererComponents.hpp"
-#include "../ECS/Components/TransformComponent.hpp"
-#include "../ECS/Systems/ParticleSystem/ParticleSystem.hpp"
-#include "../ECS/Systems/PhysicSystem/PhysicSystem.hpp"
-#include "../Renderer/Librarys/ShaderLibrary.hpp"
+#include "../ECS/Component/CameraComponent.hpp"
+#include "../ECS/Component/LabelComponent.hpp"
+#include "../ECS/Component/LightComponent.hpp"
+#include "../ECS/Component/MaterialComponent.hpp"
+#include "../ECS/Component/NativeScriptComponent.hpp"
+#include "../ECS/Component/RelationshipComponent.hpp"
+#include "../ECS/Component/RendererComponents.hpp"
+#include "../ECS/Component/TransformComponent.hpp"
+#include "../ECS/System/ParticleSystem/ParticleSystem.hpp"
+#include "../ECS/System/PhysicSystem/PhysicSystem.hpp"
+#include "../Renderer/Library/ShaderLibrary.hpp"
 
 namespace Engine
 {

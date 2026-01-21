@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../src/EventCodes/KeyCode.hpp"
-#include "../src/EventCodes/MouseButtonCode.hpp"
+#include "../src/EventCode/KeyCode.hpp"
+#include "../src/EventCode/MouseButtonCode.hpp"
 #include "../src/ImGuiLayer/ImGuiLayer.hpp"
-#include "../src/Renderer/Buffers/FrameBuffer.hpp"
-#include "../src/Renderer/Buffers/UniformBuffer.hpp"
+#include "../src/Renderer/Buffer/FrameBuffer.hpp"
+#include "../src/Renderer/Buffer/UniformBuffer.hpp"
 #include "../src/Renderer/RendererCommand.hpp"
 #include "../src/Renderer/Shader/Shader.hpp"
 #include "../src/Renderer/Texture/Texture2D.hpp"
