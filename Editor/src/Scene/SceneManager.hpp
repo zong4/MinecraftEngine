@@ -20,6 +20,12 @@ public:
     std::shared_ptr<Engine::Scene> GetEditorScene() { return m_EditorScene; }
     std::shared_ptr<Engine::Scene> GetActiveScene() { return m_ActiveScene; }
 
+    // Setters
+    void SetActiveScene(const std::shared_ptr<Engine::Scene> &scene) { m_ActiveScene = scene; }
+
+public:
+    void ResetActiveScene() { m_ActiveScene = std::make_shared<Editor::ExampleScene>(); }
+
 private:
     std::shared_ptr<Engine::Scene> m_EditorScene = std::make_shared<Editor::EditorScene>();
     std::shared_ptr<Engine::Scene> m_ActiveScene = std::make_shared<Editor::ExampleScene>();

@@ -32,7 +32,7 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
     {
         if (m_Mode == SandboxMode::Edit)
         {
-            SceneManager::GetInstance().GetActiveScene() = std::make_shared<Editor::ExampleScene>();
+            SceneManager::GetInstance().ResetActiveScene();
             SceneManager::GetInstance().GetActiveScene()->Resize(m_FbWidth, m_FbHeight);
         }
     }
