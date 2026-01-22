@@ -1,6 +1,7 @@
 #include "MaterialsManager.hpp"
 
 #include "ShadersManager.hpp"
+#include "TexturesManager.hpp"
 
 Engine::MaterialsManager &Engine::MaterialsManager::GetInstance()
 {
@@ -53,15 +54,26 @@ Engine::MaterialsManager::MaterialsManager()
 {
     PROFILE_FUNCTION();
 
-    // Load all materials
-    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("BlinnPhong");
-    auto &&whiteMaterial = std::make_shared<Engine::Material>(shader);
-    whiteMaterial->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    whiteMaterial->AddProperty("AmbientStrength", 0.1f);
-    whiteMaterial->AddProperty("DiffuseStrength", 0.8f);
-    whiteMaterial->AddProperty("SpecularStrength", 0.5f);
-    whiteMaterial->AddProperty("Shininess", 32.0f);
-    AddMaterial("Default", whiteMaterial);
+    // Default 2D material
+    {
+        auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture");
+        auto &&material = std::make_shared<Engine::Material>(shader);
+        material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        material->AddProperty("Texture", TexturesManager::GetInstance().GetTexture2D("DefaultTexture"));
+        AddMaterial("Default2D", material);
+    }
+
+    // Default 3D material
+    {
+        auto &&shader = Engine::ShadersManager::GetInstance().GetShader("BlinnPhong");
+        auto &&whiteMaterial = std::make_shared<Engine::Material>(shader);
+        whiteMaterial->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        whiteMaterial->AddProperty("AmbientStrength", 0.1f);
+        whiteMaterial->AddProperty("DiffuseStrength", 0.8f);
+        whiteMaterial->AddProperty("SpecularStrength", 0.5f);
+        whiteMaterial->AddProperty("Shininess", 32.0f);
+        AddMaterial("Default3D", whiteMaterial);
+    }
 
     LOG_ENGINE_INFO("MaterialsManager initialized");
 }

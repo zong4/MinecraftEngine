@@ -18,7 +18,8 @@ enum class MaterialPropertyType
     Texture
 };
 
-using MaterialPropertyValue = std::variant<int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4>;
+using MaterialPropertyValue =
+    std::variant<int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, std::shared_ptr<Texture>>;
 
 class MaterialProperty
 {
@@ -41,15 +42,13 @@ public:
             m_Type = MaterialPropertyType::Vec3;
         else if (std::holds_alternative<glm::vec4>(m_Value))
             m_Type = MaterialPropertyType::Vec4;
+        else if (std::holds_alternative<std::shared_ptr<Texture>>(m_Value))
+            m_Type = MaterialPropertyType::Texture;
         else
         {
             m_Type = MaterialPropertyType::None;
-            LOG_ENGINE_WARN("MaterialProperty: Unsupported MaterialPropertyValue type");
+            LOG_ENGINE_ASSERT("MaterialProperty: Unsupported MaterialPropertyValue type");
         }
-    }
-    MaterialProperty(const std::shared_ptr<Texture2D> &texture)
-        : m_Type(MaterialPropertyType::Texture), m_Texture(texture)
-    {
     }
 
     // Operators
@@ -71,15 +70,10 @@ public:
     {
         return std::get<T>(m_Value);
     }
-    std::shared_ptr<Texture2D> GetTexture() const { return m_Texture; }
-
-    // Setters
-    void SetTexture(const std::shared_ptr<Texture2D> &texture) { m_Texture = texture; }
 
 private:
     MaterialPropertyType m_Type;
     MaterialPropertyValue m_Value;
-    std::shared_ptr<Texture2D> m_Texture;
 };
 
 } // namespace Engine

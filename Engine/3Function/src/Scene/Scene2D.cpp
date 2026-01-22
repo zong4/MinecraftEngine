@@ -1,13 +1,33 @@
 #include "Scene2D.hpp"
 
+#include "../Renderer/Library/UniformLibrary.hpp"
 #include "../Renderer/Library/VertexLibrary.hpp"
 
 void Engine::Scene2D::Render(const Entity &camera)
 {
+    PROFILE_FUNCTION();
+
+    // Update camera uniform buffer
+    auto &&transform = camera.GetComponent<TransformComponent>();
+    auto &&cameraComp = camera.GetComponent<CameraComponent>();
+    if (transform && cameraComp)
+    {
+        cameraComp->UpdateProjectionMatrix();
+        UniformLibrary::GetInstance().UpdateUniform(
+            "UniformBuffer0",
+            {
+                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
+                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
+                 sizeof(glm::mat4)}, // Projection matrix
+                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
+                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
+            });
+    }
+
+    // Upload data
     UploadSquaresData();
 
     // Render scene
-    Scene::Render(camera);
     Render2D(camera);
     RenderColorID();
 }
@@ -36,10 +56,12 @@ void Engine::Scene2D::UploadSquaresData()
     int index = 0;
     std::vector<Vertex2D> vertices;
     std::vector<unsigned int> indices;
-    auto &&view = m_Registry.view<Engine::TransformComponent, Engine::SpriteRendererComponent>();
+    auto &&view =
+        m_Registry.view<Engine::TransformComponent, Engine::SpriteRendererComponent, Engine::MaterialComponent>();
     for (auto &&entity : view)
     {
-        auto &&[transform, sprite] = view.get<Engine::TransformComponent, Engine::SpriteRendererComponent>(entity);
+        auto &&[transform, sprite, material] =
+            view.get<Engine::TransformComponent, Engine::SpriteRendererComponent, Engine::MaterialComponent>(entity);
 
         // Vertices
         for (int i = 0; i < 4; i++)
@@ -47,7 +69,9 @@ void Engine::Scene2D::UploadSquaresData()
             glm::mat4 u_Model = transform.GetTransformMatrix();
             vertices.push_back({(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
                                 g_SquareData.TexCoords[i],
-                                TexturesManager::GetInstance().GetTextureSlot(sprite.Texture), sprite.Color});
+                                TexturesManager::GetInstance().GetTextureSlot(
+                                    material.GetProperty("Texture").GetValueAs<std::shared_ptr<Texture>>()),
+                                material.GetProperty("Color").GetValueAs<glm::vec4>()});
         }
 
         // Indices
@@ -73,17 +97,19 @@ void Engine::Scene2D::Render2D(const Entity &camera) const
     RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
     RendererCommand::Clear();
 
+    // Shader is same for 2d sprites
     auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture");
     shader->Bind();
 
     // Bind textures
-    auto &&spriteView = m_Registry.view<Engine::SpriteRendererComponent>();
-    for (auto &&entity : spriteView)
+    auto &&view = m_Registry.view<Engine::MaterialComponent>();
+    for (auto &&entity : view)
     {
-        auto &&sprite = spriteView.get<Engine::SpriteRendererComponent>(entity);
-        int texID = TexturesManager::GetInstance().GetTextureSlot(sprite.Texture);
+        auto &&material = view.get<Engine::MaterialComponent>(entity);
+        auto &&texture = material.GetProperty("Texture").GetValueAs<std::shared_ptr<Texture>>();
+        int texID = TexturesManager::GetInstance().GetTextureSlot(texture);
         if (texID != -1)
-            sprite.Texture->Active(texID);
+            texture->Active(texID);
     }
 
     // Render squares

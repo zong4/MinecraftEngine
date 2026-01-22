@@ -6,11 +6,12 @@
 Engine::Material::Material(const std::shared_ptr<Shader> &shader) : m_Shader(shader)
 {
     if (!ShadersManager::GetInstance().GetName(shader).empty())
+    {
         LOG_ENGINE_INFO("Material created with shader: " + ShadersManager::GetInstance().GetName(shader));
+    }
     else
     {
-        m_Shader = ShadersManager::GetInstance().GetDefaultShader();
-        LOG_ENGINE_WARN("Material created with unknown shader, default shader assigned");
+        LOG_ENGINE_ERROR("Material created with unknown shader");
     }
 }
 
@@ -37,7 +38,7 @@ void Engine::Material::RemoveProperty(const std::string &name)
 }
 
 void Engine::Material::Bind(const std::string &uniformPrefix,
-                            const std::unordered_map<std::string, MaterialProperty> &overrideProperties) const
+                            const std::unordered_map<std::string, MaterialProperty> &overridePropertyMap) const
 {
     PROFILE_FUNCTION();
 
@@ -45,9 +46,9 @@ void Engine::Material::Bind(const std::string &uniformPrefix,
     for (const auto &[name, property] : m_PropertyMap)
     {
         // Check for override
-        auto &&overrideIt = overrideProperties.find(name);
+        auto &&overrideIt = overridePropertyMap.find(name);
         const MaterialProperty &propertyToUse =
-            (overrideIt != overrideProperties.end()) ? overrideIt->second : property;
+            (overrideIt != overridePropertyMap.end()) ? overrideIt->second : property;
 
         // Set uniform based on property type
         std::string uniformName = uniformPrefix + "." + name;
@@ -69,11 +70,12 @@ void Engine::Material::Bind(const std::string &uniformPrefix,
             m_Shader->SetUniformVec4(uniformName, propertyToUse.GetValueAs<glm::vec4>());
             break;
         case MaterialPropertyType::Texture: {
-            m_Shader->SetUniformInt(uniformName, TexturesManager::GetInstance().GetTextureSlot(property.GetTexture()));
+            m_Shader->SetUniformInt(uniformName, TexturesManager::GetInstance().GetTextureSlot(
+                                                     propertyToUse.GetValueAs<std::shared_ptr<Texture>>()));
         }
         break;
         default:
-            LOG_ENGINE_WARN("Material::Bind: Unsupported MaterialPropertyType for property: " + name);
+            LOG_ENGINE_ASSERT("Material::Bind: Unsupported MaterialPropertyType for property: " + name);
             break;
         }
     }

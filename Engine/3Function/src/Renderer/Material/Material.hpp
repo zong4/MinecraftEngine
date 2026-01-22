@@ -5,7 +5,6 @@
 namespace Engine
 {
 
-// Material class - Unity style with dynamic properties
 class Material
 {
 public:
@@ -26,7 +25,7 @@ public:
 
 public:
     void Bind(const std::string &uniformPrefix,
-              const std::unordered_map<std::string, MaterialProperty> &overrideProperties = {}) const;
+              const std::unordered_map<std::string, MaterialProperty> &overridePropertyMap = {}) const;
 
 private:
     std::shared_ptr<Shader> m_Shader;

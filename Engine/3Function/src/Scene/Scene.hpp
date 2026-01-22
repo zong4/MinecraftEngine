@@ -1,15 +1,17 @@
 #pragma once
 
+#include "../AssetsManager/MaterialsManager.hpp"
 #include "../AssetsManager/ShadersManager.hpp"
+#include "../AssetsManager/TexturesManager.hpp"
 #include "../ECS/Component/CameraComponent.hpp"
 #include "../ECS/Component/LabelComponent.hpp"
 #include "../ECS/Component/LightComponent.hpp"
 #include "../ECS/Component/MaterialComponent.hpp"
-#include "../ECS/Component/RendererComponents.hpp"
 #include "../ECS/System/AudioSystem.hpp"
 #include "../ECS/System/NativeScriptSystem.hpp"
 #include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"
+#include "../ECS/System/RendererSystem.hpp"
 #include "../ECS/System/TransformSystem.hpp"
 
 namespace Engine
@@ -32,20 +34,23 @@ public:
     void SetMainCamera(const Entity &camera);
 
 public:
+    virtual void Resize(int width, int height);
     void Start() { NativeScriptSystem::GetInstance().Start(m_Registry); }
     void Update(float deltaTime);
     void UpdateRuntime(float deltaTime);
-    virtual void Render(const Entity &camera);
-    virtual void Resize(int width, int height);
+    virtual void Render(const Entity &camera) = 0;
 
     // Entity management
     void DeleteEntity(const Entity &entity);
     Entity AddEmptyEntity(const std::string &name, const TransformComponent &transform = TransformComponent());
     Entity AddSquare(const std::string &name, const TransformComponent &transform,
-                     const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent());
+                     const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent(),
+                     const MaterialComponent &materialComponent =
+                         MaterialComponent(MaterialsManager::GetInstance().GetMaterial("Default2D")));
     Entity AddCube(const std::string &name, const TransformComponent &transform,
                    const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
-                   const MaterialComponent &materialComponent = MaterialComponent());
+                   const MaterialComponent &materialComponent =
+                       MaterialComponent(MaterialsManager::GetInstance().GetMaterial("Default3D")));
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
@@ -53,8 +58,7 @@ public:
 protected:
     std::string m_Name;
     entt::registry m_Registry = {};
-    std::shared_ptr<Engine::FrameBuffer> m_ColorIDFrameBuffer =
-        Engine::FrameBuffer::Create(Engine::Texture2DType::Integer, 1280, 720);
+    std::shared_ptr<FrameBuffer> m_ColorIDFrameBuffer = FrameBuffer::Create(Texture2DType::Integer, 1280, 720);
 
 protected:
     virtual void RenderColorID() const = 0;

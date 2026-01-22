@@ -1,6 +1,5 @@
 #include "Scene.hpp"
 
-#include "../Renderer/Library/UniformLibrary.hpp"
 #include <btBulletDynamicsCommon.h>
 
 Engine::Scene::~Scene()
@@ -29,6 +28,30 @@ void Engine::Scene::SetMainCamera(const Entity &camera)
         m_MainCamera.GetComponent<CameraComponent>()->Primary = false;
     m_MainCamera = camera;
     m_MainCamera.GetComponent<CameraComponent>()->Primary = true;
+}
+
+void Engine::Scene::Resize(int width, int height)
+{
+    PROFILE_FUNCTION();
+
+    // Resize all cameras
+    auto &&cameraView = m_Registry.view<CameraComponent>();
+    for (auto &&entity : cameraView)
+    {
+        auto &&camera = cameraView.get<CameraComponent>(entity);
+        camera.Resize(width, height);
+    }
+
+    // Resize color ID framebuffer
+    m_ColorIDFrameBuffer->Resize(width, height);
+
+    // Resize shadow map framebuffers for lights
+    auto &&lightView = m_Registry.view<LightComponent>();
+    for (auto &&entity : lightView)
+    {
+        auto &&lightComp = lightView.get<LightComponent>(entity);
+        lightComp.ShadowMap->Resize(width, height);
+    }
 }
 
 void Engine::Scene::Update(float deltaTime)
@@ -62,66 +85,11 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
         m_Started = true;
     }
 
-    // todo:: check
-    // Transform the BoundingBox to world space
-    {
-        auto &&spriteView = m_Registry.view<TransformComponent, SpriteRendererComponent>();
-        for (auto &&entity : spriteView)
-        {
-            auto &&[transform, spriteRenderer] = spriteView.get<TransformComponent, SpriteRendererComponent>(entity);
-            spriteRenderer.WorldBBox = spriteRenderer.GetBBox().Transform(transform.GetTransformMatrix());
-        }
-
-        auto &&meshView = m_Registry.view<TransformComponent, MeshRendererComponent>();
-        for (auto &&entity : meshView)
-        {
-            auto &&[transform, meshRenderer] = meshView.get<TransformComponent, MeshRendererComponent>(entity);
-            meshRenderer.WorldBBox = meshRenderer.GetBBox().Transform(transform.GetTransformMatrix());
-        }
-    }
-
+    RendererSystem::GetInstance().Update(m_Registry);
     m_PhysicSystem.Update(m_Registry, deltaTime);
     ParticleSystem::GetInstance().Update(m_Registry, deltaTime);
     AudioSystem::GetInstance().Update(m_Registry);
     NativeScriptSystem::GetInstance().Update(m_Registry, deltaTime);
-}
-
-void Engine::Scene::Render(const Entity &camera)
-{
-    PROFILE_FUNCTION();
-
-    // Update camera uniform buffer
-    auto &&transform = camera.GetComponent<TransformComponent>();
-    auto &&cameraComp = camera.GetComponent<CameraComponent>();
-    if (transform && cameraComp)
-    {
-        cameraComp->UpdateProjectionMatrix();
-        UniformLibrary::GetInstance().UpdateUniform(
-            "UniformBuffer0",
-            {
-                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
-                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
-                 sizeof(glm::mat4)}, // Projection matrix
-                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
-                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
-            });
-    }
-}
-
-void Engine::Scene::Resize(int width, int height)
-{
-    PROFILE_FUNCTION();
-
-    // Resize all cameras
-    auto &&cameraView = m_Registry.view<CameraComponent>();
-    for (auto &&entity : cameraView)
-    {
-        auto &&camera = cameraView.get<CameraComponent>(entity);
-        camera.Resize(width, height);
-    }
-
-    // Resize color ID framebuffer
-    m_ColorIDFrameBuffer->Resize(width, height);
 }
 
 void Engine::Scene::DeleteEntity(const Entity &entity)
@@ -144,10 +112,12 @@ Engine::Entity Engine::Scene::AddEmptyEntity(const std::string &name, const Tran
 }
 
 Engine::Entity Engine::Scene::AddSquare(const std::string &name, const TransformComponent &transform,
-                                        const SpriteRendererComponent &spriteRenderer)
+                                        const SpriteRendererComponent &spriteRenderer,
+                                        const MaterialComponent &materialComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<SpriteRendererComponent>(spriteRenderer);
+    entity.AddComponent<MaterialComponent>(materialComponent);
     return entity;
 }
 

@@ -13,7 +13,6 @@ public:
 
 public:
     void Render(const Entity &camera) override;
-    void Resize(int width, int height) override;
 
 protected:
     void RenderColorID() const override;

@@ -1,7 +1,7 @@
 #include "Scene3D.hpp"
 
-#include "../AssetsManager/MaterialsManager.hpp"
 #include "../Physic/Ray/RayTracing.hpp"
+#include "../Renderer/Library/UniformLibrary.hpp"
 #include "../Renderer/Library/VertexLibrary.hpp"
 
 Engine::Scene3D::Scene3D(const std::string &name) : Scene(name)
@@ -19,10 +19,29 @@ Engine::Scene3D::Scene3D(const std::string &name) : Scene(name)
 
 void Engine::Scene3D::Render(const Entity &camera)
 {
+    PROFILE_FUNCTION();
+
+    // Update camera uniform buffer
+    auto &&transform = camera.GetComponent<TransformComponent>();
+    auto &&cameraComp = camera.GetComponent<CameraComponent>();
+    if (transform && cameraComp)
+    {
+        cameraComp->UpdateProjectionMatrix();
+        UniformLibrary::GetInstance().UpdateUniform(
+            "UniformBuffer0",
+            {
+                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
+                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
+                 sizeof(glm::mat4)}, // Projection matrix
+                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
+                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
+            });
+    }
+
+    // Upload data
     UploadCubesData();
 
     // Render scene
-    Scene::Render(camera);
     RenderShadowMap();
     Render3D(camera);
     ParticleSystem::GetInstance().Render(m_Registry);
@@ -45,19 +64,6 @@ void Engine::Scene3D::Render(const Entity &camera)
     //         m_RayTracingRunning = false;
     //     }).detach();
     // }
-}
-
-void Engine::Scene3D::Resize(int width, int height)
-{
-    Scene::Resize(width, height);
-
-    // Resize shadow map framebuffers for lights
-    auto &&lightView = m_Registry.view<LightComponent>();
-    for (auto &&entity : lightView)
-    {
-        auto &&lightComp = lightView.get<LightComponent>(entity);
-        lightComp.ShadowMap->Resize(width, height);
-    }
 }
 
 void Engine::Scene3D::RenderColorID() const
