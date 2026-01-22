@@ -6,8 +6,8 @@ void Editor::PlayerController::OnCreate()
 {
     m_Transform = GetComponent<Engine::TransformComponent>();
     m_RigidBody = GetComponent<Engine::RigidBodyComponent>();
-    m_Sound = GetComponent<Engine::SoundComponent>();
-    m_Sound->SetSound(SoundsManager::GetInstance().GetSound("walk"));
+    m_Audio = GetComponent<Engine::AudioComponent>();
+    m_Audio->SetAudio(AudiosManager::GetInstance().GetAudio("walk"));
 }
 
 void Editor::PlayerController::OnUpdate(float deltaTime)
@@ -26,13 +26,13 @@ void Editor::PlayerController::OnUpdate(float deltaTime)
         m_Transform->Position.y += m_MoveSpeed * deltaTime;
     }
 
-    // Play sound when moving
+    // Play Audio when moving
     if (glm::length(movement) > 0.0f)
     {
-        m_Sound->Play();
+        m_Audio->Play();
     }
     else
     {
-        m_Sound->Stop();
+        m_Audio->Stop();
     }
 }

@@ -7,10 +7,12 @@ Engine::CameraComponent::CameraComponent(CameraType type, float width, float hei
 {
 }
 
-glm::vec3 Engine::CameraComponent::GetLocalDir(float u, float v) const
+glm::vec3 Engine::CameraComponent::GetWorldDirection(float u, float v) const
 {
     if (Type == CameraType::Orthographic)
+    {
         return glm::vec3(0.0f, 0.0f, -1.0f);
+    }
     else
     {
         float aspectRatio = (float)m_Width / (float)m_Height;
@@ -31,8 +33,13 @@ void Engine::CameraComponent::Resize(int width, int height)
 void Engine::CameraComponent::UpdateProjectionMatrix()
 {
     if (Type == CameraType::Orthographic)
-        m_ProjectionMatrix = glm::ortho(-m_Width / 200.0f * Scale, m_Width / 200.0f * Scale, -m_Height / 200.0f * Scale,
-                                        m_Height / 200.0f * Scale, NearClip, FarClip); // Maybe it is hacky
+    {
+        m_ProjectionMatrix =
+            glm::ortho(-m_Width / 200.0f * Scale, m_Width / 200.0f * Scale, -m_Height / 200.0f * Scale,
+                       m_Height / 200.0f * Scale, NearClip, FarClip); // 200.0f to convert from pixels to world units
+    }
     else if (Type == CameraType::Perspective)
+    {
         m_ProjectionMatrix = glm::perspective(glm::radians(FOV), (float)m_Width / (float)m_Height, NearClip, FarClip);
+    }
 }

@@ -29,12 +29,14 @@ std::shared_ptr<Engine::Shader> Engine::ShadersManager::GetShader(const std::str
 
 void Engine::ShadersManager::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
 {
+    // Validate shader
     if (!shader)
     {
         LOG_ENGINE_ERROR("Cannot add null shader: " + name);
         return;
     }
 
+    // Check if shader already exists
     if (Exists(name))
     {
         LOG_ENGINE_WARN("Shader already exists: " + name + ", overwriting");
@@ -65,6 +67,7 @@ Engine::ShadersManager::ShadersManager()
 {
     PROFILE_FUNCTION();
 
+    // Check Shaders directory path
     std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resources/Shaders/");
     if (!std::filesystem::exists(path))
     {
@@ -136,6 +139,5 @@ Engine::ShadersManager::ShadersManager()
             }
         }
     }
-
     LOG_ENGINE_INFO("ShadersManager initialized");
 }

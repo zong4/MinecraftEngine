@@ -17,7 +17,7 @@ Engine::PhysicSystem::~PhysicSystem()
     if (!m_DynamicsWorld)
         return;
 
-    for (int i = m_DynamicsWorld->getNumCollisionObjects() - 1; i >= 0; --i)
+    for (int i = m_DynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
     {
         btCollisionObject *obj = m_DynamicsWorld->getCollisionObjectArray()[i];
         btRigidBody *body = btRigidBody::upcast(obj);
@@ -39,18 +39,17 @@ Engine::PhysicSystem::~PhysicSystem()
 
 void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform)
 {
+    // Create rigid body if it doesn't exist
     if (!rigidBody.Body)
         AddCube(rigidBody, transform);
     btRigidBody *body = rigidBody.Body;
 
-    // Transform
+    // Update transform
     btTransform btTransform;
     btTransform.setIdentity();
     btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
-
-    // Update transform from TransformComponent
     body->getMotionState()->setWorldTransform(btTransform);
     body->setWorldTransform(btTransform);
 
@@ -90,8 +89,6 @@ void Engine::PhysicSystem::AddCube(RigidBodyComponent &rigidBody, const Transfor
     btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
-
-    // Motion state
     btDefaultMotionState *motionState = new btDefaultMotionState(btTransform);
 
     // Shape

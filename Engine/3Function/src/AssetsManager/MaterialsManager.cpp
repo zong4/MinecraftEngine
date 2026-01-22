@@ -31,12 +31,14 @@ std::shared_ptr<Engine::Material> Engine::MaterialsManager::GetMaterial(const st
 
 void Engine::MaterialsManager::AddMaterial(const std::string &name, const std::shared_ptr<Material> &material)
 {
+    // Validate material
     if (!material)
     {
         LOG_ENGINE_ERROR("Cannot add null material: " + name);
         return;
     }
 
+    // Check if material already exists
     if (Exists(name))
     {
         LOG_ENGINE_WARN("Material already exists: " + name + ", overwriting");
@@ -59,7 +61,7 @@ Engine::MaterialsManager::MaterialsManager()
     whiteMaterial->AddProperty("DiffuseStrength", 0.8f);
     whiteMaterial->AddProperty("SpecularStrength", 0.5f);
     whiteMaterial->AddProperty("Shininess", 32.0f);
-    AddMaterial("DefaultMaterial", whiteMaterial);
+    AddMaterial("Default", whiteMaterial);
 
     LOG_ENGINE_INFO("MaterialsManager initialized");
 }

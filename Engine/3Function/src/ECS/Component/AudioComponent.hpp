@@ -6,32 +6,34 @@
 namespace Engine
 {
 
-static ma_engine *GetSoundEngine();
+static ma_engine *GetAudioEngine();
 
-struct SoundComponent
+struct AudioComponent
 {
 public:
-    SoundComponent(bool looping = false, float volume = 1.0f) : m_Looping(looping), m_Volume(volume) {}
-    ~SoundComponent();
+    AudioComponent(bool looping = false, float volume = 1.0f) : m_Looping(looping), m_Volume(volume) {}
+    ~AudioComponent();
 
     // Getters
+    bool IsInitialized() const { return m_Initialized; }
     bool IsLooping() const { return m_Looping; }
     float GetVolume() const { return m_Volume; }
-    const ma_sound &GetSound() const { return m_Sound; }
 
     // Setters
     void SetLooping(bool loop);
     void SetVolume(float volume);
-    void SetSound(const std::filesystem::path &filepath);
+    void SetAudio(const std::filesystem::path &filepath);
+    void SetPosition(const glm::vec3 &pos);
 
 public:
     void Play();
     void Stop();
 
 private:
+    bool m_Initialized = false;
     bool m_Looping;
     float m_Volume;
-    ma_sound m_Sound{};
+    ma_sound m_Audio{};
 };
 
 } // namespace Engine

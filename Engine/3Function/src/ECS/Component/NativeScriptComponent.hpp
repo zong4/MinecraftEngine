@@ -12,6 +12,7 @@ struct NativeScriptComponent
 public:
     NativeScriptComponent() = default;
 
+public:
     std::function<std::shared_ptr<ScriptableEntity>()> InstantiateScript;
     std::function<void()> DestroyScript;
 

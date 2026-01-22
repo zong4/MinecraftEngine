@@ -25,6 +25,7 @@ int Engine::TexturesManager::GetTextureSlot(const std::shared_ptr<Texture> &text
         }
     }
 
+    // No available slots
     LOG_ENGINE_ERROR("No available texture slots");
     return -1;
 }
@@ -62,12 +63,14 @@ std::shared_ptr<Engine::TextureCube> Engine::TexturesManager::GetTextureCube(con
 
 void Engine::TexturesManager::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
 {
+    // Validate texture
     if (!texture)
     {
         LOG_ENGINE_ERROR("Cannot add null texture: " + name);
         return;
     }
 
+    // Check if texture already exists
     if (Exists(name))
     {
         LOG_ENGINE_WARN("Texture already exists: " + name + ", overwriting");
@@ -82,9 +85,11 @@ Engine::TexturesManager::TexturesManager()
 {
     PROFILE_FUNCTION();
 
+    // Load default textures
     AddTexture("DefaultTexture", Texture2D::WhiteTexture());
     AddTexture("DefaultSkybox", TextureCube::WhiteTexture());
 
+    // Chick Textures directory path
     std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resources/Textures/");
     if (!std::filesystem::exists(path))
     {
@@ -131,6 +136,5 @@ Engine::TexturesManager::TexturesManager()
             }
         }
     }
-
     LOG_ENGINE_INFO("TexturesManager initialized");
 }

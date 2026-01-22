@@ -3,6 +3,7 @@
 #include "../../AssetsManager/TexturesManager.hpp"
 #include "../../Physic/Collider/BoundingBox.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
+#include "MaterialComponent.hpp"
 
 namespace Engine
 {

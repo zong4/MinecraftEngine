@@ -30,7 +30,7 @@ public:
     int GetWidth() const { return m_Width; }
     int GetHeight() const { return m_Height; }
     const glm::mat4 &GetProjectionMatrix() const { return m_ProjectionMatrix; }
-    glm::vec3 GetLocalDir(float u, float v) const; // u is in [0,1], v is in [0,1]
+    glm::vec3 GetWorldDirection(float u, float v) const; // u is in [0,1], v is in [0,1]
 
 public:
     void Resize(int width, int height);
