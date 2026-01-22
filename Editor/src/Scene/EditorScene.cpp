@@ -6,6 +6,9 @@ Editor::EditorScene::EditorScene() : Engine::Scene3D("EditorScene")
 {
     PROFILE_FUNCTION();
 
+    // ------------------
+    // Camera
+    // ------------------
     Engine::Entity camera =
         AddCamera("MainCamera", Engine::TransformComponent(), Engine::CameraComponent(Engine::CameraType::Perspective));
     camera.AddComponent<Engine::NativeScriptComponent>();

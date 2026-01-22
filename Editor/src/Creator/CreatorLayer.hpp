@@ -26,7 +26,6 @@ public:
 
 private:
     SandboxMode m_Mode = SandboxMode::Edit;
-    int m_FbWidth, m_FbHeight;
 
 private:
     void DrawDebugUI();

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "EditorScene.hpp"
-#include "ExampleScene.hpp"
-#include "WelcomeScene.hpp"
+#include <Platform.hpp>
 
 namespace Editor
 {
@@ -10,28 +8,29 @@ namespace Editor
 class SceneManager
 {
 public:
-    static SceneManager &GetInstance()
-    {
-        static SceneManager instance;
-        return instance;
-    }
+    static SceneManager &GetInstance();
 
     // Getters
     std::shared_ptr<Engine::Scene> GetEditorScene() { return m_EditorScene; }
     std::shared_ptr<Engine::Scene> GetActiveScene() { return m_ActiveScene; }
 
     // Setters
-    void SetActiveScene(const std::shared_ptr<Engine::Scene> &scene) { m_ActiveScene = scene; }
+    void SetActiveScene(const std::shared_ptr<Engine::Scene> &scene);
 
 public:
-    void ResetActiveScene() { m_ActiveScene = std::make_shared<Editor::ExampleScene>(); }
+    void Resize(int width, int height);
+    void UpdateInEditor(float deltaTime);
+    void UpdateInRuntime(float deltaTime);
+    void RenderInEditor();
+    void RenderInRuntime();
 
 private:
-    std::shared_ptr<Engine::Scene> m_EditorScene = std::make_shared<Editor::EditorScene>();
-    std::shared_ptr<Engine::Scene> m_ActiveScene = std::make_shared<Editor::ExampleScene>();
+    int m_FbWidth, m_FbHeight;
+    std::shared_ptr<Engine::Scene> m_EditorScene;
+    std::shared_ptr<Engine::Scene> m_ActiveScene;
 
 private:
-    SceneManager() = default;
+    SceneManager();
     ~SceneManager() = default;
 };
 

@@ -30,7 +30,7 @@ void Engine::RayTracing::RenderScene(const Entity &camera, const std::vector<Ent
         }
     }
 
-    SaveImage(std::string(PROJECT_ROOT) + "/Assets/RayTracedImage.png", width, height, frameBuffer);
+    SaveImage(std::string(PROJECT_ROOT) + "/Assets/RayTracing.png", width, height, frameBuffer);
 }
 
 void Engine::RayTracing::SaveImage(const std::string &filepath, int width, int height,

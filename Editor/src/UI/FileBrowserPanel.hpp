@@ -18,6 +18,7 @@ public:
     void OnImGuiRender();
 
 private:
+    std::filesystem::path m_RootDirectory;
     std::filesystem::path m_CurrentDirectory;
     std::shared_ptr<Engine::Texture2D> m_FileIcon;
     std::shared_ptr<Engine::Texture2D> m_DirectoryIcon;

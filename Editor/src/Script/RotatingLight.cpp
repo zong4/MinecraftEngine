@@ -13,6 +13,7 @@ void Editor::RotatingLight::OnUpdate(float deltaTime)
     if (!s_RotationEnabled)
         return;
 
+    // Rotate around Y axis
     glm::vec3 rotation = m_Transform->GetRotationEuler();
     rotation.y += m_RotationSpeed * deltaTime;
     if (rotation.y >= 360.0f)

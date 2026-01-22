@@ -9,20 +9,14 @@ Editor::FileBrowserPanel &Editor::FileBrowserPanel::GetInstance()
     return instance;
 }
 
-Editor::FileBrowserPanel::FileBrowserPanel() : m_CurrentDirectory(std::string(EDITOR_ROOT) + "/assets")
-{
-    m_FileIcon = Engine::Texture2D::Create((std::string(EDITOR_ROOT) + "/resources/icons/File.png"));
-    m_DirectoryIcon = Engine::Texture2D::Create((std::string(EDITOR_ROOT) + "/resources/icons/Directory.png"));
-}
-
 void Editor::FileBrowserPanel::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
     ImGui::Begin("File Browser");
 
-    // Back button
-    if (!std::filesystem::equivalent(m_CurrentDirectory, std::string(EDITOR_ROOT) + "/assets"))
+    // Navigation Bar
+    if (!std::filesystem::equivalent(m_CurrentDirectory, m_RootDirectory))
     {
         if (ImGui::Button("<-"))
             m_CurrentDirectory = m_CurrentDirectory.parent_path();
@@ -32,7 +26,7 @@ void Editor::FileBrowserPanel::OnImGuiRender()
         ImGui::Button("/");
     }
 
-    // At least one column
+    // Calculate number of columns(at least 1)
     static float thumbnailSize = 60.0f;
     float cellSize = thumbnailSize;
     float panelWidth = ImGui::GetContentRegionAvail().x;
@@ -41,19 +35,19 @@ void Editor::FileBrowserPanel::OnImGuiRender()
         columnCount = 1;
     ImGui::Columns(columnCount, 0, false);
 
-    // Entries
+    // List files and directories
     for (auto &&directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
     {
         const auto &path = directoryEntry.path();
-        auto &&relativePath = std::filesystem::relative(path, std::string(EDITOR_ROOT) + "/assets");
+        auto &&relativePath = std::filesystem::relative(path, m_RootDirectory);
 
-        // ID
+        // Skip hidden files
         std::string filenameString = relativePath.filename().string();
         if (filenameString.empty() || filenameString[0] == '.')
             continue;
         ImGui::PushID(filenameString.c_str());
 
-        // Icon
+        // File/Directory Icon Button
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
         std::shared_ptr<Engine::Texture2D> icon = directoryEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
         ImGui::ImageButton(filenameString.c_str(), (ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize},
@@ -68,7 +62,7 @@ void Editor::FileBrowserPanel::OnImGuiRender()
             ImGui::EndDragDropSource();
         }
 
-        // Handle double-click to open directory or select file
+        // Handle Clicks
         if (ImGui::IsItemHovered())
         {
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
@@ -86,7 +80,7 @@ void Editor::FileBrowserPanel::OnImGuiRender()
             }
         }
 
-        // Filename
+        // Filename Text (with ellipsis if too long)
         // ImGui::PushFont(Engine::FontLibrary::GetInstance().GetFont("Cute-Thin"));
         float availWidth = ImGui::GetContentRegionAvail().x;
         float textWidth = ImGui::CalcTextSize(filenameString.c_str()).x;
@@ -97,7 +91,7 @@ void Editor::FileBrowserPanel::OnImGuiRender()
             filenameString += "...";
         }
 
-        // Centered text
+        // Center the text under the icon
         ImVec2 textSize = ImGui::CalcTextSize(filenameString.c_str());
         float textOffsetX = (thumbnailSize - textSize.x) * 0.5f;
         if (textOffsetX < 0.0f)
@@ -106,7 +100,7 @@ void Editor::FileBrowserPanel::OnImGuiRender()
         ImGui::TextUnformatted(filenameString.c_str());
         // ImGui::PopFont();
 
-        // Next column
+        // Next Column
         ImGui::PopID();
         ImGui::NextColumn();
     }
@@ -116,4 +110,11 @@ void Editor::FileBrowserPanel::OnImGuiRender()
     ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
 
     ImGui::End();
+}
+
+Editor::FileBrowserPanel::FileBrowserPanel()
+    : m_RootDirectory(std::string(EDITOR_ROOT) + "/assets"), m_CurrentDirectory(m_RootDirectory)
+{
+    m_FileIcon = Engine::Texture2D::Create((std::string(EDITOR_ROOT) + "/resources/Icons/File.png"));
+    m_DirectoryIcon = Engine::Texture2D::Create((std::string(EDITOR_ROOT) + "/resources/Icons/Directory.png"));
 }
