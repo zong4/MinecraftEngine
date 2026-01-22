@@ -178,7 +178,7 @@ void Engine::Scene::RenderParticles()
     for (auto &&entity : view)
     {
         auto &&particleComp = view.get<ParticleComponent>(entity);
-        ParticleSystem::GetInstance().Render(particleComp);
+        particleComp.Render();
     }
 }
 
@@ -238,7 +238,7 @@ void Engine::Scene::UpdateParticleSystem(float deltaTime)
     for (auto &&entity : view)
     {
         auto &&particleComp = view.get<ParticleComponent>(entity);
-        ParticleSystem::GetInstance().UpdateParticle(particleComp, deltaTime);
+        particleComp.Update(deltaTime);
     }
 }
 

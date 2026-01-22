@@ -7,10 +7,10 @@
 #include "../ECS/Component/LightComponent.hpp"
 #include "../ECS/Component/MaterialComponent.hpp"
 #include "../ECS/Component/NativeScriptComponent.hpp"
+#include "../ECS/Component/ParticleComponent.hpp"
 #include "../ECS/Component/RelationshipComponent.hpp"
 #include "../ECS/Component/RendererComponents.hpp"
 #include "../ECS/Component/TransformComponent.hpp"
-#include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"
 
 namespace Engine

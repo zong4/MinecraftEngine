@@ -22,20 +22,18 @@ public:
 struct ParticleComponent
 {
     std::function<Particle()> EmitFunction;
-    std::vector<Particle> Particles;
 
 public:
-    ParticleComponent(std::function<Particle()> emitFunction, int maxParticles = 1000);
-
-    // Getters
-    int GetMaxParticles() const { return m_MaxParticles; }
-    std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
+    ParticleComponent(std::function<Particle()> emitFunction, int emissionCount = 10, int maxCount = 1000);
 
 public:
-    void Update() {}
+    void Update(float deltaTime);
+    void Render() const;
 
 private:
-    int m_MaxParticles;
+    int m_EmissionCount;
+    int m_MaxCount;
+    std::vector<Particle> m_Particles;
     std::shared_ptr<VertexArray> m_VertexArray;
 };
 
