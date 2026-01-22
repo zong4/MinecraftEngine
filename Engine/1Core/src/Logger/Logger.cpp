@@ -12,9 +12,11 @@ void Engine::Logger::Init(const std::string &dirPath)
     if (s_EngineLogger && s_EditorLogger)
         return;
 
+    // Create engine logger
     s_EngineLogger = CreateLogger(dirPath, "Engine");
     LOG_ENGINE_INFO("Engine logger initialized");
 
+    // Create editor logger
     s_EditorLogger = CreateLogger(dirPath, "Editor");
     LOG_EDITOR_INFO("Editor logger initialized");
 }

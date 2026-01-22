@@ -33,6 +33,7 @@ class MouseMoveEvent : public Engine::Event
 public:
     MouseMoveEvent(double x, double y) : m_X(x), m_Y(y) {}
 
+    // Getters
     double GetX() const { return m_X; }
     double GetY() const { return m_Y; }
 
