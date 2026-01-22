@@ -8,6 +8,7 @@
 #include "../ECS/Component/NativeScriptComponent.hpp"
 #include "../ECS/Component/RelationshipComponent.hpp"
 #include "../ECS/Component/RendererComponents.hpp"
+#include "../ECS/Component/SoundComponent.hpp"
 #include "../ECS/Component/TransformComponent.hpp"
 #include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"

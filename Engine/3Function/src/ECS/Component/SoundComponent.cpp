@@ -1,5 +1,7 @@
 #include "SoundComponent.hpp"
 
+#define MINIAUDIO_IMPLEMENTATION
+#define MINIAUDIO_ENABLE_MP3
 #include <miniaudio.h>
 
 ma_engine *Engine::GetSoundEngine()

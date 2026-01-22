@@ -6,6 +6,8 @@ void Editor::PlayerController::OnCreate()
 {
     m_Transform = GetComponent<Engine::TransformComponent>();
     m_RigidBody = GetComponent<Engine::RigidBodyComponent>();
+    m_Sound = GetComponent<Engine::SoundComponent>();
+    m_Sound->SetSound(SoundsManager::GetInstance().GetSound("walk"));
 }
 
 void Editor::PlayerController::OnUpdate(float deltaTime)
@@ -22,5 +24,15 @@ void Editor::PlayerController::OnUpdate(float deltaTime)
     if (Input::GetInstance().IsKeyPressed(KEY_J))
     {
         m_Transform->Position.y += m_MoveSpeed * deltaTime;
+    }
+
+    // Play sound when moving
+    if (glm::length(movement) > 0.0f)
+    {
+        m_Sound->Play();
+    }
+    else
+    {
+        m_Sound->Stop();
     }
 }
