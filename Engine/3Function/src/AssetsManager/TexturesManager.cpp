@@ -73,6 +73,7 @@ void Engine::TexturesManager::AddTexture(const std::string &name, const std::sha
         LOG_ENGINE_WARN("Texture already exists: " + name + ", overwriting");
     }
 
+    // Add texture to map
     m_TexturesMap[name] = texture;
     LOG_ENGINE_TRACE("Texture added: " + name);
 }
@@ -91,6 +92,7 @@ Engine::TexturesManager::TexturesManager()
         return;
     }
 
+    // Load all textures
     for (auto &&entry : std::filesystem::directory_iterator(path))
     {
         if (entry.is_directory())

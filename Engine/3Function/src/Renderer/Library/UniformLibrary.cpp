@@ -20,8 +20,7 @@ void Engine::UniformLibrary::AddUniform(const std::string &name, size_t size, un
 {
     if (Exists(name))
     {
-        LOG_ENGINE_WARN("Uniform already exists: " + name);
-        return;
+        LOG_ENGINE_WARN("Uniform already exists: " + name + ", overwriting");
     }
     m_UniformMap[name] = UniformBuffer::Create(size, binding);
     LOG_ENGINE_INFO("Uniform added: " + name);

@@ -42,6 +42,7 @@ void Engine::MaterialsManager::AddMaterial(const std::string &name, const std::s
         LOG_ENGINE_WARN("Material already exists: " + name + ", overwriting");
     }
 
+    // Add material to map
     m_MaterialsMap[name] = material;
     LOG_ENGINE_TRACE("Material added: " + name);
 }
@@ -50,6 +51,7 @@ Engine::MaterialsManager::MaterialsManager()
 {
     PROFILE_FUNCTION();
 
+    // Load all materials
     auto &&shader = Engine::ShadersManager::GetInstance().GetShader("BlinnPhong");
     auto &&whiteMaterial = std::make_shared<Engine::Material>(shader);
     whiteMaterial->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));

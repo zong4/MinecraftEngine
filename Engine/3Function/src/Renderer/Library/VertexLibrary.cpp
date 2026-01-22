@@ -33,15 +33,15 @@ void Engine::VertexLibrary::AddVertex(const std::string &name, const std::shared
 {
     if (!vertexArray)
     {
-        LOG_ENGINE_ASSERT("Cannot add null vertex array: " + name);
+        LOG_ENGINE_ERROR("Cannot add null vertex array: " + name);
         return;
     }
 
     if (Exists(name))
     {
-        LOG_ENGINE_WARN("VAO already exists: " + name);
-        return;
+        LOG_ENGINE_WARN("VAO already exists: " + name + ", overwriting");
     }
+
     m_VertexMap[name] = vertexArray;
     LOG_ENGINE_TRACE("VAO added: " + name);
 }
