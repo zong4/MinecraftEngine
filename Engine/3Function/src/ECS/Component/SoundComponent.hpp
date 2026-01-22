@@ -1,9 +1,7 @@
 #pragma once
 
 #include <Platform.hpp>
-
-class ma_engine;
-class ma_sound;
+#include <miniaudio.h>
 
 namespace Engine
 {
@@ -19,7 +17,7 @@ public:
     // Getters
     bool IsLooping() const { return m_Looping; }
     float GetVolume() const { return m_Volume; }
-    ma_sound *GetSound() const { return m_Sound; }
+    const ma_sound &GetSound() const { return m_Sound; }
 
     // Setters
     void SetLooping(bool loop);
@@ -33,7 +31,7 @@ public:
 private:
     bool m_Looping;
     float m_Volume;
-    ma_sound *m_Sound = nullptr;
+    ma_sound m_Sound{};
 };
 
 } // namespace Engine
