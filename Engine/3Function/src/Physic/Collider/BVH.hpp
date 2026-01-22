@@ -22,7 +22,7 @@ public:
     ~BVH();
 
 public:
-    void Render(int maxDepth) const;
+    void Render(const Entity &camera, int maxDepth) const;
 
 private:
     BVHNode *m_Root;

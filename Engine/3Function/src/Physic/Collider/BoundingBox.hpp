@@ -14,12 +14,8 @@ public:
     // Getters
     const glm::vec3 &GetMin() const { return m_Min; }
     const glm::vec3 &GetMax() const { return m_Max; }
-    const glm::vec4 &GetColor() const { return m_Color; }
     int GetLongestAxis() const;
     glm::vec3 GetCenter() const { return (m_Min + m_Max) * 0.5f; }
-
-    // Setters
-    void SetColor(const glm::vec4 &color) { m_Color = color; }
 
 public:
     BoundingBox Extend(const glm::vec3 &point) const;
@@ -29,7 +25,6 @@ public:
 private:
     glm::vec3 m_Min;
     glm::vec3 m_Max;
-    glm::vec4 m_Color;
 };
 
 } // namespace Engine
