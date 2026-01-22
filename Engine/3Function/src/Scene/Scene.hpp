@@ -8,8 +8,8 @@
 #include "../ECS/Component/RelationshipComponent.hpp"
 #include "../ECS/Component/RendererComponents.hpp"
 #include "../ECS/Component/TransformComponent.hpp"
-#include "../ECS/System/ParticleSystem/ParticleSystem.hpp"
-#include "../ECS/System/PhysicSystem/PhysicSystem.hpp"
+#include "../ECS/System/ParticleSystem.hpp"
+#include "../ECS/System/PhysicSystem.hpp"
 #include "../Renderer/Library/ShaderLibrary.hpp"
 
 namespace Engine

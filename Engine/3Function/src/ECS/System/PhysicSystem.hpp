@@ -1,7 +1,13 @@
 #pragma once
 
-#include "../../Component/PhysicComponents.hpp"
-#include "../../Component/TransformComponent.hpp"
+#include "../Component/RigidBodyComponent.hpp"
+#include "../Component/TransformComponent.hpp"
+
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btBroadphaseInterface;
+class btSequentialImpulseConstraintSolver;
+class btDiscreteDynamicsWorld;
 
 namespace Engine
 {
@@ -14,7 +20,7 @@ public:
 
 public:
     void UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform);
-    void Update(float deltaTime) { m_DynamicsWorld->stepSimulation(deltaTime); }
+    void Update(float deltaTime);
 
 private:
     btDefaultCollisionConfiguration *m_CollisionConfiguration;

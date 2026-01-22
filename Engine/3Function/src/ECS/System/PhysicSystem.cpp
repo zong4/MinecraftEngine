@@ -1,5 +1,7 @@
 #include "PhysicSystem.hpp"
 
+#include <btBulletDynamicsCommon.h>
+
 Engine::PhysicSystem::PhysicSystem()
 {
     m_CollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -77,6 +79,8 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
     }
     }
 }
+
+void Engine::PhysicSystem::Update(float deltaTime) { m_DynamicsWorld->stepSimulation(deltaTime); }
 
 void Engine::PhysicSystem::AddCube(RigidBodyComponent &rigidBody, const TransformComponent &transform)
 {

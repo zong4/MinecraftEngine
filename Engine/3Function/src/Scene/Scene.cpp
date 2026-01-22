@@ -1,6 +1,7 @@
 #include "Scene.hpp"
 
 #include "../Renderer/Library/UniformLibrary.hpp"
+#include <btBulletDynamicsCommon.h>
 
 Engine::Scene::~Scene()
 {

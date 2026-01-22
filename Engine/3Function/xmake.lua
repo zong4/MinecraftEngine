@@ -13,5 +13,5 @@ target("Function")
 
     add_packages("nlohmann_json")
     add_packages("entt", {public = true})
-    add_packages("bullet3", {public = true})
+    add_packages("bullet3")
     add_packages("miniaudio", {public = true})
