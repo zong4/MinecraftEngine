@@ -1,15 +1,15 @@
 #include "Material.hpp"
 
-#include "../Library/ShaderLibrary.hpp"
-#include "../Library/TextureLibrary.hpp"
+#include "../../AssetsManager/ShadersManager.hpp"
+#include "../../AssetsManager/TexturesManager.hpp"
 
 Engine::Material::Material(const std::shared_ptr<Shader> &shader) : m_Shader(shader)
 {
-    if (!ShaderLibrary::GetInstance().GetName(shader).empty())
-        LOG_ENGINE_INFO("Material created with shader: " + ShaderLibrary::GetInstance().GetName(shader));
+    if (!ShadersManager::GetInstance().GetName(shader).empty())
+        LOG_ENGINE_INFO("Material created with shader: " + ShadersManager::GetInstance().GetName(shader));
     else
     {
-        m_Shader = ShaderLibrary::GetInstance().GetDefaultShader();
+        m_Shader = ShadersManager::GetInstance().GetDefaultShader();
         LOG_ENGINE_WARN("Material created with unknown shader, default shader assigned");
     }
 }
@@ -69,7 +69,7 @@ void Engine::Material::Bind(const std::string &uniformPrefix,
             m_Shader->SetUniformVec4(uniformName, propertyToUse.GetValueAs<glm::vec4>());
             break;
         case MaterialPropertyType::Texture: {
-            m_Shader->SetUniformInt(uniformName, TextureLibrary::GetInstance().GetTextureSlot(property.GetTexture()));
+            m_Shader->SetUniformInt(uniformName, TexturesManager::GetInstance().GetTextureSlot(property.GetTexture()));
         }
         break;
         default:

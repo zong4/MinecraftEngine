@@ -1,7 +1,7 @@
 #include "Scene3D.hpp"
 
+#include "../AssetsManager/MaterialsManager.hpp"
 #include "../Physic/Ray/RayTracing.hpp"
-#include "../Renderer/Library/MaterialLibrary.hpp"
 #include "../Renderer/Library/VertexLibrary.hpp"
 
 Engine::Scene3D::Scene3D(const std::string &name) : Scene(name)
@@ -66,7 +66,7 @@ void Engine::Scene3D::RenderColorID() const
 
     m_ColorIDFrameBuffer->Bind();
     RendererCommand::Clear();
-    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("ColorIDPicking");
     shader->Bind();
 
     // Render entity IDs as color IDs
@@ -130,7 +130,7 @@ void Engine::Scene3D::RenderShadowMap() const
     PROFILE_FUNCTION();
 
     RendererCommand::SetFaceCulling(CullingFace::Front);
-    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ShadowMap");
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("ShadowMap");
     shader->Bind();
     auto &&lightView = m_Registry.view<Engine::TransformComponent, Engine::LightComponent>();
     for (auto &&lightEntity : lightView)
@@ -162,7 +162,7 @@ void Engine::Scene3D::Render3D(const Entity &camera) const
     RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
     RendererCommand::Clear();
 
-    auto &&shader = ShaderLibrary::GetInstance().GetShader("BlinnPhong");
+    auto &&shader = ShadersManager::GetInstance().GetShader("BlinnPhong");
     shader->Bind();
 
     // Light
@@ -211,11 +211,11 @@ void Engine::Scene3D::Render3D(const Entity &camera) const
     shader->SetUniformInt("u_Skybox", lightIndex);
     m_SkyboxTexture->Active(lightIndex);
 
-    TextureLibrary::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
+    TexturesManager::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
     shader->SetUniformInt("u_Texture", lightIndex + 1);
     if (m_CubesCount > 0)
         VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
-    TextureLibrary::GetInstance().ClearTextureSlots();
+    TexturesManager::GetInstance().ClearTextureSlots();
 
     shader->Unbind();
 }
@@ -227,7 +227,7 @@ void Engine::Scene3D::RenderSkybox() const
     RendererCommand::SetFaceCulling(CullingFace::Front);
     RendererCommand::SetDepthTestFunction(DepthTestFunction::LessEqual);
     RendererCommand::SetDepthWrite(false);
-    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Skybox");
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Skybox");
     shader->Bind();
 
     shader->SetUniformInt("u_Skybox", 0);

@@ -1,25 +1,26 @@
-#include "TextureLibrary.hpp"
+#include "TexturesManager.hpp"
 
-Engine::TextureLibrary &Engine::TextureLibrary::GetInstance()
+Engine::TexturesManager &Engine::TexturesManager::GetInstance()
 {
-    static TextureLibrary instance;
+    static TexturesManager instance;
     return instance;
 }
 
-int Engine::TextureLibrary::GetTextureSlot(const std::shared_ptr<Texture> &texture)
+int Engine::TexturesManager::GetTextureSlot(const std::shared_ptr<Texture> &texture)
 {
-    for (size_t i = 0; i < m_TextureSlots.size(); i++)
+    // Check if texture is already bound to a slot
+    for (size_t i = 0; i < m_TexturesSlot.size(); i++)
     {
-        if (m_TextureSlots[i] == GetName(texture))
+        if (m_TexturesSlot[i] == GetName(texture))
             return static_cast<int>(i);
     }
 
     // Find an empty slot
-    for (size_t i = 0; i < m_TextureSlots.size(); i++)
+    for (size_t i = 0; i < m_TexturesSlot.size(); i++)
     {
-        if (m_TextureSlots[i].empty())
+        if (m_TexturesSlot[i].empty())
         {
-            m_TextureSlots[i] = GetName(texture);
+            m_TexturesSlot[i] = GetName(texture);
             return static_cast<int>(i);
         }
     }
@@ -28,9 +29,9 @@ int Engine::TextureLibrary::GetTextureSlot(const std::shared_ptr<Texture> &textu
     return -1;
 }
 
-std::string Engine::TextureLibrary::GetName(const std::shared_ptr<Texture> &texture) const
+std::string Engine::TexturesManager::GetName(const std::shared_ptr<Texture> &texture) const
 {
-    for (const auto &[name, ptr] : m_TextureMap)
+    for (const auto &[name, ptr] : m_TexturesMap)
     {
         if (ptr == texture)
             return name;
@@ -39,54 +40,54 @@ std::string Engine::TextureLibrary::GetName(const std::shared_ptr<Texture> &text
     return "";
 }
 
-std::shared_ptr<Engine::Texture2D> Engine::TextureLibrary::GetTexture2D(const std::string &name)
+std::shared_ptr<Engine::Texture2D> Engine::TexturesManager::GetTexture2D(const std::string &name)
 {
     if (!Exists(name))
     {
         LOG_ENGINE_ERROR("Texture not found: " + name);
         return nullptr;
     }
-    return std::dynamic_pointer_cast<Texture2D>(m_TextureMap[name]);
+    return std::dynamic_pointer_cast<Texture2D>(m_TexturesMap[name]);
 }
 
-std::shared_ptr<Engine::TextureCube> Engine::TextureLibrary::GetTextureCube(const std::string &name)
+std::shared_ptr<Engine::TextureCube> Engine::TexturesManager::GetTextureCube(const std::string &name)
 {
     if (!Exists(name))
     {
         LOG_ENGINE_ERROR("Texture not found: " + name);
         return nullptr;
     }
-    return std::dynamic_pointer_cast<TextureCube>(m_TextureMap[name]);
+    return std::dynamic_pointer_cast<TextureCube>(m_TexturesMap[name]);
 }
 
-void Engine::TextureLibrary::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
+void Engine::TexturesManager::AddTexture(const std::string &name, const std::shared_ptr<Texture> &texture)
 {
     if (!texture)
     {
-        LOG_ENGINE_ASSERT("Cannot add null texture: " + name);
+        LOG_ENGINE_ERROR("Cannot add null texture: " + name);
         return;
     }
 
     if (Exists(name))
     {
-        LOG_ENGINE_WARN("Texture already exists: " + name);
-        return;
+        LOG_ENGINE_WARN("Texture already exists: " + name + ", overwriting");
     }
-    m_TextureMap[name] = texture;
+
+    m_TexturesMap[name] = texture;
     LOG_ENGINE_TRACE("Texture added: " + name);
 }
 
-Engine::TextureLibrary::TextureLibrary()
+Engine::TexturesManager::TexturesManager()
 {
     PROFILE_FUNCTION();
 
     AddTexture("DefaultTexture", Texture2D::WhiteTexture());
     AddTexture("DefaultSkybox", TextureCube::WhiteTexture());
 
-    std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resource/Textures/");
+    std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resources/Textures/");
     if (!std::filesystem::exists(path))
     {
-        LOG_ENGINE_ASSERT("Texture directory does not exist: " + path.string());
+        LOG_ENGINE_ERROR("Texture directory does not exist: " + path.string());
         return;
     }
 
@@ -129,5 +130,5 @@ Engine::TextureLibrary::TextureLibrary()
         }
     }
 
-    LOG_ENGINE_INFO("Texture Library initialized");
+    LOG_ENGINE_INFO("TexturesManager initialized");
 }

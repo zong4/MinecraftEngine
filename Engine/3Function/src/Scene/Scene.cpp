@@ -173,7 +173,7 @@ void Engine::Scene::RenderParticles()
     PROFILE_FUNCTION();
 
     // Particle systems
-    ShaderLibrary::GetInstance().GetShader("Particles")->Bind();
+    ShadersManager::GetInstance().GetShader("Particles")->Bind();
     auto &&view = m_Registry.view<ParticleComponent>();
     for (auto &&entity : view)
     {

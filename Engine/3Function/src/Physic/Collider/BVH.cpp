@@ -1,6 +1,6 @@
 #include "BVH.hpp"
 
-#include "../../Renderer/Library/ShaderLibrary.hpp"
+#include "../../AssetsManager/ShadersManager.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
 
 Engine::BVH::BVH(const std::shared_ptr<Scene> &scene)
@@ -24,7 +24,7 @@ Engine::BVH::~BVH()
 
 void Engine::BVH::Render(int maxDepth) const
 {
-    auto &&shader = ShaderLibrary::GetInstance().GetShader("SimpleColor");
+    auto &&shader = ShadersManager::GetInstance().GetShader("SimpleColor");
     shader->Bind();
 
     std::function<void(BVHNode *, int)> renderNode = [&](BVHNode *node, int depth) {

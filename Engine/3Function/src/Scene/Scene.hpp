@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../AssetsManager/ShadersManager.hpp"
 #include "../ECS/Component/CameraComponent.hpp"
 #include "../ECS/Component/LabelComponent.hpp"
 #include "../ECS/Component/LightComponent.hpp"
@@ -10,7 +11,6 @@
 #include "../ECS/Component/TransformComponent.hpp"
 #include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"
-#include "../Renderer/Library/ShaderLibrary.hpp"
 
 namespace Engine
 {

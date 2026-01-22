@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../../AssetsManager/TexturesManager.hpp"
 #include "../../Physic/Collider/BoundingBox.hpp"
-#include "../../Renderer/Library/TextureLibrary.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
 
 namespace Engine
@@ -16,7 +16,7 @@ struct SpriteRendererComponent
 public:
     SpriteRendererComponent(
         const glm::vec4 &color = glm::vec4(1.0f),
-        const std::shared_ptr<Texture2D> &texture = TextureLibrary::GetInstance().GetTexture2D("DefaultTexture"))
+        const std::shared_ptr<Texture2D> &texture = TexturesManager::GetInstance().GetTexture2D("DefaultTexture"))
         : Color(color), Texture(texture)
     {
         BBox = BoundingBox(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f));

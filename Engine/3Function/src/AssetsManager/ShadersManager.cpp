@@ -1,14 +1,14 @@
-#include "ShaderLibrary.hpp"
+#include "ShadersManager.hpp"
 
-Engine::ShaderLibrary &Engine::ShaderLibrary::GetInstance()
+Engine::ShadersManager &Engine::ShadersManager::GetInstance()
 {
-    static ShaderLibrary instance;
+    static ShadersManager instance;
     return instance;
 }
 
-std::string Engine::ShaderLibrary::GetName(const std::shared_ptr<Shader> &shader) const
+std::string Engine::ShadersManager::GetName(const std::shared_ptr<Shader> &shader) const
 {
-    for (const auto &[name, ptr] : m_ShaderMap)
+    for (const auto &[name, ptr] : m_ShadersMap)
     {
         if (ptr == shader)
             return name;
@@ -17,56 +17,58 @@ std::string Engine::ShaderLibrary::GetName(const std::shared_ptr<Shader> &shader
     return "";
 }
 
-std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::GetShader(const std::string &name)
+std::shared_ptr<Engine::Shader> Engine::ShadersManager::GetShader(const std::string &name)
 {
     if (!Exists(name))
     {
         LOG_ENGINE_ERROR("Shader not found: " + name);
         return nullptr;
     }
-    return m_ShaderMap[name];
+    return m_ShadersMap[name];
 }
 
-void Engine::ShaderLibrary::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
+void Engine::ShadersManager::AddShader(const std::string &name, const std::shared_ptr<Shader> &shader)
 {
     if (!shader)
     {
-        LOG_ENGINE_ASSERT("Cannot add null shader: " + name);
+        LOG_ENGINE_ERROR("Cannot add null shader: " + name);
         return;
     }
 
     if (Exists(name))
     {
-        LOG_ENGINE_WARN("Shader already exists: " + name);
-        return;
+        LOG_ENGINE_WARN("Shader already exists: " + name + ", overwriting");
     }
-    m_ShaderMap[name] = shader;
+
+    // Add shader to map
+    m_ShadersMap[name] = shader;
     LOG_ENGINE_TRACE("Shader added: " + name);
 }
 
-std::shared_ptr<Engine::Shader> Engine::ShaderLibrary::LoadShader(const std::string &name,
-                                                                  const std::string &vertexSource,
-                                                                  const std::string &fragmentSource,
-                                                                  const std::string &geometrySource)
+std::shared_ptr<Engine::Shader> Engine::ShadersManager::LoadShader(const std::string &name,
+                                                                   const std::string &vertexSource,
+                                                                   const std::string &fragmentSource,
+                                                                   const std::string &geometrySource)
 {
     if (Exists(name))
     {
-        LOG_ENGINE_WARN("Shader already exists: " + name);
-        return m_ShaderMap[name];
+        LOG_ENGINE_WARN("Shader already exists: " + name + ", overwriting");
     }
+
+    // Create shader
     auto &&shader = Engine::Shader::Create(vertexSource, fragmentSource, geometrySource);
     AddShader(name, shader);
     return shader;
 }
 
-Engine::ShaderLibrary::ShaderLibrary()
+Engine::ShadersManager::ShadersManager()
 {
     PROFILE_FUNCTION();
 
-    std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resource/Shaders/");
+    std::filesystem::path path(std::string(FUNCTION_ROOT) + "/resources/Shaders/");
     if (!std::filesystem::exists(path))
     {
-        LOG_ENGINE_ASSERT("Shader directory does not exist: " + path.string());
+        LOG_ENGINE_ERROR("Shader directory does not exist: " + path.string());
         return;
     }
 
@@ -109,7 +111,7 @@ Engine::ShaderLibrary::ShaderLibrary()
             }
             else if (!commonVertexSource.empty())
             {
-                LOG_ENGINE_INFO("Vertex shader not found for: " + fragmentPath.string() +
+                LOG_ENGINE_WARN("Vertex shader not found for: " + fragmentPath.string() +
                                 ", using common vertex shader");
             }
             else
@@ -135,5 +137,5 @@ Engine::ShaderLibrary::ShaderLibrary()
         }
     }
 
-    LOG_ENGINE_INFO("ShaderLibrary initialized");
+    LOG_ENGINE_INFO("ShadersManager initialized");
 }

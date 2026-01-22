@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Renderer/Library/MaterialLibrary.hpp"
+#include "../../AssetsManager/MaterialsManager.hpp"
 
 namespace Engine
 {
@@ -11,7 +11,7 @@ struct MaterialComponent
 
 public:
     MaterialComponent(
-        const std::shared_ptr<Material> &material = MaterialLibrary::GetInstance().GetMaterial("DefaultMaterial"))
+        const std::shared_ptr<Material> &material = MaterialsManager::GetInstance().GetMaterial("DefaultMaterial"))
         : MaterialInstance(material), PropertyMap(material->GetPropertyMap())
     {
     }

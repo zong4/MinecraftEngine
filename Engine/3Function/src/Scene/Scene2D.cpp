@@ -18,7 +18,7 @@ void Engine::Scene2D::RenderColorID() const
 
     m_ColorIDFrameBuffer->Bind();
     Engine::RendererCommand::Clear();
-    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("ColorIDPicking");
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("ColorIDPicking");
     shader->Bind();
 
     // Render entity IDs as color IDs
@@ -46,8 +46,8 @@ void Engine::Scene2D::UploadSquaresData()
         {
             glm::mat4 u_Model = transform.GetTransformMatrix();
             vertices.push_back({(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
-                                g_SquareData.TexCoords[i], TextureLibrary::GetInstance().GetTextureSlot(sprite.Texture),
-                                sprite.Color});
+                                g_SquareData.TexCoords[i],
+                                TexturesManager::GetInstance().GetTextureSlot(sprite.Texture), sprite.Color});
         }
 
         // Indices
@@ -73,7 +73,7 @@ void Engine::Scene2D::Render2D(const Entity &camera) const
     RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
     RendererCommand::Clear();
 
-    auto &&shader = Engine::ShaderLibrary::GetInstance().GetShader("Texture");
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture");
     shader->Bind();
 
     // Bind textures
@@ -81,7 +81,7 @@ void Engine::Scene2D::Render2D(const Entity &camera) const
     for (auto &&entity : spriteView)
     {
         auto &&sprite = spriteView.get<Engine::SpriteRendererComponent>(entity);
-        int texID = TextureLibrary::GetInstance().GetTextureSlot(sprite.Texture);
+        int texID = TexturesManager::GetInstance().GetTextureSlot(sprite.Texture);
         if (texID != -1)
             sprite.Texture->Active(texID);
     }
@@ -89,7 +89,7 @@ void Engine::Scene2D::Render2D(const Entity &camera) const
     // Render squares
     if (m_SquaresCount > 0)
         VertexLibrary::GetInstance().GetVertex("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
-    TextureLibrary::GetInstance().ClearTextureSlots();
+    TexturesManager::GetInstance().ClearTextureSlots();
 
     shader->Unbind();
 }
