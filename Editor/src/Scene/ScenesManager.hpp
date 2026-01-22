@@ -1,14 +1,17 @@
 #pragma once
 
+#include "EditorScene.hpp"
+#include "ExampleScene.hpp"
+#include "WelcomeScene.hpp"
 #include <Platform.hpp>
 
 namespace Editor
 {
 
-class SceneManager
+class ScenesManager
 {
 public:
-    static SceneManager &GetInstance();
+    static ScenesManager &GetInstance();
 
     // Getters
     std::shared_ptr<Engine::Scene> GetEditorScene() { return m_EditorScene; }
@@ -30,8 +33,8 @@ private:
     std::shared_ptr<Engine::Scene> m_ActiveScene;
 
 private:
-    SceneManager();
-    ~SceneManager() = default;
+    ScenesManager();
+    ~ScenesManager() = default;
 };
 
 } // namespace Editor

@@ -1,6 +1,5 @@
 #include "FileBrowserPanel.hpp"
 
-#include "../Scene/SceneManager.hpp"
 #include <imgui.h>
 
 Editor::FileBrowserPanel &Editor::FileBrowserPanel::GetInstance()

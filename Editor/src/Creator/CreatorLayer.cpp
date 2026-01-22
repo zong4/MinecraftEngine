@@ -1,8 +1,6 @@
 #include "CreatorLayer.hpp"
 
-#include "../Scene/EditorScene.hpp"
-#include "../Scene/ExampleScene.hpp"
-#include "../Scene/SceneManager.hpp"
+#include "../Scene/ScenesManager.hpp"
 #include "../UI/FileBrowserPanel.hpp"
 #include <imgui.h>
 
@@ -14,7 +12,7 @@ void Editor::CreatorLayer::OnEvent(Engine::Event &event)
 
     // Handle window resize events
     dispatcher.Dispatch<Engine::WindowResizeEvent>([this](Engine::WindowResizeEvent &event) {
-        SceneManager::GetInstance().Resize(event.GetFbWidth(), event.GetFbHeight());
+        ScenesManager::GetInstance().Resize(event.GetFbWidth(), event.GetFbHeight());
         return true;
     });
 }
@@ -34,7 +32,7 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
     {
         if (m_Mode == SandboxMode::Edit)
         {
-            SceneManager::GetInstance().SetActiveScene(std::make_shared<Editor::ExampleScene>());
+            ScenesManager::GetInstance().SetActiveScene(std::make_shared<Editor::ExampleScene>());
         }
     }
 
@@ -42,10 +40,10 @@ void Editor::CreatorLayer::OnUpdate(float deltaTime)
     switch (m_Mode)
     {
     case SandboxMode::Edit:
-        SceneManager::GetInstance().UpdateInEditor(deltaTime);
+        ScenesManager::GetInstance().UpdateInEditor(deltaTime);
         break;
     case SandboxMode::Play:
-        SceneManager::GetInstance().UpdateInRuntime(deltaTime);
+        ScenesManager::GetInstance().UpdateInRuntime(deltaTime);
         break;
     default:
         LOG_ENGINE_ASSERT("Unknown SandboxMode!");
@@ -61,10 +59,10 @@ void Editor::CreatorLayer::OnRender()
     switch (m_Mode)
     {
     case SandboxMode::Edit:
-        SceneManager::GetInstance().RenderInEditor();
+        ScenesManager::GetInstance().RenderInEditor();
         break;
     case SandboxMode::Play:
-        SceneManager::GetInstance().RenderInRuntime();
+        ScenesManager::GetInstance().RenderInRuntime();
         break;
     default:
         LOG_ENGINE_ASSERT("Unknown SandboxMode!");
