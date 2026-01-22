@@ -44,7 +44,7 @@ void Engine::Scene::Update(float deltaTime)
     }
     m_DeletedEntities.clear();
 
-    UpdateTransformSystem(deltaTime);
+    TransformSystem::GetInstance().Update(m_Registry);
 }
 
 void Engine::Scene::UpdateRuntime(float deltaTime)
@@ -179,20 +179,6 @@ void Engine::Scene::RenderParticles()
     {
         auto &&particleComp = view.get<ParticleComponent>(entity);
         particleComp.Render();
-    }
-}
-
-void Engine::Scene::UpdateTransformSystem(float deltaTime)
-{
-    PROFILE_FUNCTION();
-
-    // Update all transform matrices
-    auto &&entityView = m_Registry.view<TransformComponent, RelationshipComponent>();
-    for (auto &&entity : entityView)
-    {
-        auto &&[transform, relationship] = entityView.get<TransformComponent, RelationshipComponent>(entity);
-        if (!relationship.Parent)
-            transform.UpdateTransformMatrix(glm::mat4(1.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), &relationship);
     }
 }
 

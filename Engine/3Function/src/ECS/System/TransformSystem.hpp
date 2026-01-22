@@ -2,6 +2,7 @@
 
 #include "../Component/RelationshipComponent.hpp"
 #include "../Component/TransformComponent.hpp"
+#include <entt/entt.hpp>
 
 namespace Engine
 {
@@ -12,11 +13,15 @@ public:
     static TransformSystem &GetInstance();
 
 public:
-    void UpdateTransform(RelationshipComponent &relationship, TransformComponent &transform);
+    void Update(entt::registry &registry);
 
 private:
     TransformSystem() = default;
     ~TransformSystem() = default;
+
+private:
+    void UpdateTransform(TransformComponent *transform, RelationshipComponent *relationship,
+                         const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationQuat);
 };
 
 } // namespace Engine

@@ -8,10 +8,9 @@
 #include "../ECS/Component/MaterialComponent.hpp"
 #include "../ECS/Component/NativeScriptComponent.hpp"
 #include "../ECS/Component/ParticleComponent.hpp"
-#include "../ECS/Component/RelationshipComponent.hpp"
 #include "../ECS/Component/RendererComponents.hpp"
-#include "../ECS/Component/TransformComponent.hpp"
 #include "../ECS/System/PhysicSystem.hpp"
+#include "../ECS/System/TransformSystem.hpp"
 
 namespace Engine
 {
@@ -69,7 +68,6 @@ private:
     PhysicSystem m_PhysicSystem;
 
 private:
-    void UpdateTransformSystem(float deltaTime);
     void UpdatePhysicSystem(float deltaTime);
     void UpdateParticleSystem(float deltaTime);
     void UpdateScriptSystem(float deltaTime);

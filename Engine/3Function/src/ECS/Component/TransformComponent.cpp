@@ -2,6 +2,16 @@
 
 #include "RelationshipComponent.hpp"
 
+glm::vec3 Engine::TransformComponent::GetWorldScale() const
+{
+    // Extract scale from the transformation matrix
+    glm::vec3 scale;
+    scale.x = glm::length(glm::vec3(m_TransformMatrix[0]));
+    scale.y = glm::length(glm::vec3(m_TransformMatrix[1]));
+    scale.z = glm::length(glm::vec3(m_TransformMatrix[2]));
+    return scale;
+}
+
 const glm::quat &Engine::TransformComponent::GetRotationQuat(TransformSpace space) const
 {
     if (space == TransformSpace::Local)
@@ -35,11 +45,8 @@ glm::vec3 Engine::TransformComponent::GetUp(TransformSpace space) const
 }
 
 void Engine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix,
-                                                       const glm::quat &parentRotationQuat,
-                                                       RelationshipComponent *relationship)
+                                                       const glm::quat &parentRotationQuat)
 {
-    PROFILE_FUNCTION();
-
     // Compute local transformation matrices
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), Position);
     m_RotationQuat = glm::quat(Rotation);
@@ -50,10 +57,4 @@ void Engine::TransformComponent::UpdateTransformMatrix(const glm::mat4 &parentTr
     // Combine with parent's transformation
     m_TransformMatrix = parentTransformMatrix * localTransformMatrix;
     m_GlobalRotationQuat = parentRotationQuat * m_RotationQuat;
-    for (auto &&child : relationship->GetChildren())
-    {
-        if (auto &&relationshipChild = child.GetComponent<RelationshipComponent>())
-            child.GetComponent<TransformComponent>()->UpdateTransformMatrix(m_TransformMatrix, m_GlobalRotationQuat,
-                                                                            relationshipChild);
-    }
 }

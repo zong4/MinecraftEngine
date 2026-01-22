@@ -29,6 +29,8 @@ public:
     }
 
     // Getters
+    glm::vec3 GetWorldPosition() const { return glm::vec3(m_TransformMatrix[3]); }
+    glm::vec3 GetWorldScale() const;
     glm::vec3 GetRotationEuler() const { return glm::degrees(Rotation); }
     const glm::quat &GetRotationQuat(TransformSpace space) const;
     const glm::mat4 &GetTransformMatrix() const { return m_TransformMatrix; }
@@ -40,13 +42,12 @@ public:
     void SetRotationEuler(const glm::vec3 &euler) { Rotation = glm::radians(euler); }
 
 public:
-    void UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationQuat,
-                               RelationshipComponent *relationship);
+    void UpdateTransformMatrix(const glm::mat4 &parentTransformMatrix, const glm::quat &parentRotationQuat);
 
 private:
     glm::quat m_RotationQuat; // Use quat to calculate
     glm::quat m_GlobalRotationQuat = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    glm::mat4 m_TransformMatrix = glm::mat4(1.0f);
+    glm::mat4 m_TransformMatrix = glm::mat4(1.0f); // World transform matrix
 };
 
 } // namespace Engine
