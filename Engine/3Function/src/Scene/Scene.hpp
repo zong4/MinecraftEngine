@@ -20,7 +20,7 @@ namespace Engine
 class Scene
 {
 public:
-    Scene(const std::string &name = "Untitled") : m_Name(name) {}
+    Scene(const std::string &name = "Untitled");
     virtual ~Scene();
 
     // Getters
@@ -38,7 +38,7 @@ public:
     void Start() { NativeScriptSystem::GetInstance().Start(m_Registry); }
     void Update(float deltaTime);
     void UpdateRuntime(float deltaTime);
-    virtual void Render(const Entity &camera) = 0;
+    virtual void Render(const Entity &camera);
 
     // Entity management
     void DeleteEntity(const Entity &entity);
@@ -56,22 +56,33 @@ public:
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
 
 protected:
-    std::string m_Name;
-    entt::registry m_Registry = {};
-    std::shared_ptr<FrameBuffer> m_ColorIDFrameBuffer = FrameBuffer::Create(Texture2DType::Integer, 1280, 720);
-
-protected:
-    virtual void RenderColorID() const = 0;
+    std::shared_ptr<TextureCube> m_SkyboxTexture = TexturesManager::GetInstance().GetTextureCube("Default");
 
 private:
-    bool m_Started = false;
+    // Scene management
+    std::string m_Name;
     Entity m_MainCamera;
+    entt::registry m_Registry = {};
     std::vector<Entity> m_DeletedEntities = {};
 
-    // Systems
+    // Renderer
+    int m_SquaresCount = 0;
+    int m_CubesCount = 0;
+    std::shared_ptr<FrameBuffer> m_ColorIDFrameBuffer = FrameBuffer::Create(Texture2DType::Integer, 1280, 720);
+
+    // Physic
     PhysicSystem m_PhysicSystem;
 
+    // Native script
+    bool m_Started = false;
+
 private:
+    void UploadSquaresData();
+    void UploadCubesData();
+    void RenderShadowMap() const;
+    void Render2D(const Entity &camera) const;
+    void Render3D(const Entity &camera) const;
+    void RenderColorID() const;
     void DeleteEntityReal(const Entity &entity);
 };
 

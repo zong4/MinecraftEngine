@@ -126,22 +126,25 @@ class VertexLibrary
 public:
     static VertexLibrary &GetInstance();
 
+    // Getters
     int GetMaxSquaresNumber() const { return m_MaxSquaresNumber; }
     int GetMaxCubesNumber() const { return m_MaxCubesNumber; }
     std::string GetName(const std::shared_ptr<VertexArray> &vertexArray) const;
     std::shared_ptr<VertexArray> GetVertex(const std::string &name);
+
+    // Setters
     void AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vertexArray);
 
 private:
     int m_MaxSquaresNumber;
     int m_MaxCubesNumber;
-    std::unordered_map<std::string, std::shared_ptr<VertexArray>> m_VertexMap;
+    std::unordered_map<std::string, std::shared_ptr<VertexArray>> m_VertexsMap;
 
 private:
     VertexLibrary();
     ~VertexLibrary() = default;
 
-    bool Exists(const std::string &name) const { return m_VertexMap.find(name) != m_VertexMap.end(); }
+    bool Exists(const std::string &name) const { return m_VertexsMap.find(name) != m_VertexsMap.end(); }
     void ReadConfig();
 };
 

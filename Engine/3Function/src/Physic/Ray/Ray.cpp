@@ -20,6 +20,7 @@ bool Engine::Ray::Hit(const BoundingBox &bbox, float tMin, float tMax) const
                 continue;
         }
 
+        // Compute intersection t value of ray with near and far plane of slab
         float invD = 1.0f / m_Direction[a];
         float t0 = (bbox.GetMin()[a] - m_Origin[a]) * invD;
         float t1 = (bbox.GetMax()[a] - m_Origin[a]) * invD;
@@ -33,10 +34,18 @@ bool Engine::Ray::Hit(const BoundingBox &bbox, float tMin, float tMax) const
     return true;
 }
 
-bool Engine::Ray::Hit(const Entity &entity, float tMin, float tMax) const
+bool Engine::Ray::HitRenderer(const Entity &entity, float tMin, float tMax) const
 {
     auto &&meshRenderer = entity.GetComponent<MeshRendererComponent>();
     if (!meshRenderer)
         return false;
     return Hit(meshRenderer->WorldBBox, tMin, tMax);
 }
+
+// bool Engine::Ray::HitCollider(const Entity &entity, float tMin, float tMax) const
+// {
+//     auto &&collider = entity.GetComponent<ColliderComponent>();
+//     if (!collider)
+//         return false;
+//     return Hit(collider->WorldBBox, tMin, tMax);
+// }

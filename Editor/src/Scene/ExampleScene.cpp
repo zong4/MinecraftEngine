@@ -16,6 +16,12 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     SetMainCamera(camera);
 
     // ------------------
+    // 2D Sprite
+    // ------------------
+    AddSquare("ReferenceSprite",
+              Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f)));
+
+    // ------------------
     // Light
     // ------------------
     Engine::Entity light = AddLight(

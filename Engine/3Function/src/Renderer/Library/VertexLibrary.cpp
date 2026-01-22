@@ -10,7 +10,7 @@ Engine::VertexLibrary &Engine::VertexLibrary::GetInstance()
 
 std::string Engine::VertexLibrary::GetName(const std::shared_ptr<VertexArray> &vertexArray) const
 {
-    for (const auto &[name, ptr] : m_VertexMap)
+    for (const auto &[name, ptr] : m_VertexsMap)
     {
         if (ptr == vertexArray)
             return name;
@@ -26,23 +26,26 @@ std::shared_ptr<Engine::VertexArray> Engine::VertexLibrary::GetVertex(const std:
         LOG_ENGINE_ERROR("VAO not found: " + name);
         return nullptr;
     }
-    return m_VertexMap[name];
+    return m_VertexsMap[name];
 }
 
 void Engine::VertexLibrary::AddVertex(const std::string &name, const std::shared_ptr<VertexArray> &vertexArray)
 {
+    // Nullptr check
     if (!vertexArray)
     {
         LOG_ENGINE_ERROR("Cannot add null vertex array: " + name);
         return;
     }
 
+    // Check for duplicates
     if (Exists(name))
     {
         LOG_ENGINE_WARN("VAO already exists: " + name + ", overwriting");
     }
 
-    m_VertexMap[name] = vertexArray;
+    // Add to map
+    m_VertexsMap[name] = vertexArray;
     LOG_ENGINE_TRACE("VAO added: " + name);
 }
 
@@ -50,6 +53,7 @@ Engine::VertexLibrary::VertexLibrary()
 {
     PROFILE_FUNCTION();
 
+    // Create static VertexArrays
     auto &&CubeVAO = VertexArray::Create(
         VertexBuffer::Create(g_CubeData.Positions, sizeof(g_CubeData.Positions)),
         std::vector<VertexAttribute>{{0, 3, VertexAttributeType::Float, false, 3 * sizeof(float), (const void *)0}});
@@ -80,7 +84,6 @@ Engine::VertexLibrary::VertexLibrary()
                 {5, 4, VertexAttributeType::Float, false, sizeof(Vertex3D), (const void *)(14 * sizeof(float))}});
         AddVertex("Cubes", cubesVAO);
     }
-
     LOG_ENGINE_INFO("VAO Library initialized");
 }
 
@@ -94,14 +97,13 @@ void Engine::VertexLibrary::ReadConfig()
     {
         configFile >> config;
         configFile.close();
-
         m_MaxSquaresNumber = config["MaxSquaresNumber"].get<int>();
         m_MaxCubesNumber = config["MaxCubesNumber"].get<int>();
     }
     else
     {
-        LOG_ENGINE_WARN("Could not open ResourcesManager.json, using default values");
         m_MaxSquaresNumber = 10000;
         m_MaxCubesNumber = 10000;
+        LOG_ENGINE_WARN("Could not open ResourcesManager.json, using default values");
     }
 }

@@ -69,9 +69,9 @@ void Engine::Material::Bind(const std::string &uniformPrefix,
         case MaterialPropertyType::Vec4:
             m_Shader->SetUniformVec4(uniformName, propertyToUse.GetValueAs<glm::vec4>());
             break;
-        case MaterialPropertyType::Texture: {
+        case MaterialPropertyType::Texture2D: {
             m_Shader->SetUniformInt(uniformName, TexturesManager::GetInstance().GetTextureSlot(
-                                                     propertyToUse.GetValueAs<std::shared_ptr<Texture>>()));
+                                                     propertyToUse.GetValueAs<std::shared_ptr<Texture2D>>()));
         }
         break;
         default:
@@ -79,4 +79,5 @@ void Engine::Material::Bind(const std::string &uniformPrefix,
             break;
         }
     }
+    m_Shader->Unbind();
 }

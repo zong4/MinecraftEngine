@@ -66,13 +66,13 @@ Engine::MaterialsManager::MaterialsManager()
     // Default 3D material
     {
         auto &&shader = Engine::ShadersManager::GetInstance().GetShader("BlinnPhong");
-        auto &&whiteMaterial = std::make_shared<Engine::Material>(shader);
-        whiteMaterial->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-        whiteMaterial->AddProperty("AmbientStrength", 0.1f);
-        whiteMaterial->AddProperty("DiffuseStrength", 0.8f);
-        whiteMaterial->AddProperty("SpecularStrength", 0.5f);
-        whiteMaterial->AddProperty("Shininess", 32.0f);
-        AddMaterial("Default3D", whiteMaterial);
+        auto &&material = std::make_shared<Engine::Material>(shader);
+        material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        material->AddProperty("AmbientStrength", 0.1f);
+        material->AddProperty("DiffuseStrength", 0.8f);
+        material->AddProperty("SpecularStrength", 0.5f);
+        material->AddProperty("Shininess", 32.0f);
+        AddMaterial("Default3D", material);
     }
 
     LOG_ENGINE_INFO("MaterialsManager initialized");

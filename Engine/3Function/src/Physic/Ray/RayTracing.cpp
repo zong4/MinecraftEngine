@@ -7,10 +7,12 @@ void Engine::RayTracing::RenderScene(const Entity &camera, const std::vector<Ent
 {
     PROFILE_FUNCTION();
 
+    // Prepare framebuffer
     int width = camera.GetComponent<CameraComponent>()->GetWidth();
     int height = camera.GetComponent<CameraComponent>()->GetHeight();
     frameBuffer.resize(width * height);
 
+    // Render pixels
     int lastPercent = -1;
 #pragma omp parallel for schedule(static)
     for (int y = 0; y < height; y++)
@@ -70,7 +72,7 @@ glm::vec3 Engine::RayTracing::RenderPixel(const Entity &camera, const std::vecto
         glm::vec3 rayColor(1.0f);
         for (auto &&entity : entities)
         {
-            if (ray.Hit(entity, 0.001f, FLT_MAX))
+            if (ray.HitRenderer(entity, 0.001f, FLT_MAX))
             {
                 rayColor = glm::vec3(0.0f);
             }

@@ -14,15 +14,7 @@ public:
 public:
     void Render(const Entity &camera) override;
 
-protected:
-    void RenderColorID() const override;
-
 private:
-    int m_CubesCount = 0;
-
-    // Skybox
-    std::shared_ptr<TextureCube> m_SkyboxTexture = TexturesManager::GetInstance().GetTextureCube("Default");
-
     // Ray tracing
     std::atomic<bool> m_RayTracingRunning = false;
     std::mutex m_RTMutex;
@@ -31,9 +23,6 @@ private:
     std::vector<glm::vec4> m_RayTracingFrameBuffer;
 
 private:
-    void UploadCubesData();
-    void RenderShadowMap() const;
-    void Render3D(const Entity &camera) const;
     void RenderSkybox() const;
 };
 

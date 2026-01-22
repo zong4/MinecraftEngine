@@ -33,13 +33,15 @@ public:
     {
         PROFILE_FUNCTION();
 
-        ShadersManager::GetInstance().GetShader("Particles")->Bind();
+        auto &&shader = ShadersManager::GetInstance().GetShader("Particles");
+        shader->Bind();
         auto &&view = registry.view<ParticleComponent>();
         for (auto &&entity : view)
         {
             auto &&particle = view.get<ParticleComponent>(entity);
             particle.Render();
         }
+        shader->Unbind();
     }
 
 private:
