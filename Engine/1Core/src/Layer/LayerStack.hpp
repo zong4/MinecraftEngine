@@ -1,6 +1,6 @@
 #pragma once
-
 #include "Layer.hpp"
+#include <memory>
 #include <algorithm>
 #include <vector>
 

@@ -2,8 +2,8 @@
 
 #include "../Renderer/RendererCommand.hpp"
 #include "../Renderer/RendererProperty.hpp"
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 void Engine::OpenGLWindow::Init()
 {
