@@ -2,6 +2,7 @@
 
 #include "../Component/RigidBodyComponent.hpp"
 #include "../Component/TransformComponent.hpp"
+#include <entt/entt.hpp>
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
@@ -18,9 +19,11 @@ public:
     PhysicSystem();
     ~PhysicSystem();
 
+    // Setters
+    void DeleteRigidBody(RigidBodyComponent *rigidBody);
+
 public:
-    void UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform);
-    void Update(float deltaTime);
+    void Update(entt::registry &registry, float deltaTime);
 
 private:
     btDefaultCollisionConfiguration *m_CollisionConfiguration;
@@ -30,7 +33,8 @@ private:
     btDiscreteDynamicsWorld *m_DynamicsWorld;
 
 private:
-    void AddCube(RigidBodyComponent &rigidBody, const TransformComponent &transform);
+    void UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform);
+    void AddRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform); // Only Cube for now
 };
 
 } // namespace Engine

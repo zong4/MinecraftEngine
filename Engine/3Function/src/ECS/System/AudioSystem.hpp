@@ -2,6 +2,7 @@
 
 #include "../Component/AudioComponent.hpp"
 #include "../Component/TransformComponent.hpp"
+#include <entt/entt.hpp>
 
 namespace Engine
 {
@@ -16,9 +17,28 @@ public:
     }
 
 public:
-    void UpdateAudio(AudioComponent &audioComponent, const TransformComponent &transformComponent)
+    void Update(entt::registry &registry)
     {
-        audioComponent.SetPosition(transformComponent.Position);
+        PROFILE_FUNCTION();
+
+        auto &&view = registry.view<TransformComponent, AudioComponent>();
+        for (auto &&entity : view)
+        {
+            auto &&[transform, audio] = view.get<TransformComponent, AudioComponent>(entity);
+            audio.SetPosition(transform.GetWorldPosition());
+        }
+    }
+    void Clear(entt::registry &registry)
+    {
+        PROFILE_FUNCTION();
+
+        // Stop all audio
+        auto &&view = registry.view<AudioComponent>();
+        for (auto &&entity : view)
+        {
+            auto &&audio = view.get<AudioComponent>(entity);
+            audio.Stop();
+        }
     }
 
 private:

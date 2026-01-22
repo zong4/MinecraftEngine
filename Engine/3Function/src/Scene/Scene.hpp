@@ -1,14 +1,14 @@
 #pragma once
 
 #include "../AssetsManager/ShadersManager.hpp"
-#include "../ECS/Component/AudioComponent.hpp"
 #include "../ECS/Component/CameraComponent.hpp"
 #include "../ECS/Component/LabelComponent.hpp"
 #include "../ECS/Component/LightComponent.hpp"
 #include "../ECS/Component/MaterialComponent.hpp"
-#include "../ECS/Component/NativeScriptComponent.hpp"
-#include "../ECS/Component/ParticleComponent.hpp"
 #include "../ECS/Component/RendererComponents.hpp"
+#include "../ECS/System/AudioSystem.hpp"
+#include "../ECS/System/NativeScriptSystem.hpp"
+#include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"
 #include "../ECS/System/TransformSystem.hpp"
 
@@ -32,6 +32,7 @@ public:
     void SetMainCamera(const Entity &camera);
 
 public:
+    void Start() { NativeScriptSystem::GetInstance().Start(m_Registry); }
     void Update(float deltaTime);
     void UpdateRuntime(float deltaTime);
     virtual void Render(const Entity &camera);
@@ -44,8 +45,7 @@ public:
                      const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent());
     Entity AddCube(const std::string &name, const TransformComponent &transform,
                    const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
-                   const MaterialComponent &materialComponent = MaterialComponent(),
-                   const RigidBodyComponent &rigidBodyComponent = RigidBodyComponent());
+                   const MaterialComponent &materialComponent = MaterialComponent());
     Entity AddCamera(const std::string &name, const TransformComponent &transform,
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
@@ -58,9 +58,9 @@ protected:
 
 protected:
     virtual void RenderColorID() const = 0;
-    void RenderParticles();
 
 private:
+    bool m_Started = false;
     Entity m_MainCamera;
     std::vector<Entity> m_DeletedEntities = {};
 
@@ -68,9 +68,6 @@ private:
     PhysicSystem m_PhysicSystem;
 
 private:
-    void UpdatePhysicSystem(float deltaTime);
-    void UpdateParticleSystem(float deltaTime);
-    void UpdateScriptSystem(float deltaTime);
     void DeleteEntityReal(const Entity &entity);
 };
 

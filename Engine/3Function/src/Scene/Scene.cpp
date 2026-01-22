@@ -5,7 +5,8 @@
 
 Engine::Scene::~Scene()
 {
-    m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) { nsc.DestroyScript(); });
+    AudioSystem::GetInstance().Clear(m_Registry);
+    NativeScriptSystem::GetInstance().Clear(m_Registry);
     m_Registry.clear();
 }
 
@@ -37,13 +38,17 @@ void Engine::Scene::Update(float deltaTime)
     // Handle deleted entities
     for (auto &&entity : m_DeletedEntities)
     {
-        // Call OnDestroy for NativeScriptComponent
+        if (auto &&rigidBody = entity.GetComponent<RigidBodyComponent>())
+            m_PhysicSystem.DeleteRigidBody(rigidBody);
+        if (auto &&audio = entity.GetComponent<AudioComponent>())
+            audio->Stop();
         if (auto &&nativeScript = entity.GetComponent<NativeScriptComponent>())
             nativeScript->DestroyScript();
         m_Registry.destroy(entity.GetHandle());
     }
     m_DeletedEntities.clear();
 
+    // Update Transform System
     TransformSystem::GetInstance().Update(m_Registry);
 }
 
@@ -51,8 +56,11 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    UpdatePhysicSystem(deltaTime);
-    UpdateParticleSystem(deltaTime);
+    if (!m_Started)
+    {
+        Start();
+        m_Started = true;
+    }
 
     // todo:: check
     // Transform the BoundingBox to world space
@@ -72,7 +80,10 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
         }
     }
 
-    UpdateScriptSystem(deltaTime);
+    m_PhysicSystem.Update(m_Registry, deltaTime);
+    ParticleSystem::GetInstance().Update(m_Registry, deltaTime);
+    AudioSystem::GetInstance().Update(m_Registry);
+    NativeScriptSystem::GetInstance().Update(m_Registry, deltaTime);
 }
 
 void Engine::Scene::Render(const Entity &camera)
@@ -142,13 +153,11 @@ Engine::Entity Engine::Scene::AddSquare(const std::string &name, const Transform
 
 Engine::Entity Engine::Scene::AddCube(const std::string &name, const TransformComponent &transform,
                                       const MeshRendererComponent &meshRendererComponent,
-                                      const MaterialComponent &materialComponent,
-                                      const RigidBodyComponent &rigidBodyComponent)
+                                      const MaterialComponent &materialComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
     entity.AddComponent<MaterialComponent>(materialComponent);
-    entity.AddComponent<RigidBodyComponent>(rigidBodyComponent);
     return entity;
 }
 
@@ -166,81 +175,6 @@ Engine::Entity Engine::Scene::AddLight(const std::string &name, const TransformC
     Entity entity = AddEmptyEntity(name, transform);
     entity.AddComponent<LightComponent>(lightComponent);
     return entity;
-}
-
-void Engine::Scene::RenderParticles()
-{
-    PROFILE_FUNCTION();
-
-    // Particle systems
-    ShadersManager::GetInstance().GetShader("Particles")->Bind();
-    auto &&view = m_Registry.view<ParticleComponent>();
-    for (auto &&entity : view)
-    {
-        auto &&particleComp = view.get<ParticleComponent>(entity);
-        particleComp.Render();
-    }
-}
-
-void Engine::Scene::UpdatePhysicSystem(float deltaTime)
-{
-    PROFILE_FUNCTION();
-
-    // Sync RigidBodies with TransformComponents
-    auto &&view = m_Registry.view<TransformComponent, RigidBodyComponent>();
-    for (auto &&entity : view)
-    {
-        auto &&[transform, rigidBody] = view.get<TransformComponent, RigidBodyComponent>(entity);
-        m_PhysicSystem.UpdateRigidBody(rigidBody, transform);
-    }
-
-    // Update physics
-    m_PhysicSystem.Update(deltaTime);
-
-    // Sync TransformComponents with RigidBodies
-    auto &&rigibodyView = m_Registry.view<TransformComponent, RigidBodyComponent>();
-    for (auto &&entity : rigibodyView)
-    {
-        auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
-        btTransform btTransform;
-        rigibody.Body->getMotionState()->getWorldTransform(btTransform);
-
-        glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
-                           btTransform.getOrigin().getZ());
-        transform.Position = position;
-
-        glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
-                           btTransform.getRotation().getY(), btTransform.getRotation().getZ());
-        transform.Rotation = glm::eulerAngles(rotation);
-    }
-}
-
-void Engine::Scene::UpdateParticleSystem(float deltaTime)
-{
-    PROFILE_FUNCTION();
-
-    // Update all particle components
-    auto &&view = m_Registry.view<ParticleComponent>();
-    for (auto &&entity : view)
-    {
-        auto &&particleComp = view.get<ParticleComponent>(entity);
-        particleComp.Update(deltaTime);
-    }
-}
-
-void Engine::Scene::UpdateScriptSystem(float deltaTime)
-{
-    PROFILE_FUNCTION();
-
-    // Update all scripts
-    m_Registry.view<Engine::NativeScriptComponent>().each([&](auto &&entity, auto &&nsc) {
-        if (!nsc.Instance)
-        {
-            nsc.Instance = nsc.InstantiateScript();
-            nsc.Instance->OnStart();
-        }
-        nsc.Instance->OnUpdate(deltaTime);
-    });
 }
 
 void Engine::Scene::DeleteEntityReal(const Entity &entity)

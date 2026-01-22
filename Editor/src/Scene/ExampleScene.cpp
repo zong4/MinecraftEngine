@@ -29,6 +29,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     // ------------------
     auto plane = AddCube("Plane", Engine::TransformComponent(glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(0.0f),
                                                              glm::vec3(15.0f, 1.0f, 15.0f)));
+    plane.AddComponent<Engine::RigidBodyComponent>();
     auto &&planeRb = plane.GetComponent<Engine::RigidBodyComponent>();
     planeRb->Type = Engine::RigidBodyType::Static;
 
@@ -37,6 +38,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     // ------------------
     auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 1.0f, 0.0f)));
     player.AddComponent<Engine::AudioComponent>(true, 1.0f);
+    player.AddComponent<Engine::RigidBodyComponent>();
     player.AddComponent<Engine::NativeScriptComponent>();
     player.GetComponent<Engine::NativeScriptComponent>()->Bind<PlayerController>(player);
 
@@ -67,5 +69,6 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
         // Create cube
         auto cube =
             AddCube("Cube" + std::to_string(i), Engine::TransformComponent(randomPosition, randomEuler, randomScale));
+        cube.AddComponent<Engine::RigidBodyComponent>();
     }
 }

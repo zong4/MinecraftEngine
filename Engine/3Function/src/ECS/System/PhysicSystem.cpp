@@ -17,37 +17,104 @@ Engine::PhysicSystem::~PhysicSystem()
     if (!m_DynamicsWorld)
         return;
 
+    // Clean up all rigid bodies
     for (int i = m_DynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
     {
         btCollisionObject *obj = m_DynamicsWorld->getCollisionObjectArray()[i];
         btRigidBody *body = btRigidBody::upcast(obj);
         if (body)
         {
+            // Clean up motion state
             delete body->getMotionState();
+
+            // Remove the rigid body from the dynamics world and delete it
             m_DynamicsWorld->removeRigidBody(body);
             delete body;
+            body = nullptr;
         }
     }
 
+    // Clean up dynamics world
     delete m_DynamicsWorld;
     m_DynamicsWorld = nullptr;
+
+    // Clean up solver
     delete m_Solver;
+    m_Solver = nullptr;
+
+    // Clean up broadphase
     delete m_Broadphase;
+    m_Broadphase = nullptr;
+
+    // Clean up dispatcher
     delete m_Dispatcher;
+    m_Dispatcher = nullptr;
+
+    // Clean up collision configuration
     delete m_CollisionConfiguration;
+    m_CollisionConfiguration = nullptr;
+}
+
+void Engine::PhysicSystem::DeleteRigidBody(RigidBodyComponent *rigidBody)
+{
+    if (rigidBody->Body)
+    {
+        // Clean up motion state
+        delete rigidBody->Body->getMotionState();
+
+        // Remove the rigid body from the dynamics world and delete it
+        m_DynamicsWorld->removeRigidBody(rigidBody->Body);
+        delete rigidBody->Body;
+        rigidBody->Body = nullptr;
+    }
+}
+
+void Engine::PhysicSystem::Update(entt::registry &registry, float deltaTime)
+{
+    PROFILE_FUNCTION();
+
+    // Sync RigidBodies with Transforms
+    auto &&rigibodyView = registry.view<TransformComponent, RigidBodyComponent>();
+    for (auto &&entity : rigibodyView)
+    {
+        auto &&[transform, rigidBody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
+        UpdateRigidBody(rigidBody, transform);
+    }
+
+    // Update physics
+    m_DynamicsWorld->stepSimulation(deltaTime);
+
+    // Sync Transforms with RigidBodies
+    for (auto &&entity : rigibodyView)
+    {
+        auto &&[transform, rigibody] = rigibodyView.get<TransformComponent, RigidBodyComponent>(entity);
+
+        // Get world transform from rigid body
+        btTransform btTransform;
+        rigibody.Body->getMotionState()->getWorldTransform(btTransform);
+
+        // Update TransformComponent
+        glm::vec3 position(btTransform.getOrigin().getX(), btTransform.getOrigin().getY(),
+                           btTransform.getOrigin().getZ());
+        transform.Position = position;
+        glm::quat rotation(btTransform.getRotation().getW(), btTransform.getRotation().getX(),
+                           btTransform.getRotation().getY(), btTransform.getRotation().getZ());
+        transform.Rotation = glm::eulerAngles(rotation);
+    }
 }
 
 void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform)
 {
     // Create rigid body if it doesn't exist
     if (!rigidBody.Body)
-        AddCube(rigidBody, transform);
+        AddRigidBody(rigidBody, transform);
     btRigidBody *body = rigidBody.Body;
 
     // Update transform
     btTransform btTransform;
     btTransform.setIdentity();
-    btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
+    glm::vec3 position = transform.GetWorldPosition();
+    btTransform.setOrigin(btVector3(position.x, position.y, position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
     body->getMotionState()->setWorldTransform(btTransform);
@@ -67,26 +134,26 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
         btVector3 inertia(0, 0, 0);
         rigidBody.Shape->calculateLocalInertia(rigidBody.Mass, inertia);
         body->setMassProps(rigidBody.Mass, inertia);
+        body->setActivationState(DISABLE_DEACTIVATION);
         break;
     }
     case RigidBodyType::Kinematic: {
         body->setCollisionFlags((body->getCollisionFlags() & ~btCollisionObject::CF_STATIC_OBJECT) |
                                 btCollisionObject::CF_KINEMATIC_OBJECT);
         body->setMassProps(0.0f, btVector3(0, 0, 0));
-        body->setActivationState(DISABLE_DEACTIVATION);
+        // body->setActivationState(DISABLE_DEACTIVATION);
         break;
     }
     }
 }
 
-void Engine::PhysicSystem::Update(float deltaTime) { m_DynamicsWorld->stepSimulation(deltaTime); }
-
-void Engine::PhysicSystem::AddCube(RigidBodyComponent &rigidBody, const TransformComponent &transform)
+void Engine::PhysicSystem::AddRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform)
 {
     // Transform
     btTransform btTransform;
     btTransform.setIdentity();
-    btTransform.setOrigin(btVector3(transform.Position.x, transform.Position.y, transform.Position.z));
+    glm::vec3 position = transform.GetWorldPosition();
+    btTransform.setOrigin(btVector3(position.x, position.y, position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
     btDefaultMotionState *motionState = new btDefaultMotionState(btTransform);
@@ -105,7 +172,7 @@ void Engine::PhysicSystem::AddCube(RigidBodyComponent &rigidBody, const Transfor
         rigidBody.Shape->calculateLocalInertia(mass, inertia);
     }
 
-    // Rigid body info
+    // Rigid body
     btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, rigidBody.Shape, inertia);
     rigidBody.Body = new btRigidBody(rbInfo);
 
@@ -116,11 +183,14 @@ void Engine::PhysicSystem::AddCube(RigidBodyComponent &rigidBody, const Transfor
         rigidBody.Body->setCollisionFlags(rigidBody.Body->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
         break;
     case RigidBodyType::Dynamic:
+        rigidBody.Body->setCollisionFlags(rigidBody.Body->getCollisionFlags() &
+                                          ~btCollisionObject::CF_KINEMATIC_OBJECT);
         rigidBody.Body->setActivationState(DISABLE_DEACTIVATION);
         break;
     case RigidBodyType::Kinematic:
-        rigidBody.Body->setCollisionFlags(rigidBody.Body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-        rigidBody.Body->setActivationState(DISABLE_DEACTIVATION);
+        rigidBody.Body->setCollisionFlags((rigidBody.Body->getCollisionFlags() & ~btCollisionObject::CF_STATIC_OBJECT) |
+                                          btCollisionObject::CF_KINEMATIC_OBJECT);
+        // rigidBody.Body->setActivationState(DISABLE_DEACTIVATION);
         break;
     }
 

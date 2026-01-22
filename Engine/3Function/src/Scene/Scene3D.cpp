@@ -25,7 +25,7 @@ void Engine::Scene3D::Render(const Entity &camera)
     Scene::Render(camera);
     RenderShadowMap();
     Render3D(camera);
-    RenderParticles();
+    ParticleSystem::GetInstance().Render(m_Registry);
     RenderSkybox();
     RenderColorID();
 
