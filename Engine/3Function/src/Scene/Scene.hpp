@@ -8,6 +8,7 @@
 #include "../ECS/Component/LightComponent.hpp"
 #include "../ECS/Component/MaterialComponent.hpp"
 #include "../ECS/System/AudioSystem.hpp"
+#include "../ECS/System/ColliderSystem.hpp"
 #include "../ECS/System/NativeScriptSystem.hpp"
 #include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"

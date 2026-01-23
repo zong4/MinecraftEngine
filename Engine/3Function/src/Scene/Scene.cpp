@@ -86,8 +86,9 @@ void Engine::Scene::Update(float deltaTime)
     }
     m_DeletedEntities.clear();
 
-    // Update Transform System
+    // Update systems
     TransformSystem::GetInstance().Update(m_Registry);
+    ColliderSystem::GetInstance().Update(m_Registry);
 }
 
 void Engine::Scene::UpdateRuntime(float deltaTime)
@@ -100,6 +101,7 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
         m_Started = true;
     }
 
+    // Update systems
     RendererSystem::GetInstance().Update(m_Registry);
     m_PhysicSystem.Update(m_Registry, deltaTime);
     ParticleSystem::GetInstance().Update(m_Registry, deltaTime);
@@ -142,6 +144,7 @@ void Engine::Scene::Render(const Entity &camera)
     Render3D(camera);
 
     // Render Common
+    ColliderSystem::GetInstance().RenderBVH(m_Registry, 3);
     ParticleSystem::GetInstance().Render(m_Registry);
     RenderColorID();
 }

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../Scene/Scene.hpp"
+#include "../../ECS/Entity/Entity.hpp"
+#include "BoundingBox.hpp"
 
 namespace Engine
 {
@@ -11,18 +12,21 @@ struct BVHNode
     std::vector<Entity> Entities;
 
     // Child nodes
-    BVHNode *Left;
-    BVHNode *Right;
+    BVHNode *Left = nullptr;
+    BVHNode *Right = nullptr;
 };
 
 class BVH
 {
 public:
-    BVH(const std::shared_ptr<Scene> &scene);
+    BVH(entt::registry &registry, int leafSize) : m_Root(nullptr) { Update(registry, leafSize); }
     ~BVH();
 
+    // Getters
+    BVHNode *GetRoot() const { return m_Root; }
+
 public:
-    void Render(const Entity &camera, int maxDepth) const;
+    void Update(entt::registry &registry, int leafSize);
 
 private:
     BVHNode *m_Root;

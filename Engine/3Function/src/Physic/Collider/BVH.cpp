@@ -1,21 +1,7 @@
 #include "BVH.hpp"
 
-#include "../../AssetsManager/ShadersManager.hpp"
-#include "../../Renderer/Library/UniformLibrary.hpp"
-#include "../../Renderer/Library/VertexLibrary.hpp"
-
-Engine::BVH::BVH(const std::shared_ptr<Scene> &scene)
-{
-    std::vector<Entity> entities;
-    auto &&registry = scene->GetRegistry();
-    auto &&view = registry.view<TransformComponent, MeshRendererComponent>();
-    for (auto &&entity : view)
-    {
-        entities.push_back(Entity{entity, &registry});
-    }
-
-    m_Root = Build(entities, 3);
-}
+#include "../../ECS/Component/RendererComponents.hpp"
+#include "../../ECS/Component/TransformComponent.hpp"
 
 Engine::BVH::~BVH()
 {
@@ -23,51 +9,17 @@ Engine::BVH::~BVH()
     m_Root = nullptr;
 }
 
-void Engine::BVH::Render(const Entity &camera, int maxDepth) const
+void Engine::BVH::Update(entt::registry &registry, int leafSize)
 {
-    // Update camera uniform buffer
-    auto &&transform = camera.GetComponent<TransformComponent>();
-    auto &&cameraComp = camera.GetComponent<CameraComponent>();
-    if (transform && cameraComp)
+    // Gather all entities with MeshRendererComponent
+    std::vector<Entity> entities;
+    auto &&view = registry.view<TransformComponent, MeshRendererComponent>();
+    for (auto &&entity : view)
     {
-        cameraComp->UpdateProjectionMatrix();
-        UniformLibrary::GetInstance().UpdateUniform(
-            "UniformBuffer0",
-            {
-                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
-                {glm::value_ptr(cameraComp->GetProjectionMatrix()), sizeof(glm::mat4),
-                 sizeof(glm::mat4)}, // Projection matrix
-                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
-                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
-            });
+        entities.push_back(Entity{entity, &registry});
     }
 
-    auto &&shader = ShadersManager::GetInstance().GetShader("SimpleColor");
-    shader->Bind();
-
-    // Recursive render function
-    std::function<void(BVHNode *, int)> renderNode = [&](BVHNode *node, int depth) {
-        if (!node || depth > maxDepth)
-            return;
-
-        // Calculate model matrix
-        glm::vec3 scale = node->BBox.GetMax() - node->BBox.GetMin();
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), node->BBox.GetCenter());
-        model = glm::scale(model, scale);
-        shader->SetUniformMat4("uModel", model);
-
-        // // Color by depth
-        float t = depth / float(maxDepth);
-        shader->SetUniformVec4("uColor", glm::vec4(t, 1.0f - t, 0.5f, 1.0f));
-
-        // Render box
-        VertexLibrary::GetInstance().GetVertex("Cube")->Render(RendererType::Lines);
-        renderNode(node->Left, depth + 1);
-        renderNode(node->Right, depth + 1);
-    };
-
-    renderNode(m_Root, 0);
-    shader->Unbind();
+    m_Root = Build(entities, leafSize);
 }
 
 Engine::BVHNode *Engine::BVH::Build(std::vector<Entity> &entities, int leafSize)
