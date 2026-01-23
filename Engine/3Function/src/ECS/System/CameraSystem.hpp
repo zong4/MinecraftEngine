@@ -14,7 +14,6 @@ public:
 public:
     void Resize(entt::registry &registry, int width, int height);
     void Update(entt::registry &registry);
-    void Upload(entt::registry &registry);
 };
 
 } // namespace Engine

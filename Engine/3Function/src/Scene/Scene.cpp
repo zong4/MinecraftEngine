@@ -1,5 +1,7 @@
 #include "Scene.hpp"
 
+#include "../Renderer/Library/UniformLibrary.hpp"
+
 Engine::Scene::Scene(const std::string &name) : m_Name(name)
 {
     auto particle = AddEmptyEntity("ParticleSystem");
@@ -94,14 +96,29 @@ void Engine::Scene::Render(const Entity &camera)
 {
     PROFILE_FUNCTION();
 
-    RendererSystem::GetInstance().Upload(m_Registry);
-    CameraSystem::GetInstance().Upload(m_Registry);
+    // Upload camera data
+    auto &&transform = camera.GetComponent<TransformComponent>();
+    auto &&cameraComponent = camera.GetComponent<CameraComponent>();
+    if (transform && cameraComponent)
+    {
+        cameraComponent->UpdateProjectionMatrix(); // Ensure projection matrix is updated
+        UniformLibrary::GetInstance().UpdateUniform(
+            "UniformBuffer0",
+            {
+                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
+                {glm::value_ptr(cameraComponent->GetProjectionMatrix()), sizeof(glm::mat4),
+                 sizeof(glm::mat4)}, // Projection matrix
+                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
+                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
+            });
+    }
 
     // Clear buffers
-    RendererCommand::SetClearColor(camera.GetComponent<CameraComponent>()->BackgroundColor);
+    RendererCommand::SetClearColor(cameraComponent->BackgroundColor);
     RendererCommand::Clear();
 
     // Render
+    RendererSystem::GetInstance().Upload(m_Registry);
     LightSystem::GetInstance().Render(m_Registry);
     RendererSystem::GetInstance().Render(m_Registry);
     ColliderSystem::GetInstance().RenderBVH(m_Registry, 3);
