@@ -1,5 +1,6 @@
 #include "RayTracing.hpp"
 
+#include "../../Algorithm/Random.hpp"
 #include "../../Scene/Scene.hpp"
 
 void Engine::RayTracing::RenderScene(const Entity &camera, const std::vector<Entity> &entities, int raysPerPixel,

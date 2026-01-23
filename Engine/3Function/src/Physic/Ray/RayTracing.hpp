@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../Algorithm/Random.hpp"
 #include "Ray.hpp"
 
 namespace Engine

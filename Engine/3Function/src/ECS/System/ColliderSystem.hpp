@@ -11,11 +11,7 @@ namespace Engine
 class ColliderSystem
 {
 public:
-    static ColliderSystem &GetInstance()
-    {
-        static ColliderSystem instance;
-        return instance;
-    }
+    static ColliderSystem &GetInstance();
 
 public:
     void Update(entt::registry &registry);

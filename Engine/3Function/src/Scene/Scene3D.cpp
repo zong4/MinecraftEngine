@@ -10,8 +10,7 @@ void Engine::Scene3D::Render(const Entity &camera)
     PROFILE_FUNCTION();
 
     Scene::Render(camera);
-
-    RenderSkybox();
+    RendererSystem::GetInstance().RenderSkybox();
 
     // // Ray tracing
     // if (!m_RayTracingRunning.exchange(true))
@@ -29,24 +28,4 @@ void Engine::Scene3D::Render(const Entity &camera)
     //         m_RayTracingRunning = false;
     //     }).detach();
     // }
-}
-
-void Engine::Scene3D::RenderSkybox() const
-{
-    PROFILE_FUNCTION();
-
-    RendererCommand::SetFaceCulling(CullingFace::Front);
-    RendererCommand::SetDepthTestFunction(DepthTestFunction::LessEqual);
-    RendererCommand::SetDepthWrite(false);
-    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Skybox");
-    shader->Bind();
-
-    shader->SetUniformInt("u_Skybox", 0);
-    m_SkyboxTexture->Active(0);
-    Engine::VertexLibrary::GetInstance().GetVertex("Cube")->Render();
-
-    shader->Unbind();
-    RendererCommand::SetDepthWrite(true);
-    RendererCommand::SetDepthTestFunction(DepthTestFunction::Less);
-    RendererCommand::SetFaceCulling(CullingFace::Back);
 }

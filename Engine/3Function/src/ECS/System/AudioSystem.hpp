@@ -10,36 +10,11 @@ namespace Engine
 class AudioSystem
 {
 public:
-    static AudioSystem &GetInstance()
-    {
-        static AudioSystem instance;
-        return instance;
-    }
+    static AudioSystem &GetInstance();
 
 public:
-    void Update(entt::registry &registry)
-    {
-        PROFILE_FUNCTION();
-
-        auto &&view = registry.view<TransformComponent, AudioComponent>();
-        for (auto &&entity : view)
-        {
-            auto &&[transform, audio] = view.get<TransformComponent, AudioComponent>(entity);
-            audio.SetPosition(transform.GetWorldPosition());
-        }
-    }
-    void Clear(entt::registry &registry)
-    {
-        PROFILE_FUNCTION();
-
-        // Stop all audio
-        auto &&view = registry.view<AudioComponent>();
-        for (auto &&entity : view)
-        {
-            auto &&audio = view.get<AudioComponent>(entity);
-            audio.Stop();
-        }
-    }
+    void Update(entt::registry &registry);
+    void Clear(entt::registry &registry);
 
 private:
     AudioSystem() = default;

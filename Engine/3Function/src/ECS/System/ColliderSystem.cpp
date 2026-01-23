@@ -3,6 +3,12 @@
 #include "../../AssetsManager/ShadersManager.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
 
+Engine::ColliderSystem &Engine::ColliderSystem::GetInstance()
+{
+    static ColliderSystem instance;
+    return instance;
+}
+
 void Engine::ColliderSystem::Update(entt::registry &registry)
 {
     auto &&view = registry.view<TransformComponent, SpriteRendererComponent>();

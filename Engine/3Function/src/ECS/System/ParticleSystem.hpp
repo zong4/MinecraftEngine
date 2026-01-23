@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../AssetsManager/ShadersManager.hpp"
 #include "../Component/ParticleComponent.hpp"
 #include <entt/entt.hpp>
 
@@ -11,38 +10,11 @@ class ParticleSystem
 {
 
 public:
-    static ParticleSystem &GetInstance()
-    {
-        static ParticleSystem instance;
-        return instance;
-    }
+    static ParticleSystem &GetInstance();
 
 public:
-    void Update(entt::registry &registry, float deltaTime)
-    {
-        PROFILE_FUNCTION();
-
-        auto &&view = registry.view<ParticleComponent>();
-        for (auto &&entity : view)
-        {
-            auto &&particle = view.get<ParticleComponent>(entity);
-            particle.Update(deltaTime);
-        }
-    }
-    void Render(entt::registry &registry) const
-    {
-        PROFILE_FUNCTION();
-
-        auto &&shader = ShadersManager::GetInstance().GetShader("Particles");
-        shader->Bind();
-        auto &&view = registry.view<ParticleComponent>();
-        for (auto &&entity : view)
-        {
-            auto &&particle = view.get<ParticleComponent>(entity);
-            particle.Render();
-        }
-        shader->Unbind();
-    }
+    void Update(entt::registry &registry, float deltaTime);
+    void Render(entt::registry &registry) const;
 
 private:
     ParticleSystem() = default;
