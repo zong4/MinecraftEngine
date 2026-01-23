@@ -42,7 +42,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     // ------------------
     // Player
     // ------------------
-    auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 1.0f, 0.0f)));
+    auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 3.0f, 0.0f)));
     player.AddComponent<Engine::AudioComponent>(true, 1.0f);
     player.AddComponent<Engine::RigidBodyComponent>();
     player.AddComponent<Engine::NativeScriptComponent>();

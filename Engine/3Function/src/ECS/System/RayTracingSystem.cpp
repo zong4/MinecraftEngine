@@ -122,7 +122,7 @@ glm::vec3 Engine::RayTracingSystem::RenderPixel(int raysPerPixel, int rayBounces
         {
             if (ray.Hit(obj.bbox, m_CameraComponent.NearClip, m_CameraComponent.FarClip))
             {
-                rayColor = glm::vec3(0.0f, 0.0f, 1.0f); // Blue if hit
+                rayColor = glm::vec3(1.0f, 1.0f, 1.0f); // White color for hit objects
                 // LOG_ENGINE_TRACE("Ray hit object with name: " + obj.name);
                 break;
             }

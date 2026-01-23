@@ -70,7 +70,13 @@ void Engine::Scene::Update(float deltaTime)
     m_DeletedEntities.clear();
 
     // Update systems
+    if (!m_Started)
+    {
+        NativeScriptSystem::GetInstance().Start(m_Registry);
+        m_Started = true;
+    }
     TransformSystem::GetInstance().Update(m_Registry);
+    RendererSystem::GetInstance().Update(m_Registry);
     ColliderSystem::GetInstance().Update(m_Registry);
 }
 
@@ -78,14 +84,7 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    if (!m_Started)
-    {
-        NativeScriptSystem::GetInstance().Start(m_Registry);
-        m_Started = true;
-    }
-
     // Update systems
-    RendererSystem::GetInstance().Update(m_Registry);
     m_PhysicSystem.Update(m_Registry, deltaTime);
     ParticleSystem::GetInstance().Update(m_Registry, deltaTime);
     AudioSystem::GetInstance().Update(m_Registry);
