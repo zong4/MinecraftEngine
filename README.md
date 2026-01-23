@@ -26,6 +26,9 @@ By narrowing the engine’s scope, development can target **core voxel mechanics
 - [✔] ECS architecture for modular game object management.
 - [✔] Physics system with basic collision detection and response.
 - [✔] Basic particle system for visual effects.
+- [✔] Audio system for sound effects and background music.
+- [✔] Collider system for voxel-based collision detection.
+- [✔] Basic ray tracing for block selection and interaction.
 
 ## What is next?
 
