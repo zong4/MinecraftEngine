@@ -10,15 +10,15 @@ Engine::RayTracingSystem &Engine::RayTracingSystem::GetInstance()
 
 Engine::RayTracingSystem::~RayTracingSystem()
 {
-    if (m_Thread.joinable())
-    {
-        {
-            std::lock_guard<std::mutex> lock(m_Mutex);
-            m_Running = false;
-        }
-        m_CV.notify_one();
-        m_Thread.join();
-    }
+    // if (m_Thread.joinable())
+    // {
+    //     {
+    //         std::lock_guard<std::mutex> lock(m_Mutex);
+    //         m_Running = false;
+    //     }
+    //     m_CV.notify_one();
+    //     m_Thread.join();
+    // }
 }
 
 void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &camera, int raysPerPixel, int rayBounces)
@@ -54,7 +54,7 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
 
     // Start rendering thread
     m_Running = true;
-    m_Thread = std::thread([this, camera, raysPerPixel, rayBounces]() {
+    std::thread([this, camera, raysPerPixel, rayBounces]() {
         int lastPercent = -1;
         for (int y = 0; y < m_Height; y++)
         {
@@ -97,7 +97,7 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
             m_Running = false;
         }
         m_CV.notify_one();
-    });
+    }).detach();
 }
 
 glm::vec3 Engine::RayTracingSystem::RenderPixel(int raysPerPixel, int rayBounces, int x, int y)
@@ -137,11 +137,6 @@ glm::vec3 Engine::RayTracingSystem::RenderPixel(int raysPerPixel, int rayBounces
 void Engine::RayTracingSystem::SaveImage(const std::string &filepath)
 {
     PROFILE_FUNCTION();
-
-    {
-        std::unique_lock<std::mutex> lock(m_Mutex);
-        m_CV.wait(lock, [this] { return !m_Running; });
-    }
 
     if (m_FrameBuffer.empty())
     {
