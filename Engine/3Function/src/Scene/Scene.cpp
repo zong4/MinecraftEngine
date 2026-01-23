@@ -96,22 +96,24 @@ void Engine::Scene::Render(const Entity &camera)
 {
     PROFILE_FUNCTION();
 
+    auto &&cameraComponent = camera.GetComponent<CameraComponent>();
+    if (cameraComponent == nullptr)
+        return;
+    if (cameraComponent->GetWidth() == 0 || cameraComponent->GetHeight() == 0) // Minimize window
+        return;
+
     // Upload camera data
     auto &&transform = camera.GetComponent<TransformComponent>();
-    auto &&cameraComponent = camera.GetComponent<CameraComponent>();
-    if (transform && cameraComponent)
-    {
-        cameraComponent->UpdateProjectionMatrix(); // Ensure projection matrix is updated
-        UniformLibrary::GetInstance().UpdateUniform(
-            "UniformBuffer0",
-            {
-                {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
-                {glm::value_ptr(cameraComponent->GetProjectionMatrix()), sizeof(glm::mat4),
-                 sizeof(glm::mat4)}, // Projection matrix
-                {glm::value_ptr(transform->Position), sizeof(glm::vec3),
-                 sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
-            });
-    }
+    cameraComponent->UpdateProjectionMatrix(); // Ensure projection matrix is updated
+    UniformLibrary::GetInstance().UpdateUniform(
+        "UniformBuffer0",
+        {
+            {glm::value_ptr(glm::inverse(transform->GetTransformMatrix())), sizeof(glm::mat4), 0}, // View matrix
+            {glm::value_ptr(cameraComponent->GetProjectionMatrix()), sizeof(glm::mat4),
+             sizeof(glm::mat4)}, // Projection matrix
+            {glm::value_ptr(transform->Position), sizeof(glm::vec3),
+             sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
+        });
 
     // Clear buffers
     RendererCommand::SetClearColor(cameraComponent->BackgroundColor);

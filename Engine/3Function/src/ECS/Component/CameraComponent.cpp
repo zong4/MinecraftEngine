@@ -15,12 +15,14 @@ glm::vec3 Engine::CameraComponent::GetDirection(float u, float v) const
     }
     else
     {
-        float aspectRatio = (float)m_Width / (float)m_Height;
-        float fovRad = glm::radians(FOV);
-        float px = (2.0f * u - 1.0f) * tan(fovRad / 2.0f) * aspectRatio;
-        float py = (1.0f - 2.0f * v) * tan(fovRad / 2.0f);
-        glm::vec3 dir = glm::normalize(glm::vec3(px, py, -1.0f));
-        return dir;
+        // Perspective camera
+        float yFull = tan(glm::radians(FOV) / 2.0f);
+        float xFull = ((float)m_Width / (float)m_Height) * yFull;
+
+        // Convert (u,v) to NDC space [-1,1]
+        float xDelta = (2.0f * u - 1.0f) * xFull;
+        float yDelta = (1.0f - 2.0f * v) * yFull;
+        return glm::normalize(glm::vec3(xDelta, yDelta, -1.0f));
     }
 }
 

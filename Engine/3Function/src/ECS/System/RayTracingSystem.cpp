@@ -30,22 +30,25 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
 
     // Prepare objects
     m_Objects.clear();
-    auto &&view = registry.view<TransformComponent, MeshRendererComponent>();
+    auto &&view = registry.view<LabelComponent, TransformComponent, MeshRendererComponent>();
     for (auto &&entity : view)
     {
-        auto &&[transform, meshRenderer] = view.get<TransformComponent, MeshRendererComponent>(entity);
+        auto &&[label, transform, meshRenderer] =
+            view.get<LabelComponent, TransformComponent, MeshRendererComponent>(entity);
         RayTracingObject obj;
+        obj.name = label.Name;
         obj.transform = transform.GetTransformMatrix();
         obj.bbox = meshRenderer.WorldBBox;
         m_Objects.push_back(obj);
     }
 
     // Prepare framebuffer
-    auto &&cameraComponent = camera.GetComponent<CameraComponent>();
-    if (m_Width != cameraComponent->GetWidth() || m_Height != cameraComponent->GetHeight())
+    m_CameraTransform = *camera.GetComponent<TransformComponent>();
+    m_CameraComponent = *camera.GetComponent<CameraComponent>();
+    if (m_Width != m_CameraComponent.GetWidth() || m_Height != m_CameraComponent.GetHeight())
     {
-        m_Width = cameraComponent->GetWidth();
-        m_Height = cameraComponent->GetHeight();
+        m_Width = m_CameraComponent.GetWidth();
+        m_Height = m_CameraComponent.GetHeight();
         m_FrameBuffer.resize(m_Width * m_Height);
     }
 
@@ -57,11 +60,11 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
         {
             for (int x = 0; x < m_Width; x++)
             {
-                glm::vec3 color = RenderPixel(camera, raysPerPixel, rayBounces, x, y);
+                glm::vec3 color = RenderPixel(raysPerPixel, rayBounces, x, y);
                 m_FrameBuffer[y * m_Width + x] = glm::vec4(color, 1.0f);
             }
 
-            int percent = (y + 1) * raysPerPixel / m_Height;
+            int percent = (y + 1) * 100 / m_Height;
             if (percent != lastPercent)
             {
                 lastPercent = percent;
@@ -72,7 +75,7 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
         // Save image after rendering
         {
             // Generate timestamped filename
-            auto now = std::chrono::system_clock::now();
+            auto &&now = std::chrono::system_clock::now();
             std::time_t t = std::chrono::system_clock::to_time_t(now);
             std::tm tm;
 #if defined(_WIN32)
@@ -80,11 +83,11 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
 #else
             localtime_r(&t, &tm);
 #endif
-            std::stringstream ss;
-            ss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".png";
-            std::string filename = std::string(PROJECT_ROOT) + "/Assets/RayTracing_" + ss.str();
 
             // Save image
+            std::stringstream ss;
+            ss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".png";
+            std::string filename = std::string(PROJECT_ROOT) + "/logs/RayTracing_" + ss.str();
             SaveImage(filename);
         }
 
@@ -97,14 +100,47 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
     });
 }
 
+glm::vec3 Engine::RayTracingSystem::RenderPixel(int raysPerPixel, int rayBounces, int x, int y)
+{
+    PROFILE_FUNCTION();
+
+    glm::vec3 finalColor(0.0f);
+    for (int i = 0; i < raysPerPixel; i++)
+    {
+        // Jittered sampling within the pixel
+        float u = (x + Random::GetInstance().NextFloat()) / (float)m_Width;
+        float v = (y + Random::GetInstance().NextFloat()) / (float)m_Height;
+
+        // Generate ray from camera
+        glm::vec3 rayDir = m_CameraComponent.GetDirection(u, v);
+        rayDir = glm::normalize(m_CameraTransform.GetRotationQuat(TransformSpace::Global) * glm::vec4(rayDir, 0.0f));
+        Ray ray(m_CameraTransform.GetGlobaldPosition(), rayDir);
+
+        // Simple ray tracing logic (placeholder)
+        glm::vec3 rayColor(m_CameraComponent.BackgroundColor);
+        for (auto &&obj : m_Objects)
+        {
+            if (ray.Hit(obj.bbox, m_CameraComponent.NearClip, m_CameraComponent.FarClip))
+            {
+                rayColor = glm::vec3(0.0f, 0.0f, 1.0f); // Blue if hit
+                // LOG_ENGINE_TRACE("Ray hit object with name: " + obj.name);
+                break;
+            }
+        }
+        finalColor += rayColor;
+    }
+
+    finalColor /= (float)raysPerPixel;
+    return finalColor;
+}
+
 void Engine::RayTracingSystem::SaveImage(const std::string &filepath)
 {
     PROFILE_FUNCTION();
 
-    if (m_Running)
     {
         std::unique_lock<std::mutex> lock(m_Mutex);
-        m_CV.wait(lock, [this]() { return !m_Running.load(); });
+        m_CV.wait(lock, [this] { return !m_Running; });
     }
 
     if (m_FrameBuffer.empty())
@@ -123,42 +159,4 @@ void Engine::RayTracingSystem::SaveImage(const std::string &filepath)
         imageData[i * 4 + 3] = 255;
     }
     Engine::Texture::SaveImage(filepath, m_Width, m_Height, imageData.data());
-}
-
-glm::vec3 Engine::RayTracingSystem::RenderPixel(const Entity &camera, int raysPerPixel, int rayBounces, int x, int y)
-{
-    PROFILE_FUNCTION();
-
-    auto &&transform = camera.GetComponent<TransformComponent>();
-    auto &&cameraComponent = camera.GetComponent<CameraComponent>();
-
-    glm::vec3 finalColor(0.0f);
-    for (int i = 0; i < raysPerPixel; i++)
-    {
-        // Jittered sampling within the pixel
-        float u = (x + Random::GetInstance().NextFloat()) / (float)m_Width;
-        float v = (y + Random::GetInstance().NextFloat()) / (float)m_Height;
-
-        // Generate ray direction
-        glm::vec3 rayDir = cameraComponent->GetDirection(u, v);
-        rayDir = glm::normalize(glm::vec3(transform->GetTransformMatrix() * glm::vec4(rayDir, 0.0f)));
-
-        // Simple ray tracing logic (placeholder)
-        Ray ray(transform->GetGlobaldPosition(), rayDir);
-        for (auto &&obj : m_Objects)
-        {
-            if (ray.Hit(obj.bbox, 0.001f, FLT_MAX))
-            {
-                // For simplicity, we just return a solid color for hit objects
-                finalColor += glm::vec3(1.0f, 0.0f, 1.0f); // White color for hit
-            }
-            else
-            {
-                finalColor += glm::vec3(cameraComponent->BackgroundColor); // Background color
-            }
-        }
-    }
-
-    finalColor /= (float)raysPerPixel;
-    return finalColor;
 }

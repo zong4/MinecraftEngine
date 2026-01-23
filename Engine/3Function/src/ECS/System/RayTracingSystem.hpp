@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Component/CameraComponent.hpp"
+#include "../Component/LabelComponent.hpp"
 #include "../Component/RendererComponents.hpp"
 #include "../Component/TransformComponent.hpp"
 #include "../Entity/Entity.hpp"
@@ -11,6 +12,7 @@ namespace Engine
 
 struct RayTracingObject
 {
+    std::string name;
     glm::mat4 transform;
     BoundingBox bbox;
 };
@@ -22,7 +24,6 @@ public:
 
 public:
     void Render(entt::registry &registry, const Entity &camera, int raysPerPixel, int rayBounces);
-    void SaveImage(const std::string &filepath);
 
 private:
     // Multithreading
@@ -33,6 +34,8 @@ private:
 
     // Common
     int m_Width, m_Height;
+    TransformComponent m_CameraTransform;
+    CameraComponent m_CameraComponent = CameraComponent(CameraType::Perspective);
     std::vector<RayTracingObject> m_Objects;
     std::vector<glm::vec4> m_FrameBuffer;
 
@@ -41,7 +44,8 @@ private:
     ~RayTracingSystem();
 
 private:
-    glm::vec3 RenderPixel(const Entity &camera, int raysPerPixel, int rayBounces, int x, int y);
+    glm::vec3 RenderPixel(int raysPerPixel, int rayBounces, int x, int y);
+    void SaveImage(const std::string &filepath);
 };
 
 } // namespace Engine
