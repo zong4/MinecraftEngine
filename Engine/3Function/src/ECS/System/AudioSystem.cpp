@@ -14,7 +14,7 @@ void Engine::AudioSystem::Update(entt::registry &registry)
     for (auto &&entity : view)
     {
         auto &&[transform, audio] = view.get<TransformComponent, AudioComponent>(entity);
-        audio.SetPosition(transform.GetWorldPosition());
+        audio.SetPosition(transform.GetGlobaldPosition());
     }
 }
 

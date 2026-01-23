@@ -7,7 +7,7 @@ Engine::CameraComponent::CameraComponent(CameraType type, float width, float hei
 {
 }
 
-glm::vec3 Engine::CameraComponent::GetWorldDirection(float u, float v) const
+glm::vec3 Engine::CameraComponent::GetDirection(float u, float v) const
 {
     if (Type == CameraType::Orthographic)
     {

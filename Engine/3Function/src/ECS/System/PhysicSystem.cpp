@@ -113,7 +113,7 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
     // Update transform
     btTransform btTransform;
     btTransform.setIdentity();
-    glm::vec3 position = transform.GetWorldPosition();
+    glm::vec3 position = transform.GetGlobaldPosition();
     btTransform.setOrigin(btVector3(position.x, position.y, position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
@@ -152,7 +152,7 @@ void Engine::PhysicSystem::AddRigidBody(RigidBodyComponent &rigidBody, const Tra
     // Transform
     btTransform btTransform;
     btTransform.setIdentity();
-    glm::vec3 position = transform.GetWorldPosition();
+    glm::vec3 position = transform.GetGlobaldPosition();
     btTransform.setOrigin(btVector3(position.x, position.y, position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));

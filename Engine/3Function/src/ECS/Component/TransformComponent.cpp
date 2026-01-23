@@ -2,7 +2,7 @@
 
 #include "RelationshipComponent.hpp"
 
-glm::vec3 Engine::TransformComponent::GetWorldScale() const
+glm::vec3 Engine::TransformComponent::GetGlobalScale() const
 {
     // Extract scale from the transformation matrix
     glm::vec3 scale;

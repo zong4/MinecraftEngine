@@ -29,8 +29,8 @@ public:
     }
 
     // Getters
-    glm::vec3 GetWorldPosition() const { return glm::vec3(m_TransformMatrix[3]); }
-    glm::vec3 GetWorldScale() const;
+    glm::vec3 GetGlobaldPosition() const { return glm::vec3(m_TransformMatrix[3]); }
+    glm::vec3 GetGlobalScale() const;
     glm::vec3 GetRotationEuler() const { return glm::degrees(Rotation); }
     const glm::quat &GetRotationQuat(TransformSpace space) const;
     const glm::mat4 &GetTransformMatrix() const { return m_TransformMatrix; }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../ECS/System/RayTracingSystem.hpp"
 #include "Scene.hpp"
 
 namespace Engine
@@ -8,22 +9,18 @@ namespace Engine
 class Scene3D : public Scene
 {
 public:
-    Scene3D(const std::string &name = "Untitled");
+    Scene3D(const std::string &name = "Untitled") : Scene(name) {}
     virtual ~Scene3D() override = default;
 
 public:
-    void Render(const Entity &camera) override;
+    void Render(const Entity &camera) override
+    {
+        PROFILE_FUNCTION();
 
-private:
-    // Ray tracing
-    std::atomic<bool> m_RayTracingRunning = false;
-    std::mutex m_RTMutex;
-    std::condition_variable m_RTCV;
-    std::thread m_RayTracingThread;
-    std::vector<glm::vec4> m_RayTracingFrameBuffer;
-
-private:
-    void RenderSkybox() const;
+        Scene::Render(camera);
+        RendererSystem::GetInstance().RenderSkybox();
+        RayTracingSystem::GetInstance().Render(GetRegistry(), camera, 25, 1);
+    }
 };
 
 } // namespace Engine
