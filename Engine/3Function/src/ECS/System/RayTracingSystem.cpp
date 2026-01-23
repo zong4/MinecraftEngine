@@ -92,11 +92,8 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
         }
 
         // Notify completion
-        {
-            std::lock_guard<std::mutex> lock(m_Mutex);
-            m_Running = false;
-        }
-        m_CV.notify_one();
+        m_Running = false;
+        // m_CV.notify_one();
     }).detach();
 }
 

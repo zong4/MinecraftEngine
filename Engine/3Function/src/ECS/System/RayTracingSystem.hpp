@@ -28,8 +28,8 @@ public:
 private:
     // Multithreading
     std::atomic<bool> m_Running = false;
-    std::mutex m_Mutex;
-    std::condition_variable m_CV;
+    // std::mutex m_Mutex;
+    // std::condition_variable m_CV;
     // std::thread m_Thread;
 
     // Common
