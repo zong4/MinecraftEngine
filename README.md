@@ -8,8 +8,6 @@
   <img src="./Assets/Logo.png" alt="Logo" width="200">
 </p>
 
-> A custom **game engine** built for voxel-style games like *Minecraft* and *Terraria* — optimized for procedural world generation, chunk rendering, and simulation performance.
-
 ## What we want?
 
 This engine is designed specifically for **Minecraft-like voxel games**, focusing on performance, chunk management, and real-time procedural generation — without the overhead of general-purpose engines like Unity or Unreal.
@@ -24,11 +22,10 @@ By narrowing the engine’s scope, development can target **core voxel mechanics
 - [✔] Render system optimized for rendering basic voxel primitives (cubes).
 - [✔] UI layer built with ImGui for in-engine tools and debugging. 
 - [✔] ECS architecture for modular game object management.
-- [✔] Physics system with basic collision detection and response.
+- [✔] Physic system with basic collision detection and response.
 - [✔] Basic particle system for visual effects.
-- [✔] Audio system for sound effects and background music.
-- [✔] Collider system for voxel-based collision detection.
-- [✔] Basic ray tracing for block selection and interaction.
+- [✔] Basic audio system for sound effects and background music.
+- [✔] Collider system with bvh tree for basic ray tracing.
 
 ## What is next?
 
