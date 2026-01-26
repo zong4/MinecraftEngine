@@ -1,0 +1,11 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$class_engine_1_1_layer.html" title=" " alt="" coords="5,56,107,83"/>
+<area shape="rect" id="Node000001" href="$class_editor_1_1_creator_layer.html" title=" " alt="" coords="155,5,293,32"/>
+<area shape="poly" id="edge12_Node000000_Node000001" title=" " alt="" coords="117,48,179,31,175,34,119,53"/>
+<area shape="rect" id="Node000002" href="$class_engine_1_1_im_gui_layer.html" title=" " alt="" coords="156,56,292,83"/>
+<area shape="poly" id="edge13_Node000000_Node000002" title=" " alt="" coords="122,67,158,68,153,70,122,72"/>
+<area shape="rect" id="Node000004" href="$class_engine_1_1_input_layer.html" title=" " alt="" coords="159,107,289,133"/>
+<area shape="poly" id="edge15_Node000000_Node000004" title=" " alt="" coords="118,85,180,105,175,107,117,90"/>
+<area shape="rect" id="Node000003" href="$class_engine_1_1_open_g_l_im_gui_layer.html" title=" " alt="" coords="341,56,525,83"/>
+<area shape="poly" id="edge14_Node000002_Node000003" title=" " alt="" coords="307,67,343,69,338,70,308,72"/>
+</map>

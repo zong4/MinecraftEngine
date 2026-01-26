@@ -1,0 +1,9 @@
+<map id="Engine::ScriptableEntity" name="Engine::ScriptableEntity">
+<area shape="rect" id="Node000001" title=" " alt="" coords="193,5,354,32"/>
+<area shape="rect" id="Node000002" href="$class_editor_1_1_camera_controller.html" title=" " alt="" coords="5,80,171,107"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="230,39,121,82,120,77,225,37"/>
+<area shape="rect" id="Node000003" href="$class_editor_1_1_player_controller.html" title=" " alt="" coords="195,80,352,107"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="275,46,276,81,271,78,271,50"/>
+<area shape="rect" id="Node000004" href="$class_editor_1_1_rotating_light.html" title=" " alt="" coords="375,80,516,107"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="318,36,418,79,412,79,317,41"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="Editor::ExampleScene" name="Editor::ExampleScene">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,155,157,181"/>
+<area shape="rect" id="Node000002" href="$class_engine_1_1_scene3_d.html" title=" " alt="" coords="19,80,143,107"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,121,84,155,78,153,79,124"/>
+<area shape="rect" id="Node000003" href="$class_engine_1_1_scene.html" title=" " alt="" coords="28,5,134,32"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="82,45,84,80,78,79,80,50"/>
+</map>

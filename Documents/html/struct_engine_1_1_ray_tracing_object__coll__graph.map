@@ -1,0 +1,5 @@
+<map id="Engine::RayTracingObject" name="Engine::RayTracingObject">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,104,180,131"/>
+<area shape="rect" id="Node000002" href="$class_engine_1_1_bounding_box.html" title=" " alt="" coords="19,5,166,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,46,95,104,90,103,90,49"/>
+</map>
