@@ -1,7 +1,0 @@
-<map id="Editor::WelcomeScene" name="Editor::WelcomeScene">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,155,160,181"/>
-<area shape="rect" id="Node000002" href="$class_engine_1_1_scene3_d.html" title=" " alt="" coords="21,80,144,107"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,121,85,155,80,153,81,124"/>
-<area shape="rect" id="Node000003" href="$class_engine_1_1_scene.html" title=" " alt="" coords="29,5,136,32"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="84,45,85,80,80,79,81,50"/>
-</map>

@@ -1,8 +1,0 @@
-<map id="Engine/2Platform/src/Renderer" name="Engine/2Platform/src/Renderer">
-<area shape="rect" id="node2" href="dir_3ec5b1a00e9144490b94ebd60504e695.html" title="Buffer" alt="" coords="136,64,192,91"/>
-<area shape="rect" id="node3" href="dir_0b41e19dd63fc2560aab9b24b8371076.html" title="Shader" alt="" coords="216,64,278,91"/>
-<area shape="rect" id="node4" href="dir_ec80879f26dd884ef785f666656e1e22.html" title="Texture" alt="" coords="302,64,367,91"/>
-<area shape="rect" id="node5" href="dir_c22658815da0162084e16a55a6f72eb5.html" title="VertexArray" alt="" coords="391,64,481,91"/>
-<area shape="rect" id="clust2" href="dir_2d548993fe61d3b9b0c5084a864e6b1f.html" alt="" coords="27,53,492,101"/>
-<area shape="rect" id="clust1" href="dir_a718cb7ac62d673c8a55900e64630bf7.html" title="src" alt="" coords="16,16,503,112"/>
-</map>

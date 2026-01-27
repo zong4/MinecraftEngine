@@ -1,9 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$class_engine_1_1_scriptable_entity.html" title=" " alt="" coords="5,56,167,83"/>
-<area shape="rect" id="Node000001" href="$class_editor_1_1_camera_controller.html" title=" " alt="" coords="215,5,380,32"/>
-<area shape="poly" id="edge22_Node000000_Node000001" title=" " alt="" coords="159,49,241,31,236,34,161,54"/>
-<area shape="rect" id="Node000002" href="$class_editor_1_1_player_controller.html" title=" " alt="" coords="219,56,376,83"/>
-<area shape="poly" id="edge23_Node000000_Node000002" title=" " alt="" coords="181,67,221,69,216,70,182,72"/>
-<area shape="rect" id="Node000003" href="$class_editor_1_1_rotating_light.html" title=" " alt="" coords="227,107,368,133"/>
-<area shape="poly" id="edge24_Node000000_Node000003" title=" " alt="" coords="160,84,241,105,236,107,159,90"/>
-</map>
