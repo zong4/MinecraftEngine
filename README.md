@@ -26,6 +26,7 @@ By narrowing the engine’s scope, development can target **core voxel mechanics
 - [✔] Basic particle system for visual effects.
 - [✔] Basic audio system for sound effects and background music.
 - [✔] Collider system with bvh tree for basic ray tracing.
+- [✔] Support basic lua scripting for game logic and modding.
 
 ## What is next?
 
