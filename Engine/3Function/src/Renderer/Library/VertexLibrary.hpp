@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../ResourcesManager/ResourcesRoot.hpp"
+#include <Platform.hpp>
 
 namespace Engine
 {

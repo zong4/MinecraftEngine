@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Platform.hpp>
+#include <Core.hpp>
 
 #if defined(_WIN32)
 #include <windows.h>

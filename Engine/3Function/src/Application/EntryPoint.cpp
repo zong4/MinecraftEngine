@@ -1,4 +1,3 @@
-#include "../ResourcesManager/ResourcesRoot.hpp"
 #include "Application.hpp"
 
 int main()
