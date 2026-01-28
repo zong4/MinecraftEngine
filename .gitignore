@@ -9,6 +9,8 @@
 .xmake/
 build/
 vsxmake*/
+Dist/
+dist/
 
 # MacOS
 .DS_Store

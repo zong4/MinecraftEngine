@@ -23,7 +23,6 @@ end
 -- Global Definitions
 add_defines('PROJECT_ROOT=R"($(projectdir)/)"')
 add_defines('EDITOR_ROOT=R"($(projectdir)/Editor/)"')
-add_defines('FUNCTION_ROOT=R"($(projectdir)/Engine/3Function/)"')
 
 -- VS Code Specific Settings
 add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
