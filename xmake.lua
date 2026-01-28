@@ -16,13 +16,10 @@ if is_mode("debug") then
     set_symbols("debug")
     set_optimize("none")
     add_defines("DEBUG")
+    add_defines('PROJECT_ROOT=R"($(projectdir)/)"')
 else
     set_optimize("fast")
 end
-
--- Global Definitions
-add_defines('PROJECT_ROOT=R"($(projectdir)/)"')
-add_defines('EDITOR_ROOT=R"($(projectdir)/Editor/)"')
 
 -- VS Code Specific Settings
 add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})

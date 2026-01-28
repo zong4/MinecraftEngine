@@ -68,7 +68,7 @@ Engine::ShadersManager::ShadersManager()
     PROFILE_FUNCTION();
 
     // Check Shaders directory path
-    std::filesystem::path path(std::string(EDITOR_ROOT) + "/resources/Shaders/");
+    std::filesystem::path path = GetResourcesRoot() / "Shaders/";
     if (!std::filesystem::exists(path))
     {
         LOG_ENGINE_ERROR("Shader directory does not exist: " + path.string());

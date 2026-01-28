@@ -112,8 +112,8 @@ void Editor::FileBrowserPanel::OnImGuiRender()
 }
 
 Editor::FileBrowserPanel::FileBrowserPanel()
-    : m_RootDirectory(std::string(EDITOR_ROOT) + "/assets"), m_CurrentDirectory(m_RootDirectory)
+    : m_RootDirectory(Engine::GetAssetsRoot()), m_CurrentDirectory(m_RootDirectory)
 {
-    m_FileIcon = Engine::Texture2D::Create((std::string(EDITOR_ROOT) + "/resources/Icons/File.png"));
-    m_DirectoryIcon = Engine::Texture2D::Create((std::string(EDITOR_ROOT) + "/resources/Icons/Directory.png"));
+    m_FileIcon = Engine::Texture2D::Create((Engine::GetResourcesRoot() / "Icons/File.png").string());
+    m_DirectoryIcon = Engine::Texture2D::Create((Engine::GetResourcesRoot() / "Icons/Directory.png").string());
 }
