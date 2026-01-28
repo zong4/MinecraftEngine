@@ -7,6 +7,7 @@
 #include "../ECS/System/CameraSystem.hpp"
 #include "../ECS/System/ColliderSystem.hpp"
 #include "../ECS/System/LightSystem.hpp"
+#include "../ECS/System/LuaScriptSystem.hpp"
 #include "../ECS/System/NativeScriptSystem.hpp"
 #include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"
@@ -60,8 +61,9 @@ private:
     entt::registry m_Registry = {};
     std::vector<Entity> m_DeletedEntities = {};
 
-    // Physic
+    // Systems
     PhysicSystem m_PhysicSystem;
+    LuaScriptSystem m_LuaScriptSystem;
 
     // Native script
     bool m_Started = false;

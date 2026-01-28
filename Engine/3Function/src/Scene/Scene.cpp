@@ -19,6 +19,7 @@ Engine::Scene::~Scene()
 {
     AudioSystem::GetInstance().Clear(m_Registry);
     NativeScriptSystem::GetInstance().Clear(m_Registry);
+    m_LuaScriptSystem.Clear(m_Registry);
     m_Registry.clear();
 }
 
@@ -73,6 +74,7 @@ void Engine::Scene::Update(float deltaTime)
     if (!m_Started)
     {
         NativeScriptSystem::GetInstance().Start(m_Registry);
+        m_LuaScriptSystem.Start(m_Registry);
         m_Started = true;
     }
     TransformSystem::GetInstance().Update(m_Registry);
@@ -89,6 +91,7 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
     ParticleSystem::GetInstance().Update(m_Registry, deltaTime);
     AudioSystem::GetInstance().Update(m_Registry);
     NativeScriptSystem::GetInstance().Update(m_Registry, deltaTime);
+    m_LuaScriptSystem.Update(m_Registry, deltaTime);
 }
 
 void Engine::Scene::Render(const Entity &camera)
