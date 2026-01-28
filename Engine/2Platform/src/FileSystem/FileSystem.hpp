@@ -52,7 +52,7 @@ static std::filesystem::path GetLogsDirectory()
 #ifdef DEBUG
     return std::filesystem::path(std::string(PROJECT_ROOT) + "/logs/");
 #else
-    return GetExeDirectory() / ".." / "logs/";
+    return GetExeDirectory() / "logs/";
 #endif
 }
 
@@ -61,7 +61,7 @@ static std::filesystem::path GetConfigsDirectory()
 #ifdef DEBUG
     return std::filesystem::path(std::string(PROJECT_ROOT) + "/Editor/configs/");
 #else
-    return GetExeDirectory() / ".." / "Configs/";
+    return GetExeDirectory() / "Configs/";
 #endif
 }
 
@@ -70,7 +70,7 @@ static std::filesystem::path GetResourcesDirectory()
 #ifdef DEBUG
     return std::filesystem::path(std::string(PROJECT_ROOT) + "/Editor/resources/");
 #else
-    return GetExeDirectory() / ".." / "Resources/";
+    return GetExeDirectory() / "Resources/";
 #endif
 }
 
@@ -79,7 +79,7 @@ static std::filesystem::path GetAssetsDirectory()
 #ifdef DEBUG
     return std::filesystem::path(std::string(PROJECT_ROOT) + "/Editor/assets/");
 #else
-    return GetExeDirectory() / ".." / "Assets/";
+    return GetExeDirectory() / "Assets/";
 #endif
 }
 

@@ -13,11 +13,13 @@ target("Editor")
 
     add_packages("nlohmann_json")
 
-if is_mode("release") then
-    after_install(function(target)
-        local installDir = path.join(os.curdir(), "Dist")
-        os.cp("Editor/configs", path.join(installDir, "Configs"))
-        os.cp("Editor/assets", path.join(installDir, "Assets"))
-        os.cp("Editor/resources", path.join(installDir, "Resources"))
-    end)
-end
+    if is_mode("release") then
+        set_targetdir("../Dist/")
+        after_build(function(target)
+            local installDir = path.join(os.curdir(), "Dist")
+            os.cp("Editor/configs", path.join(installDir, "Configs"))
+            os.cp("Editor/assets", path.join(installDir, "Assets"))
+            os.cp("Editor/resources", path.join(installDir, "Resources"))
+            os.rm(path.join(installDir, "bin"))
+        end)
+    end
