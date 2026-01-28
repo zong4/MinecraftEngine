@@ -5,33 +5,30 @@
 #include "../../Renderer/Library/UniformLibrary.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
 
-Engine::RendererSystem &Engine::RendererSystem::GetInstance()
-{
-    static RendererSystem instance;
-    return instance;
-}
-
 Engine::RendererSystem::RendererSystem() : m_SkyboxTexture(TexturesManager::GetInstance().GetTextureCube("Default")) {}
 
-void Engine::RendererSystem::Update(entt::registry &registry)
+void Engine::RendererSystem::Resize(entt::registry &registry, int width, int height)
 {
     PROFILE_FUNCTION();
 
-    // Sprites
-    auto &&spriteView = registry.view<TransformComponent, SpriteRendererComponent>();
-    for (auto &&entity : spriteView)
+    // Resize all cameras
+    auto &&cameraView = registry.view<CameraComponent>();
+    for (auto &&entity : cameraView)
     {
-        auto &&[transform, spriteRenderer] = spriteView.get<TransformComponent, SpriteRendererComponent>(entity);
-        spriteRenderer.WorldBBox = spriteRenderer.GetBBox().Transform(transform.GetTransformMatrix());
+        auto &&camera = cameraView.get<CameraComponent>(entity);
+        camera.Resize(width, height);
     }
 
-    // Meshes
-    auto &&meshView = registry.view<TransformComponent, MeshRendererComponent>();
-    for (auto &&entity : meshView)
+    // Resize all light shadow maps
+    auto &&lightView = registry.view<LightComponent>();
+    for (auto &&entity : lightView)
     {
-        auto &&[transform, meshRenderer] = meshView.get<TransformComponent, MeshRendererComponent>(entity);
-        meshRenderer.WorldBBox = meshRenderer.GetBBox().Transform(transform.GetTransformMatrix());
+        auto &&light = lightView.get<LightComponent>(entity);
+        light.ShadowMap->Resize(width, height);
     }
+
+    // Resize color ID framebuffer
+    m_ColorIDFrameBuffer->Resize(width, height);
 }
 
 void Engine::RendererSystem::Upload(entt::registry &registry)
@@ -47,6 +44,7 @@ void Engine::RendererSystem::Render(entt::registry &registry) const
     PROFILE_FUNCTION();
 
     Render2D(registry);
+    RenderShadowMap(registry);
     Render3D(registry);
     RenderColorID();
 }
@@ -189,6 +187,35 @@ void Engine::RendererSystem::Render2D(entt::registry &registry) const
     // Clear texture slots
     TexturesManager::GetInstance().ClearTextureSlots();
     shader->Unbind();
+}
+
+void Engine::RendererSystem::RenderShadowMap(entt::registry &registry) const
+{
+    RendererCommand::SetFaceCulling(CullingFace::Front);
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("ShadowMap");
+    shader->Bind();
+    auto &&view = registry.view<Engine::TransformComponent, Engine::LightComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, light] = view.get<Engine::TransformComponent, Engine::LightComponent>(entity);
+
+        // Render to shadow map
+        light.ShadowMap->Bind();
+        RendererCommand::ClearDepthBuffer();
+        {
+            shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
+            shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,
+                                                                   20.0f)); // todo: calculate camera view
+
+            // Render
+            if (m_CubesCount > 0)
+                VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles,
+                                                                        m_CubesCount * 36);
+        }
+        light.ShadowMap->Unbind();
+    }
+    shader->Unbind();
+    RendererCommand::SetFaceCulling(CullingFace::Back);
 }
 
 void Engine::RendererSystem::Render3D(entt::registry &registry) const

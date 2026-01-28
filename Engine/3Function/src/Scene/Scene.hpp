@@ -4,14 +4,11 @@
 #include "../AssetsManager/TexturesManager.hpp"
 #include "../ECS/Component/LabelComponent.hpp"
 #include "../ECS/System/AudioSystem.hpp"
-#include "../ECS/System/CameraSystem.hpp"
 #include "../ECS/System/ColliderSystem.hpp"
-#include "../ECS/System/LightSystem.hpp"
-#include "../ECS/System/LuaScriptSystem.hpp"
-#include "../ECS/System/NativeScriptSystem.hpp"
 #include "../ECS/System/ParticleSystem.hpp"
 #include "../ECS/System/PhysicSystem.hpp"
 #include "../ECS/System/RendererSystem.hpp"
+#include "../ECS/System/ScriptsSystem.hpp"
 #include "../ECS/System/TransformSystem.hpp"
 
 namespace Engine
@@ -34,7 +31,7 @@ public:
     void SetMainCamera(const Entity &camera);
 
 public:
-    virtual void Resize(int width, int height);
+    virtual void Resize(int width, int height) { m_RendererSystem.Resize(m_Registry, width, height); }
     void Update(float deltaTime);
     void UpdateRuntime(float deltaTime);
     virtual void Render(const Entity &camera);
@@ -54,22 +51,28 @@ public:
                      const CameraComponent &cameraComponent);
     Entity AddLight(const std::string &name, const TransformComponent &transform, const LightComponent &lightComponent);
 
+protected:
+    RendererSystem m_RendererSystem;
+
 private:
     // Scene management
     std::string m_Name;
     Entity m_MainCamera;
     entt::registry m_Registry = {};
-    std::vector<Entity> m_DeletedEntities = {};
+    std::vector<Entity> m_DeleteEntities = {};
 
     // Systems
+    bool m_Initialized = false;
+    TransformSystem m_TransformSystem;
+    ScriptsSystem m_ScriptsSystem;
+    ColliderSystem m_ColliderSystem;
     PhysicSystem m_PhysicSystem;
-    LuaScriptSystem m_LuaScriptSystem;
-
-    // Native script
-    bool m_Started = false;
+    ParticleSystem m_ParticleSystem;
+    AudioSystem m_AudioSystem;
 
 private:
-    void DeleteEntityReal(const Entity &entity);
+    void StackDeleteEntityRecursive(const Entity &entity);
+    void DeleteEntityReal();
 };
 
 } // namespace Engine

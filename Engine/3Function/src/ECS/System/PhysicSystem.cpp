@@ -1,7 +1,5 @@
 #include "PhysicSystem.hpp"
 
-#include <btBulletDynamicsCommon.h>
-
 Engine::PhysicSystem::PhysicSystem()
 {
     m_CollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -12,51 +10,11 @@ Engine::PhysicSystem::PhysicSystem()
     m_DynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
 }
 
-Engine::PhysicSystem::~PhysicSystem()
+void Engine::PhysicSystem::Delete(const Entity &entity)
 {
-    if (!m_DynamicsWorld)
-        return;
+    PROFILE_FUNCTION();
 
-    // Clean up all rigid bodies
-    for (int i = m_DynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
-    {
-        btCollisionObject *obj = m_DynamicsWorld->getCollisionObjectArray()[i];
-        btRigidBody *body = btRigidBody::upcast(obj);
-        if (body)
-        {
-            // Clean up motion state
-            delete body->getMotionState();
-
-            // Remove the rigid body from the dynamics world and delete it
-            m_DynamicsWorld->removeRigidBody(body);
-            delete body;
-            body = nullptr;
-        }
-    }
-
-    // Clean up dynamics world
-    delete m_DynamicsWorld;
-    m_DynamicsWorld = nullptr;
-
-    // Clean up solver
-    delete m_Solver;
-    m_Solver = nullptr;
-
-    // Clean up broadphase
-    delete m_Broadphase;
-    m_Broadphase = nullptr;
-
-    // Clean up dispatcher
-    delete m_Dispatcher;
-    m_Dispatcher = nullptr;
-
-    // Clean up collision configuration
-    delete m_CollisionConfiguration;
-    m_CollisionConfiguration = nullptr;
-}
-
-void Engine::PhysicSystem::DeleteRigidBody(RigidBodyComponent *rigidBody)
-{
+    auto &&rigidBody = entity.GetComponent<RigidBodyComponent>();
     if (rigidBody->Body)
     {
         // Clean up motion state
@@ -103,8 +61,55 @@ void Engine::PhysicSystem::Update(entt::registry &registry, float deltaTime)
     }
 }
 
+void Engine::PhysicSystem::Shutdown()
+{
+    PROFILE_FUNCTION();
+
+    if (!m_DynamicsWorld)
+        return;
+
+    // Clean up all rigid bodies
+    for (int i = m_DynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+    {
+        btCollisionObject *obj = m_DynamicsWorld->getCollisionObjectArray()[i];
+        btRigidBody *body = btRigidBody::upcast(obj);
+        if (body)
+        {
+            // Clean up motion state
+            delete body->getMotionState();
+
+            // Remove the rigid body from the dynamics world and delete it
+            m_DynamicsWorld->removeRigidBody(body);
+            delete body;
+            body = nullptr;
+        }
+    }
+
+    // Clean up dynamics world
+    delete m_DynamicsWorld;
+    m_DynamicsWorld = nullptr;
+
+    // Clean up solver
+    delete m_Solver;
+    m_Solver = nullptr;
+
+    // Clean up broadphase
+    delete m_Broadphase;
+    m_Broadphase = nullptr;
+
+    // Clean up dispatcher
+    delete m_Dispatcher;
+    m_Dispatcher = nullptr;
+
+    // Clean up collision configuration
+    delete m_CollisionConfiguration;
+    m_CollisionConfiguration = nullptr;
+}
+
 void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform)
 {
+    PROFILE_FUNCTION();
+
     // Create rigid body if it doesn't exist
     if (!rigidBody.Body)
         AddRigidBody(rigidBody, transform);
@@ -113,7 +118,7 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
     // Update transform
     btTransform btTransform;
     btTransform.setIdentity();
-    glm::vec3 position = transform.GetGlobaldPosition();
+    glm::vec3 position = transform.GetGlobalPosition();
     btTransform.setOrigin(btVector3(position.x, position.y, position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
@@ -149,10 +154,12 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
 
 void Engine::PhysicSystem::AddRigidBody(RigidBodyComponent &rigidBody, const TransformComponent &transform)
 {
+    PROFILE_FUNCTION();
+
     // Transform
     btTransform btTransform;
     btTransform.setIdentity();
-    glm::vec3 position = transform.GetGlobaldPosition();
+    glm::vec3 position = transform.GetGlobalPosition();
     btTransform.setOrigin(btVector3(position.x, position.y, position.z));
     glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
     btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));

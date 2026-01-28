@@ -1,14 +1,8 @@
 #pragma once
 
-#include "../Component/RigidBodyComponent.hpp"
+#include "../Component/PhysicComponent.hpp"
 #include "../Component/TransformComponent.hpp"
-#include <entt/entt.hpp>
-
-class btDefaultCollisionConfiguration;
-class btCollisionDispatcher;
-class btBroadphaseInterface;
-class btSequentialImpulseConstraintSolver;
-class btDiscreteDynamicsWorld;
+#include "../Entity/Entity.hpp"
 
 namespace Engine
 {
@@ -17,13 +11,14 @@ class PhysicSystem
 {
 public:
     PhysicSystem();
-    ~PhysicSystem();
+    ~PhysicSystem() = default;
 
     // Setters
-    void DeleteRigidBody(RigidBodyComponent *rigidBody);
+    void Delete(const Entity &entity);
 
 public:
     void Update(entt::registry &registry, float deltaTime);
+    void Shutdown();
 
 private:
     btDefaultCollisionConfiguration *m_CollisionConfiguration;

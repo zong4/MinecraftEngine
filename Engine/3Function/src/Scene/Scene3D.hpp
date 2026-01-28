@@ -18,7 +18,7 @@ public:
         PROFILE_FUNCTION();
 
         Scene::Render(camera);
-        RendererSystem::GetInstance().RenderSkybox();
+        m_RendererSystem.RenderSkybox();
         RayTracingSystem::GetInstance().Render(GetRegistry(), camera, 25, 1);
     }
 };

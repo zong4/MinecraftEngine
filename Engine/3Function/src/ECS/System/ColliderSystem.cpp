@@ -3,25 +3,34 @@
 #include "../../AssetsManager/ShadersManager.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
 
-Engine::ColliderSystem &Engine::ColliderSystem::GetInstance()
-{
-    static ColliderSystem instance;
-    return instance;
-}
-
 void Engine::ColliderSystem::Update(entt::registry &registry)
 {
-    auto &&view = registry.view<TransformComponent, SpriteRendererComponent>();
-    for (auto &&entity : view)
+    PROFILE_FUNCTION();
+
+    // Sprites
+    auto &&spriteView = registry.view<TransformComponent, SpriteRendererComponent>();
+    for (auto &&entity : spriteView)
     {
-        auto &&[transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-        sprite.WorldBBox = sprite.GetBBox().Transform(transform.GetTransformMatrix());
+        auto &&[transform, spriteRenderer] = spriteView.get<TransformComponent, SpriteRendererComponent>(entity);
+        spriteRenderer.WorldBBox = spriteRenderer.GetBBox().Transform(transform.GetTransformMatrix());
     }
+
+    // Meshes
+    auto &&meshView = registry.view<TransformComponent, MeshRendererComponent>();
+    for (auto &&entity : meshView)
+    {
+        auto &&[transform, meshRenderer] = meshView.get<TransformComponent, MeshRendererComponent>(entity);
+        meshRenderer.WorldBBox = meshRenderer.GetBBox().Transform(transform.GetTransformMatrix());
+    }
+
+    // Build BVH
     m_BVH = std::make_shared<BVH>(registry, 3);
 }
 
 void Engine::ColliderSystem::RenderBVH(entt::registry &registry, int maxDepth) const
 {
+    PROFILE_FUNCTION();
+
     if (!m_BVH)
         return;
 

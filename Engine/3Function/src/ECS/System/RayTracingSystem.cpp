@@ -111,7 +111,7 @@ glm::vec3 Engine::RayTracingSystem::RenderPixel(int raysPerPixel, int rayBounces
         // Generate ray from camera
         glm::vec3 rayDir = m_CameraComponent.GetDirection(u, v);
         rayDir = glm::normalize(m_CameraTransform.GetRotationQuat(TransformSpace::Global) * glm::vec4(rayDir, 0.0f));
-        Ray ray(m_CameraTransform.GetGlobaldPosition(), rayDir);
+        Ray ray(m_CameraTransform.GetGlobalPosition(), rayDir);
 
         // Simple ray tracing logic (placeholder)
         glm::vec3 rayColor(m_CameraComponent.BackgroundColor);

@@ -1,10 +1,10 @@
 #pragma once
 
+#include "../Component/CameraComponent.hpp"
 #include "../Component/LightComponent.hpp"
 #include "../Component/MaterialComponent.hpp"
 #include "../Component/RendererComponents.hpp"
 #include "../Component/TransformComponent.hpp"
-#include <Platform.hpp>
 #include <entt/entt.hpp>
 
 namespace Engine
@@ -13,15 +13,15 @@ namespace Engine
 class RendererSystem
 {
 public:
-    static RendererSystem &GetInstance();
+    RendererSystem();
+    ~RendererSystem() = default;
 
     // Getters
     int GetSquaresCount() const { return m_SquaresCount; }
     int GetCubesCount() const { return m_CubesCount; }
 
 public:
-    void Resize(int width, int height) { m_ColorIDFrameBuffer->Resize(width, height); }
-    void Update(entt::registry &registry);
+    void Resize(entt::registry &registry, int width, int height);
     void Upload(entt::registry &registry);
     void Render(entt::registry &registry) const;
     void RenderSkybox() const;
@@ -35,13 +35,10 @@ private:
     std::shared_ptr<TextureCube> m_SkyboxTexture;
 
 private:
-    RendererSystem();
-    ~RendererSystem() = default;
-
-private:
     void UploadSquares(entt::registry &registry);
     void UploadCubes(entt::registry &registry);
     void Render2D(entt::registry &registry) const;
+    void RenderShadowMap(entt::registry &registry) const;
     void Render3D(entt::registry &registry) const;
     void RenderColorID() const;
 };

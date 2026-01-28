@@ -11,7 +11,8 @@ namespace Engine
 class ColliderSystem
 {
 public:
-    static ColliderSystem &GetInstance();
+    ColliderSystem() = default;
+    ~ColliderSystem() = default;
 
 public:
     void Update(entt::registry &registry);
@@ -19,10 +20,6 @@ public:
 
 private:
     std::shared_ptr<BVH> m_BVH = nullptr;
-
-private:
-    ColliderSystem() = default;
-    ~ColliderSystem() = default;
 };
 
 } // namespace Engine

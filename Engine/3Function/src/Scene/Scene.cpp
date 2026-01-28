@@ -17,9 +17,9 @@ Engine::Scene::Scene(const std::string &name) : m_Name(name)
 
 Engine::Scene::~Scene()
 {
-    AudioSystem::GetInstance().Clear(m_Registry);
-    NativeScriptSystem::GetInstance().Clear(m_Registry);
-    m_LuaScriptSystem.Clear(m_Registry);
+    m_AudioSystem.Shutdown(m_Registry);
+    m_PhysicSystem.Shutdown();
+    m_ScriptsSystem.Shutdown(m_Registry);
     m_Registry.clear();
 }
 
@@ -44,54 +44,32 @@ void Engine::Scene::SetMainCamera(const Entity &camera)
     m_MainCamera.GetComponent<CameraComponent>()->Primary = true;
 }
 
-void Engine::Scene::Resize(int width, int height)
-{
-    PROFILE_FUNCTION();
-
-    CameraSystem::GetInstance().Resize(m_Registry, width, height);
-    RendererSystem::GetInstance().Resize(width, height);
-    LightSystem::GetInstance().Resize(m_Registry, width, height);
-}
-
 void Engine::Scene::Update(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    // Handle deleted entities
-    for (auto &&entity : m_DeletedEntities)
-    {
-        if (auto &&rigidBody = entity.GetComponent<RigidBodyComponent>())
-            m_PhysicSystem.DeleteRigidBody(rigidBody);
-        if (auto &&audio = entity.GetComponent<AudioComponent>())
-            audio->Stop();
-        if (auto &&nativeScript = entity.GetComponent<NativeScriptComponent>())
-            nativeScript->DestroyScript();
-        m_Registry.destroy(entity.GetHandle());
-    }
-    m_DeletedEntities.clear();
+    // Delete marked entities
+    DeleteEntityReal();
 
     // Update systems
-    if (!m_Started)
+    if (!m_Initialized)
     {
-        NativeScriptSystem::GetInstance().Start(m_Registry);
-        m_LuaScriptSystem.Start(m_Registry);
-        m_Started = true;
+        m_ScriptsSystem.Init(m_Registry);
+        m_Initialized = true;
     }
-    TransformSystem::GetInstance().Update(m_Registry);
-    RendererSystem::GetInstance().Update(m_Registry);
-    ColliderSystem::GetInstance().Update(m_Registry);
+    m_TransformSystem.Update(m_Registry);
+    m_ColliderSystem.Update(m_Registry);
 }
 
 void Engine::Scene::UpdateRuntime(float deltaTime)
 {
     PROFILE_FUNCTION();
 
-    // Update systems
+    // Update systems for runtime
     m_PhysicSystem.Update(m_Registry, deltaTime);
-    ParticleSystem::GetInstance().Update(m_Registry, deltaTime);
-    AudioSystem::GetInstance().Update(m_Registry);
-    NativeScriptSystem::GetInstance().Update(m_Registry, deltaTime);
-    m_LuaScriptSystem.Update(m_Registry, deltaTime);
+    m_ParticleSystem.Update(m_Registry, deltaTime);
+    m_AudioSystem.Update(m_Registry);
+    m_ScriptsSystem.Update(m_Registry, deltaTime);
 }
 
 void Engine::Scene::Render(const Entity &camera)
@@ -104,7 +82,7 @@ void Engine::Scene::Render(const Entity &camera)
     if (cameraComponent->GetWidth() == 0 || cameraComponent->GetHeight() == 0) // Minimize window
         return;
 
-    // Upload camera data
+    // Update main camera uniforms
     auto &&transform = camera.GetComponent<TransformComponent>();
     cameraComponent->UpdateProjectionMatrix(); // Ensure projection matrix is updated
     UniformLibrary::GetInstance().UpdateUniform(
@@ -117,23 +95,22 @@ void Engine::Scene::Render(const Entity &camera)
              sizeof(glm::mat4) + sizeof(glm::mat4)}, // Camera position
         });
 
-    // Clear buffers
+    // Clear screen
     RendererCommand::SetClearColor(cameraComponent->BackgroundColor);
     RendererCommand::Clear();
 
-    // Render
-    RendererSystem::GetInstance().Upload(m_Registry);
-    LightSystem::GetInstance().Render(m_Registry);
-    RendererSystem::GetInstance().Render(m_Registry);
-    ColliderSystem::GetInstance().RenderBVH(m_Registry, 3);
-    ParticleSystem::GetInstance().Render(m_Registry);
+    // Render scene
+    m_RendererSystem.Upload(m_Registry);
+    m_RendererSystem.Render(m_Registry);
+    m_ColliderSystem.RenderBVH(m_Registry, 3);
+    m_ParticleSystem.Render(m_Registry);
 }
 
 void Engine::Scene::DeleteEntity(const Entity &entity)
 {
     PROFILE_FUNCTION();
 
-    DeleteEntityReal(entity);
+    StackDeleteEntityRecursive(entity);
     RelationshipComponent::SetParentChild(Entity(), entity);
 }
 
@@ -184,7 +161,7 @@ Engine::Entity Engine::Scene::AddLight(const std::string &name, const TransformC
     return entity;
 }
 
-void Engine::Scene::DeleteEntityReal(const Entity &entity)
+void Engine::Scene::StackDeleteEntityRecursive(const Entity &entity)
 {
     if (!entity)
         return;
@@ -193,9 +170,23 @@ void Engine::Scene::DeleteEntityReal(const Entity &entity)
     if (auto &&relationship = entity.GetComponent<RelationshipComponent>())
     {
         for (auto &&child : relationship->GetChildren())
-            DeleteEntityReal(child);
+            StackDeleteEntityRecursive(child);
     }
 
     // Mark entity for deletion at the end of the frame
-    m_DeletedEntities.push_back(entity);
+    m_DeleteEntities.push_back(entity);
+}
+
+void Engine::Scene::DeleteEntityReal()
+{
+    PROFILE_FUNCTION();
+
+    for (auto &&entity : m_DeleteEntities)
+    {
+        m_AudioSystem.Delete(entity);
+        m_PhysicSystem.Delete(entity);
+        m_ScriptsSystem.Delete(entity);
+        m_Registry.destroy(entity.GetHandle());
+    }
+    m_DeleteEntities.clear();
 }

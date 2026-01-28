@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Entity/ScriptableEntity.hpp"
+#include <sol/sol.hpp>
 
 namespace Engine
 {
@@ -35,6 +36,13 @@ public:
             }
         };
     }
+};
+
+struct LuaScriptComponent
+{
+    std::string ScriptPath;
+    sol::table Instance;
+    Entity Entity;
 };
 
 } // namespace Engine

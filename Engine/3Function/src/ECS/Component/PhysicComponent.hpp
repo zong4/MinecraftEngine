@@ -1,9 +1,7 @@
 #pragma once
 
 #include <Platform.hpp>
-
-class btCollisionShape;
-class btRigidBody;
+#include <btBulletDynamicsCommon.h>
 
 namespace Engine
 {
@@ -24,7 +22,14 @@ struct RigidBodyComponent
 
 public:
     RigidBodyComponent(RigidBodyType type = RigidBodyType::Dynamic, float mass = 1.0f) : Type(type), Mass(mass) {}
-    ~RigidBodyComponent();
+    ~RigidBodyComponent()
+    {
+        if (Shape)
+        {
+            delete Shape;
+            Shape = nullptr;
+        }
+    }
 
     // Copy and move semantics
     // RigidBodyComponent(const RigidBodyComponent &) = delete;
