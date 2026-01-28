@@ -90,7 +90,7 @@ Engine::TexturesManager::TexturesManager()
     AddTexture("DefaultSkybox", TextureCube::WhiteTexture());
 
     // Chick Textures directory path
-    std::filesystem::path path = GetResourcesRoot() / "Textures/";
+    std::filesystem::path path = GetResourcesDirectory() / "Textures/";
     if (!std::filesystem::exists(path))
     {
         LOG_ENGINE_ERROR("Texture directory does not exist: " + path.string());

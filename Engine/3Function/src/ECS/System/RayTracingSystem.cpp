@@ -87,7 +87,7 @@ void Engine::RayTracingSystem::Render(entt::registry &registry, const Entity &ca
             // Save image
             std::stringstream ss;
             ss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".png";
-            std::string filename = std::string(GetLogsRoot()) + "/RayTracing_" + ss.str();
+            std::string filename = std::string(GetLogsDirectory()) + "/RayTracing_" + ss.str();
             SaveImage(filename);
         }
 

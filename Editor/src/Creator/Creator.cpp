@@ -16,7 +16,7 @@ std::unique_ptr<Engine::Application> Engine::CreateApplication()
 
     // Load window properties from config file
     nlohmann::json config;
-    std::ifstream configFile((Engine::GetConfigsRoot() / "Creator.json").string());
+    std::ifstream configFile((Engine::GetConfigsDirectory() / "Creator.json").string());
     if (configFile.is_open())
     {
         configFile >> config;
@@ -41,7 +41,7 @@ Editor::Creator::~Creator()
 
     // Save window properties to config file
     nlohmann::ordered_json config;
-    std::ofstream configFileOut((Engine::GetConfigsRoot() / "Creator.json").string());
+    std::ofstream configFileOut((Engine::GetConfigsDirectory() / "Creator.json").string());
     if (configFileOut.is_open())
     {
         Engine::WindowProperty &props = m_Window->GetProperty();

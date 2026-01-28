@@ -10,14 +10,14 @@ target("Editor")
     add_deps("Engine")
     add_files("src/**/*.cpp")
     add_includedirs("src")
-    add_installfiles("assets/Images/**", {prefixdir = "Assets/Images"})
-    add_installfiles("assets/Scripts/**", {prefixdir = "Assets/Scripts"})
-    add_installfiles("assets/Shaders/**", {prefixdir = "Assets/Shaders"})
-    add_installfiles("resources/Audios/**", {prefixdir = "Resources/Audios"})
-    add_installfiles("resources/Fonts/**", {prefixdir = "Resources/Fonts"})
-    add_installfiles("resources/Icons/**", {prefixdir = "Resources/Icons"})
-    add_installfiles("resources/Shaders/**", {prefixdir = "Resources/Shaders"})
-    add_installfiles("resources/Textures/**", {prefixdir = "Resources/Textures"})
 
     add_packages("nlohmann_json")
 
+if is_mode("release") then
+    after_install(function(target)
+        local installDir = path.join(os.curdir(), "Dist")
+        os.cp("Editor/configs", path.join(installDir, "Configs"))
+        os.cp("Editor/assets", path.join(installDir, "Assets"))
+        os.cp("Editor/resources", path.join(installDir, "Resources"))
+    end)
+end

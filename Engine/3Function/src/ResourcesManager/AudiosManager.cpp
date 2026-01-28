@@ -42,7 +42,7 @@ Engine::AudiosManager::AudiosManager()
     PROFILE_FUNCTION();
 
     // Check Audios directory path
-    std::filesystem::path path = GetResourcesRoot() / "Audios/";
+    std::filesystem::path path = GetResourcesDirectory() / "Audios/";
     if (!std::filesystem::exists(path))
     {
         LOG_ENGINE_ERROR("Audio directory does not exist: " + path.string());

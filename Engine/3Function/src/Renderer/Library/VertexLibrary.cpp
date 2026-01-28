@@ -92,7 +92,7 @@ void Engine::VertexLibrary::ReadConfig()
     PROFILE_FUNCTION();
 
     nlohmann::json config;
-    std::ifstream configFile(GetConfigsRoot() / "ResourcesManager.json");
+    std::ifstream configFile(GetConfigsDirectory() / "ResourcesManager.json");
     if (configFile.is_open())
     {
         configFile >> config;

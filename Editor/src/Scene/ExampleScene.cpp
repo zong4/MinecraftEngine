@@ -49,7 +49,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     player.GetComponent<Engine::NativeScriptComponent>()->Bind<PlayerController>(player);
     player.AddComponent<Engine::LuaScriptComponent>();
     player.GetComponent<Engine::LuaScriptComponent>()->ScriptPath =
-        (Engine::GetAssetsRoot() / "Scripts/Test.lua").string();
+        (Engine::GetAssetsDirectory() / "Scripts/Test.lua").string();
 
     // ------------------
     // Dynamic Cubes Random Generation
