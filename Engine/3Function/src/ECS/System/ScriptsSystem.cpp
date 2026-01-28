@@ -1,8 +1,16 @@
 #include "ScriptsSystem.hpp"
 
+#include "../Component/TransformComponent.hpp"
+
 Engine::ScriptsSystem::ScriptsSystem()
 {
     m_Lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os, sol::lib::string, sol::lib::table);
+
+    m_Lua.new_usertype<glm::vec3>("vec3", sol::constructors<glm::vec3(), glm::vec3(float, float, float)>(), "x",
+                                  &glm::vec3::x, "y", &glm::vec3::y, "z", &glm::vec3::z);
+    m_Lua.new_usertype<TransformComponent>("Transform", "Position", &TransformComponent::Position, "Rotation",
+                                           &TransformComponent::Rotation, "Scale", &TransformComponent::Scale);
+    m_Lua.new_usertype<Entity>("Entity", "GetTransform", &Entity::GetComponent<TransformComponent>);
 }
 
 Engine::ScriptsSystem::~ScriptsSystem() { m_Lua.collect_garbage(); }
@@ -112,23 +120,30 @@ void Engine::ScriptsSystem::Create(entt::registry &registry)
     auto &&view = registry.view<LuaScriptComponent>();
     for (auto &&entity : view)
     {
+        // Load script
         auto &&luaScript = view.get<LuaScriptComponent>(entity);
-        sol::load_result script = m_Lua.load_file(luaScript.ScriptPath);
-        if (!script.valid())
+        sol::load_result chunk = m_Lua.load_file(luaScript.ScriptPath);
+        if (!chunk.valid())
         {
-            sol::error err = script;
-            LOG_ENGINE_ERROR("Failed to load Lua script: " + std::string(err.what()));
+            sol::error err = chunk;
+            LOG_ENGINE_ERROR(err.what());
             continue;
         }
-        sol::protected_function_result result = script();
+
+        // Execute script
+        sol::protected_function_result result = chunk();
         if (!result.valid())
         {
             sol::error err = result;
             LOG_ENGINE_ERROR("Error during Lua script execution: " + std::string(err.what()));
             continue;
         }
-        luaScript.Instance = result;
+
+        // Get instance table
+        sol::table instance = result;
         luaScript.Entity = Entity(entity, &registry);
+        instance["Entity"] = luaScript.Entity;
+        luaScript.Instance = instance;
     }
 
     // Create all native scripts

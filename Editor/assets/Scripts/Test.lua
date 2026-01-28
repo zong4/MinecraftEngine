@@ -1,13 +1,14 @@
-return {
-    OnCreate = function(self)
-        print("Lua OnStart")
-    end,
+local Script = {}
 
-    OnUpdate = function(self, deltaTime)
-        print("Lua OnUpdate", deltaTime)
-    end,
+function Script:OnCreate()
+    local transform = self.Entity:GetTransform()
+    print("Lua OnCreate:", transform.Position.x, transform.Position.y, transform.Position.z)
+end
 
-    OnDestroy = function(self)
-        print("Lua OnDestroy")
-    end
-}
+function Script:OnUpdate(dt)
+end
+
+function Script:OnDestroy()
+end
+
+return Script
