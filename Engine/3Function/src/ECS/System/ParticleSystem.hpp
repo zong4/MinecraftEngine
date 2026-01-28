@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../AssetsManager/ShadersManager.hpp"
+#include "../../ResourcesManager/ShadersManager.hpp"
 #include "../Component/ParticleComponent.hpp"
 #include <entt/entt.hpp>
 

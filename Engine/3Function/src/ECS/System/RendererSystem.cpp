@@ -1,9 +1,9 @@
 #include "RendererSystem.hpp"
 
-#include "../../AssetsManager/ShadersManager.hpp"
-#include "../../AssetsManager/TexturesManager.hpp"
 #include "../../Renderer/Library/UniformLibrary.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
+#include "../../ResourcesManager/ShadersManager.hpp"
+#include "../../ResourcesManager/TexturesManager.hpp"
 
 Engine::RendererSystem::RendererSystem() : m_SkyboxTexture(TexturesManager::GetInstance().GetTextureCube("Default")) {}
 

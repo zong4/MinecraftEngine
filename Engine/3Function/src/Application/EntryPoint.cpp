@@ -1,5 +1,5 @@
+#include "../ResourcesManager/ResourcesRoot.hpp"
 #include "Application.hpp"
-#include "FileSystem.hpp"
 
 int main()
 {

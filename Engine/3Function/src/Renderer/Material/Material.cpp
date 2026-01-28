@@ -1,7 +1,7 @@
 #include "Material.hpp"
 
-#include "../../AssetsManager/ShadersManager.hpp"
-#include "../../AssetsManager/TexturesManager.hpp"
+#include "../../ResourcesManager/ShadersManager.hpp"
+#include "../../ResourcesManager/TexturesManager.hpp"
 
 Engine::Material::Material(const std::shared_ptr<Shader> &shader) : m_Shader(shader)
 {

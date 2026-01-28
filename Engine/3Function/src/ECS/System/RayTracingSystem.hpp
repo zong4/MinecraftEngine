@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Application/FileSystem.hpp"
+#include "../../ResourcesManager/ResourcesRoot.hpp"
 #include "../Component/CameraComponent.hpp"
 #include "../Component/LabelComponent.hpp"
 #include "../Component/RendererComponents.hpp"

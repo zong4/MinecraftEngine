@@ -1,7 +1,7 @@
 #include "ColliderSystem.hpp"
 
-#include "../../AssetsManager/ShadersManager.hpp"
 #include "../../Renderer/Library/VertexLibrary.hpp"
+#include "../../ResourcesManager/ShadersManager.hpp"
 
 void Engine::ColliderSystem::Update(entt::registry &registry)
 {

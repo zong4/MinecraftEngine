@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../AssetsManager/MaterialsManager.hpp"
-#include "../AssetsManager/TexturesManager.hpp"
 #include "../ECS/Component/LabelComponent.hpp"
 #include "../ECS/System/AudioSystem.hpp"
 #include "../ECS/System/ColliderSystem.hpp"
@@ -10,6 +8,8 @@
 #include "../ECS/System/RendererSystem.hpp"
 #include "../ECS/System/ScriptsSystem.hpp"
 #include "../ECS/System/TransformSystem.hpp"
+#include "../ResourcesManager/MaterialsManager.hpp"
+#include "../ResourcesManager/TexturesManager.hpp"
 
 namespace Engine
 {
