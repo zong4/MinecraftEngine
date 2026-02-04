@@ -31,21 +31,20 @@ void Engine::RendererSystem::Resize(entt::registry &registry, int width, int hei
     m_ColorIDFrameBuffer->Resize(width, height);
 }
 
-void Engine::RendererSystem::Upload(entt::registry &registry)
+void Engine::RendererSystem::Render(entt::registry &registry)
 {
     PROFILE_FUNCTION();
 
+    // 2D
     UploadSquares(registry);
-    UploadCubes(registry);
-}
-
-void Engine::RendererSystem::Render(entt::registry &registry) const
-{
-    PROFILE_FUNCTION();
-
     Render2D(registry);
+
+    // 3D
+    UploadCubes(registry);
     RenderShadowMap(registry);
     Render3D(registry);
+
+    // Common
     RenderColorID();
 }
 
@@ -88,16 +87,14 @@ void Engine::RendererSystem::UploadSquares(entt::registry &registry)
         {
             glm::mat4 u_Model = transform.GetTransformMatrix();
             vertices.push_back({(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
-                                g_SquareData.TexCoords[i],
+                                material.GetProperty("Color").GetValueAs<glm::vec4>(), g_SquareData.TexCoords[i],
                                 TexturesManager::GetInstance().GetTextureSlot(
-                                    material.GetProperty("Texture").GetValueAs<std::shared_ptr<Texture2D>>()),
-                                material.GetProperty("Color").GetValueAs<glm::vec4>()});
+                                    material.GetProperty("Texture").GetValueAs<std::shared_ptr<Texture2D>>())});
         }
 
         // Indices
         for (int i = 0; i < 6; i++)
             indices.push_back(g_SquareData.Indices[i] + index * 4);
-
         index++;
     }
 
@@ -148,8 +145,8 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
             glm::mat4 u_Model = transform.GetTransformMatrix();
             vertices.push_back(
                 {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
-                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
-                 g_CubeData.Positions[i], color, materialData});
+                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]), materialData,
+                 color, g_CubeData.Positions[i], 0});
         }
         index++;
     }
@@ -165,7 +162,7 @@ void Engine::RendererSystem::Render2D(entt::registry &registry) const
     PROFILE_FUNCTION();
 
     // Shader is same for 2d sprites
-    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture");
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture2D");
     shader->Bind();
 
     // Textures
@@ -270,7 +267,9 @@ void Engine::RendererSystem::Render3D(entt::registry &registry) const
 
     // Textures
     TexturesManager::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
-    shader->SetUniformInt("u_Texture", lightIndex + 1);
+    shader->SetUniformInt("u_TextureGrass", lightIndex + 1);
+    TexturesManager::GetInstance().GetTextureCube("DefaultSkybox")->Active(lightIndex + 2);
+    shader->SetUniformInt("u_TextureWhite", lightIndex + 2);
 
     // Skybox
     shader->SetUniformInt("u_Skybox", lightIndex);
@@ -291,7 +290,7 @@ void Engine::RendererSystem::RenderColorID() const
 
     m_ColorIDFrameBuffer->Bind();
     Engine::RendererCommand::Clear();
-    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("ColorIDPicking");
+    auto &&shader = Engine::ShadersManager::GetInstance().GetShader("ColorID");
     shader->Bind();
 
     // Render entity IDs as color IDs

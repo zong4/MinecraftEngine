@@ -22,24 +22,31 @@ public:
 
 public:
     void Resize(entt::registry &registry, int width, int height);
-    void Upload(entt::registry &registry);
-    void Render(entt::registry &registry) const;
+    void Render(entt::registry &registry);
     void RenderSkybox() const;
 
 private:
+    //  2D
     int m_SquaresCount = 0;
-    int m_CubesCount = 0;
-    std::shared_ptr<FrameBuffer> m_ColorIDFrameBuffer = FrameBuffer::Create(Texture2DType::Integer, 1280, 720);
 
-    // Only for 3D scenes
+    // 3D
+    int m_CubesCount = 0;
     std::shared_ptr<TextureCube> m_SkyboxTexture;
 
+    // Common
+    std::shared_ptr<FrameBuffer> m_ColorIDFrameBuffer = FrameBuffer::Create(Texture2DType::Integer, 1280, 720);
+
 private:
+    // 2D
     void UploadSquares(entt::registry &registry);
-    void UploadCubes(entt::registry &registry);
     void Render2D(entt::registry &registry) const;
+
+    // 3D
+    void UploadCubes(entt::registry &registry);
     void RenderShadowMap(entt::registry &registry) const;
     void Render3D(entt::registry &registry) const;
+
+    // Common
     void RenderColorID() const;
 };
 

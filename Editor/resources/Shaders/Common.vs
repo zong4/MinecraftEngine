@@ -35,13 +35,16 @@ vs_out;
 
 void main()
 {
+    // Pass through attributes
     vs_out.CameraPosition = u_CameraPosition;
     vs_out.EntityID = aEntityID;
     vs_out.Position = aPosition;
     vs_out.Normal = aNormal;
-    vs_out.TexCoord = aTexCoord;
-    vs_out.Color = aColor;
     vs_out.Material = aMaterial;
+    vs_out.Color = aColor;
+    vs_out.TexCoord = aTexCoord;
+    vs_out.TexID = aTexID;
 
+    // Final position
     gl_Position = u_Projection * u_View * vec4(vs_out.Position, 1.0);
 }

@@ -3,6 +3,10 @@
 // Output
 out vec4 FragColor;
 
+// Textures
+uniform samplerCube u_TextureGrass;
+uniform samplerCube u_TextureWhite;
+
 // Lights
 struct Light
 {
@@ -33,20 +37,19 @@ uniform sampler2D u_ShadowMap[MAX_LIGHTS];
 // Skybox
 uniform samplerCube u_Skybox;
 
-// Test
-uniform samplerCube u_Texture;
-
 // Inputs
 in VS_OUT
 {
     vec3 CameraPosition;
 
+    // From Layouts
     flat uint EntityID;
     vec3 Position;
     vec3 Normal;
-    vec3 TexCoord;
-    vec4 Color;
     vec4 Material;
+    vec4 Color;
+    vec3 TexCoord;
+    flat int TexID;
 }
 fs_in;
 
@@ -115,12 +118,16 @@ void main()
 
 vec3 CalcLight(vec3 lightDir, vec3 viewDir)
 {
+    // Diffuse
     float diff = max(dot(fs_in.Normal, lightDir), 0.0);
 
+    // Specular
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(fs_in.Normal, halfwayDir), 0.0), fs_in.Material[3]);
 
-    return (fs_in.Material[0] + fs_in.Material[1] * diff) * texture(u_Texture, fs_in.TexCoord).rgb * fs_in.Color.rgb +
+    // Combine results
+    return (fs_in.Material[0] + fs_in.Material[1] * diff) * texture(u_TextureGrass, fs_in.TexCoord).rgb *
+               fs_in.Color.rgb +
            fs_in.Material[2] * spec;
 }
 

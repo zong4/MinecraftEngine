@@ -1,5 +1,6 @@
 #version 330 core
 
+// Layouts
 layout(location = 0) in vec3 aPosition;
 
 // Uniforms
@@ -13,11 +14,14 @@ uniform mat4 uModel;
 uniform vec4 uColor;
 
 // Outputs
-out VS_OUT { vec4 Color; }
-vs_out;
+out vec4 o_Color;
 
+// Main
 void main()
 {
-    vs_out.Color = uColor;
+    // Pass through color
+    o_Color = uColor;
+
+    // Final position
     gl_Position = u_Projection * u_View * uModel * vec4(aPosition, 1.0);
 }

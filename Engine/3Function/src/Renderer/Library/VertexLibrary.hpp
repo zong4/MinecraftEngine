@@ -9,9 +9,9 @@ struct Vertex2D
 {
     unsigned int EntityID;
     glm::vec3 Position;
+    glm::vec4 Color;
     glm::vec2 TexCoord;
     int TexIndex;
-    glm::vec4 Color;
 };
 
 struct SquareData
@@ -41,9 +41,10 @@ struct Vertex3D
     unsigned int EntityID;
     glm::vec3 Position;
     glm::vec3 Normal;
-    glm::vec3 TexCoord;
-    glm::vec4 Color;
     glm::vec4 Material; // ambient, diffuse, specular , shininess
+    glm::vec4 Color;
+    glm::vec3 TexCoord;
+    int TexIndex;
 };
 
 struct CubeData

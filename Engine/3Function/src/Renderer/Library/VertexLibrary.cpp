@@ -62,26 +62,37 @@ Engine::VertexLibrary::VertexLibrary()
     // Create dynamic VertexArrays
     ReadConfig();
     {
-        auto &&squaresVAO = VertexArray::Create(
-            VertexBuffer::Create(m_MaxSquaresNumber * sizeof(Vertex2D) * 4),
-            std::vector<VertexAttribute>{
-                {0, 1, VertexAttributeType::UInt, false, sizeof(Vertex2D), (const void *)(0 * sizeof(float))},
-                {1, 3, VertexAttributeType::Float, false, sizeof(Vertex2D), (const void *)(1 * sizeof(float))},
-                {2, 2, VertexAttributeType::Float, false, sizeof(Vertex2D), (const void *)(4 * sizeof(float))},
-                {3, 1, VertexAttributeType::Int, false, sizeof(Vertex2D), (const void *)(6 * sizeof(float))},
-                {4, 4, VertexAttributeType::Float, false, sizeof(Vertex2D), (const void *)(7 * sizeof(float))}},
-            Engine::IndexBuffer::Create(m_MaxSquaresNumber * 6 * sizeof(unsigned int)));
+        auto &&squaresVAO =
+            VertexArray::Create(VertexBuffer::Create(m_MaxSquaresNumber * sizeof(Vertex2D) * 4),
+                                std::vector<VertexAttribute>{{0, 1, VertexAttributeType::UInt, false, sizeof(Vertex2D),
+                                                              (const void *)(0 * sizeof(float))}, // EntityID
+                                                             {1, 3, VertexAttributeType::Float, false, sizeof(Vertex2D),
+                                                              (const void *)(1 * sizeof(float))}, // Position
+                                                             {2, 4, VertexAttributeType::Float, false, sizeof(Vertex2D),
+                                                              (const void *)(4 * sizeof(float))}, // Color
+                                                             {3, 2, VertexAttributeType::Float, false, sizeof(Vertex2D),
+                                                              (const void *)(8 * sizeof(float))}, // TexCoord
+                                                             {4, 1, VertexAttributeType::Int, false, sizeof(Vertex2D),
+                                                              (const void *)(10 * sizeof(float))}}, // TexIndex
+                                Engine::IndexBuffer::Create(m_MaxSquaresNumber * 6 * sizeof(unsigned int)));
         AddVertex("Squares", squaresVAO);
 
-        auto &&cubesVAO = VertexArray::Create(
-            VertexBuffer::Create(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
-            std::vector<VertexAttribute>{
-                {0, 1, VertexAttributeType::UInt, false, sizeof(Vertex3D), (const void *)(0 * sizeof(float))},
-                {1, 3, VertexAttributeType::Float, false, sizeof(Vertex3D), (const void *)(1 * sizeof(float))},
-                {2, 3, VertexAttributeType::Float, false, sizeof(Vertex3D), (const void *)(4 * sizeof(float))},
-                {3, 3, VertexAttributeType::Float, false, sizeof(Vertex3D), (const void *)(7 * sizeof(float))},
-                {4, 4, VertexAttributeType::Float, false, sizeof(Vertex3D), (const void *)(10 * sizeof(float))},
-                {5, 4, VertexAttributeType::Float, false, sizeof(Vertex3D), (const void *)(14 * sizeof(float))}});
+        auto &&cubesVAO =
+            VertexArray::Create(VertexBuffer::Create(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
+                                std::vector<VertexAttribute>{{0, 1, VertexAttributeType::UInt, false, sizeof(Vertex3D),
+                                                              (const void *)(0 * sizeof(float))}, // EntityID
+                                                             {1, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(1 * sizeof(float))}, // Position
+                                                             {2, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(4 * sizeof(float))}, // Normal
+                                                             {3, 4, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(7 * sizeof(float))}, // Material
+                                                             {4, 4, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(11 * sizeof(float))}, // Color
+                                                             {5, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(15 * sizeof(float))}, // TexCoord
+                                                             {6, 1, VertexAttributeType::Int, false, sizeof(Vertex3D),
+                                                              (const void *)(18 * sizeof(float))}}); // TexIndex
         AddVertex("Cubes", cubesVAO);
     }
     LOG_ENGINE_INFO("VAO Library initialized");

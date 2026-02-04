@@ -100,7 +100,6 @@ void Engine::Scene::Render(const Entity &camera)
     RendererCommand::Clear();
 
     // Render scene
-    m_RendererSystem.Upload(m_Registry);
     m_RendererSystem.Render(m_Registry);
     m_ColliderSystem.RenderBVH(m_Registry, 3);
     m_ParticleSystem.Render(m_Registry);

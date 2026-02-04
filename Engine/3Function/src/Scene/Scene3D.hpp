@@ -19,7 +19,7 @@ public:
 
         Scene::Render(camera);
         m_RendererSystem.RenderSkybox();
-        RayTracingSystem::GetInstance().Render(GetRegistry(), camera, 25, 1);
+        // RayTracingSystem::GetInstance().Render(GetRegistry(), camera, 25, 1);
     }
 };
 

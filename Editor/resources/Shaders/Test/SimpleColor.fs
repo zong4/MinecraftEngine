@@ -4,8 +4,7 @@
 out vec4 FragColor;
 
 // Inputs
-in VS_OUT { vec4 Color; }
-fs_in;
+in vec4 o_Color;
 
 // Main
-void main() { FragColor = fs_in.Color; }
+void main() { FragColor = o_Color; }
