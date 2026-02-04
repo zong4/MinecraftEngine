@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../src/Algorithm/Random.hpp"
+#include "../src/Algorithm/PerlinNoise.hpp"
 #include "../src/Application/Application.hpp"
 #include "../src/Input/CommandManager.hpp"
 #include "../src/Input/InputLayer.hpp"

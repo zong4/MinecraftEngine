@@ -14,6 +14,7 @@ public:
     // Getters
     double Noise(double x, double y) const { return Noise(x, y, 0.0); }
     double Noise(double x, double y, double z) const;
+    double FBM(double x, double y, int octaves, double lacunarity = 2.0, double gain = 0.5) const;
 
 private:
     std::vector<int> m_P; // Permutation vector

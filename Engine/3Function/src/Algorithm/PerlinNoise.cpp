@@ -46,6 +46,22 @@ double Engine::PerlinNoise::Noise(double x, double y, double z) const
     return res;
 }
 
+double Engine::PerlinNoise::FBM(double x, double y, int octaves, double lacunarity, double gain) const
+{
+    double total = 0.0;
+    double frequency = 1.0;
+    double amplitude = 1.0;
+    double maxValue = 0.0; // Used for normalizing result to [0,1]
+    for (int i = 0; i < octaves; i++)
+    {
+        total += Noise(x * frequency, y * frequency) * amplitude;
+        maxValue += amplitude;
+        amplitude *= gain;
+        frequency *= lacunarity;
+    }
+    return total / maxValue;
+}
+
 void Engine::PerlinNoise::Init(unsigned int seed)
 {
     m_P.resize(256);
