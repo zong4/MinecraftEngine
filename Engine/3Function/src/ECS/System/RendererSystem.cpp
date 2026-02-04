@@ -5,7 +5,10 @@
 #include "../../ResourcesManager/ShadersManager.hpp"
 #include "../../ResourcesManager/TexturesManager.hpp"
 
-Engine::RendererSystem::RendererSystem() : m_SkyboxTexture(TexturesManager::GetInstance().GetTextureCube("Default")) {}
+Engine::RendererSystem::RendererSystem()
+    : m_SkyboxTexture(TexturesManager::GetInstance().GetTextureCube("DefaultCubeMap"))
+{
+}
 
 void Engine::RendererSystem::Resize(entt::registry &registry, int width, int height)
 {
@@ -88,7 +91,7 @@ void Engine::RendererSystem::UploadSquares(entt::registry &registry)
             glm::mat4 u_Model = transform.GetTransformMatrix();
             vertices.push_back({(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_SquareData.Positions[i], 1.0f)),
                                 material.GetProperty("Color").GetValueAs<glm::vec4>(), g_SquareData.TexCoords[i],
-                                TexturesManager::GetInstance().GetTextureSlot(
+                                (uint32_t)TexturesManager::GetInstance().GetTextureSlot(
                                     material.GetProperty("Texture").GetValueAs<std::shared_ptr<Texture2D>>())});
         }
 
@@ -106,57 +109,6 @@ void Engine::RendererSystem::UploadSquares(entt::registry &registry)
         indices.data(), m_SquaresCount * 6 * sizeof(unsigned int), 0);
 }
 
-void Engine::RendererSystem::UploadCubes(entt::registry &registry)
-{
-    PROFILE_FUNCTION();
-
-    int index = 0;
-    std::vector<Vertex3D> vertices;
-    auto &&view = registry.view<Engine::TransformComponent, Engine::MeshRendererComponent, Engine::MaterialComponent>();
-    for (auto &&entity : view)
-    {
-        auto &&[transform, meshRenderer, material] =
-            view.get<Engine::TransformComponent, Engine::MeshRendererComponent, Engine::MaterialComponent>(entity);
-
-        // Get color property if available
-        glm::vec4 color = glm::vec4(1.0f);
-        if (auto &&colorProp = material.GetProperty("Color"))
-        {
-            if (colorProp.GetType() == MaterialPropertyType::Vec4)
-                color = colorProp.GetValueAs<glm::vec4>();
-            else if (colorProp.GetType() == MaterialPropertyType::Vec3)
-                color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
-        }
-
-        // Get Blinn-Phong material properties if available
-        glm::vec4 materialData = glm::vec4(0.0f);
-        if (auto &&ambientStrengthProp = material.GetProperty("AmbientStrength"))
-            materialData.x = ambientStrengthProp.GetValueAs<float>();
-        if (auto &&diffuseStrengthProp = material.GetProperty("DiffuseStrength"))
-            materialData.y = diffuseStrengthProp.GetValueAs<float>();
-        if (auto &&specularStrengthProp = material.GetProperty("SpecularStrength"))
-            materialData.z = specularStrengthProp.GetValueAs<float>();
-        if (auto &&shininessProp = material.GetProperty("Shininess"))
-            materialData.w = shininessProp.GetValueAs<float>();
-
-        // Vertices
-        for (int i = 0; i < 36; ++i)
-        {
-            glm::mat4 u_Model = transform.GetTransformMatrix();
-            vertices.push_back(
-                {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
-                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]), materialData,
-                 color, g_CubeData.Positions[i], 0});
-        }
-        index++;
-    }
-
-    // Update count and buffer data
-    m_CubesCount = index;
-    VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
-        vertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
-}
-
 void Engine::RendererSystem::Render2D(entt::registry &registry) const
 {
     PROFILE_FUNCTION();
@@ -164,6 +116,12 @@ void Engine::RendererSystem::Render2D(entt::registry &registry) const
     // Shader is same for 2d sprites
     auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture2D");
     shader->Bind();
+
+    // Set texture slots
+    int samplers[16];
+    for (int i = 0; i < 16; i++)
+        samplers[i] = i;
+    shader->SetUniformIntArray("u_Textures", samplers, 16);
 
     // Textures
     auto &&view = registry.view<Engine::SpriteRendererComponent, Engine::MaterialComponent>();
@@ -186,6 +144,66 @@ void Engine::RendererSystem::Render2D(entt::registry &registry) const
     shader->Unbind();
 }
 
+void Engine::RendererSystem::UploadCubes(entt::registry &registry)
+{
+    PROFILE_FUNCTION();
+
+    int index = 0;
+    std::vector<Vertex3D> vertices;
+    auto &&view = registry.view<Engine::TransformComponent, Engine::MeshRendererComponent, Engine::MaterialComponent>();
+    for (auto &&entity : view)
+    {
+        auto &&[transform, meshRenderer, material] =
+            view.get<Engine::TransformComponent, Engine::MeshRendererComponent, Engine::MaterialComponent>(entity);
+
+        // Get Blinn-Phong material properties if available
+        glm::vec4 materialData = glm::vec4(0.0f);
+        if (auto &&ambientProp = material.GetProperty("AmbientStrength"))
+            materialData.x = ambientProp.GetValueAs<float>();
+        if (auto &&diffuseProp = material.GetProperty("DiffuseStrength"))
+            materialData.y = diffuseProp.GetValueAs<float>();
+        if (auto &&specularProp = material.GetProperty("SpecularStrength"))
+            materialData.z = specularProp.GetValueAs<float>();
+        if (auto &&shininessProp = material.GetProperty("Shininess"))
+            materialData.w = shininessProp.GetValueAs<float>();
+
+        // Get color property if available
+        glm::vec4 color = glm::vec4(1.0f);
+        if (auto &&colorProp = material.GetProperty("Color"))
+        {
+            if (colorProp.GetType() == MaterialPropertyType::Vec4)
+                color = colorProp.GetValueAs<glm::vec4>();
+            else if (colorProp.GetType() == MaterialPropertyType::Vec3)
+                color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
+        }
+
+        // Get texture index
+        int texIndex = 0; // Default white texture
+        if (auto &&textureProp = material.GetProperty("Texture"))
+        {
+            auto &&texture = textureProp.GetValueAs<std::shared_ptr<TextureCube>>();
+            if (texture == TexturesManager::GetInstance().GetTextureCube("GrassBlock"))
+                texIndex = 1;
+        }
+
+        // Vertices
+        for (int i = 0; i < 36; i++)
+        {
+            glm::mat4 u_Model = transform.GetTransformMatrix();
+            vertices.push_back(
+                {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
+                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]), materialData,
+                 color, g_CubeData.Positions[i], texIndex});
+        }
+        index++;
+    }
+
+    // Update count and buffer data
+    m_CubesCount = index;
+    VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
+        vertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
+}
+
 void Engine::RendererSystem::RenderShadowMap(entt::registry &registry) const
 {
     RendererCommand::SetFaceCulling(CullingFace::Front);
@@ -196,19 +214,18 @@ void Engine::RendererSystem::RenderShadowMap(entt::registry &registry) const
     {
         auto &&[transform, light] = view.get<Engine::TransformComponent, Engine::LightComponent>(entity);
 
-        // Render to shadow map
+        // Bind shadow map framebuffer
         light.ShadowMap->Bind();
         RendererCommand::ClearDepthBuffer();
-        {
-            shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
-            shader->SetUniformMat4("u_LightProjection", glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f,
-                                                                   20.0f)); // todo: calculate camera view
 
-            // Render
-            if (m_CubesCount > 0)
-                VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles,
-                                                                        m_CubesCount * 36);
-        }
+        // Set light matrices
+        shader->SetUniformMat4("u_LightView", glm::inverse(transform.GetTransformMatrix()));
+        shader->SetUniformMat4("u_LightProjection",
+                               glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f)); // todo: calculate camera view
+
+        // Render
+        if (m_CubesCount > 0)
+            VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
         light.ShadowMap->Unbind();
     }
     shader->Unbind();
@@ -265,15 +282,15 @@ void Engine::RendererSystem::Render3D(entt::registry &registry) const
         shader->SetUniformInt("u_NumLights", lightIndex);
     }
 
-    // Textures
-    TexturesManager::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
-    shader->SetUniformInt("u_TextureGrass", lightIndex + 1);
-    TexturesManager::GetInstance().GetTextureCube("DefaultSkybox")->Active(lightIndex + 2);
-    shader->SetUniformInt("u_TextureWhite", lightIndex + 2);
-
     // Skybox
     shader->SetUniformInt("u_Skybox", lightIndex);
     m_SkyboxTexture->Active(lightIndex);
+
+    // Textures
+    TexturesManager::GetInstance().GetTextureCube("DefaultCubeMap")->Active(lightIndex + 1);
+    shader->SetUniformInt("u_TextureWhite", lightIndex + 1);
+    TexturesManager::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 2);
+    shader->SetUniformInt("u_TextureGrass", lightIndex + 2);
 
     // Render
     if (m_CubesCount > 0)

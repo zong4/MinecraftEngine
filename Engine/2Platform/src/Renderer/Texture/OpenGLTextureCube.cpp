@@ -3,14 +3,14 @@
 #include "../RendererCommand.hpp"
 #include <glad/glad.h>
 
-Engine::OpenGLTextureCube::OpenGLTextureCube(const glm::vec4 &color) : TextureCube()
+Engine::OpenGLTextureCube::OpenGLTextureCube(void *data) : TextureCube()
 {
     PROFILE_FUNCTION();
 
     glGenTextures(1, &m_RendererID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
     for (unsigned int i = 0; i < 6; i++)
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 

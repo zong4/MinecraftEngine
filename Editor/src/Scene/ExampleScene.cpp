@@ -14,8 +14,11 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     SetMainCamera(camera);
 
     // 2D
-    AddSquare("ReferenceSprite",
-              Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f)));
+    AddSquare("Square", Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f)));
+
+    // 2D
+    AddSquare("02BG", Engine::TransformComponent(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f), glm::vec3(3.0f)),
+              Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("02BG")));
 
     // Light
     auto light = AddLight("DirectionalLight",
@@ -55,8 +58,10 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
             {
                 for (int y = 0; y < noise * height; y++)
                 {
-                    AddCube("Grass" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
-                            Engine::TransformComponent(glm::vec3(x - width / 2, y, z - length / 2)));
+                    AddCube(
+                        "Grass" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
+                        Engine::TransformComponent(glm::vec3(x - width / 2, y, z - length / 2)),
+                        Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("GrassBlock")));
                 }
             }
         }

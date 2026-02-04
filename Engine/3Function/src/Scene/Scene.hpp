@@ -40,11 +40,9 @@ public:
     void DeleteEntity(const Entity &entity);
     Entity AddEmptyEntity(const std::string &name, const TransformComponent &transform = TransformComponent());
     Entity AddSquare(const std::string &name, const TransformComponent &transform,
-                     const SpriteRendererComponent &spriteRenderer = SpriteRendererComponent(),
                      const MaterialComponent &materialComponent =
                          MaterialComponent(MaterialsManager::GetInstance().GetMaterial("Default2D")));
     Entity AddCube(const std::string &name, const TransformComponent &transform,
-                   const MeshRendererComponent &meshRendererComponent = MeshRendererComponent(),
                    const MaterialComponent &materialComponent =
                        MaterialComponent(MaterialsManager::GetInstance().GetMaterial("Default3D")));
     Entity AddCamera(const std::string &name, const TransformComponent &transform,

@@ -17,6 +17,7 @@ public:
     // Setters
     virtual void SetUniformInt(const std::string &name, int value) = 0;
     virtual void SetUniformUInt(const std::string &name, unsigned int value) = 0;
+    virtual void SetUniformIntArray(const std::string &name, const int *values, int count) = 0;
     virtual void SetUniformFloat(const std::string &name, float value) = 0;
     virtual void SetUniformVec3(const std::string &name, const glm::vec3 &vector3) = 0;
     virtual void SetUniformVec4(const std::string &name, const glm::vec4 &vector4) = 0;

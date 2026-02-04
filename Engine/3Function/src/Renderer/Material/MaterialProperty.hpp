@@ -15,12 +15,12 @@ enum class MaterialPropertyType
     Vec2,
     Vec3,
     Vec4,
-    Texture2D
+    Texture2D,
+    TextureCube
 };
 
-using MaterialPropertyValue =
-    std::variant<int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, std::shared_ptr<Texture2D>>;
-
+using MaterialPropertyValue = std::variant<int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4,
+                                           std::shared_ptr<Texture2D>, std::shared_ptr<TextureCube>>;
 class MaterialProperty
 {
 public:
@@ -44,6 +44,8 @@ public:
             m_Type = MaterialPropertyType::Vec4;
         else if (std::holds_alternative<std::shared_ptr<Texture2D>>(m_Value))
             m_Type = MaterialPropertyType::Texture2D;
+        else if (std::holds_alternative<std::shared_ptr<TextureCube>>(m_Value))
+            m_Type = MaterialPropertyType::TextureCube;
         else
         {
             m_Type = MaterialPropertyType::None;

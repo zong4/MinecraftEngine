@@ -8,7 +8,7 @@ in VS_OUT
 {
     vec4 Color;
     vec2 TexCoord;
-    flat int TexID;
+    flat uint TexID;
 }
 fs_in;
 

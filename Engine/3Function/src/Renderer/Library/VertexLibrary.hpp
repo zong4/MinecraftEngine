@@ -11,7 +11,7 @@ struct Vertex2D
     glm::vec3 Position;
     glm::vec4 Color;
     glm::vec2 TexCoord;
-    int TexIndex;
+    unsigned int TexIndex;
 };
 
 struct SquareData

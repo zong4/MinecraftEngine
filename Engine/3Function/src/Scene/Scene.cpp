@@ -125,21 +125,19 @@ Engine::Entity Engine::Scene::AddEmptyEntity(const std::string &name, const Tran
 }
 
 Engine::Entity Engine::Scene::AddSquare(const std::string &name, const TransformComponent &transform,
-                                        const SpriteRendererComponent &spriteRenderer,
                                         const MaterialComponent &materialComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
-    entity.AddComponent<SpriteRendererComponent>(spriteRenderer);
+    entity.AddComponent<SpriteRendererComponent>();
     entity.AddComponent<MaterialComponent>(materialComponent);
     return entity;
 }
 
 Engine::Entity Engine::Scene::AddCube(const std::string &name, const TransformComponent &transform,
-                                      const MeshRendererComponent &meshRendererComponent,
                                       const MaterialComponent &materialComponent)
 {
     Entity entity = AddEmptyEntity(name, transform);
-    entity.AddComponent<MeshRendererComponent>(meshRendererComponent);
+    entity.AddComponent<MeshRendererComponent>();
     entity.AddComponent<MaterialComponent>(materialComponent);
     return entity;
 }

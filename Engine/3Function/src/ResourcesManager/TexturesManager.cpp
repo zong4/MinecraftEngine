@@ -87,7 +87,7 @@ Engine::TexturesManager::TexturesManager()
 
     // Load default textures
     AddTexture("DefaultTexture", Texture2D::WhiteTexture());
-    AddTexture("DefaultSkybox", TextureCube::WhiteTexture());
+    AddTexture("DefaultCubeMap", TextureCube::WhiteTexture());
 
     // Chick Textures directory path
     std::filesystem::path path = GetResourcesDirectory() / "Textures/";

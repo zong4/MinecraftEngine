@@ -56,23 +56,46 @@ Engine::MaterialsManager::MaterialsManager()
 
     // Default 2D material
     {
-        auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture");
+        auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture2D");
         auto &&material = std::make_shared<Engine::Material>(shader);
         material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         material->AddProperty("Texture", TexturesManager::GetInstance().GetTexture2D("DefaultTexture"));
         AddMaterial("Default2D", material);
     }
 
+    // 02
+    {
+        auto &&shader = Engine::ShadersManager::GetInstance().GetShader("Texture2D");
+        auto &&material = std::make_shared<Engine::Material>(shader);
+        material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        material->AddProperty("Texture", TexturesManager::GetInstance().GetTexture2D("02BG"));
+        AddMaterial("02BG", material);
+    }
+
     // Default 3D material
     {
         auto &&shader = Engine::ShadersManager::GetInstance().GetShader("BlinnPhong");
         auto &&material = std::make_shared<Engine::Material>(shader);
-        material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         material->AddProperty("AmbientStrength", 0.1f);
         material->AddProperty("DiffuseStrength", 0.8f);
         material->AddProperty("SpecularStrength", 0.5f);
         material->AddProperty("Shininess", 32.0f);
+        material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        material->AddProperty("Texture", TexturesManager::GetInstance().GetTextureCube("DefaultCubeMap"));
         AddMaterial("Default3D", material);
+    }
+
+    // Grass Block material
+    {
+        auto &&shader = Engine::ShadersManager::GetInstance().GetShader("BlinnPhong");
+        auto &&material = std::make_shared<Engine::Material>(shader);
+        material->AddProperty("AmbientStrength", 0.1f);
+        material->AddProperty("DiffuseStrength", 0.8f);
+        material->AddProperty("SpecularStrength", 0.5f);
+        material->AddProperty("Shininess", 32.0f);
+        material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        material->AddProperty("Texture", TexturesManager::GetInstance().GetTextureCube("GrassBlock"));
+        AddMaterial("GrassBlock", material);
     }
 
     LOG_ENGINE_INFO("MaterialsManager initialized");

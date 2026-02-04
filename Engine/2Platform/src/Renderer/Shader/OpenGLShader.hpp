@@ -14,6 +14,7 @@ public:
     // Setters
     void SetUniformInt(const std::string &name, int value) override;
     void SetUniformUInt(const std::string &name, unsigned int value) override;
+    void SetUniformIntArray(const std::string &name, const int *values, int count) override;
     void SetUniformFloat(const std::string &name, float value) override;
     void SetUniformVec3(const std::string &name, const glm::vec3 &vector3) override;
     void SetUniformVec4(const std::string &name, const glm::vec4 &vector4) override;

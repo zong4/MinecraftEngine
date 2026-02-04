@@ -49,6 +49,13 @@ void Engine::OpenGLShader::SetUniformUInt(const std::string &name, unsigned int 
     RendererCommand::GetError(std::string(FUNCTION_SIGNATURE) + " - Name: " + name);
 }
 
+void Engine::OpenGLShader::SetUniformIntArray(const std::string &name, const int *values, int count)
+{
+    int location = glGetUniformLocation(m_RendererID, name.c_str());
+    glUniform1iv(location, count, values);
+    RendererCommand::GetError(std::string(FUNCTION_SIGNATURE) + " - Name: " + name);
+}
+
 void Engine::OpenGLShader::SetUniformFloat(const std::string &name, float value)
 {
     int location = glGetUniformLocation(m_RendererID, name.c_str());
