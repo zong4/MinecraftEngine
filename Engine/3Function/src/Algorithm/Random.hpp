@@ -8,7 +8,7 @@ namespace Engine
 class Random
 {
 public:
-    Random(unsigned int seed) { m_Generator.seed(seed); }
+    explicit Random(unsigned int seed) { m_Generator.seed(seed); }
     static Random &GetInstance()
     {
         static Random instance;
