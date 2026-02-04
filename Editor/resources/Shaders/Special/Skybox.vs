@@ -17,6 +17,7 @@ out vec3 o_TexCoords;
 // Main
 void main()
 {
+    // Pass through attributes
     o_TexCoords = aPosition;
 
     // Remove translation from the view matrix

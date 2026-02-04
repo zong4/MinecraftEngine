@@ -30,7 +30,7 @@ public:
     {
         PROFILE_FUNCTION();
 
-        auto &&shader = ShadersManager::GetInstance().GetShader("Particles");
+        auto &&shader = ShadersManager::GetInstance().GetShader("Particle");
         shader->Bind();
         auto &&view = registry.view<ParticleComponent>();
         for (auto &&entity : view)

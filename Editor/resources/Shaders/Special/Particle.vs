@@ -25,8 +25,10 @@ vs_out;
 // Main
 void main()
 {
+    // Pass through attributes
     vs_out.Life = aLife;
     vs_out.LifeMax = aLifeMax;
 
+    // Final position
     gl_Position = u_Projection * u_View * vec4(aPosition, 1.0);
 }
