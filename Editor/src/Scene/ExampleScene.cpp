@@ -29,7 +29,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
 
     // Underground Generation with Perlin Noise
     int width = 16;
-    int height = 16;
+    int height = 24;
     int length = 16;
     for (int x = 0; x < width; x++)
     {
