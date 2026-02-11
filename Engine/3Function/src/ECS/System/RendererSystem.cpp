@@ -190,7 +190,7 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
                     grassVertices.push_back(
                         {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
                          glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
-                         materialData, color, g_CubeData.Positions[i], 1});
+                         materialData, color, g_CubeData.Positions[i]});
                 }
                 m_GrassCubesCount++;
             }
@@ -202,7 +202,7 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
                     stoneVertices.push_back(
                         {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
                          glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
-                         materialData, color, g_CubeData.Positions[i], 2});
+                         materialData, color, g_CubeData.Positions[i]});
                 }
                 m_StoneCubesCount++;
             }

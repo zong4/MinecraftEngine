@@ -44,7 +44,6 @@ struct Vertex3D
     glm::vec4 Material; // ambient, diffuse, specular , shininess
     glm::vec4 Color;
     glm::vec3 TexCoord;
-    int TexIndex;
 };
 
 struct CubeData
