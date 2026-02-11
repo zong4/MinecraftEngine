@@ -33,9 +33,8 @@ uniform sampler2D u_ShadowMap[MAX_LIGHTS];
 // Skybox
 uniform samplerCube u_Skybox;
 
-// Textures
-uniform samplerCube u_TextureGrass;
-uniform samplerCube u_TextureWhite;
+// Texture
+uniform samplerCube u_Texture;
 
 // Inputs
 in VS_OUT
@@ -49,7 +48,6 @@ in VS_OUT
     vec4 Material;
     vec4 Color;
     vec3 TexCoord;
-    flat int TexID;
 }
 fs_in;
 
@@ -124,15 +122,9 @@ vec3 CalcLight(vec3 lightDir, vec3 viewDir)
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(fs_in.Normal, halfwayDir), 0.0), fs_in.Material[3]);
 
-    // Texture
-    vec3 texColor;
-    if (fs_in.TexID == 1)
-        texColor = texture(u_TextureGrass, fs_in.TexCoord).rgb;
-    else
-        texColor = texture(u_TextureWhite, fs_in.TexCoord).rgb;
-
     // Combine results
-    return (fs_in.Material[0] + fs_in.Material[1] * diff) * texColor * fs_in.Color.rgb + fs_in.Material[2] * spec;
+    return (fs_in.Material[0] + fs_in.Material[1] * diff) * texture(u_Texture, fs_in.TexCoord).rgb * fs_in.Color.rgb +
+           fs_in.Material[2] * spec;
 }
 
 float CalcShadow(int index, vec4 fragPosLightSpace, vec3 lightDir)

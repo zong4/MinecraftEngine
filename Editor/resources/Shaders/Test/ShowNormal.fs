@@ -15,7 +15,6 @@ in VS_OUT
     vec4 Material;
     vec4 Color;
     vec3 TexCoord;
-    flat int TexID;
 }
 fs_in;
 

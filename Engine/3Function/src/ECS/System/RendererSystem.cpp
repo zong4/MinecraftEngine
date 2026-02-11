@@ -75,7 +75,7 @@ void Engine::RendererSystem::UploadSquares(entt::registry &registry)
 {
     PROFILE_FUNCTION();
 
-    int index = 0;
+    m_SquaresCount = 0;
     std::vector<Vertex2D> vertices;
     std::vector<unsigned int> indices;
     auto &&view =
@@ -97,12 +97,11 @@ void Engine::RendererSystem::UploadSquares(entt::registry &registry)
 
         // Indices
         for (int i = 0; i < 6; i++)
-            indices.push_back(g_SquareData.Indices[i] + index * 4);
-        index++;
+            indices.push_back(g_SquareData.Indices[i] + m_SquaresCount * 4);
+        m_SquaresCount++;
     }
 
     // Update counts and buffers
-    m_SquaresCount = index;
     VertexLibrary::GetInstance().GetVertex("Squares")->GetVertexBuffer()->SetData(
         vertices.data(), m_SquaresCount * 4 * sizeof(Vertex2D), 0);
     VertexLibrary::GetInstance().GetVertex("Squares")->GetIndexBuffer()->SetData(
@@ -148,8 +147,10 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
 {
     PROFILE_FUNCTION();
 
-    int index = 0;
-    std::vector<Vertex3D> vertices;
+    m_GrassCubesCount = 0;
+    m_StoneCubesCount = 0;
+    std::vector<Vertex3D> grassVertices;
+    std::vector<Vertex3D> stoneVertices;
     auto &&view = registry.view<Engine::TransformComponent, Engine::MeshRendererComponent, Engine::MaterialComponent>();
     for (auto &&entity : view)
     {
@@ -177,31 +178,47 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
                 color = glm::vec4(colorProp.GetValueAs<glm::vec3>(), 1.0f);
         }
 
-        // Get texture index
-        int texIndex = 0; // Default white texture
+        // Split cubes into grass and stone based on texture
         if (auto &&textureProp = material.GetProperty("Texture"))
         {
             auto &&texture = textureProp.GetValueAs<std::shared_ptr<TextureCube>>();
             if (texture == TexturesManager::GetInstance().GetTextureCube("GrassBlock"))
-                texIndex = 1;
+            {
+                for (int i = 0; i < 36; i++)
+                {
+                    glm::mat4 u_Model = transform.GetTransformMatrix();
+                    grassVertices.push_back(
+                        {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
+                         glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
+                         materialData, color, g_CubeData.Positions[i], 1});
+                }
+                m_GrassCubesCount++;
+            }
+            else if (texture == TexturesManager::GetInstance().GetTextureCube("StoneBlock"))
+            {
+                for (int i = 0; i < 36; i++)
+                {
+                    glm::mat4 u_Model = transform.GetTransformMatrix();
+                    stoneVertices.push_back(
+                        {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
+                         glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
+                         materialData, color, g_CubeData.Positions[i], 2});
+                }
+                m_StoneCubesCount++;
+            }
         }
-
-        // Vertices
-        for (int i = 0; i < 36; i++)
-        {
-            glm::mat4 u_Model = transform.GetTransformMatrix();
-            vertices.push_back(
-                {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
-                 glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]), materialData,
-                 color, g_CubeData.Positions[i], texIndex});
-        }
-        index++;
     }
 
     // Update count and buffer data
-    m_CubesCount = index;
-    VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
-        vertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
+    VertexLibrary::GetInstance()
+        .GetVertex("GrassCubes")
+        ->GetVertexBuffer()
+        ->SetData(grassVertices.data(), m_GrassCubesCount * 36 * sizeof(Vertex3D), 0);
+    if (m_StoneCubesCount > 0)
+        VertexLibrary::GetInstance()
+            .GetVertex("StoneCubes")
+            ->GetVertexBuffer()
+            ->SetData(stoneVertices.data(), m_StoneCubesCount * 36 * sizeof(Vertex3D), 0);
 }
 
 void Engine::RendererSystem::RenderShadowMap(entt::registry &registry) const
@@ -224,8 +241,14 @@ void Engine::RendererSystem::RenderShadowMap(entt::registry &registry) const
                                glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f)); // todo: calculate camera view
 
         // Render
-        if (m_CubesCount > 0)
-            VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+        if (m_GrassCubesCount > 0)
+            VertexLibrary::GetInstance()
+                .GetVertex("GrassCubes")
+                ->Render(Engine::RendererType::Triangles, m_GrassCubesCount * 36);
+        if (m_StoneCubesCount > 0)
+            VertexLibrary::GetInstance()
+                .GetVertex("StoneCubes")
+                ->Render(Engine::RendererType::Triangles, m_StoneCubesCount * 36);
         light.ShadowMap->Unbind();
     }
     shader->Unbind();
@@ -286,15 +309,23 @@ void Engine::RendererSystem::Render3D(entt::registry &registry) const
     shader->SetUniformInt("u_Skybox", lightIndex);
     m_SkyboxTexture->Active(lightIndex);
 
-    // Textures
-    TexturesManager::GetInstance().GetTextureCube("DefaultCubeMap")->Active(lightIndex + 1);
-    shader->SetUniformInt("u_TextureWhite", lightIndex + 1);
-    TexturesManager::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 2);
-    shader->SetUniformInt("u_TextureGrass", lightIndex + 2);
-
     // Render
-    if (m_CubesCount > 0)
-        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+    if (m_GrassCubesCount > 0)
+    {
+        TexturesManager::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
+        shader->SetUniformInt("u_Texture", lightIndex + 1);
+        VertexLibrary::GetInstance()
+            .GetVertex("GrassCubes")
+            ->Render(Engine::RendererType::Triangles, m_GrassCubesCount * 36);
+    }
+    if (m_StoneCubesCount > 0)
+    {
+        TexturesManager::GetInstance().GetTextureCube("StoneBlock")->Active(lightIndex + 1);
+        shader->SetUniformInt("u_Texture", lightIndex + 1);
+        VertexLibrary::GetInstance()
+            .GetVertex("StoneCubes")
+            ->Render(Engine::RendererType::Triangles, m_StoneCubesCount * 36);
+    }
 
     // Clear texture slots
     TexturesManager::GetInstance().ClearTextureSlots();
@@ -313,8 +344,14 @@ void Engine::RendererSystem::RenderColorID() const
     // Render entity IDs as color IDs
     if (m_SquaresCount > 0)
         VertexLibrary::GetInstance().GetVertex("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
-    if (m_CubesCount > 0)
-        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+    if (m_GrassCubesCount > 0)
+        VertexLibrary::GetInstance()
+            .GetVertex("GrassCubes")
+            ->Render(Engine::RendererType::Triangles, m_GrassCubesCount * 36);
+    if (m_StoneCubesCount > 0)
+        VertexLibrary::GetInstance()
+            .GetVertex("StoneCubes")
+            ->Render(Engine::RendererType::Triangles, m_StoneCubesCount * 36);
 
     shader->Unbind();
     m_ColorIDFrameBuffer->Unbind();

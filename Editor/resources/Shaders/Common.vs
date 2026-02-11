@@ -7,7 +7,6 @@ layout(location = 2) in vec3 aNormal;
 layout(location = 3) in vec4 aMaterial;
 layout(location = 4) in vec4 aColor;
 layout(location = 5) in vec3 aTexCoord;
-layout(location = 6) in int aTexID;
 
 // Uniforms
 layout(std140) uniform UniformBuffer0
@@ -29,7 +28,6 @@ out VS_OUT
     vec4 Material;
     vec4 Color;
     vec3 TexCoord;
-    flat int TexID;
 }
 vs_out;
 
