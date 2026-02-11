@@ -58,7 +58,7 @@ void Engine::Scene::Update(float deltaTime)
         m_Initialized = true;
     }
     m_TransformSystem.Update(m_Registry);
-    m_ColliderSystem.Update(m_Registry);
+    // m_ColliderSystem.Update(m_Registry);
 }
 
 void Engine::Scene::UpdateRuntime(float deltaTime)
@@ -101,7 +101,7 @@ void Engine::Scene::Render(const Entity &camera)
 
     // Render scene
     m_RendererSystem.Render(m_Registry);
-    m_ColliderSystem.RenderBVH(m_Registry, 3);
+    // m_ColliderSystem.RenderBVH(m_Registry, 3);
     m_ParticleSystem.Render(m_Registry);
 }
 

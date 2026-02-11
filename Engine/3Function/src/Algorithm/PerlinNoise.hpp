@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Random.hpp"
+#include <numeric>
 
 namespace Engine
 {
