@@ -16,10 +16,6 @@ public:
     RendererSystem();
     ~RendererSystem() = default;
 
-    // Getters
-    int GetSquaresCount() const { return m_SquaresCount; }
-    int GetCubesCount() const { return m_CubesCount; }
-
 public:
     void Resize(entt::registry &registry, int width, int height);
     void Render(entt::registry &registry);
@@ -30,7 +26,8 @@ private:
     int m_SquaresCount = 0;
 
     // 3D
-    int m_CubesCount = 0;
+    int m_GrassCubesCount = 0;
+    int m_StoneCubesCount = 0;
     std::shared_ptr<TextureCube> m_SkyboxTexture;
 
     // Common

@@ -75,9 +75,7 @@ Engine::VertexLibrary::VertexLibrary()
                                                              {4, 1, VertexAttributeType::Int, false, sizeof(Vertex2D),
                                                               (const void *)(10 * sizeof(float))}}, // TexIndex
                                 Engine::IndexBuffer::Create(m_MaxSquaresNumber * 6 * sizeof(unsigned int)));
-        AddVertex("Squares", squaresVAO);
-
-        auto &&cubesVAO =
+        auto &&grassCubesVAO =
             VertexArray::Create(VertexBuffer::Create(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
                                 std::vector<VertexAttribute>{{0, 1, VertexAttributeType::UInt, false, sizeof(Vertex3D),
                                                               (const void *)(0 * sizeof(float))}, // EntityID
@@ -93,7 +91,25 @@ Engine::VertexLibrary::VertexLibrary()
                                                               (const void *)(15 * sizeof(float))}, // TexCoord
                                                              {6, 1, VertexAttributeType::Int, false, sizeof(Vertex3D),
                                                               (const void *)(18 * sizeof(float))}}); // TexIndex
-        AddVertex("Cubes", cubesVAO);
+        auto &&StoneCubesVAO =
+            VertexArray::Create(VertexBuffer::Create(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
+                                std::vector<VertexAttribute>{{0, 1, VertexAttributeType::UInt, false, sizeof(Vertex3D),
+                                                              (const void *)(0 * sizeof(float))}, // EntityID
+                                                             {1, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(1 * sizeof(float))}, // Position
+                                                             {2, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(4 * sizeof(float))}, // Normal
+                                                             {3, 4, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(7 * sizeof(float))}, // Material
+                                                             {4, 4, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(11 * sizeof(float))}, // Color
+                                                             {5, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                              (const void *)(15 * sizeof(float))}, // TexCoord
+                                                             {6, 1, VertexAttributeType::Int, false, sizeof(Vertex3D),
+                                                              (const void *)(18 * sizeof(float))}}); // TexIndex
+        AddVertex("Squares", squaresVAO);
+        AddVertex("GrassCubes", grassCubesVAO);
+        AddVertex("StoneCubes", StoneCubesVAO);
     }
     LOG_ENGINE_INFO("VAO Library initialized");
 }
@@ -113,8 +129,8 @@ void Engine::VertexLibrary::ReadConfig()
     }
     else
     {
-        m_MaxSquaresNumber = 10000;
-        m_MaxCubesNumber = 10000;
+        m_MaxSquaresNumber = 3000;
+        m_MaxCubesNumber = 3000;
         LOG_ENGINE_WARN("Could not open ResourcesManager.json, using default values");
     }
 }

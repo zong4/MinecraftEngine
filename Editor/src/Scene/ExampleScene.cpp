@@ -41,8 +41,10 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
                     static_cast<float>(Engine::PerlinNoise::GetInstance().Noise(x * 0.08f, y * 0.08f, z * 0.08f));
                 if (density < 0.1f)
                 {
-                    AddCube("Stone" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
-                            Engine::TransformComponent(glm::vec3(x - width / 2, y - height / 2, z - length / 2)));
+                    AddCube(
+                        "Stone" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
+                        Engine::TransformComponent(glm::vec3(x - width / 2, y - height / 2, z - length / 2)),
+                        Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("StoneBlock")));
                 }
             }
         }

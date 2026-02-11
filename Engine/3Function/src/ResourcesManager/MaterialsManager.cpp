@@ -98,5 +98,18 @@ Engine::MaterialsManager::MaterialsManager()
         AddMaterial("GrassBlock", material);
     }
 
+    // Stone Block material
+    {
+        auto &&shader = Engine::ShadersManager::GetInstance().GetShader("BlinnPhong");
+        auto &&material = std::make_shared<Engine::Material>(shader);
+        material->AddProperty("AmbientStrength", 0.1f);
+        material->AddProperty("DiffuseStrength", 0.8f);
+        material->AddProperty("SpecularStrength", 0.5f);
+        material->AddProperty("Shininess", 32.0f);
+        material->AddProperty("Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        material->AddProperty("Texture", TexturesManager::GetInstance().GetTextureCube("StoneBlock"));
+        AddMaterial("StoneBlock", material);
+    }
+
     LOG_ENGINE_INFO("MaterialsManager initialized");
 }
