@@ -31,6 +31,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     int width = 16;
     int height = 24;
     int length = 16;
+    auto &&stoneParent = AddEmptyEntity("Stones");
     for (int x = 0; x < width; x++)
     {
         for (int y = 0; y < height / 2; y++)
@@ -41,16 +42,18 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
                     static_cast<float>(Engine::PerlinNoise::GetInstance().Noise(x * 0.08f, y * 0.08f, z * 0.08f));
                 if (density < 0.1f)
                 {
-                    AddCube(
+                    auto stone = AddCube(
                         "Stone" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
                         Engine::TransformComponent(glm::vec3(x - width / 2, y - height / 2, z - length / 2)),
                         Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("StoneBlock")));
+                    Engine::RelationshipComponent::SetParentChild(stoneParent, stone);
                 }
             }
         }
     }
 
     // Aboveground Generation with Perlin Noise + FBM
+    auto &&grassParent = AddEmptyEntity("Grasses");
     for (int x = 0; x < width; x++)
     {
         for (int z = 0; z < length; z++)
@@ -60,10 +63,11 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
             {
                 for (int y = 0; y < noise * height; y++)
                 {
-                    AddCube(
+                    auto grass = AddCube(
                         "Grass" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
                         Engine::TransformComponent(glm::vec3(x - width / 2, y, z - length / 2)),
                         Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("GrassBlock")));
+                    Engine::RelationshipComponent::SetParentChild(grassParent, grass);
                 }
             }
         }

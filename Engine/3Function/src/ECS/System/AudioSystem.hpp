@@ -14,7 +14,11 @@ public:
     ~AudioSystem() = default;
 
     // Setters
-    void Delete(const Entity &entity) { entity.GetComponent<AudioComponent>()->Stop(); }
+    void Delete(const Entity &entity)
+    {
+        if (auto &&audio = entity.GetComponent<AudioComponent>())
+            audio->Stop();
+    }
 
 public:
     void Update(entt::registry &registry)

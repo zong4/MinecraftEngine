@@ -15,7 +15,7 @@ void Engine::PhysicSystem::Delete(const Entity &entity)
     PROFILE_FUNCTION();
 
     auto &&rigidBody = entity.GetComponent<RigidBodyComponent>();
-    if (rigidBody->Body)
+    if (rigidBody && rigidBody->Body)
     {
         // Clean up motion state
         delete rigidBody->Body->getMotionState();

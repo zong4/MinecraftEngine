@@ -2,6 +2,7 @@
 
 #include "../Scene/ScenesManager.hpp"
 #include "../UI/FileBrowserPanel.hpp"
+#include "../UI/HierarchyPanel.hpp"
 #include <imgui.h>
 
 void Editor::CreatorLayer::OnEvent(Engine::Event &event)
@@ -74,10 +75,8 @@ void Editor::CreatorLayer::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
-    // File Browser Panel
     FileBrowserPanel::GetInstance().OnImGuiRender();
-
-    // Debug UI
+    HierarchyPanel::GetInstance().OnImGuiRender();
     DrawDebugUI();
 
     // Capture Input Events for next frame

@@ -14,10 +14,12 @@ public:
     static ScenesManager &GetInstance();
 
     // Getters
+    Engine::Entity GetSelectedEntity() { return m_SelectedEntity; }
     std::shared_ptr<Engine::Scene> GetEditorScene() { return m_EditorScene; }
     std::shared_ptr<Engine::Scene> GetActiveScene() { return m_ActiveScene; }
 
     // Setters
+    void SetSelectedEntity(const Engine::Entity &entity) { m_SelectedEntity = entity; }
     void SetActiveScene(const std::shared_ptr<Engine::Scene> &scene);
 
 public:
@@ -29,6 +31,7 @@ public:
 
 private:
     int m_FbWidth, m_FbHeight;
+    Engine::Entity m_SelectedEntity;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;
 
