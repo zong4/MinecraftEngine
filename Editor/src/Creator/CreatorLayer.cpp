@@ -3,6 +3,7 @@
 #include "../Scene/ScenesManager.hpp"
 #include "../UI/FileBrowserPanel.hpp"
 #include "../UI/HierarchyPanel.hpp"
+#include "../UI/InspectorPanel.hpp"
 #include <imgui.h>
 
 void Editor::CreatorLayer::OnEvent(Engine::Event &event)
@@ -77,6 +78,7 @@ void Editor::CreatorLayer::OnImGuiRender()
 
     FileBrowserPanel::GetInstance().OnImGuiRender();
     HierarchyPanel::GetInstance().OnImGuiRender();
+    InspectorPanel::GetInstance().OnImGuiRender();
     DrawDebugUI();
 
     // Capture Input Events for next frame

@@ -73,6 +73,36 @@ public:
         return std::get<T>(m_Value);
     }
 
+    // Setters
+    // clang-format off
+    template <typename T>
+    // clang-format on
+    void SetValue(const T &value)
+    {
+        m_Value = value;
+        if (std::holds_alternative<int>(m_Value))
+            m_Type = MaterialPropertyType::Int;
+        else if (std::holds_alternative<unsigned int>(m_Value))
+            m_Type = MaterialPropertyType::UInt;
+        else if (std::holds_alternative<float>(m_Value))
+            m_Type = MaterialPropertyType::Float;
+        else if (std::holds_alternative<glm::vec2>(m_Value))
+            m_Type = MaterialPropertyType::Vec2;
+        else if (std::holds_alternative<glm::vec3>(m_Value))
+            m_Type = MaterialPropertyType::Vec3;
+        else if (std::holds_alternative<glm::vec4>(m_Value))
+            m_Type = MaterialPropertyType::Vec4;
+        else if (std::holds_alternative<std::shared_ptr<Texture2D>>(m_Value))
+            m_Type = MaterialPropertyType::Texture2D;
+        else if (std::holds_alternative<std::shared_ptr<TextureCube>>(m_Value))
+            m_Type = MaterialPropertyType::TextureCube;
+        else
+        {
+            m_Type = MaterialPropertyType::None;
+            LOG_ENGINE_ASSERT("MaterialProperty: Unsupported MaterialPropertyValue type");
+        }
+    }
+
 private:
     MaterialPropertyType m_Type;
     MaterialPropertyValue m_Value;

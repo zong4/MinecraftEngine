@@ -39,6 +39,8 @@ public:
         LOG_ENGINE_WARN("MaterialComponent: Property '" + name + "' not found in Material");
         return emptyProperty;
     }
+    std::unordered_map<std::string, MaterialProperty> &GetPropertyMap() { return m_PropertysMap; }
+    const std::unordered_map<std::string, MaterialProperty> &GetPropertyMap() const { return m_PropertysMap; }
 
     // Setters
     void SetMaterial(const std::shared_ptr<Material> &material)
