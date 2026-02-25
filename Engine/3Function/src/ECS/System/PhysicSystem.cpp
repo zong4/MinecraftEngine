@@ -121,16 +121,6 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
         AddRigidBody(rigidBody, transform);
     btRigidBody *body = rigidBody.Body;
 
-    // Update transform
-    btTransform btTransform;
-    btTransform.setIdentity();
-    glm::vec3 position = transform.GetGlobalPosition();
-    btTransform.setOrigin(btVector3(position.x, position.y, position.z));
-    glm::quat rotationQuat = transform.GetRotationQuat(TransformSpace::Global);
-    btTransform.setRotation(btQuaternion(rotationQuat.x, rotationQuat.y, rotationQuat.z, rotationQuat.w));
-    body->getMotionState()->setWorldTransform(btTransform);
-    body->setWorldTransform(btTransform);
-
     // Update RigidBodyType
     switch (rigidBody.Type)
     {
@@ -203,6 +193,7 @@ void Engine::PhysicSystem::AddRigidBody(RigidBodyComponent &rigidBody, const Tra
     case RigidBodyType::Kinematic:
         rigidBody.Body->setCollisionFlags((rigidBody.Body->getCollisionFlags() & ~btCollisionObject::CF_STATIC_OBJECT) |
                                           btCollisionObject::CF_KINEMATIC_OBJECT);
+        rigidBody.Body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
         // rigidBody.Body->setActivationState(DISABLE_DEACTIVATION);
         break;
     }
