@@ -147,6 +147,7 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
 {
     PROFILE_FUNCTION();
 
+    m_CubesCount = 0;
     m_GrassCubesCount = 0;
     m_StoneCubesCount = 0;
     std::vector<Vertex3D> grassVertices;
@@ -182,11 +183,11 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
         if (auto &&textureProp = material.GetProperty("Texture"))
         {
             auto &&texture = textureProp.GetValueAs<std::shared_ptr<TextureCube>>();
+            glm::mat4 u_Model = transform.GetTransformMatrix();
             if (texture == TexturesManager::GetInstance().GetTextureCube("GrassBlock"))
             {
                 for (int i = 0; i < 36; i++)
                 {
-                    glm::mat4 u_Model = transform.GetTransformMatrix();
                     grassVertices.push_back(
                         {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
                          glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
@@ -198,7 +199,6 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
             {
                 for (int i = 0; i < 36; i++)
                 {
-                    glm::mat4 u_Model = transform.GetTransformMatrix();
                     stoneVertices.push_back(
                         {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
                          glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
@@ -206,14 +206,29 @@ void Engine::RendererSystem::UploadCubes(entt::registry &registry)
                 }
                 m_StoneCubesCount++;
             }
+            else
+            {
+                for (int i = 0; i < 36; i++)
+                {
+                    grassVertices.push_back(
+                        {(uint32_t)entity + 1, glm::vec3(u_Model * glm::vec4(g_CubeData.Positions[i], 1.0f)),
+                         glm::normalize(glm::transpose(glm::inverse(glm::mat3(u_Model))) * g_CubeData.Normals[i]),
+                         materialData, color, g_CubeData.Positions[i]});
+                }
+                m_CubesCount++;
+            }
         }
     }
 
     // Update count and buffer data
-    VertexLibrary::GetInstance()
-        .GetVertex("GrassCubes")
-        ->GetVertexBuffer()
-        ->SetData(grassVertices.data(), m_GrassCubesCount * 36 * sizeof(Vertex3D), 0);
+    if (m_CubesCount > 0)
+        VertexLibrary::GetInstance().GetVertex("Cubes")->GetVertexBuffer()->SetData(
+            grassVertices.data(), m_CubesCount * 36 * sizeof(Vertex3D), 0);
+    if (m_GrassCubesCount > 0)
+        VertexLibrary::GetInstance()
+            .GetVertex("GrassCubes")
+            ->GetVertexBuffer()
+            ->SetData(grassVertices.data(), m_GrassCubesCount * 36 * sizeof(Vertex3D), 0);
     if (m_StoneCubesCount > 0)
         VertexLibrary::GetInstance()
             .GetVertex("StoneCubes")
@@ -241,6 +256,8 @@ void Engine::RendererSystem::RenderShadowMap(entt::registry &registry) const
                                glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f)); // todo: calculate camera view
 
         // Render
+        if (m_CubesCount > 0)
+            VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
         if (m_GrassCubesCount > 0)
             VertexLibrary::GetInstance()
                 .GetVertex("GrassCubes")
@@ -310,6 +327,12 @@ void Engine::RendererSystem::Render3D(entt::registry &registry) const
     m_SkyboxTexture->Active(lightIndex);
 
     // Render
+    if (m_CubesCount > 0)
+    {
+        TexturesManager::GetInstance().GetTextureCube("DefaultCubeMap")->Active(lightIndex + 1);
+        shader->SetUniformInt("u_Texture", lightIndex + 1);
+        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
+    }
     if (m_GrassCubesCount > 0)
     {
         TexturesManager::GetInstance().GetTextureCube("GrassBlock")->Active(lightIndex + 1);
@@ -344,6 +367,8 @@ void Engine::RendererSystem::RenderColorID() const
     // Render entity IDs as color IDs
     if (m_SquaresCount > 0)
         VertexLibrary::GetInstance().GetVertex("Squares")->Render(Engine::RendererType::Triangles, m_SquaresCount * 6);
+    if (m_CubesCount > 0)
+        VertexLibrary::GetInstance().GetVertex("Cubes")->Render(Engine::RendererType::Triangles, m_CubesCount * 36);
     if (m_GrassCubesCount > 0)
         VertexLibrary::GetInstance()
             .GetVertex("GrassCubes")

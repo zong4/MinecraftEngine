@@ -31,6 +31,12 @@ void Engine::PhysicSystem::Update(entt::registry &registry, float deltaTime)
 {
     PROFILE_FUNCTION();
 
+    // Fixed timestep update
+    m_Accumulator += deltaTime;
+    while (m_Accumulator < m_FixedDeltaTime)
+        return;
+    m_Accumulator -= m_FixedDeltaTime;
+
     // Sync RigidBodies with Transforms
     auto &&rigibodyView = registry.view<TransformComponent, RigidBodyComponent>();
     for (auto &&entity : rigibodyView)

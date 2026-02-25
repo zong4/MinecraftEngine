@@ -21,6 +21,8 @@ public:
     void Shutdown();
 
 private:
+    float m_FixedDeltaTime = 1.0f / 60.0f;
+    float m_Accumulator = 0.0f;
     btDefaultCollisionConfiguration *m_CollisionConfiguration;
     btCollisionDispatcher *m_Dispatcher;
     btBroadphaseInterface *m_Broadphase;

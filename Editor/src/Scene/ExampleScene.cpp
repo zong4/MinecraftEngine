@@ -13,12 +13,12 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
                             Engine::CameraComponent(Engine::CameraType::Perspective));
     SetMainCamera(camera);
 
-    // 2D
-    AddSquare("Square", Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f)));
+    // // 2D
+    // AddSquare("Square", Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f)));
 
-    // 2D
-    AddSquare("02BG", Engine::TransformComponent(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f), glm::vec3(3.0f)),
-              Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("02BG")));
+    // // 2D
+    // AddSquare("02BG", Engine::TransformComponent(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f), glm::vec3(3.0f)),
+    //           Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("02BG")));
 
     // Light
     auto light = AddLight("DirectionalLight",
@@ -46,6 +46,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
                         "Stone" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
                         Engine::TransformComponent(glm::vec3(x - width / 2, y - height / 2, z - length / 2)),
                         Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("StoneBlock")));
+                    stone.AddComponent<Engine::RigidBodyComponent>()->Type = Engine::RigidBodyType::Kinematic;
                     Engine::RelationshipComponent::SetParentChild(stoneParent, stone);
                 }
             }
@@ -67,19 +68,21 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
                         "Grass" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
                         Engine::TransformComponent(glm::vec3(x - width / 2, y, z - length / 2)),
                         Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("GrassBlock")));
+                    grass.AddComponent<Engine::RigidBodyComponent>()->Type = Engine::RigidBodyType::Kinematic;
                     Engine::RelationshipComponent::SetParentChild(grassParent, grass);
                 }
             }
         }
     }
 
-    // // Player
-    // auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 3.0f, 0.0f)));
-    // player.AddComponent<Engine::AudioComponent>(true, 1.0f);
-    // player.AddComponent<Engine::RigidBodyComponent>();
-    // player.AddComponent<Engine::NativeScriptComponent>();
-    // player.GetComponent<Engine::NativeScriptComponent>()->Bind<PlayerController>(player);
-    // player.AddComponent<Engine::LuaScriptComponent>();
-    // player.GetComponent<Engine::LuaScriptComponent>()->ScriptPath =
-    //     (Engine::GetAssetsDirectory() / "Scripts/Test.lua").string();
+    // Player
+    auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 12.0f, 0.0f)));
+    player.GetComponent<Engine::MaterialComponent>()->SetProperty("Color", glm::vec4(1.0f, 0.5f, 0.2f, 1.0f));
+    player.AddComponent<Engine::AudioComponent>(true, 1.0f);
+    player.AddComponent<Engine::RigidBodyComponent>();
+    player.AddComponent<Engine::NativeScriptComponent>();
+    player.GetComponent<Engine::NativeScriptComponent>()->Bind<PlayerController>(player);
+    player.AddComponent<Engine::LuaScriptComponent>();
+    player.GetComponent<Engine::LuaScriptComponent>()->ScriptPath =
+        (Engine::GetAssetsDirectory() / "Scripts/Test.lua").string();
 }

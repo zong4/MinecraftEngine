@@ -75,6 +75,21 @@ Engine::VertexLibrary::VertexLibrary()
                                                              {4, 1, VertexAttributeType::Int, false, sizeof(Vertex2D),
                                                               (const void *)(10 * sizeof(float))}}, // TexIndex
                                 Engine::IndexBuffer::Create(m_MaxSquaresNumber * 6 * sizeof(unsigned int)));
+        auto &&cubesVAO = VertexArray::Create(VertexBuffer::Create(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
+                                              std::vector<VertexAttribute>{
+                                                  {0, 1, VertexAttributeType::UInt, false, sizeof(Vertex3D),
+                                                   (const void *)(0 * sizeof(float))}, // EntityID
+                                                  {1, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                   (const void *)(1 * sizeof(float))}, // Position
+                                                  {2, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                   (const void *)(4 * sizeof(float))}, // Normal
+                                                  {3, 4, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                   (const void *)(7 * sizeof(float))}, // Material
+                                                  {4, 4, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                   (const void *)(11 * sizeof(float))}, // Color
+                                                  {5, 3, VertexAttributeType::Float, false, sizeof(Vertex3D),
+                                                   (const void *)(15 * sizeof(float))}, // TexCoord
+                                              });
         auto &&grassCubesVAO = VertexArray::Create(VertexBuffer::Create(m_MaxCubesNumber * sizeof(Vertex3D) * 36),
                                                    std::vector<VertexAttribute>{
                                                        {0, 1, VertexAttributeType::UInt, false, sizeof(Vertex3D),
@@ -106,6 +121,7 @@ Engine::VertexLibrary::VertexLibrary()
                                                         (const void *)(15 * sizeof(float))}, // TexCoord
                                                    });
         AddVertex("Squares", squaresVAO);
+        AddVertex("Cubes", cubesVAO);
         AddVertex("GrassCubes", grassCubesVAO);
         AddVertex("StoneCubes", StoneCubesVAO);
     }

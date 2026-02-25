@@ -185,7 +185,7 @@ void Editor::InspectorPanel::OnImGuiRender() const
                         }
                         case Engine::MaterialPropertyType::Vec4: {
                             glm::vec4 value = prop.GetValueAs<glm::vec4>();
-                            if (ImGui::DragFloat4("##Value", glm::value_ptr(value)))
+                            if (ImGui::ColorEdit4("##Value", glm::value_ptr(value)))
                                 prop.SetValue(value);
                             break;
                         }

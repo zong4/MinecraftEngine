@@ -26,6 +26,7 @@ private:
     int m_SquaresCount = 0;
 
     // 3D
+    int m_CubesCount = 0;
     int m_GrassCubesCount = 0;
     int m_StoneCubesCount = 0;
     std::shared_ptr<TextureCube> m_SkyboxTexture;
