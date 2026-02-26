@@ -34,7 +34,7 @@ public:
     virtual void Resize(int width, int height) { m_RendererSystem.Resize(m_Registry, width, height); }
     void Update(float deltaTime);
     void UpdateRuntime(float deltaTime);
-    virtual void Render(const Entity &camera);
+    virtual void Render(const Entity &camera, const std::shared_ptr<FrameBuffer> &colorIDFrameBuffer = nullptr);
 
     // Entity management
     void DeleteEntity(const Entity &entity);

@@ -142,7 +142,8 @@ float CalcShadow(int index, vec4 fragPosLightSpace, vec3 lightDir)
     float currentDepth = projCoords.z;
 
     // check whether current frag pos is in shadow
-    float bias = max(0.05 * (1.0 - dot(fs_in.Normal, lightDir)), 0.005);
+    float ndotl = max(dot(normalize(fs_in.Normal), lightDir), 0.0);
+    float bias = max(0.002 * (1.0 - ndotl), 0.0005);
     float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
     return shadow;
 }

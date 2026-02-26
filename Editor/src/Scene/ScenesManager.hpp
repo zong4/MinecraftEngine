@@ -23,6 +23,7 @@ public:
     void SetActiveScene(const std::shared_ptr<Engine::Scene> &scene);
 
 public:
+    void PickEntity(int mouseX, int mouseY);
     void Resize(int width, int height);
     void UpdateInEditor(float deltaTime);
     void UpdateInRuntime(float deltaTime);
@@ -34,6 +35,8 @@ private:
     Engine::Entity m_SelectedEntity;
     std::shared_ptr<Engine::Scene> m_EditorScene;
     std::shared_ptr<Engine::Scene> m_ActiveScene;
+    std::shared_ptr<Engine::FrameBuffer> m_ColorIDFrameBuffer =
+        Engine::FrameBuffer::Create(Engine::Texture2DType::Integer, 1280, 720);
 
 private:
     ScenesManager();

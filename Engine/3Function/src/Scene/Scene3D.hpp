@@ -13,7 +13,7 @@ public:
     virtual ~Scene3D() override = default;
 
 public:
-    void Render(const Entity &camera) override
+    void Render(const Entity &camera, const std::shared_ptr<FrameBuffer> &colorIDFrameBuffer = nullptr) override
     {
         PROFILE_FUNCTION();
 

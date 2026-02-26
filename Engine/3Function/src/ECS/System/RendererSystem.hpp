@@ -18,7 +18,7 @@ public:
 
 public:
     void Resize(entt::registry &registry, int width, int height);
-    void Render(entt::registry &registry);
+    void Render(entt::registry &registry, const std::shared_ptr<FrameBuffer> &colorIDFrameBuffer = nullptr);
     void RenderSkybox() const;
 
 private:
@@ -31,9 +31,6 @@ private:
     int m_StoneCubesCount = 0;
     std::shared_ptr<TextureCube> m_SkyboxTexture;
 
-    // Common
-    std::shared_ptr<FrameBuffer> m_ColorIDFrameBuffer = FrameBuffer::Create(Texture2DType::Integer, 1280, 720);
-
 private:
     // 2D
     void UploadSquares(entt::registry &registry);
@@ -45,7 +42,7 @@ private:
     void Render3D(entt::registry &registry) const;
 
     // Common
-    void RenderColorID() const;
+    void RenderColorID(const std::shared_ptr<FrameBuffer> &colorIDFrameBuffer) const;
 };
 
 } // namespace Engine

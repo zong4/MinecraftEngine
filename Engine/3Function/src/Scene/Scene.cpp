@@ -72,7 +72,7 @@ void Engine::Scene::UpdateRuntime(float deltaTime)
     m_ScriptsSystem.Update(m_Registry, deltaTime);
 }
 
-void Engine::Scene::Render(const Entity &camera)
+void Engine::Scene::Render(const Entity &camera, const std::shared_ptr<FrameBuffer> &colorIDFrameBuffer)
 {
     PROFILE_FUNCTION();
 
@@ -100,7 +100,7 @@ void Engine::Scene::Render(const Entity &camera)
     RendererCommand::Clear();
 
     // Render scene
-    m_RendererSystem.Render(m_Registry);
+    m_RendererSystem.Render(m_Registry, colorIDFrameBuffer);
     // m_ColliderSystem.RenderBVH(m_Registry, 3);
     m_ParticleSystem.Render(m_Registry);
 }

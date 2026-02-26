@@ -29,12 +29,9 @@ void Engine::RendererSystem::Resize(entt::registry &registry, int width, int hei
         auto &&light = lightView.get<LightComponent>(entity);
         light.ShadowMap->Resize(width, height);
     }
-
-    // Resize color ID framebuffer
-    m_ColorIDFrameBuffer->Resize(width, height);
 }
 
-void Engine::RendererSystem::Render(entt::registry &registry)
+void Engine::RendererSystem::Render(entt::registry &registry, const std::shared_ptr<FrameBuffer> &colorIDFrameBuffer)
 {
     PROFILE_FUNCTION();
 
@@ -48,7 +45,7 @@ void Engine::RendererSystem::Render(entt::registry &registry)
     Render3D(registry);
 
     // Common
-    RenderColorID();
+    RenderColorID(colorIDFrameBuffer);
 }
 
 void Engine::RendererSystem::RenderSkybox() const
@@ -355,11 +352,13 @@ void Engine::RendererSystem::Render3D(entt::registry &registry) const
     shader->Unbind();
 }
 
-void Engine::RendererSystem::RenderColorID() const
+void Engine::RendererSystem::RenderColorID(const std::shared_ptr<FrameBuffer> &colorIDFrameBuffer) const
 {
     PROFILE_FUNCTION();
 
-    m_ColorIDFrameBuffer->Bind();
+    if (!colorIDFrameBuffer)
+        return;
+    colorIDFrameBuffer->Bind();
     Engine::RendererCommand::Clear();
     auto &&shader = Engine::ShadersManager::GetInstance().GetShader("ColorID");
     shader->Bind();
@@ -379,5 +378,5 @@ void Engine::RendererSystem::RenderColorID() const
             ->Render(Engine::RendererType::Triangles, m_StoneCubesCount * 36);
 
     shader->Unbind();
-    m_ColorIDFrameBuffer->Unbind();
+    colorIDFrameBuffer->Unbind();
 }
