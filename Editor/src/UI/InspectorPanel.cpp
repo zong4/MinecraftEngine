@@ -181,6 +181,25 @@ void Editor::InspectorPanel::OnImGuiRender() const
                             if (newMaterial)
                                 materialComp->SetMaterial(newMaterial);
                         }
+
+                        // Drag and drop
+                        if (ImGui::BeginDragDropTarget())
+                        {
+                            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                            {
+                                const char *path = (const char *)payload->Data;
+                                std::filesystem::path filepath(path);
+
+                                if (filepath.extension() == ".mcmat")
+                                {
+                                    auto newMaterial =
+                                        Engine::MaterialsManager::GetInstance().GetMaterial(filepath.stem().string());
+                                    if (newMaterial)
+                                        materialComp->SetMaterial(newMaterial);
+                                }
+                            }
+                            ImGui::EndDragDropTarget();
+                        }
                     });
                 }
 
@@ -257,33 +276,18 @@ void Editor::InspectorPanel::OnImGuiRender() const
             }
         });
 
-        // // Handle drag and drop for texture assignment
-        // if (ImGui::BeginDragDropTarget())
-        // {
-        //     if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-        //     {
-        //         if (payload->Data)
-        //         {
-        //             const char *path = static_cast<const char *>(payload->Data);
-        //             std::filesystem::path filepath(path);
-        //             std::string relativePath =
-        //                 std::filesystem::relative(filepath, ConfigManager::GetInstance().GetAssetsPath()).string();
-        //             if (std::filesystem::is_regular_file(filepath))
-        //             {
-        //                 if (filepath.extension() == ".png" || filepath.extension() == ".jpg" ||
-        //                     filepath.extension() == ".jpeg")
-        //                 {
-        //                     if (selectedEntity)
-        //                     {
-        //                         selectedEntity.GetComponent<Engine::SpriteRendererComponent>()->TextureInstance =
-        //                             Engine::TextureManager::GetInstance().GetTexture2D(relativePath);
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     ImGui::EndDragDropTarget();
-        // }
+        // RigidBodyComponent
+        DrawComponent<Engine::RigidBodyComponent>(
+            "Rigid Body Component", selectedEntity, [](Engine::RigidBodyComponent *rigidBody) {
+                DrawTable2<Engine::RigidBodyComponent>("Type", [&rigidBody]() {
+                    const char *bodyTypes[] = {"Static", "Dynamic", "Kinematic"};
+                    int currentType = static_cast<int>(rigidBody->Type);
+                    if (ImGui::Combo("##RigidBody Type", &currentType, bodyTypes, IM_ARRAYSIZE(bodyTypes)))
+                        rigidBody->Type = static_cast<Engine::RigidBodyType>(currentType);
+                });
+                DrawTable2<Engine::RigidBodyComponent>(
+                    "Mass", [&rigidBody]() { ImGui::DragFloat("##Mass", &rigidBody->Mass, 10.0f, 0.0f, 100.0f); });
+            });
 
         // Add Component Button
         DrawAddComponentButton(selectedEntity);
