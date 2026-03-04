@@ -80,7 +80,23 @@ void Editor::InspectorPanel::OnImGuiRender() const
         DrawComponent<Engine::LabelComponent>(
             "Label Component", selectedEntity,
             [](Engine::LabelComponent *label) {
-                DrawTable2<Engine::LabelComponent>("Label", [&label]() { InputTextString("##Label", &label->Name); });
+                DrawTable2<Engine::LabelComponent>("Tag", [&label]() {
+                    const char *tagTypes[] = {"None", "Player", "MainCamera", "Light", "Skybox"};
+                    int currentTag = static_cast<int>(label->Tag);
+                    if (ImGui::Combo("##Tag", &currentTag, tagTypes, IM_ARRAYSIZE(tagTypes)))
+                    {
+                        label->Tag = static_cast<Engine::TagType>(currentTag);
+                    }
+                });
+                DrawTable2<Engine::LabelComponent>("Layer", [&label]() {
+                    const char *layerTypes[] = {"Default", "UI", "Background", "Foreground"};
+                    int currentLayer = static_cast<int>(label->Layer);
+                    if (ImGui::Combo("##Layer", &currentLayer, layerTypes, IM_ARRAYSIZE(layerTypes)))
+                    {
+                        label->Layer = static_cast<Engine::LayerType>(currentLayer);
+                    }
+                });
+                DrawTable2<Engine::LabelComponent>("Name", [&label]() { InputTextString("##Name", &label->Name); });
             },
             false);
 
@@ -153,8 +169,19 @@ void Editor::InspectorPanel::OnImGuiRender() const
                 std::string materialName = Engine::MaterialsManager::GetInstance().GetName(materialComp->GetMaterial());
                 if (!materialName.empty())
                 {
-                    DrawTable2<Engine::MaterialComponent>(
-                        "Material", [&materialName]() { ImGui::Text("%s", materialName.c_str()); });
+                    DrawTable2<Engine::MaterialComponent>("Material", [&materialName, &materialComp]() {
+                        const char *materialNames[] = {"Default3D", "GrassBlock", "StoneBlock"};
+                        int materialIndex =
+                            std::distance(std::begin(materialNames),
+                                          std::find(std::begin(materialNames), std::end(materialNames), materialName));
+                        if (ImGui::Combo("##Material", &materialIndex, materialNames, IM_ARRAYSIZE(materialNames)))
+                        {
+                            std::shared_ptr<Engine::Material> newMaterial =
+                                Engine::MaterialsManager::GetInstance().GetMaterial(materialNames[materialIndex]);
+                            if (newMaterial)
+                                materialComp->SetMaterial(newMaterial);
+                        }
+                    });
                 }
 
                 // Shader name
@@ -230,7 +257,7 @@ void Editor::InspectorPanel::OnImGuiRender() const
             }
         });
 
-        // // todo: Drag and Drop for Texture2D
+        // // Handle drag and drop for texture assignment
         // if (ImGui::BeginDragDropTarget())
         // {
         //     if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -243,7 +270,8 @@ void Editor::InspectorPanel::OnImGuiRender() const
         //                 std::filesystem::relative(filepath, ConfigManager::GetInstance().GetAssetsPath()).string();
         //             if (std::filesystem::is_regular_file(filepath))
         //             {
-        //                 if (ConfigManager::IsTexture(filepath))
+        //                 if (filepath.extension() == ".png" || filepath.extension() == ".jpg" ||
+        //                     filepath.extension() == ".jpeg")
         //                 {
         //                     if (selectedEntity)
         //                     {
