@@ -8,10 +8,10 @@ void Editor::PlayerController::OnCreate()
 {
     m_Transform = GetComponent<Engine::TransformComponent>();
     m_RigidBody = GetComponent<Engine::RigidBodyComponent>();
-    m_Audio = GetComponent<Engine::AudioComponent>();
-    m_Audio->SetAudio(AudiosManager::GetInstance().GetAudio("walk"));
     m_WalkAudio = GetComponent<Engine::AudioComponent>();
     m_WalkAudio->SetAudio(AudiosManager::GetInstance().GetAudio("walk"));
+    m_WalkAudio->SetLooping(true);
+    m_WalkAudio->SetVolume(1.0f);
 }
 
 void Editor::PlayerController::OnUpdate(float deltaTime)

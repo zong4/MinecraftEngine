@@ -84,6 +84,7 @@ void Engine::AudioComponent::Play()
 {
     if (m_Initialized)
     {
+        m_Playing = true;
         ma_sound_start(&m_Audio);
     }
 }
@@ -92,6 +93,7 @@ void Engine::AudioComponent::Stop()
 {
     if (m_Initialized)
     {
+        m_Playing = false;
         ma_sound_stop(&m_Audio);
     }
 }

@@ -16,6 +16,7 @@ public:
 
     // Getters
     bool IsInitialized() const { return m_Initialized; }
+    bool IsPlaying() const { return m_Playing; }
     bool IsLooping() const { return m_Looping; }
     float GetVolume() const { return m_Volume; }
 
@@ -31,6 +32,7 @@ public:
 
 private:
     bool m_Initialized = false;
+    bool m_Playing = false;
     bool m_Looping;
     float m_Volume;
     ma_sound m_Audio{};

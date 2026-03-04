@@ -1,5 +1,6 @@
 #include "ExampleScene.hpp"
 
+#include "../Script/AudioManager.hpp"
 #include "../Script/PlayerController.hpp"
 #include "../Script/RotatingLight.hpp"
 
@@ -12,6 +13,9 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
                             Engine::TransformComponent(glm::vec3(0.0f, 10.0f, 20.0f), glm::vec3(-30.0f, 0.0f, 0.0f)),
                             Engine::CameraComponent(Engine::CameraType::Perspective));
     SetMainCamera(camera);
+    camera.AddComponent<Engine::AudioComponent>();
+    camera.AddComponent<Engine::NativeScriptComponent>();
+    camera.GetComponent<Engine::NativeScriptComponent>()->Bind<AudioManager>(camera);
 
     // // 2D
     // AddSquare("Square", Engine::TransformComponent(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f)));
@@ -81,8 +85,8 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     // Player
     auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 1.0f, 9.0f)));
     player.GetComponent<Engine::MaterialComponent>()->SetProperty("Color", glm::vec4(1.0f, 0.5f, 0.2f, 1.0f));
-    player.AddComponent<Engine::AudioComponent>(true, 1.0f);
     player.AddComponent<Engine::RigidBodyComponent>();
+    player.AddComponent<Engine::AudioComponent>();
     player.AddComponent<Engine::NativeScriptComponent>();
     player.GetComponent<Engine::NativeScriptComponent>()->Bind<PlayerController>(player);
     player.AddComponent<Engine::LuaScriptComponent>();
