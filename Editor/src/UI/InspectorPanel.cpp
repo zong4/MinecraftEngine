@@ -289,6 +289,20 @@ void Editor::InspectorPanel::OnImGuiRender() const
                     "Mass", [&rigidBody]() { ImGui::DragFloat("##Mass", &rigidBody->Mass, 10.0f, 0.0f, 100.0f); });
             });
 
+        // AudioComponent
+        DrawComponent<Engine::AudioComponent>("Audio Component", selectedEntity, [](Engine::AudioComponent *audio) {
+            DrawTable2<Engine::AudioComponent>("Looping", [&audio]() {
+                bool looping = audio->IsLooping();
+                if (ImGui::Checkbox("##Looping", &looping))
+                    audio->SetLooping(looping);
+            });
+            float volume = audio->GetVolume();
+            DrawTable2<Engine::AudioComponent>("Volume", [&audio, &volume]() {
+                ImGui::DragFloat("##Volume", &volume, 0.1f, 0.0f, 1.0f);
+                audio->SetVolume(volume);
+            });
+        });
+
         // Add Component Button
         DrawAddComponentButton(selectedEntity);
     }
@@ -403,6 +417,8 @@ void Editor::InspectorPanel::DrawAddComponentButton(Engine::Entity entity)
     {
         DisplayAddComponentEntry<Engine::MeshRendererComponent>("Mesh Renderer Component");
 
+        DisplayAddComponentEntry<Engine::MaterialComponent>("Material Component");
+
         ImGui::Separator();
 
         DisplayAddComponentEntry<Engine::CameraComponent>("Camera Component");
@@ -433,6 +449,10 @@ void Editor::InspectorPanel::DrawAddComponentButton(Engine::Entity entity)
                 ImGui::CloseCurrentPopup();
             }
         }
+
+        ImGui::Separator();
+
+        DisplayAddComponentEntry<Engine::RigidBodyComponent>("Rigid Body Component");
 
         ImGui::EndPopup();
     }
