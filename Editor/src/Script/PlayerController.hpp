@@ -23,6 +23,9 @@ private:
     Engine::TransformComponent *m_Transform = nullptr;
     Engine::RigidBodyComponent *m_RigidBody = nullptr;
     Engine::AudioComponent *m_WalkAudio = nullptr;
+    Engine::ParticleComponent *m_Particle = nullptr;
+    float m_ParticleTimer = 0.0f;
+    float m_ParticleInterval = 0.3f;
 };
 
 } // namespace Editor

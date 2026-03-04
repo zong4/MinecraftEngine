@@ -20,9 +20,9 @@ void Editor::AudioManager::OnUpdate(float deltaTime)
 
     if (Input::GetInstance().IsKeyPressed(KEY_SPACE))
     {
-        if (m_WalkAudio->IsPlaying())
+        if (m_Audio->IsPlaying())
         {
-            m_WalkAudio->Stop();
+            m_Audio->Stop();
         }
     }
 }

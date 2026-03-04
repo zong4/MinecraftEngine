@@ -17,6 +17,7 @@ void Engine::RendererCommand::Init()
     SetDepthWrite(true);
     SetBlend(true);
     SetGammaCorrection(true);
+    glEnable(GL_PROGRAM_POINT_SIZE);
 }
 
 void Engine::RendererCommand::GetError(const std::string &functionName)

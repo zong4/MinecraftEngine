@@ -12,6 +12,7 @@ void Editor::PlayerController::OnCreate()
     m_WalkAudio->SetAudio(AudiosManager::GetInstance().GetAudio("walk"));
     m_WalkAudio->SetLooping(true);
     m_WalkAudio->SetVolume(1.0f);
+    m_Particle = GetComponent<Engine::ParticleComponent>();
 }
 
 void Editor::PlayerController::OnUpdate(float deltaTime)
@@ -31,13 +32,19 @@ void Editor::PlayerController::OnUpdate(float deltaTime)
 
     // Jump
     if (Input::GetInstance().IsKeyPressed(KEY_K))
+    {
         m_RigidBody->Body->applyCentralImpulse(btVector3(0, m_JumpStrength * deltaTime, 0));
+    }
 
     // Play Audio when moving
     if (glm::length(movement) > 0.0f)
+    {
         m_WalkAudio->Play();
+    }
     else
+    {
         m_WalkAudio->Stop();
+    }
 
     if (Input::GetInstance().IsKeyPressed(KEY_SPACE))
     {

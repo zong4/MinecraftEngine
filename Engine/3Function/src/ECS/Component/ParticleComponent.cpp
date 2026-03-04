@@ -13,38 +13,51 @@ Engine::ParticleComponent::ParticleComponent(std::function<Particle()> emitFunct
         });
 }
 
-void Engine::ParticleComponent::Update(float deltaTime)
+void Engine::ParticleComponent::Update(float deltaTime, TransformComponent *transform)
 {
+    if (!Active)
+        return;
+
     // Update existing particles
-    for (size_t i = 0; i < m_Particles.size();)
+    for (auto &&particle : m_Particles)
     {
-        auto &&particle = m_Particles[i];
-        if (particle.Lifetime >= particle.LifeLength)
-        {
-            // Remove particle
-            m_Particles[i] = m_Particles.back();
-            m_Particles.pop_back();
-        }
-        else
-        {
-            // Update particle position
-            particle.Position += particle.Velocity * deltaTime;
-            i++;
-        }
+        particle.Position += particle.Velocity * deltaTime;
         particle.Lifetime += deltaTime;
     }
 
-    // Emit new particles
-    for (int i = 0; i < m_EmissionCount; i++)
+    // Remove dead particles
+    m_Particles.erase(std::remove_if(m_Particles.begin(), m_Particles.end(),
+                                     [](const Particle &p) { return p.Lifetime >= p.LifeLength; }),
+                      m_Particles.end());
+
+    // If transform is provided, emit particles at the transform's position
+    if (transform)
     {
-        if (static_cast<int>(m_Particles.size()) >= m_MaxCount)
-            break;
-        m_Particles.push_back(EmitFunction());
+        for (int i = 0; i < m_EmissionCount; i++)
+        {
+            if (m_Particles.size() >= m_MaxCount)
+                break;
+            Particle newParticle = EmitFunction();
+            newParticle.Position += transform->Position; // Emit at the entity's position
+            m_Particles.push_back(newParticle);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < m_EmissionCount; i++)
+        {
+            if (m_Particles.size() >= m_MaxCount)
+                break;
+            m_Particles.push_back(EmitFunction());
+        }
     }
 }
 
 void Engine::ParticleComponent::Render() const
 {
+    if (m_Particles.empty() || !Active)
+        return;
+
     m_VertexArray->GetVertexBuffer()->SetData(m_Particles.data(), m_Particles.size() * sizeof(Particle), 0);
     m_VertexArray->Render(RendererType::Points);
 }

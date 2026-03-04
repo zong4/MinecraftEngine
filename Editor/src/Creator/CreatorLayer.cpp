@@ -76,13 +76,15 @@ void Editor::CreatorLayer::OnImGuiRender()
 {
     PROFILE_FUNCTION();
 
+    ImGuiIO &io = ImGui::GetIO();
+    io.FontGlobalScale = 1.25f;
+
     FileBrowserPanel::GetInstance().OnImGuiRender();
     HierarchyPanel::GetInstance().OnImGuiRender();
     InspectorPanel::GetInstance().OnImGuiRender();
     DrawDebugUI();
 
     // Capture Input Events for next frame
-    ImGuiIO &io = ImGui::GetIO();
     bool mouseCapture = io.WantCaptureMouse && ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
     bool keyboardCapture = io.WantCaptureKeyboard && ImGui::IsAnyItemActive();
     Engine::Input::GetInstance().SetBlockEvents(mouseCapture || keyboardCapture);

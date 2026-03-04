@@ -303,6 +303,22 @@ void Editor::InspectorPanel::OnImGuiRender() const
             });
         });
 
+        // ParticleComponent
+        DrawComponent<Engine::ParticleComponent>(
+            "Particle Component", selectedEntity, [](Engine::ParticleComponent *particle) {
+                DrawTable2<Engine::ParticleComponent>("Active", [&particle]() {
+                    bool active = particle->Active;
+                    if (ImGui::Checkbox("##Active", &active))
+                        particle->Active = active;
+                });
+                DrawTable2<Engine::ParticleComponent>(
+                    "Color", [&particle]() { ImGui::ColorEdit4("##Color", glm::value_ptr(particle->Color)); });
+                DrawTable2<Engine::ParticleComponent>("Emission Count", [&particle]() {
+                    ImGui::DragInt("##Emission Count", &particle->m_EmissionCount, 1, 0, particle->m_MaxCount);
+                });
+                DrawTable2<Engine::ParticleComponent>(
+                    "Point Size", [&particle]() { ImGui::DragInt("##Point Size", &particle->m_PointSize, 1, 1, 20); });
+            });
         // Add Component Button
         DrawAddComponentButton(selectedEntity);
     }

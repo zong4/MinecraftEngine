@@ -19,11 +19,11 @@ public:
     {
         PROFILE_FUNCTION();
 
-        auto &&view = registry.view<ParticleComponent>();
+        auto &&view = registry.view<TransformComponent, ParticleComponent>();
         for (auto &&entity : view)
         {
-            auto &&particle = view.get<ParticleComponent>(entity);
-            particle.Update(deltaTime);
+            auto &&[transform, particle] = view.get<TransformComponent, ParticleComponent>(entity);
+            particle.Update(deltaTime, &transform);
         }
     }
     void Render(entt::registry &registry) const
@@ -36,6 +36,8 @@ public:
         for (auto &&entity : view)
         {
             auto &&particle = view.get<ParticleComponent>(entity);
+            shader->SetUniformVec4("u_Color", particle.Color);
+            shader->SetUniformInt("u_PointSize", particle.m_PointSize);
             particle.Render();
         }
         shader->Unbind();

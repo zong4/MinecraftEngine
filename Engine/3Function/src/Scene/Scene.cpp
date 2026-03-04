@@ -2,18 +2,7 @@
 
 #include "../Renderer/Library/UniformLibrary.hpp"
 
-Engine::Scene::Scene(const std::string &name) : m_Name(name)
-{
-    auto particle = AddEmptyEntity("ParticleSystem");
-    particle.AddComponent<ParticleComponent>([]() -> Particle {
-        return Particle{
-            glm::vec3(0.0f, 3.0f, 0.0f),
-            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
-                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
-            2.0f,
-        };
-    });
-}
+Engine::Scene::Scene(const std::string &name) : m_Name(name) {}
 
 Engine::Scene::~Scene()
 {

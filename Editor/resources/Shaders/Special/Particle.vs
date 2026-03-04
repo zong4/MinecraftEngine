@@ -22,6 +22,9 @@ out VS_OUT
 }
 vs_out;
 
+// Uniforms
+uniform int u_PointSize;
+
 // Main
 void main()
 {
@@ -31,4 +34,5 @@ void main()
 
     // Final position
     gl_Position = u_Projection * u_View * vec4(aPosition, 1.0);
+    gl_PointSize = u_PointSize;
 }

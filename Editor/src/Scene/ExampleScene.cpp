@@ -33,7 +33,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
 
     // Underground Generation with Perlin Noise
     int width = 16;
-    int height = 24;
+    int height = 12;
     int length = 16;
     auto &&stoneParent = AddEmptyEntity("Stones");
     for (int x = 0; x < width; x++)
@@ -42,8 +42,8 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
         {
             for (int z = 0; z < length; z++)
             {
-                float density =
-                    static_cast<float>(Engine::PerlinNoise::GetInstance().Noise(x * 0.08f, y * 0.08f, z * 0.08f));
+                float density = static_cast<float>(
+                    Engine::PerlinNoise::GetInstance().Noise(x * 0.08f, y * 0.08f - 1.0f, z * 0.08f));
                 if (density < 0.1f)
                 {
                     auto stone = AddCube(
@@ -58,22 +58,19 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     }
 
     // Aboveground Generation with Perlin Noise + FBM
-    int zeroHeight = 0;
     auto &&grassParent = AddEmptyEntity("Grasses");
     for (int x = 0; x < width; x++)
     {
         for (int z = 0; z < length; z++)
         {
             float noise = static_cast<float>(Engine::PerlinNoise::GetInstance().FBM(x * 0.05f, z * 0.05f, 4, 2.0, 0.5));
-            if (noise > 0.0f)
+            if (noise * height > -1.0f)
             {
-                if (x == 0 && z == 0)
-                    zeroHeight = static_cast<int>(noise * height);
-                for (int y = 0; y < noise * height; y++)
+                for (int y = 0; y < noise * height + 1; y++)
                 {
                     auto grass = AddCube(
                         "Grass" + std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(z),
-                        Engine::TransformComponent(glm::vec3(x - width / 2, y, z - length / 2)),
+                        Engine::TransformComponent(glm::vec3(x - width / 2, y - 1.0f, z - length / 2)),
                         Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("GrassBlock")));
                     grass.AddComponent<Engine::RigidBodyComponent>()->Type = Engine::RigidBodyType::Kinematic;
                     Engine::RelationshipComponent::SetParentChild(grassParent, grass);
@@ -87,6 +84,14 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     player.GetComponent<Engine::MaterialComponent>()->SetProperty("Color", glm::vec4(1.0f, 0.5f, 0.2f, 1.0f));
     player.AddComponent<Engine::RigidBodyComponent>();
     player.AddComponent<Engine::AudioComponent>();
+    player.AddComponent<Engine::ParticleComponent>([]() -> Engine::Particle {
+        return Engine::Particle{
+            glm::vec3(0.0f, -0.5f, 0.0f),
+            glm::vec3(((rand() % 100) / 100.0f - 0.5f) * 2.0f, (rand() % 100) / 100.0f * 2.0f,
+                      ((rand() % 100) / 100.0f - 0.5f) * 2.0f),
+            2.0f,
+        };
+    });
     player.AddComponent<Engine::NativeScriptComponent>();
     player.GetComponent<Engine::NativeScriptComponent>()->Bind<PlayerController>(player);
     player.AddComponent<Engine::LuaScriptComponent>();
