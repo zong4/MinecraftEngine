@@ -1,5 +1,6 @@
 #include "ScriptsSystem.hpp"
 
+#include "../Component/PhysicComponent.hpp"
 #include "../Component/TransformComponent.hpp"
 
 Engine::ScriptsSystem::ScriptsSystem()
@@ -10,7 +11,9 @@ Engine::ScriptsSystem::ScriptsSystem()
                                   &glm::vec3::x, "y", &glm::vec3::y, "z", &glm::vec3::z);
     m_Lua.new_usertype<TransformComponent>("Transform", "Position", &TransformComponent::Position, "Rotation",
                                            &TransformComponent::Rotation, "Scale", &TransformComponent::Scale);
-    m_Lua.new_usertype<Entity>("Entity", "GetTransform", &Entity::GetComponent<TransformComponent>);
+    m_Lua.new_usertype<RigidBodyComponent>("RigidBody", "Reset", &RigidBodyComponent::Reset);
+    m_Lua.new_usertype<Entity>("Entity", "GetTransform", &Entity::GetComponent<TransformComponent>, "GetRigidBody",
+                               &Entity::GetComponent<RigidBodyComponent>);
 }
 
 Engine::ScriptsSystem::~ScriptsSystem() { m_Lua.collect_garbage(); }

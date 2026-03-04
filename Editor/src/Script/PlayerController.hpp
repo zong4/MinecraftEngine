@@ -17,12 +17,14 @@ public:
 
 private:
     float m_MoveSpeed = 10.0f;
-    float m_JumpStrength = 15.0f;
-    glm::vec3 m_Offset = glm::vec3(0.0f, 5.0f, 8.0f);
+    float m_JumpStrength = 10.0f;
+    glm::vec3 m_Offset = glm::vec3(0.0f, 5.0f, 12.0f);
     glm::vec3 m_CameraRotation = glm::vec3(-30.0f, 0.0f, 0.0f);
     Engine::TransformComponent *m_Transform = nullptr;
     Engine::RigidBodyComponent *m_RigidBody = nullptr;
     Engine::AudioComponent *m_Audio = nullptr;
+    Engine::AudioComponent *m_WalkAudio = nullptr;
+    Engine::AudioComponent *m_JumpAudio = nullptr;
 };
 
 } // namespace Editor

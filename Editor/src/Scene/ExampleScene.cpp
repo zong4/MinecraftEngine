@@ -79,8 +79,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     }
 
     // Player
-    auto player = AddCube(
-        "Player", Engine::TransformComponent(glm::vec3(0 - width / 2.0f, zeroHeight, 0 + length / 2.0f - 1.0f)));
+    auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 1.0f, 9.0f)));
     player.GetComponent<Engine::MaterialComponent>()->SetProperty("Color", glm::vec4(1.0f, 0.5f, 0.2f, 1.0f));
     player.AddComponent<Engine::AudioComponent>(true, 1.0f);
     player.AddComponent<Engine::RigidBodyComponent>();
@@ -89,4 +88,9 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     player.AddComponent<Engine::LuaScriptComponent>();
     player.GetComponent<Engine::LuaScriptComponent>()->ScriptPath =
         (Engine::GetAssetsDirectory() / "Scripts/Respawn.lua").string();
+
+    // Platform
+    auto stone = AddCube("Stone", Engine::TransformComponent(glm::vec3(0.0f, 0.0f, 9.0f)),
+                         Engine::MaterialComponent(Engine::MaterialsManager::GetInstance().GetMaterial("StoneBlock")));
+    stone.AddComponent<Engine::RigidBodyComponent>()->Type = Engine::RigidBodyType::Kinematic;
 }

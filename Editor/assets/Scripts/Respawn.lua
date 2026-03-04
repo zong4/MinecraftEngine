@@ -18,7 +18,8 @@ function Script:OnUpdate(dt)
         transform.Position.x = spawnPosition.x
         transform.Position.y = spawnPosition.y
         transform.Position.z = spawnPosition.z
-        Debug.Log("Player reset to spawn position")
+        local rigidBody = self.Entity:GetRigidBody()
+        rigidBody:Reset()
     end
 end
 

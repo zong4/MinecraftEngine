@@ -10,6 +10,8 @@ void Editor::PlayerController::OnCreate()
     m_RigidBody = GetComponent<Engine::RigidBodyComponent>();
     m_Audio = GetComponent<Engine::AudioComponent>();
     m_Audio->SetAudio(AudiosManager::GetInstance().GetAudio("walk"));
+    m_WalkAudio = GetComponent<Engine::AudioComponent>();
+    m_WalkAudio->SetAudio(AudiosManager::GetInstance().GetAudio("walk"));
 }
 
 void Editor::PlayerController::OnUpdate(float deltaTime)
@@ -29,9 +31,9 @@ void Editor::PlayerController::OnUpdate(float deltaTime)
 
     // Play Audio when moving
     if (glm::length(movement) > 0.0f)
-        m_Audio->Play();
+        m_WalkAudio->Play();
     else
-        m_Audio->Stop();
+        m_WalkAudio->Stop();
 
     // Camera follow
     auto &&cameraTransform =
