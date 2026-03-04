@@ -88,5 +88,5 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     player.GetComponent<Engine::NativeScriptComponent>()->Bind<PlayerController>(player);
     player.AddComponent<Engine::LuaScriptComponent>();
     player.GetComponent<Engine::LuaScriptComponent>()->ScriptPath =
-        (Engine::GetAssetsDirectory() / "Scripts/Test.lua").string();
+        (Engine::GetAssetsDirectory() / "Scripts/Respawn.lua").string();
 }

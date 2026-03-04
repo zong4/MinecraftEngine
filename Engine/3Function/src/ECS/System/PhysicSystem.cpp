@@ -136,6 +136,7 @@ void Engine::PhysicSystem::UpdateRigidBody(RigidBodyComponent &rigidBody, const 
         rigidBody.Shape->calculateLocalInertia(rigidBody.Mass, inertia);
         body->setMassProps(rigidBody.Mass, inertia);
         body->setActivationState(DISABLE_DEACTIVATION);
+        rigidBody.Body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
         break;
     }
     case RigidBodyType::Kinematic: {
@@ -189,11 +190,11 @@ void Engine::PhysicSystem::AddRigidBody(RigidBodyComponent &rigidBody, const Tra
         rigidBody.Body->setCollisionFlags(rigidBody.Body->getCollisionFlags() &
                                           ~btCollisionObject::CF_KINEMATIC_OBJECT);
         rigidBody.Body->setActivationState(DISABLE_DEACTIVATION);
+        rigidBody.Body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
         break;
     case RigidBodyType::Kinematic:
         rigidBody.Body->setCollisionFlags((rigidBody.Body->getCollisionFlags() & ~btCollisionObject::CF_STATIC_OBJECT) |
                                           btCollisionObject::CF_KINEMATIC_OBJECT);
-        rigidBody.Body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
         // rigidBody.Body->setActivationState(DISABLE_DEACTIVATION);
         break;
     }
