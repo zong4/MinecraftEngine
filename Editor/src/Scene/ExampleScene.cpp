@@ -54,6 +54,7 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     }
 
     // Aboveground Generation with Perlin Noise + FBM
+    int zeroHeight = 0;
     auto &&grassParent = AddEmptyEntity("Grasses");
     for (int x = 0; x < width; x++)
     {
@@ -62,6 +63,8 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
             float noise = static_cast<float>(Engine::PerlinNoise::GetInstance().FBM(x * 0.05f, z * 0.05f, 4, 2.0, 0.5));
             if (noise > 0.0f)
             {
+                if (x == 0 && z == 0)
+                    zeroHeight = static_cast<int>(noise * height);
                 for (int y = 0; y < noise * height; y++)
                 {
                     auto grass = AddCube(
@@ -76,7 +79,8 @@ Editor::ExampleScene::ExampleScene() : Engine::Scene3D()
     }
 
     // Player
-    auto player = AddCube("Player", Engine::TransformComponent(glm::vec3(0.0f, 12.0f, 0.0f)));
+    auto player = AddCube(
+        "Player", Engine::TransformComponent(glm::vec3(0 - width / 2.0f, zeroHeight, 0 + length / 2.0f - 1.0f)));
     player.GetComponent<Engine::MaterialComponent>()->SetProperty("Color", glm::vec4(1.0f, 0.5f, 0.2f, 1.0f));
     player.AddComponent<Engine::AudioComponent>(true, 1.0f);
     player.AddComponent<Engine::RigidBodyComponent>();
