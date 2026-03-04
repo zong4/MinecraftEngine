@@ -7,7 +7,7 @@ Engine::PhysicSystem::PhysicSystem()
     m_Broadphase = new btDbvtBroadphase();
     m_Solver = new btSequentialImpulseConstraintSolver();
     m_DynamicsWorld = new btDiscreteDynamicsWorld(m_Dispatcher, m_Broadphase, m_Solver, m_CollisionConfiguration);
-    m_DynamicsWorld->setGravity(btVector3(0, -98.1f, 0));
+    m_DynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
 }
 
 void Engine::PhysicSystem::Delete(const Entity &entity)

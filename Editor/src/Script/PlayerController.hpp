@@ -16,8 +16,8 @@ public:
     void OnUpdate(float deltaTime) override;
 
 private:
-    float m_MoveSpeed = 10.0f;
-    float m_JumpStrength = 10.0f;
+    float m_MoveSpeed = 60.0f;
+    float m_JumpStrength = 16.0f;
     glm::vec3 m_Offset = glm::vec3(0.0f, 5.0f, 12.0f);
     glm::vec3 m_CameraRotation = glm::vec3(-30.0f, 0.0f, 0.0f);
     Engine::TransformComponent *m_Transform = nullptr;

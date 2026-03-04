@@ -15,6 +15,7 @@ public:
     virtual void OnCreate() {}
     virtual void OnStart() {}
     virtual void OnUpdate(float deltaTime) = 0;
+    virtual void OnFixedUpdate(float fixedDeltaTime) {}
     virtual void OnDestroy() {}
 
     // clang-format off

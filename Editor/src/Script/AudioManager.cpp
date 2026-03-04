@@ -17,4 +17,12 @@ void Editor::AudioManager::OnUpdate(float deltaTime)
     // Play background music
     if (!m_Audio->IsPlaying())
         m_Audio->Play();
+
+    if (Input::GetInstance().IsKeyPressed(KEY_SPACE))
+    {
+        if (m_WalkAudio->IsPlaying())
+        {
+            m_WalkAudio->Stop();
+        }
+    }
 }
